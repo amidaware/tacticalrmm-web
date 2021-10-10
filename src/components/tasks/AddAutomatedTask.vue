@@ -273,7 +273,7 @@ export default {
       if (!this.step1Done || !this.step2Done) {
         this.notifyError("Some steps incomplete");
       } else {
-        const pk = this.policypk ? { policy: this.policypk } : { agent: this.selectedAgentPk };
+        const pk = this.policypk ? { policy: this.policypk } : { agent: this.selectedAgentId };
 
         const data = {
           ...pk,
@@ -286,8 +286,8 @@ export default {
             this.$emit("close");
 
             if (!this.policypk) {
-              this.$store.dispatch("loadAutomatedTasks", this.selectedAgentPk);
-              this.$store.dispatch("loadChecks", this.selectedAgentPk);
+              this.$store.dispatch("loadAutomatedTasks", this.selectedAgentId);
+              this.$store.dispatch("loadChecks", this.selectedAgentId);
             }
             this.notifySuccess(r.data);
           })
@@ -316,7 +316,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["selectedAgentPk", "showCommunityScripts"]),
+    ...mapGetters(["selectedAgentId", "showCommunityScripts"]),
     checks() {
       return this.policypk
         ? this.policyChecks

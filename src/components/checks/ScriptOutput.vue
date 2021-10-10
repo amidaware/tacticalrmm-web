@@ -1,6 +1,6 @@
 <template>
-  <q-dialog ref="dialog" @hide="onHide">
-    <q-card class="q-dialog-plugin q-pa-xs" style="min-width: 70vw">
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-card class="q-dialog-plugin" style="min-width: 70vw">
       <q-bar>
         {{ scriptInfo.readable_desc }}
         <q-space />
@@ -38,20 +38,21 @@
 </template>
 
 <script>
+// composition imports
+import { useDialogPluginComponent } from "quasar";
+
 export default {
   name: "ScriptOutput",
-  emits: ["hide", "ok", "cancel"],
-  props: ["scriptInfo"],
-  methods: {
-    show() {
-      this.$refs.dialog.show();
-    },
-    hide() {
-      this.$refs.dialog.hide();
-    },
-    onHide() {
-      this.$emit("hide");
-    },
+  emits: [...useDialogPluginComponent.emits],
+  props: { scriptInfo: !Object },
+  setup(props) {
+    // quasar dialog setup
+    const { dialogRef, onDialogHide } = useDialogPluginComponent();
+
+    return {
+      dialogRef,
+      onDialogHide,
+    };
   },
 };
 </script>

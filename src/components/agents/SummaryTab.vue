@@ -1,6 +1,9 @@
 <template>
-  <div v-if="Object.keys(summary).length === 0">No agent selected</div>
-  <div v-else>
+  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-else-if="!summary && loading" class="q-pa-md flex flex-center">
+    <q-circular-progress indeterminate size="50px" color="primary" class="q-ma-md" />
+  </div>
+  <div v-else-if="summary" class="q-pa-sm">
     <q-btn class="q-mr-sm" dense flat push icon="refresh" @click="refreshSummary" />
     <span>
       <b>{{ summary.hostname }}</b>
@@ -63,7 +66,7 @@
       <div class="col-2">
         <span class="text-subtitle2 text-bold">Checks Status</span>
         <br />
-        <template v-if="summary.checks.total !== 0">
+        <div v-if="summary.checks.total !== 0">
           <q-chip v-if="summary.checks.passing" square size="lg">
             <q-avatar size="lg" square icon="done" color="green" text-color="white" />
             <small>{{ summary.checks.passing }} checks passing</small>
@@ -82,18 +85,16 @@
           </q-chip>
           <span
             v-if="
-              awaitingSync(
-                summary.checks.total,
-                summary.checks.passing,
-                summary.checks.failing,
-                summary.checks.warning,
-                summary.checks.info
-              )
+              summary.checks.total !== 0 &&
+              summary.checks.passing === 0 &&
+              summary.checks.failing === 0 &&
+              summary.checks.warning === 0 &&
+              summary.checks.info === 0
             "
             >{{ summary.checks.total }} checks awaiting first synchronization</span
           >
-        </template>
-        <template v-else>No checks</template>
+        </div>
+        <div v-else>No checks</div>
       </div>
       <div class="col-1"></div>
       <!-- right -->
@@ -108,53 +109,79 @@
       </div>
       <div class="col-2"></div>
     </div>
+    <q-inner-loading :showing="loading" color="primary" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import mixins from "@/mixins/mixins";
+import { ref, computed, watch, onMounted } from "vue";
+import { useStore } from "vuex";
+import { fetchAgent, refreshAgentWMI } from "@/api/agents";
+import { notifySuccess } from "@/utils/notify";
 
 export default {
   name: "SummaryTab",
-  mixins: [mixins],
-  data() {
-    return {};
-  },
-  methods: {
-    awaitingSync(total, passing, failing, warning, info) {
-      return total !== 0 && passing === 0 && failing === 0 && warning === 0 && info === 0;
-    },
-    refreshSummary() {
-      this.$q.loading.show();
-      this.$axios
-        .get(`/agents/${this.selectedAgentPk}/wmi/`)
-        .then(r => {
-          this.$store.dispatch("loadSummary", this.selectedAgentPk);
-          this.$q.loading.hide();
-        })
-        .catch(e => {
-          this.$q.loading.hide();
-        });
-    },
-  },
-  computed: {
-    ...mapGetters(["selectedAgentPk"]),
-    summary() {
-      return this.$store.state.agentSummary;
-    },
-    disks() {
-      if (this.summary.disks === undefined) {
+  setup(props) {
+    // vuex setup
+    const store = useStore();
+    const selectedAgent = computed(() => store.state.selectedRow);
+
+    // summary tab logic
+    const summary = ref(null);
+    const loading = ref(false);
+
+    const disks = computed(() => {
+      if (!summary.value.disks) {
         return [];
       }
 
-      const entries = Object.entries(this.summary.disks);
+      const entries = Object.entries(summary.value.disks);
       const ret = [];
       for (let [k, v] of entries) {
         ret.push(v);
       }
       return ret;
-    },
+    });
+
+    async function getSummary() {
+      loading.value = true;
+      summary.value = await fetchAgent(selectedAgent.value);
+      loading.value = false;
+    }
+
+    async function refreshSummary() {
+      loading.value = true;
+      try {
+        const result = await refreshAgentWMI(selectedAgent.value);
+        await getSummary();
+        notifySuccess(result);
+      } catch (e) {
+        console.error(e);
+      }
+      loading.value = false;
+    }
+
+    watch(selectedAgent, (newValue, oldValue) => {
+      if (newValue) {
+        getSummary();
+      }
+    });
+
+    onMounted(() => {
+      if (selectedAgent.value) getSummary();
+    });
+
+    return {
+      // reactive data
+      summary,
+      loading,
+      selectedAgent,
+      disks,
+
+      // methods
+      getSummary,
+      refreshSummary,
+    };
   },
 };
 </script>
