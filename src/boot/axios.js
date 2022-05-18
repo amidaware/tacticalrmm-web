@@ -3,11 +3,7 @@ import { Notify } from "quasar";
 
 export const getBaseUrl = () => {
   if (process.env.NODE_ENV === "production") {
-    if (process.env.DOCKER_BUILD) {
-      return window._env_.PROD_URL;
-    } else {
-      return process.env.PROD_API;
-    }
+    return window._env_.PROD_URL;
   } else {
     return process.env.DEV_API;
   }
