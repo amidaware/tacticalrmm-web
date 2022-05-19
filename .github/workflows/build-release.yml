@@ -1,0 +1,35 @@
+name: Build web
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build web
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: touch env-config.js
+
+      - name: Install
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Create tarball
+        run: tar -czvf trmm-web-${{github.ref_name}}.tar.gz dist/
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: trmm-web-${{github.ref_name}}.tar.gz
+
