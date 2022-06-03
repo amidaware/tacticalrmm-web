@@ -142,6 +142,10 @@
               <q-item clickable v-close-popup @click="clearCache">
                 <q-item-section>Clear Cache</q-item-section>
               </q-item>
+              <!-- bulk recover agents -->
+              <q-item clickable v-close-popup @click="bulkRecoverAgents">
+                <q-item-section>Recover All Agents</q-item-section>
+              </q-item>
             </q-list>
           </q-menu>
         </q-btn>
@@ -261,6 +265,20 @@ export default {
       this.$axios
         .get("/core/clearcache/")
         .then((r) => this.notifySuccess(r.data));
+    },
+    bulkRecoverAgents() {
+      this.$q
+        .dialog({
+          title: "Bulk Recover All Agents?",
+          message:
+            "This will restart the Tactical and Mesh Agent services on all agents",
+          cancel: true,
+        })
+        .onOk(() => {
+          this.$axios
+            .get("/agents/bulkrecovery/")
+            .then((r) => this.notifySuccess(r.data));
+        });
     },
     openHelp(mode) {
       let url;
