@@ -40,7 +40,7 @@
               label="Windows"
               @update:model-value="
                 installMethod = 'exe';
-                arch = '64';
+                goarch = GOARCH_AMD64;
               "
             />
             <q-radio
@@ -49,7 +49,7 @@
               label="Linux"
               @update:model-value="
                 installMethod = 'linux';
-                arch = 'amd64';
+                goarch = GOARCH_AMD64;
               "
             />
           </div>
@@ -102,38 +102,38 @@
           Arch
           <div class="q-gutter-sm">
             <q-radio
-              v-model="arch"
-              val="64"
+              v-model="goarch"
+              :val="GOARCH_AMD64"
               label="64 bit"
               v-show="agentOS === 'windows'"
             />
             <q-radio
-              v-model="arch"
-              val="32"
+              v-model="goarch"
+              :val="GOARCH_i386"
               label="32 bit"
               v-show="agentOS === 'windows'"
             />
             <q-radio
-              v-model="arch"
-              val="amd64"
+              v-model="goarch"
+              :val="GOARCH_AMD64"
               label="64 bit"
               v-show="agentOS !== 'windows'"
             />
             <q-radio
-              v-model="arch"
-              val="386"
+              v-model="goarch"
+              :val="GOARCH_i386"
               label="32 bit"
               v-show="agentOS !== 'windows'"
             />
             <q-radio
-              v-model="arch"
-              val="arm64"
+              v-model="goarch"
+              :val="GOARCH_ARM64"
               label="ARM 64 bit"
               v-show="agentOS !== 'windows'"
             />
             <q-radio
-              v-model="arch"
-              val="arm"
+              v-model="goarch"
+              :val="GOARCH_ARM32"
               label="ARM 32 bit (Rasp Pi)"
               v-show="agentOS !== 'windows'"
             />
@@ -177,6 +177,12 @@
 import mixins from "@/mixins/mixins";
 import AgentDownload from "@/components/modals/agents/AgentDownload.vue";
 import { getBaseUrl } from "@/boot/axios";
+import {
+  GOARCH_AMD64,
+  GOARCH_i386,
+  GOARCH_ARM64,
+  GOARCH_ARM32,
+} from "@/constants/constants";
 
 export default {
   name: "InstallAgent",
@@ -187,6 +193,10 @@ export default {
   },
   data() {
     return {
+      GOARCH_AMD64: GOARCH_AMD64,
+      GOARCH_i386: GOARCH_i386,
+      GOARCH_ARM64: GOARCH_ARM64,
+      GOARCH_ARM32: GOARCH_ARM32,
       client_options: [],
       client: null,
       site: null,
@@ -198,7 +208,7 @@ export default {
       showAgentDownload: false,
       info: {},
       installMethod: "exe",
-      arch: "64",
+      goarch: GOARCH_AMD64,
       agentOS: "windows",
     };
   },
@@ -240,7 +250,7 @@ export default {
         .replace(/([^a-zA-Z0-9]+)/g, "");
 
       const fileName =
-        this.arch === "64"
+        this.goarch === GOARCH_AMD64
           ? `rmm-${clientStripped}-${siteStripped}-${this.agenttype}.exe`
           : `rmm-${clientStripped}-${siteStripped}-${this.agenttype}-x86.exe`;
 
@@ -253,10 +263,10 @@ export default {
         power: this.power ? 1 : 0,
         rdp: this.rdp ? 1 : 0,
         ping: this.ping ? 1 : 0,
-        arch: this.arch,
+        goarch: this.goarch,
         api,
         fileName,
-        os: this.agentOS,
+        plat: this.agentOS,
       };
 
       if (this.installMethod === "manual") {
@@ -264,7 +274,7 @@ export default {
           this.info = {
             expires: this.expires,
             data: r.data,
-            arch: this.arch,
+            goarch: this.goarch,
           };
           this.showAgentDownload = true;
         });

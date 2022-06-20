@@ -54,9 +54,9 @@
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-pl-sm">OS</div>
-        <q-radio v-model="state.arch" val="64" label="64 bit" />
-        <q-radio v-model="state.arch" val="32" label="32 bit" />
+        <div class="q-pl-sm">Arch</div>
+        <q-radio v-model="state.goarch" :val="GOARCH_AMD64" label="64 bit" />
+        <q-radio v-model="state.goarch" :val="GOARCH_i386" label="32 bit" />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn dense flat label="Cancel" v-close-popup />
@@ -84,6 +84,7 @@ import {
   formatDateInputField,
   formatDateStringwithTimezone,
 } from "@/utils/format";
+import { GOARCH_AMD64, GOARCH_i386 } from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -108,7 +109,7 @@ export default {
       power: false,
       rdp: false,
       ping: false,
-      arch: "64",
+      goarch: GOARCH_AMD64,
     });
 
     const loading = ref(false);
@@ -145,6 +146,10 @@ export default {
       // quasar dialog
       dialogRef,
       onDialogHide,
+
+      // constants
+      GOARCH_AMD64,
+      GOARCH_i386,
     };
   },
 };
