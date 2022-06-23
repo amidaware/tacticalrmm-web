@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
-    "@quasar/extras": "1.14.0",
+    "@quasar/extras": "1.14.1",
     "apexcharts": "3.35.3",
     "axios": "0.27.2",
     "dotenv": "16.0.1",
