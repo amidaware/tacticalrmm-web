@@ -48,7 +48,7 @@
               val="linux"
               label="Linux"
               @update:model-value="
-                installMethod = 'linux';
+                installMethod = 'bash';
                 goarch = GOARCH_AMD64;
               "
             />
@@ -299,7 +299,7 @@ export default {
           });
       } else if (
         this.installMethod === "powershell" ||
-        this.installMethod === "linux"
+        this.installMethod === "bash"
       ) {
         this.$q.loading.show();
         let ext = this.installMethod === "powershell" ? "ps1" : "sh";
@@ -343,7 +343,7 @@ export default {
         case "manual":
           text = "Show manual installation instructions";
           break;
-        case "linux":
+        case "bash":
           text = "Download linux install script";
           break;
       }

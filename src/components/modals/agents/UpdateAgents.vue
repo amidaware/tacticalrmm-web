@@ -8,11 +8,12 @@
       </q-btn>
     </q-bar>
     <q-separator />
-    <q-banner class="bg-warning">
+    <q-banner class="bg-info">
       <template v-slot:avatar>
         <q-icon name="info" />
       </template>
-      Agents will now automatically self update, this tool is no longer needed.
+      Agents will automatically self update at 35 min past the hour, every hour.
+      Use this tool to manually trigger an agent update cycle.
     </q-banner>
     <q-card-section>
       Select Version
