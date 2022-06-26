@@ -144,7 +144,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
 import axios from "axios";
-import { getBaseUrl } from "@/boot/axios";
+import { getWSUrl } from "@/websocket/channels";
 
 // ui imports
 import AlertsIcon from "@/components/AlertsIcon.vue";
@@ -184,10 +184,6 @@ export default {
       }).onOk(() => store.dispatch("getDashInfo"));
     }
 
-    function wsUrl() {
-      return getBaseUrl().split("://")[1];
-    }
-
     const serverCount = ref(0);
     const serverOfflineCount = ref(0);
     const workstationCount = ref(0);
@@ -200,13 +196,8 @@ export default {
       // when ws is closed causing ws to connect with expired token
       const token = computed(() => store.state.token);
       console.log("Starting websocket");
-      const proto =
-        process.env.NODE_ENV === "production" || process.env.DOCKER_BUILD
-          ? "wss"
-          : "ws";
-      ws.value = new WebSocket(
-        `${proto}://${wsUrl()}/ws/dashinfo/?access_token=${token.value}`
-      );
+      let url = getWSUrl("dashinfo", token.value);
+      ws.value = new WebSocket(url);
       ws.value.onopen = () => {
         console.log("Connected to ws");
       };
