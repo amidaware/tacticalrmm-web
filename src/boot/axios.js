@@ -31,6 +31,17 @@ export default function ({ app, router, store }) {
       return response;
     },
     async function (error) {
+      if (error.code && error.code === "ERR_NETWORK") {
+        Notify.create({
+          color: "negative",
+          message: "Backend is offline (network error)",
+          caption:
+            "Open your browser's dev tools and check the console tab for more detailed error messages",
+          timeout: 5000,
+        });
+        return Promise.reject({ ...error });
+      }
+
       let text;
 
       if (!error.response) {
