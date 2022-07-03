@@ -12,11 +12,15 @@
         color="positive"
         class="full-width"
         @click="doCodeSign"
+        :loading="loading"
       >
         <q-tooltip
           >Force all existing agents to be updated to the code-signed
           version</q-tooltip
         >
+        <template v-slot:loading>
+          <q-spinner-facebook />
+        </template>
       </q-btn>
     </q-card-section>
     <q-form @submit.prevent="editToken">
@@ -33,56 +37,92 @@
       </q-card-section>
       <q-card-section class="row items-center">
         <q-btn label="Save" color="primary" type="submit" />
+        <q-space />
+        <q-btn label="Delete" color="negative" @click="confirmDelete" />
       </q-card-section>
     </q-form>
   </q-card>
 </template>
 
 <script>
-import mixins from "@/mixins/mixins";
+import { ref, onMounted } from "vue";
+import { useQuasar } from "quasar";
+import axios from "axios";
+import { notifySuccess } from "@/utils/notify";
+
+const endpoint = "/core/codesign/";
+
 export default {
   name: "CodeSign",
-  mixins: [mixins],
-  data() {
-    return {
-      settings: {
-        token: "",
-      },
-    };
-  },
-  methods: {
-    getToken() {
-      this.$axios.get("/core/codesign/").then((r) => {
-        this.settings = r.data;
+  setup() {
+    const $q = useQuasar();
+    const settings = ref({ token: "" });
+    const loading = ref(false);
+
+    async function getToken() {
+      try {
+        const { data } = await axios.get(endpoint);
+        settings.value = data;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function deleteToken() {
+      try {
+        await axios.delete(endpoint);
+        notifySuccess("Token was deleted!");
+        await getToken();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function confirmDelete() {
+      $q.dialog({
+        title: "Delete token?",
+        cancel: true,
+        persistent: true,
+      }).onOk(() => {
+        deleteToken();
       });
-    },
-    editToken() {
-      this.$q.loading.show();
-      this.$axios
-        .patch("/core/codesign/", this.settings)
-        .then((r) => {
-          this.$q.loading.hide();
-          this.notifySuccess(r.data);
-        })
-        .catch(() => {
-          this.$q.loading.hide();
-        });
-    },
-    doCodeSign() {
-      this.$q.loading.show();
-      this.$axios
-        .post("/core/codesign/")
-        .then((r) => {
-          this.$q.loading.hide();
-          this.notifySuccess(r.data);
-        })
-        .catch(() => {
-          this.$q.loading.hide();
-        });
-    },
-  },
-  mounted() {
-    this.getToken();
+    }
+
+    async function doCodeSign() {
+      loading.value = true;
+      try {
+        const { data } = await axios.post(endpoint);
+        loading.value = false;
+        notifySuccess(data);
+      } catch (e) {
+        loading.value = false;
+        console.error(e);
+      }
+    }
+
+    async function editToken() {
+      $q.loading.show();
+      try {
+        const { data } = await axios.patch(endpoint, settings.value);
+        $q.loading.hide();
+        notifySuccess(data);
+      } catch (e) {
+        $q.loading.hide();
+        console.error(e);
+      }
+    }
+
+    onMounted(() => {
+      getToken();
+    });
+
+    return {
+      settings,
+      loading,
+      confirmDelete,
+      doCodeSign,
+      editToken,
+    };
   },
 };
 </script>
