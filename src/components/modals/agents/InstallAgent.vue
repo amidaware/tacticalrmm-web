@@ -249,10 +249,7 @@ export default {
         .toLowerCase()
         .replace(/([^a-zA-Z0-9]+)/g, "");
 
-      const fileName =
-        this.goarch === GOARCH_AMD64
-          ? `rmm-${clientStripped}-${siteStripped}-${this.agenttype}.exe`
-          : `rmm-${clientStripped}-${siteStripped}-${this.agenttype}-x86.exe`;
+      const fileName = `trmm-${clientStripped}-${siteStripped}-${this.agenttype}-${this.goarch}.exe`;
 
       const data = {
         installMethod: this.installMethod,
