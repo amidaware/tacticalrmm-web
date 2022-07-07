@@ -65,8 +65,6 @@ No permission is granted to use the trademark “Tactical RMM” or any other tr
 ### 11. Entire agreement
 This license contains the whole agreement relating to its subject matter.
 
-
-
 ### 12. Severance
 If any provision or part-provision of this license is or becomes invalid, illegal or unenforceable, it shall be deemed deleted, but that shall not affect the validity and enforceability of the rest of this license.
 
