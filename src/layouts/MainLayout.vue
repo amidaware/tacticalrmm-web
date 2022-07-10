@@ -35,12 +35,7 @@
           Tactical RMM<span class="text-overline q-ml-sm"
             >v{{ currentTRMMVersion }}</span
           >
-          <span
-            class="text-overline q-ml-md"
-            v-if="
-              latestTRMMVersion !== 'error' &&
-              currentTRMMVersion !== latestTRMMVersion
-            "
+          <span class="text-overline q-ml-md" v-if="updateAvailable()"
             ><q-badge color="warning"
               ><a :href="latestReleaseURL" target="_blank"
                 >v{{ latestTRMMVersion }} available</a
@@ -171,6 +166,7 @@ export default {
     const latestTRMMVersion = computed(() => store.state.latestTRMMVersion);
     const needRefresh = computed(() => store.state.needrefresh);
     const user = computed(() => store.state.username);
+    const hosted = computed(() => store.state.hosted);
 
     const latestReleaseURL = computed(() => {
       return latestTRMMVersion.value
@@ -233,6 +229,11 @@ export default {
       }, 60 * 5 * 1000);
     }
 
+    function updateAvailable() {
+      if (latestTRMMVersion.value === "error" || hosted.value) return false;
+      return currentTRMMVersion.value !== latestTRMMVersion.value;
+    }
+
     onMounted(() => {
       setupWS();
       store.dispatch("getDashInfo");
@@ -261,6 +262,7 @@ export default {
 
       // methods
       showUserPreferences,
+      updateAvailable,
     };
   },
 };
