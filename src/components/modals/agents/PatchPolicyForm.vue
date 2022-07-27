@@ -129,37 +129,37 @@
       <div class="q-gutter-sm">
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="1"
+          :val="0"
           label="Monday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="2"
+          :val="1"
           label="Tuesday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="3"
+          :val="2"
           label="Wednesday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="4"
+          :val="3"
           label="Thursday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="5"
+          :val="4"
           label="Friday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="6"
+          :val="5"
           label="Saturday"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
-          :val="0"
+          :val="6"
           label="Sunday"
         />
       </div>
