@@ -44,6 +44,7 @@ export default {
         timeout: props.script.default_timeout,
         args: props.script.args,
         shell: props.script.shell,
+        run_as_user: props.script.run_as_user,
       };
       try {
         ret.value = await testScript(props.agent, data);
