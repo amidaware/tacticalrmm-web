@@ -128,6 +128,11 @@
           />
           <q-checkbox v-model="state.save_all_output" label="Save all output" />
         </q-card-section>
+        <q-card-section v-if="agent.plat === 'windows'">
+          <q-checkbox v-model="state.run_as_user" label="Run As User">
+            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          </q-checkbox>
+        </q-card-section>
         <q-card-section>
           <q-input
             v-model.number="state.timeout"
@@ -173,6 +178,7 @@ import { useScriptDropdown } from "@/composables/scripts";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { runAsUserToolTip } from "@/constants/constants";
 import {
   formatScriptSyntax,
   removeExtraOptionCategories,
@@ -220,6 +226,7 @@ export default {
       script,
       args: defaultArgs,
       timeout: defaultTimeout,
+      run_as_user: false,
     });
 
     const ret = ref(null);
@@ -273,6 +280,7 @@ export default {
 
       // non-reactive data
       outputOptions,
+      runAsUserToolTip,
 
       //methods
       formatScriptSyntax,

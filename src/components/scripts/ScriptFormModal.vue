@@ -128,6 +128,18 @@
               :rules="[(val) => val >= 5 || 'Minimum is 5']"
               hide-bottom-space
             />
+            <q-checkbox
+              v-model="formScript.run_as_user"
+              label="Run As User (Windows only)"
+            >
+              <q-tooltip
+                >Setting this value on the script model will always override any
+                'Run As User' checkboxes in the UI and force this script to
+                always be run in the context of the logged in user. If no user
+                is logged in, the script will not run and an error will be
+                returned. Not supported on Windows Server.
+              </q-tooltip>
+            </q-checkbox>
             <q-input
               label="Syntax"
               type="textarea"
@@ -253,6 +265,7 @@ export default {
           default_timeout: 90,
           args: [],
           script_body: "",
+          run_as_user: false,
         });
 
     if (props.clone) script.value.name = `(Copy) ${script.value.name}`;

@@ -135,6 +135,11 @@
             :rules="[(val) => !!val || '*Required']"
           />
         </q-card-section>
+        <q-card-section v-if="supportsRunAsUser()" class="q-pt-none">
+          <q-checkbox v-model="state.run_as_user" label="Run As User">
+            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          </q-checkbox>
+        </q-card-section>
 
         <q-card-section v-if="mode === 'script' || mode === 'command'">
           <q-input
@@ -203,6 +208,7 @@ import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
 import { removeExtraOptionCategories } from "@/utils/format";
+import { runAsUserToolTip } from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -300,6 +306,7 @@ export default {
       script,
       timeout: defaultTimeout,
       args: defaultArgs,
+      run_as_user: false,
     });
     const loading = ref(false);
 
@@ -316,6 +323,7 @@ export default {
       () => state.value.osType,
       (newValue) => {
         state.value.custom_shell = null;
+        state.value.run_as_user = false;
 
         if (newValue === "windows") {
           state.value.shell = "cmd";
@@ -336,6 +344,13 @@ export default {
 
       loading.value = false;
     }
+
+    const supportsRunAsUser = () => {
+      const modes = ["script", "command"];
+      return (
+        state.value.osType === "windows" && modes.includes(state.value.mode)
+      );
+    };
 
     // set modal title and caption
     const modalTitle = computed(() => {
@@ -387,6 +402,7 @@ export default {
       osTypeOptions,
       targetOptions,
       patchModeOptions,
+      runAsUserToolTip,
 
       //computed
       modalTitle,
@@ -394,6 +410,7 @@ export default {
       //methods
       submit,
       cmdPlaceholder,
+      supportsRunAsUser,
 
       // quasar dialog plugin
       dialogRef,

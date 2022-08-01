@@ -51,6 +51,11 @@
             />
           </div>
         </q-card-section>
+        <q-card-section v-if="agent.plat === 'windows'">
+          <q-checkbox v-model="state.run_as_user" label="Run As User">
+            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          </q-checkbox>
+        </q-card-section>
         <q-card-section v-if="state.shell === 'custom'">
           <q-input
             v-model="state.custom_shell"
@@ -117,6 +122,7 @@ import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { sendAgentCommand } from "@/api/agents";
 import { cmdPlaceholder } from "@/composables/agents";
+import { runAsUserToolTip } from "@/constants/constants";
 
 export default {
   name: "SendCommand",
@@ -134,6 +140,7 @@ export default {
       cmd: null,
       timeout: 30,
       custom_shell: null,
+      run_as_user: false,
     });
 
     const loading = ref(false);
@@ -155,6 +162,9 @@ export default {
       state,
       loading,
       ret,
+
+      // non reactivete data
+      runAsUserToolTip,
 
       // methods
       submit,
