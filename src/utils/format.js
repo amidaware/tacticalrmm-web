@@ -285,7 +285,7 @@ export function formatDateInputField(isoDateString, noTimezone = false) {
   if (noTimezone) {
     isoDateString = isoDateString.replace("Z", "");
   }
-  return date.formatDate(isoDateString, "YYYY-MM-DDTHH:mm:ss");
+  return date.formatDate(isoDateString, "YYYY-MM-DDTHH:mm");
 }
 
 // converts a local date string "YYYY-MM-DDTHH:mm:ss" to an iso date string with the local timezone
