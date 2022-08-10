@@ -465,8 +465,11 @@ export default {
       });
     },
     editAgent() {
+      // TODO we need to fix the serializer to not send this stuff
       delete this.agent.all_timezones;
       delete this.agent.timezone;
+      delete this.agent.wmi_detail;
+      delete this.agent.services;
 
       // only send the timezone data if it has changed
       // this way django will keep the db column as null and inherit from the global setting
