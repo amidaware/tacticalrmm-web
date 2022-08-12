@@ -356,6 +356,27 @@ export default {
   },
   methods: {
     filterTable(rows, terms, cols, cellValue) {
+      const hiddenFields = [
+        "version",
+        "operating_system",
+        "public_ip",
+        "cpu_model",
+        "graphics",
+        "local_ips",
+        "make_model",
+        "physical_disks",
+      ];
+
+      // quasar filter only does visible columns so this is a hack to add hidden columns we want to filter
+      for (const elem of hiddenFields) {
+        if (!cols.find((o) => o.name === elem)) {
+          cols.push({
+            name: elem,
+            field: elem,
+          });
+        }
+      }
+
       const lowerTerms = terms ? terms.toLowerCase() : "";
       let advancedFilter = false;
       let availability = null;
