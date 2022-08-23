@@ -465,8 +465,51 @@ export default {
       });
     },
     editAgent() {
-      delete this.agent.all_timezones;
-      delete this.agent.timezone;
+      // TODO we need to fix the serializer to not send this stuff
+      const toRemove = [
+        "created_by",
+        "created_time",
+        "modified_by",
+        "modified_time",
+        "all_timezones",
+        "timezone",
+        "wmi_detail",
+        "services",
+        "status",
+        "cpu_model",
+        "local_ips",
+        "make_model",
+        "physical_disks",
+        "graphics",
+        "checks",
+        "patches_last_installed",
+        "last_seen",
+        "applied_policies",
+        "effective_patch_policy",
+        "version",
+        "operating_system",
+        "plat",
+        "goarch",
+        "hostname",
+        "public_ip",
+        "total_ram",
+        "disks",
+        "boot_time",
+        "logged_in_username",
+        "last_logged_in_user",
+        "needs_reboot",
+        "choco_installed",
+        "policy",
+        "mesh_node_id",
+        "block_policy_inheritance",
+        "maintenance_mode",
+        "alert_template",
+        "client",
+        "site_name",
+      ];
+      for (const elem of toRemove) {
+        delete this.agent[elem];
+      }
 
       // only send the timezone data if it has changed
       // this way django will keep the db column as null and inherit from the global setting
@@ -503,7 +546,7 @@ export default {
         else if (day === 0) result += "Sun, ";
       }
 
-      return result.trimRight(",");
+      return result.trimEnd(",");
     },
   },
   mounted() {

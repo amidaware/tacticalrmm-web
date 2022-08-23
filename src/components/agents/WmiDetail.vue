@@ -7,6 +7,17 @@
           <q-badge color="primary" class="q-ml-sm text-caption">{{
             v
           }}</q-badge>
+          <q-btn
+              v-if="!!v"
+              size="sm"
+              class="q-ml-xs"
+              flat
+              round
+              icon="content_copy"
+              @click="copyValueToClip(v)"
+            >
+              <q-tooltip>Copy to Clipboard</q-tooltip>
+            </q-btn>
         </div>
       </div>
       <q-separator v-if="info.length > 1" />
@@ -15,6 +26,8 @@
 </template>
 
 <script>
+import { copyToClipboard } from "quasar";
+import { notifySuccess } from "@/utils/notify";
 // composition imports
 import { computed } from "vue";
 import { useStore } from "vuex";
@@ -28,9 +41,17 @@ export default {
     const store = useStore();
     const tabHeight = computed(() => store.state.tabHeight);
 
+    function copyValueToClip(val) {
+      copyToClipboard(val)
+        .then(() => {
+          notifySuccess("Copied to clipboard");
+        })
+    }
+
     return {
       tabHeight,
       uid,
+      copyValueToClip,
     };
   },
 };
