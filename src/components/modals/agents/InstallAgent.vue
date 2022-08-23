@@ -52,6 +52,15 @@
                 goarch = GOARCH_AMD64;
               "
             />
+            <q-radio
+              v-model="agentOS"
+              val="mac"
+              label="Mac"
+              @update:model-value="
+                installMethod = 'mac';
+                goarch = GOARCH_AMD64;
+              "
+            />
           </div>
         </q-card-section>
         <q-card-section>
@@ -100,43 +109,22 @@
         </q-card-section>
         <q-card-section>
           Arch
-          <div class="q-gutter-sm">
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_AMD64"
-              label="64 bit"
-              v-show="agentOS === 'windows'"
-            />
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_i386"
-              label="32 bit"
-              v-show="agentOS === 'windows'"
-            />
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_AMD64"
-              label="64 bit"
-              v-show="agentOS !== 'windows'"
-            />
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_i386"
-              label="32 bit"
-              v-show="agentOS !== 'windows'"
-            />
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_ARM64"
-              label="ARM 64 bit"
-              v-show="agentOS !== 'windows'"
-            />
+          <div class="q-gutter-sm" v-show="agentOS === 'windows'">
+            <q-radio v-model="goarch" :val="GOARCH_AMD64" label="64 bit" />
+            <q-radio v-model="goarch" :val="GOARCH_i386" label="32 bit" />
+          </div>
+          <div class="q-gutter-sm" v-show="agentOS === 'linux'">
+            <q-radio v-model="goarch" :val="GOARCH_AMD64" label="64 bit" />
+            <q-radio v-model="goarch" :val="GOARCH_i386" label="32 bit" />
+            <q-radio v-model="goarch" :val="GOARCH_ARM64" label="ARM 64 bit" />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
               label="ARM 32 bit (Rasp Pi)"
-              v-show="agentOS !== 'windows'"
             />
+          </div>
+          <div class="q-gutter-sm" v-show="agentOS === 'mac'">
+            <q-radio v-model="goarch" :val="GOARCH_AMD64" label="64 bit" />
           </div>
         </q-card-section>
         <q-card-section>
@@ -296,7 +284,8 @@ export default {
           });
       } else if (
         this.installMethod === "powershell" ||
-        this.installMethod === "bash"
+        this.installMethod === "bash" ||
+        this.installMethod === "mac"
       ) {
         this.$q.loading.show();
         let ext = this.installMethod === "powershell" ? "ps1" : "sh";
@@ -342,6 +331,9 @@ export default {
           break;
         case "bash":
           text = "Download linux install script";
+          break;
+        case "mac":
+          text = "Download mac install script";
           break;
       }
 
