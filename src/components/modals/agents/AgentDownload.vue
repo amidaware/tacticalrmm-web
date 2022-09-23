@@ -37,7 +37,7 @@
           </q-badge>
           <span>Do not popup any message boxes during install</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code
               >-local-mesh "C:\\&lt;some folder or
@@ -46,7 +46,7 @@
           </q-badge>
           <span> To skip downloading the Mesh Agent during the install.</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code
               >-meshdir "C:\Program Files\Your Company Name\Mesh Agent"</code
@@ -63,7 +63,7 @@
           </q-badge>
           <span>Don't install the mesh agent</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code>-cert "C:\\&lt;some folder or path&gt;\\ca.pem"</code>
           </q-badge>

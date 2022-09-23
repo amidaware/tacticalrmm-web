@@ -223,6 +223,7 @@ const monTypeOptions = [
 const osTypeOptions = [
   { label: "Windows", value: "windows" },
   { label: "Linux", value: "linux" },
+  { label: "macOS", value: "darwin" },
   { label: "All", value: "all" },
 ];
 

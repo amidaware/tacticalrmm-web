@@ -196,6 +196,14 @@
             >
               <q-tooltip>Linux</q-tooltip>
             </q-icon>
+            <q-icon
+              v-else-if="props.row.plat === 'darwin'"
+              name="mdi-apple"
+              size="sm"
+              color="primary"
+            >
+              <q-tooltip>macOS</q-tooltip>
+            </q-icon>
           </q-td>
 
           <q-td key="checks-status" :props="props">

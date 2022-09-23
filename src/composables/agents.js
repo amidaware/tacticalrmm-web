@@ -37,4 +37,5 @@ export function cmdPlaceholder(shell) {
 export const agentPlatformOptions = [
   { value: "windows", label: "Windows" },
   { value: "linux", label: "Linux" },
+  { value: "darwin", label: "macOS" },
 ];
