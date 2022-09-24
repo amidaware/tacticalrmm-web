@@ -52,6 +52,15 @@
                 goarch = GOARCH_AMD64;
               "
             />
+            <q-radio
+              v-model="agentOS"
+              val="darwin"
+              label="macOS"
+              @update:model-value="
+                installMethod = 'mac';
+                goarch = GOARCH_AMD64;
+              "
+            />
           </div>
         </q-card-section>
         <q-card-section>
@@ -105,37 +114,37 @@
               v-model="goarch"
               :val="GOARCH_AMD64"
               label="64 bit"
-              v-show="agentOS === 'windows'"
-            />
-            <q-radio
-              v-model="goarch"
-              :val="GOARCH_i386"
-              label="32 bit"
-              v-show="agentOS === 'windows'"
+              v-show="agentOS === 'windows' || agentOS === 'linux'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
-              label="64 bit"
-              v-show="agentOS !== 'windows'"
+              label="Intel 64 bit"
+              v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_i386"
               label="32 bit"
-              v-show="agentOS !== 'windows'"
+              v-show="agentOS !== 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
               label="ARM 64 bit"
-              v-show="agentOS !== 'windows'"
+              v-show="agentOS === 'linux'"
+            />
+            <q-radio
+              v-model="goarch"
+              :val="GOARCH_ARM64"
+              label="Apple Silicon (M1, M2)"
+              v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
               label="ARM 32 bit (Rasp Pi)"
-              v-show="agentOS !== 'windows'"
+              v-show="agentOS === 'linux'"
             />
           </div>
         </q-card-section>
@@ -266,12 +275,13 @@ export default {
         plat: this.agentOS,
       };
 
-      if (this.installMethod === "manual") {
+      if (this.installMethod === "manual" || this.installMethod === "mac") {
         this.$axios.post("/agents/installer/", data).then((r) => {
           this.info = {
             expires: this.expires,
             data: r.data,
             goarch: this.goarch,
+            plat: this.agentOS,
           };
           this.showAgentDownload = true;
         });
@@ -342,6 +352,9 @@ export default {
           break;
         case "bash":
           text = "Download linux install script";
+          break;
+        case "mac":
+          text = "Show installation instructions";
           break;
       }
 

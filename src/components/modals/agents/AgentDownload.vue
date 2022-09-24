@@ -10,9 +10,12 @@
       </q-card-actions>
     </q-card-section>
     <q-card-section>
-      <p class="text-subtitle1">
+      <p v-if="info.plat === 'windows'" class="text-subtitle1">
         Download the agent then run the following command from an elevated
         command prompt on the device you want to add.
+      </p>
+      <p v-else-if="info.plat === 'darwin'" class="text-subtitle1">
+        Run the following command from a terminal
       </p>
       <p>
         <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">
@@ -37,7 +40,7 @@
           </q-badge>
           <span>Do not popup any message boxes during install</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code
               >-local-mesh "C:\\&lt;some folder or
@@ -46,7 +49,7 @@
           </q-badge>
           <span> To skip downloading the Mesh Agent during the install.</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code
               >-meshdir "C:\Program Files\Your Company Name\Mesh Agent"</code
@@ -63,7 +66,7 @@
           </q-badge>
           <span>Don't install the mesh agent</span>
         </div>
-        <div class="q-pa-xs q-gutter-xs">
+        <div v-if="info.plat === 'windows'" class="q-pa-xs q-gutter-xs">
           <q-badge class="text-caption q-mr-xs" color="grey" text-color="black">
             <code>-cert "C:\\&lt;some folder or path&gt;\\ca.pem"</code>
           </q-badge>
@@ -86,12 +89,12 @@
       <p class="text-italic">
         Note: the auth token above will be valid for {{ info.expires }} hours.
       </p>
-      <q-btn
+      <q-btn v-if="info.plat === 'windows'"
         type="a"
         :href="info.data.url"
         color="primary"
         label="Download Agent"
-      />
+      ></q-btn>
     </q-card-section>
   </q-card>
 </template>
