@@ -10,9 +10,12 @@
       </q-card-actions>
     </q-card-section>
     <q-card-section>
-      <p class="text-subtitle1">
+      <p v-if="info.plat === 'windows'" class="text-subtitle1">
         Download the agent then run the following command from an elevated
         command prompt on the device you want to add.
+      </p>
+      <p v-else-if="info.plat === 'darwin'" class="text-subtitle1">
+        Run the following command from a terminal
       </p>
       <p>
         <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">
@@ -86,12 +89,12 @@
       <p class="text-italic">
         Note: the auth token above will be valid for {{ info.expires }} hours.
       </p>
-      <q-btn
+      <q-btn v-if="info.plat === 'windows'"
         type="a"
         :href="info.data.url"
         color="primary"
         label="Download Agent"
-      />
+      ></q-btn>
     </q-card-section>
   </q-card>
 </template>
