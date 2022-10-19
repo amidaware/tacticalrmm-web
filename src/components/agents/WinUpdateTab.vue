@@ -310,9 +310,10 @@ export default {
     }
 
     function showUpdateDetails(update) {
+      const color = $q.dark.isActive ? "white" : "";
       let support_urls = "";
       update.more_info_urls.forEach((u) => {
-        support_urls += `<a href='${u}' target='_blank'>${u}</a><br/>`;
+        support_urls += `<a style='color: ${color}' href='${u}' target='_blank'>${u}</a><br/>`;
       });
       let cats = update.categories.join(", ");
       $q.dialog({

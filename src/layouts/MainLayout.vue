@@ -14,6 +14,22 @@
           @click="$store.dispatch('reload')"
         />
       </q-banner>
+      <q-banner
+        v-if="!hosted && tokenExpired"
+        inline-actions
+        class="bg-yellow text-black text-center"
+      >
+      <q-icon size="xl" name="warning" />
+        <span><br />Your code signing token is no longer valid.<br/><br/>
+        If you have downgraded or cancelled your sponsorship, please delete your token from the Code Signing modal and refresh to get rid of this banner.<br/><br/>
+        For any issues or to renew your sponsorship please email support@amidaware.com<br/><br/></span>
+        <q-btn
+          color="dark"
+          icon="refresh"
+          label="Refresh"
+          @click="$store.dispatch('reload')"
+        />
+      </q-banner>
       <q-toolbar>
         <q-btn
           dense
@@ -167,6 +183,7 @@ export default {
     const needRefresh = computed(() => store.state.needrefresh);
     const user = computed(() => store.state.username);
     const hosted = computed(() => store.state.hosted);
+    const tokenExpired = computed(() => store.state.tokenExpired);
 
     const latestReleaseURL = computed(() => {
       return latestTRMMVersion.value
@@ -259,6 +276,8 @@ export default {
       user,
       needRefresh,
       darkMode,
+      hosted,
+      tokenExpired,
 
       // methods
       showUserPreferences,
