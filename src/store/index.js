@@ -17,6 +17,7 @@ export default function () {
         agentPlatform: "windows",
         agentTableLoading: false,
         needrefresh: false,
+        tokenExpired: false,
         refreshSummaryTab: false,
         tableHeight: "300px",
         tabHeight: "300px",
@@ -82,6 +83,9 @@ export default function () {
       },
       SET_REFRESH_NEEDED(state, action) {
         state.needrefresh = action;
+      },
+      SET_TOKEN_EXPIRED(state, action) {
+        state.tokenExpired = action;
       },
       SET_SPLITTER(state, val) {
         // top toolbar is 50px. Filebar is 40px and agent filter tabs are 44px
@@ -212,6 +216,7 @@ export default function () {
         context.commit("SET_URL_ACTION", data.url_action);
         context.commit("setShowCommunityScripts", data.show_community_scripts);
         context.commit("SET_HOSTED", data.hosted);
+        context.commit("SET_TOKEN_EXPIRED", data.token_is_expired);
 
         if (data.date_format && data.date_format !== "")
           context.commit("setDateFormat", data.date_format);
