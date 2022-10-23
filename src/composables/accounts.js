@@ -31,7 +31,7 @@ export function useUserDropdown(onMount = false) {
   }
 
   if (onMount) {
-    onMounted(getUserOptions());
+    onMounted(getUserOptions);
   }
 
   return {
