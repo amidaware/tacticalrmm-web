@@ -208,7 +208,7 @@ export default {
     }
 
     // component lifecycle hooks
-    onMounted(getAPIKeys());
+    onMounted(getAPIKeys);
     return {
       // reactive data
       keys,

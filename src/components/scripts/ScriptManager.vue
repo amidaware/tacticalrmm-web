@@ -867,7 +867,7 @@ export default {
     }
 
     // component life cycle hooks
-    onMounted(getScripts());
+    onMounted(getScripts);
 
     return {
       // reactive data
