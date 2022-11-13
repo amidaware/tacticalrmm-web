@@ -169,6 +169,18 @@
               v-show="agentOS === 'windows'"
               label="Manual"
             />
+            <q-radio
+              v-model="installMethod"
+              val="bash"
+              v-show="agentOS === 'linux'"
+              label="Download Script"
+            />
+            <q-radio
+              v-model="installMethod"
+              val="bash-manual"
+              v-show="agentOS === 'linux'"
+              label="Manual"
+            />
           </div>
         </q-card-section>
         <q-card-actions align="left">
@@ -275,7 +287,7 @@ export default {
         plat: this.agentOS,
       };
 
-      if (this.installMethod === "manual" || this.installMethod === "mac") {
+      if (this.installMethod === "manual" || this.installMethod === "mac" || this.installMethod === "bash-manual") {
         this.$axios.post("/agents/installer/", data).then((r) => {
           this.info = {
             expires: this.expires,
@@ -353,6 +365,7 @@ export default {
         case "bash":
           text = "Download linux install script";
           break;
+        case "bash-manual":
         case "mac":
           text = "Show installation instructions";
           break;
