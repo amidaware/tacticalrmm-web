@@ -8,6 +8,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
   const scriptOptions = ref([]);
   const defaultTimeout = ref(30);
   const defaultArgs = ref([]);
+  const defaultEnvVars = ref([]);
   const script = ref(setScript);
   const syntax = ref("");
   const link = ref("");
@@ -29,6 +30,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
       );
       defaultTimeout.value = tmpScript.timeout;
       defaultArgs.value = tmpScript.args;
+      defaultEnvVars.value = tmpScript.env_vars,
       syntax.value = tmpScript.syntax;
       link.value =
         tmpScript.script_type === "builtin"
@@ -49,6 +51,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
     scriptOptions,
     defaultTimeout,
     defaultArgs,
+    defaultEnvVars,
     syntax,
     link,
 

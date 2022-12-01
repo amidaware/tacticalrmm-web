@@ -204,6 +204,20 @@
                 new-value-mode="add"
               />
 
+              <q-select
+                class="q-mb-sm"
+                dense
+                label="Failure action environment vars (press Enter after typing each key=value pair)"
+                filled
+                v-model="template.action_env_vars"
+                use-input
+                use-chips
+                multiple
+                hide-dropdown-icon
+                input-debounce="0"
+                new-value-mode="add"
+              />
+
               <q-input
                 class="q-mb-sm"
                 label="Failure action timeout (seconds)"
@@ -269,6 +283,20 @@
                 label="Resolved action arguments (press Enter after typing each argument)"
                 filled
                 v-model="template.resolved_action_args"
+                use-input
+                use-chips
+                multiple
+                hide-dropdown-icon
+                input-debounce="0"
+                new-value-mode="add"
+              />
+
+              <q-select
+                class="q-mb-sm"
+                dense
+                label="Resolved action environment vars (press Enter after typing each key=value pair)"
+                filled
+                v-model="template.resolved_action_env_vars"
                 use-input
                 use-chips
                 multiple
@@ -696,9 +724,11 @@ export default {
         is_active: true,
         action: null,
         action_args: [],
+        action_env_vars: [],
         action_timeout: 15,
         resolved_action: null,
         resolved_action_args: [],
+        resolved_action_env_vars: [],
         resolved_action_timeout: 15,
         email_recipients: [],
         email_from: "",
@@ -762,11 +792,13 @@ export default {
           (i) => i.value === this.template.action
         );
         this.template.action_args = script.args;
+        this.template.action_env_vars = script.env_vars;
       } else if (type === "resolved") {
         const script = this.scriptOptions.find(
           (i) => i.value === this.template.resolved_action
         );
         this.template.resolved_action_args = script.args;
+        this.template.resolved_action_env_vars = script.env_vars;
       }
     },
     toggleAddEmail() {

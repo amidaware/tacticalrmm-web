@@ -78,6 +78,18 @@
           />
         </q-card-section>
         <q-card-section>
+          <tactical-dropdown
+            v-model="state.env_vars"
+            :label="envVarsLabel"
+            filled
+            use-input
+            multiple
+            hide-dropdown-icon
+            input-debounce="0"
+            new-value-mode="add"
+          />
+        </q-card-section>
+        <q-card-section>
           <q-option-group
             v-model="state.output"
             :options="outputOptions"
@@ -178,7 +190,7 @@ import { useScriptDropdown } from "@/composables/scripts";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
-import { runAsUserToolTip } from "@/constants/constants";
+import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 import {
   formatScriptSyntax,
   removeExtraOptionCategories,
@@ -209,7 +221,7 @@ export default {
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
     // setup dropdowns
-    const { script, scriptOptions, defaultTimeout, defaultArgs, syntax, link } =
+    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars, syntax, link } =
       useScriptDropdown(props.script, {
         onMount: true,
         filterByPlatform: props.agent.plat,
@@ -225,6 +237,7 @@ export default {
       save_all_output: false,
       script,
       args: defaultArgs,
+      env_vars: defaultEnvVars,
       timeout: defaultTimeout,
       run_as_user: false,
     });
@@ -281,6 +294,7 @@ export default {
       // non-reactive data
       outputOptions,
       runAsUserToolTip,
+      envVarsLabel,
 
       //methods
       formatScriptSyntax,

@@ -45,6 +45,7 @@ export default {
         args: props.script.args,
         shell: props.script.shell,
         run_as_user: props.script.run_as_user,
+        env_vars: props.script.env_vars,
       };
       try {
         ret.value = await testScript(props.agent, data);

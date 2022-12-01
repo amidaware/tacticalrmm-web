@@ -94,6 +94,20 @@
         </q-card-section>
 
         <q-card-section>
+          <tactical-dropdown
+            v-model="script.env_vars"
+            label="Environment Variables"
+            placeholder="(press Enter after typing each key=value pair)"
+            filled
+            use-input
+            multiple
+            hide-dropdown-icon
+            input-debounce="0"
+            new-value-mode="add"
+          />
+        </q-card-section>
+
+        <q-card-section>
           <q-input
             label="Default Timeout"
             type="number"

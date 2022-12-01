@@ -102,7 +102,7 @@
 
               <tactical-dropdown
                 v-if="actionType === 'script'"
-                class="col-4"
+                class="col-3"
                 label="Select script"
                 v-model="script"
                 :options="scriptOptions"
@@ -113,11 +113,26 @@
 
               <q-select
                 v-if="actionType === 'script'"
-                class="col-5"
+                class="col-3"
                 dense
                 label="Script Arguments (press Enter after typing each argument)"
                 filled
                 v-model="defaultArgs"
+                use-input
+                use-chips
+                multiple
+                hide-dropdown-icon
+                input-debounce="0"
+                new-value-mode="add"
+              />
+
+              <q-select
+                v-if="actionType === 'script'"
+                class="col-3"
+                dense
+                :label="envVarsLabel"
+                filled
+                v-model="defaultEnvVars"
                 use-input
                 use-chips
                 multiple
@@ -209,6 +224,9 @@
                     </q-item-label>
                     <q-item-label caption>
                       Arguments: {{ element.script_args }}
+                    </q-item-label>
+                    <q-item-label caption>
+                      Env Vars: {{ element.env_vars }}
                     </q-item-label>
                     <q-item-label caption>
                       Timeout: {{ element.timeout }}
@@ -727,6 +745,7 @@ import { useCheckDropdown } from "@/composables/checks";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import { validateTimePeriod } from "@/utils/validation";
+import { envVarsLabel } from "@/constants/constants";
 import {
   convertPeriodToSeconds,
   convertToBitArray,
@@ -817,7 +836,7 @@ export default {
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup dropdowns
-    const { script, scriptOptions, defaultTimeout, defaultArgs } =
+    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars } =
       useScriptDropdown(undefined, {
         onMount: true,
       });
@@ -914,6 +933,7 @@ export default {
           script: script.value,
           timeout: defaultTimeout.value,
           script_args: defaultArgs.value,
+          env_vars: defaultEnvVars.value,
         });
       } else if (actionType.value === "cmd") {
         task.value.actions.push({
@@ -927,6 +947,7 @@ export default {
       // clear fields after add
       script.value = null;
       defaultArgs.value = [];
+      defaultEnvVars.value = [];
       defaultTimeout.value = 30;
       command.value = "";
     }
@@ -1089,6 +1110,7 @@ export default {
       script,
       defaultTimeout,
       defaultArgs,
+      defaultEnvVars,
       actionType,
       command,
       shell,
@@ -1116,6 +1138,7 @@ export default {
       monthOptions,
       taskTypeOptions,
       taskInstancePolicyOptions,
+      envVarsLabel,
 
       // methods
       submit,

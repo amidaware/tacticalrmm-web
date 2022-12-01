@@ -118,6 +118,17 @@
               new-value-mode="add"
               :readonly="readonly"
             />
+            <tactical-dropdown
+              v-model="formScript.env_vars"
+              :label="envVarsLabel"
+              filled
+              use-input
+              multiple
+              hide-dropdown-icon
+              input-debounce="0"
+              new-value-mode="add"
+              :readonly="readonly"
+            />
             <q-input
               type="number"
               filled
@@ -137,7 +148,7 @@
                 'Run As User' checkboxes in the UI and force this script to
                 always be run in the context of the logged in user. If no user
                 is logged in, the script will not run and an error will be
-                returned. Not supported on Windows Server.
+                returned.
               </q-tooltip>
             </q-checkbox>
             <q-input
@@ -229,6 +240,7 @@ import "ace-builds/src-noconflict/theme-tomorrow";
 
 // static data
 import { shellOptions } from "@/composables/scripts";
+import { envVarsLabel } from "@/constants/constants";
 
 export default {
   name: "ScriptFormModal",
@@ -266,6 +278,7 @@ export default {
           args: [],
           script_body: "",
           run_as_user: false,
+          env_vars: [],
         });
 
     if (props.clone) script.value.name = `(Copy) ${script.value.name}`;
@@ -363,6 +376,7 @@ export default {
       // non-reactive data
       shellOptions,
       agentPlatformOptions,
+      envVarsLabel,
 
       //computed
       title,
