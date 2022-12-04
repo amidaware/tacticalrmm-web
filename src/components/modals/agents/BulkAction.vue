@@ -102,6 +102,18 @@
             new-value-mode="add"
           />
         </q-card-section>
+        <q-card-section v-if="mode === 'script'" class="q-pt-none">
+          <tactical-dropdown
+            v-model="state.env_vars"
+            :label="envVarsLabel"
+            filled
+            use-input
+            multiple
+            hide-dropdown-icon
+            input-debounce="0"
+            new-value-mode="add"
+          />
+        </q-card-section>
 
         <q-card-section v-if="mode === 'command'">
           <p>Shell</p>
@@ -208,7 +220,7 @@ import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
 import { removeExtraOptionCategories } from "@/utils/format";
-import { runAsUserToolTip } from "@/constants/constants";
+import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -284,6 +296,7 @@ export default {
       scriptOptions,
       defaultTimeout,
       defaultArgs,
+      defaultEnvVars,
       getScriptOptions,
     } = useScriptDropdown();
     const { agents, agentOptions, getAgentOptions } = useAgentDropdown();
@@ -307,6 +320,7 @@ export default {
       script,
       timeout: defaultTimeout,
       args: defaultArgs,
+      env_vars: defaultEnvVars,
       run_as_user: false,
     });
     const loading = ref(false);
@@ -404,6 +418,7 @@ export default {
       targetOptions,
       patchModeOptions,
       runAsUserToolTip,
+      envVarsLabel,
 
       //computed
       modalTitle,

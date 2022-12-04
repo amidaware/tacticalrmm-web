@@ -193,6 +193,7 @@ export default {
               value: script.id,
               timeout: script.default_timeout,
               args: script.args,
+              env_vars: script.env_vars,
             });
           } else if (cat === "Unassigned" && !script.category) {
             tmp.push({
@@ -200,6 +201,7 @@ export default {
               value: script.id,
               timeout: script.default_timeout,
               args: script.args,
+              env_vars: script.env_vars,
             });
           }
         });

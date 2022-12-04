@@ -40,6 +40,19 @@
           />
         </q-card-section>
         <q-card-section>
+          <q-select
+            dense
+            :label="envVarsLabel"
+            filled
+            v-model="state.env_vars"
+            use-input
+            use-chips
+            multiple
+            hide-dropdown-icon
+            new-value-mode="add"
+          />
+        </q-card-section>
+        <q-card-section>
           <tactical-dropdown
             label="Informational return codes (press Enter after typing each code)"
             filled
@@ -115,6 +128,7 @@ import { useDialogPluginComponent } from "quasar";
 import { useCheckModal } from "@/composables/checks";
 import { useScriptDropdown } from "@/composables/scripts";
 import { validateRetcode } from "@/utils/validation";
+import { envVarsLabel } from "@/constants/constants"
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -132,7 +146,7 @@ export default {
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup script dropdown
-    const { script, scriptOptions, defaultTimeout, defaultArgs } =
+    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars } =
       useScriptDropdown(props.check ? props.check.script : undefined, {
         onMount: true,
       });
@@ -145,6 +159,7 @@ export default {
           ...props.parent,
           script,
           script_args: defaultArgs,
+          env_vars: defaultEnvVars,
           timeout: defaultTimeout,
           check_type: "script",
           fails_b4_alert: 1,
@@ -163,6 +178,7 @@ export default {
       failOptions,
       scriptOptions,
       severityOptions,
+      envVarsLabel,
 
       // methods
       submit,
