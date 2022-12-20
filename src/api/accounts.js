@@ -12,6 +12,25 @@ export async function fetchUsers(params = {}) {
   }
 }
 
+export async function resetPass(pass) {
+  const payload = { password: pass };
+  try {
+    const { data } = await axios.put(`${baseUrl}/resetpw/`, payload);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function resetTwoFactor() {
+  try {
+    const { data } = await axios.put(`${baseUrl}/reset2fa/`);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 // role api function
 export async function fetchRoles(params = {}) {
   try {
