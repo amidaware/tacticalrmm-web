@@ -122,7 +122,7 @@ export default {
 
       try {
         const result = props.APIKey
-          ? await editAPIKey(data)
+          ? await editAPIKey(data.id, data)
           : await saveAPIKey(data);
         onDialogOK();
         notifySuccess(result);

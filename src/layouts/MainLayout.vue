@@ -19,10 +19,15 @@
         inline-actions
         class="bg-yellow text-black text-center"
       >
-      <q-icon size="xl" name="warning" />
-        <span><br />Your code signing token is no longer valid.<br/><br/>
-        If you have downgraded or cancelled your sponsorship, please delete your token from the Code Signing modal and refresh to get rid of this banner.<br/><br/>
-        For any issues or to renew your sponsorship please email support@amidaware.com<br/><br/></span>
+        <q-icon size="xl" name="warning" />
+        <span
+          ><br />Your code signing token is no longer valid.<br /><br />
+          If you have downgraded or cancelled your sponsorship, please delete
+          your token from the Code Signing modal and refresh to get rid of this
+          banner.<br /><br />
+          For any issues or to renew your sponsorship please email
+          support@amidaware.com<br /><br
+        /></span>
         <q-btn
           color="dark"
           icon="refresh"
@@ -135,6 +140,32 @@
                 <q-item-label>Preferences</q-item-label>
               </q-item-section>
             </q-item>
+            <q-item clickable>
+              <q-item-section>Account</q-item-section>
+              <q-item-section side>
+                <q-icon name="keyboard_arrow_right" />
+              </q-item-section>
+
+              <q-menu anchor="top end" self="top start">
+                <q-list>
+                  <q-item
+                    clickable
+                    v-ripple
+                    @click="resetPassword"
+                    v-close-popup
+                  >
+                    <q-item-section>
+                      <q-item-label>Reset Password</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-ripple @click="reset2FA" v-close-popup>
+                    <q-item-section>
+                      <q-item-label>Reset 2FA</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-item>
             <q-item to="/expired" exact>
               <q-item-section>
                 <q-item-label>Logout</q-item-label>
@@ -156,10 +187,13 @@ import { useQuasar } from "quasar";
 import { useStore } from "vuex";
 import axios from "axios";
 import { getWSUrl } from "@/websocket/channels";
+import { resetTwoFactor } from "@/api/accounts";
+import { notifySuccess } from "@/utils/notify";
 
 // ui imports
 import AlertsIcon from "@/components/AlertsIcon.vue";
 import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
+import ResetPass from "@/components/accounts/ResetPass.vue";
 
 export default {
   name: "MainLayout",
@@ -195,6 +229,26 @@ export default {
       $q.dialog({
         component: UserPreferences,
       }).onOk(() => store.dispatch("getDashInfo"));
+    }
+
+    function resetPassword() {
+      $q.dialog({
+        component: ResetPass,
+      });
+    }
+
+    function reset2FA() {
+      $q.dialog({
+        title: "Reset 2FA",
+        message: "Are you sure you would like to reset your 2FA token?",
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        try {
+          const ret = await resetTwoFactor();
+          notifySuccess(ret, 3000);
+        } catch {}
+      });
     }
 
     const serverCount = ref(0);
@@ -281,6 +335,8 @@ export default {
 
       // methods
       showUserPreferences,
+      resetPassword,
+      reset2FA,
       updateAvailable,
     };
   },
