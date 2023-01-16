@@ -128,7 +128,7 @@ import { useDialogPluginComponent } from "quasar";
 import { useCheckModal } from "@/composables/checks";
 import { useScriptDropdown } from "@/composables/scripts";
 import { validateRetcode } from "@/utils/validation";
-import { envVarsLabel } from "@/constants/constants"
+import { envVarsLabel } from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -146,10 +146,15 @@ export default {
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup script dropdown
-    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars } =
-      useScriptDropdown(props.check ? props.check.script : undefined, {
-        onMount: true,
-      });
+    const {
+      script,
+      scriptOptions,
+      defaultTimeout,
+      defaultArgs,
+      defaultEnvVars,
+    } = useScriptDropdown(props.check ? props.check.script : undefined, {
+      onMount: true,
+    });
 
     // check logic
     const { state, loading, submit, failOptions, severityOptions } =

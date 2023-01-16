@@ -836,10 +836,15 @@ export default {
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup dropdowns
-    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars } =
-      useScriptDropdown(undefined, {
-        onMount: true,
-      });
+    const {
+      script,
+      scriptOptions,
+      defaultTimeout,
+      defaultArgs,
+      defaultEnvVars,
+    } = useScriptDropdown(undefined, {
+      onMount: true,
+    });
 
     // set defaultTimeout to 30
     defaultTimeout.value = 30;

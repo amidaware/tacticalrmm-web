@@ -8,16 +8,16 @@
             v
           }}</q-badge>
           <q-btn
-              v-if="!!v"
-              size="sm"
-              class="q-ml-xs"
-              flat
-              round
-              icon="content_copy"
-              @click="copyValueToClip(v)"
-            >
-              <q-tooltip>Copy to Clipboard</q-tooltip>
-            </q-btn>
+            v-if="!!v"
+            size="sm"
+            class="q-ml-xs"
+            flat
+            round
+            icon="content_copy"
+            @click="copyValueToClip(v)"
+          >
+            <q-tooltip>Copy to Clipboard</q-tooltip>
+          </q-btn>
         </div>
       </div>
       <q-separator v-if="info.length > 1" />
@@ -42,10 +42,9 @@ export default {
     const tabHeight = computed(() => store.state.tabHeight);
 
     function copyValueToClip(val) {
-      copyToClipboard(val)
-        .then(() => {
-          notifySuccess("Copied to clipboard");
-        })
+      copyToClipboard(val).then(() => {
+        notifySuccess("Copied to clipboard");
+      });
     }
 
     return {
