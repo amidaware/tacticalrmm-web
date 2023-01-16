@@ -30,7 +30,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
       );
       defaultTimeout.value = tmpScript.timeout;
       defaultArgs.value = tmpScript.args;
-      defaultEnvVars.value = tmpScript.env_vars,
+      defaultEnvVars.value = tmpScript.env_vars;
       syntax.value = tmpScript.syntax;
       link.value =
         tmpScript.script_type === "builtin"
