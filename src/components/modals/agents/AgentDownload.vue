@@ -89,7 +89,8 @@
       <p class="text-italic">
         Note: the auth token above will be valid for {{ info.expires }} hours.
       </p>
-      <q-btn v-if="info.plat === 'windows'"
+      <q-btn
+        v-if="info.plat === 'windows'"
         type="a"
         :href="info.data.url"
         color="primary"

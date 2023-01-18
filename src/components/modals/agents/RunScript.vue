@@ -221,11 +221,18 @@ export default {
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
     // setup dropdowns
-    const { script, scriptOptions, defaultTimeout, defaultArgs, defaultEnvVars, syntax, link } =
-      useScriptDropdown(props.script, {
-        onMount: true,
-        filterByPlatform: props.agent.plat,
-      });
+    const {
+      script,
+      scriptOptions,
+      defaultTimeout,
+      defaultArgs,
+      defaultEnvVars,
+      syntax,
+      link,
+    } = useScriptDropdown(props.script, {
+      onMount: true,
+      filterByPlatform: props.agent.plat,
+    });
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
     // main run script functionaity
