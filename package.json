@@ -10,13 +10,13 @@
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
-    "@quasar/extras": "1.15.9",
-    "apexcharts": "3.36.3",
-    "axios": "0.27.2",
+    "@quasar/extras": "1.15.11",
+    "apexcharts": "3.37.1",
+    "axios": "1.3.4",
     "dotenv": "16.0.3",
     "qrcode.vue": "3.3.3",
-    "quasar": "2.11.5",
-    "vue": "3.2.45",
+    "quasar": "2.11.7",
+    "vue": "3.2.47",
     "vue3-ace-editor": "2.2.2",
     "vue3-apexcharts": "1.4.1",
     "vuedraggable": "4.1.0",
@@ -24,17 +24,17 @@
     "vuex": "4.1.0"
   },
   "devDependencies": {
-    "@quasar/cli": "^1.4.0",
-    "@intlify/vite-plugin-vue-i18n": "^6.0.3",
-    "@quasar/app-vite": "^1.2.0",
-    "@types/node": "^18.11.18",
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
-    "@typescript-eslint/parser": "^5.48.2",
+    "@quasar/cli": "^2.0.0",
+    "@intlify/unplugin-vue-i18n": "^0.8.2",
+    "@quasar/app-vite": "^1.2.1",
+    "@types/node": "^18.14.6",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "autoprefixer": "10.4.13",
-    "eslint": "8.32.0",
+    "eslint": "8.35.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-vue": "8.7.1",
-    "prettier": "2.8.3",
-    "typescript": "4.9.4"
+    "prettier": "2.8.4",
+    "typescript": "4.9.5"
   }
 }
