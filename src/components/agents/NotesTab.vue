@@ -166,7 +166,7 @@ export default {
           type: "textarea",
           isValid: (val) => !!val,
         },
-        style: "width: 30vw; max-width: 50vw;",
+        style: "width: 90vw; max-width: 90vw",
         ok: { label: "Add" },
         cancel: true,
       }).onOk(async () => {
@@ -193,7 +193,7 @@ export default {
           type: "textarea",
           isValid: (val) => !!val,
         },
-        style: "width: 30vw; max-width: 50vw;",
+        style: "width: 90vw; max-width: 90vw",
         ok: { label: "Save" },
         cancel: true,
       }).onOk(async (data) => {
