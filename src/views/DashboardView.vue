@@ -173,6 +173,18 @@
                         </q-menu>
                       </q-item>
 
+                      <!-- Bulk Run Checks -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="runChecks(props.node)"
+                      >
+                        <q-item-section side>
+                          <q-icon name="fas fa-check-double" />
+                        </q-item-section>
+                        <q-item-section>Run Checks</q-item-section>
+                      </q-item>
+
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
@@ -689,6 +701,17 @@ export default {
           },
         })
         .onOk(() => this.$store.dispatch("refreshDashboard"));
+    },
+    runChecks(node) {
+      const target = node.children ? "client" : "site";
+      this.$axios
+        .post(`/checks/${target}/${node.id}/csbulkrun/`)
+        .then((r) => {
+          this.notifySuccess(r.data);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     },
     showToggleMaintenance(node) {
       let data = {
