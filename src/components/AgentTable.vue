@@ -374,16 +374,10 @@ export default {
         "make_model",
         "physical_disks",
       ];
-
       // quasar filter only does visible columns so this is a hack to add hidden columns we want to filter
-      for (const elem of hiddenFields) {
-        if (!cols.find((o) => o.name === elem)) {
-          cols.push({
-            name: elem,
-            field: elem,
-          });
-        }
-      }
+      // originally I was modifying cols directly but this led to phantom colum so doing it this way now
+      // https://github.com/amidaware/tacticalrmm/issues/1264
+      const allColumns = [...cols, ...hiddenFields.map((field) => ({ field }))];
 
       const lowerTerms = terms ? terms.toLowerCase() : "";
       let advancedFilter = false;
@@ -437,7 +431,7 @@ export default {
         }
 
         // Normal text filter
-        return cols.some((col) => {
+        return allColumns.some((col) => {
           const val = cellValue(col, row) + "";
           const haystack =
             val === "undefined" || val === "null" ? "" : val.toLowerCase();
