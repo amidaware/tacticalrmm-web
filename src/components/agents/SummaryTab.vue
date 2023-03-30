@@ -158,6 +158,20 @@
           >
         </div>
         <div v-else>No checks</div>
+
+
+        <p class="text-subtitle2 text-bold q-mt-xl">Custom Fields</p>
+        <q-list dense>
+
+          <q-item v-for="(field, i) in customFields" :key="field + i">
+            <q-item-section avatar>
+              <q-icon name="fas fa-user"/>
+            </q-item-section>
+            <q-item-section>{{ field.name }}: {{ field.value }}</q-item-section>
+          </q-item>
+
+
+        </q-list>
       </div>
       <div class="col-1"></div>
       <!-- right -->
@@ -193,6 +207,7 @@ import {
   openAgentWindow,
 } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { fetchCustomFields } from "@/api/core";
 
 // ui imports
 import AgentActionMenu from "@/components/agents/AgentActionMenu.vue";
@@ -210,6 +225,7 @@ export default {
 
     // summary tab logic
     const summary = ref(null);
+    const customFieldsDefinitions = ref(null);
     const loading = ref(false);
 
     function diskBarColor(percent) {
@@ -236,8 +252,30 @@ export default {
       return ret;
     });
 
+    const customFields = computed(() => {
+      if (!summary.value.custom_fields) {
+        return [];
+      }
+      if (!customFieldsDefinitions.value) {
+        return [];
+      }
+      const ret = [];
+      for (const customField of summary.value.custom_fields) {
+        const definition = customFieldsDefinitions.value.find((def) => def.id === customField.field)
+        if (definition) {
+          ret.push({
+            name: definition.name,
+            value: customField.value,
+          })
+        }
+      }
+
+      return ret;
+    });
+
     async function getSummary() {
       loading.value = true;
+      customFieldsDefinitions.value = await fetchCustomFields();
       summary.value = await fetchAgent(selectedAgent.value);
       store.commit("setRefreshSummaryTab", false);
       store.commit("setAgentPlatform", summary.value.plat);
@@ -277,6 +315,7 @@ export default {
     return {
       // reactive data
       summary,
+      customFields,
       loading,
       selectedAgent,
       disks,
