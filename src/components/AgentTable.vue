@@ -373,6 +373,7 @@ export default {
         "local_ips",
         "make_model",
         "physical_disks",
+        "custom_fields"
       ];
       // quasar filter only does visible columns so this is a hack to add hidden columns we want to filter
       // originally I was modifying cols directly but this led to phantom colum so doing it this way now
@@ -432,7 +433,11 @@ export default {
 
         // Normal text filter
         return allColumns.some((col) => {
-          const val = cellValue(col, row) + "";
+          let valObj = cellValue(col, row);
+          if (Array.isArray(valObj)) {
+            valObj = valObj.map((item) => item.value ? item.value : item);
+          }
+          const val = valObj + "";
           const haystack =
             val === "undefined" || val === "null" ? "" : val.toLowerCase();
           return haystack.indexOf(search) !== -1;
