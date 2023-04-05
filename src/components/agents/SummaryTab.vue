@@ -160,7 +160,7 @@
         <div v-else>No checks</div>
 
 
-        <span class="text-subtitle2 text-bold block q-mt-xl">Custom Fields</span>
+        <span v-if="customFields.length > 0" class="text-subtitle2 text-bold block q-mt-xl">Custom Fields</span>
         <q-list dense>
 
           <q-item v-for="(field, i) in customFields" :key="field + i">
@@ -262,7 +262,7 @@ export default {
       const ret = [];
       for (const customField of summary.value.custom_fields) {
         const definition = customFieldsDefinitions.value.find((def) => def.id === customField.field)
-        if (definition && !definition.hide_in_ui) {
+        if (definition && !definition.hide_in_ui && customField.value?.length > 0) {
           ret.push({
             name: definition.name,
             value: customField.value,
