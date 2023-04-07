@@ -159,18 +159,18 @@
         </div>
         <div v-else>No checks</div>
 
-
-        <span v-if="customFields.length > 0" class="text-subtitle2 text-bold block q-mt-xl">Custom Fields</span>
+        <span
+          v-if="customFields.length > 0"
+          class="text-subtitle2 text-bold block q-mt-xl"
+          >Custom Fields</span
+        >
         <q-list dense>
-
           <q-item v-for="(field, i) in customFields" :key="field + i">
-            <q-item-section avatar>
-              <q-icon name="fas fa-user"/>
+            <q-item-section thumbnail>
+              <q-icon name="fas fa-user" size="xs" />
             </q-item-section>
             <q-item-section>{{ field.name }}: {{ field.value }}</q-item-section>
           </q-item>
-
-
         </q-list>
       </div>
       <div class="col-1"></div>
@@ -261,12 +261,18 @@ export default {
       }
       const ret = [];
       for (const customField of summary.value.custom_fields) {
-        const definition = customFieldsDefinitions.value.find((def) => def.id === customField.field)
-        if (definition && !definition.hide_in_ui && customField.value?.length > 0) {
+        const definition = customFieldsDefinitions.value.find(
+          (def) => def.id === customField.field
+        );
+        if (
+          definition &&
+          !definition.hide_in_ui &&
+          customField.value?.length > 0
+        ) {
           ret.push({
             name: definition.name,
             value: customField.value,
-          })
+          });
         }
       }
 
@@ -275,8 +281,8 @@ export default {
 
     async function getSummary() {
       loading.value = true;
-      customFieldsDefinitions.value = await fetchCustomFields();
       summary.value = await fetchAgent(selectedAgent.value);
+      customFieldsDefinitions.value = await fetchCustomFields();
       store.commit("setRefreshSummaryTab", false);
       store.commit("setAgentPlatform", summary.value.plat);
       loading.value = false;
