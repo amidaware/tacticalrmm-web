@@ -158,6 +158,20 @@
           >
         </div>
         <div v-else>No checks</div>
+
+        <span
+          v-if="customFields.length > 0"
+          class="text-subtitle2 text-bold block q-mt-xl"
+          >Custom Fields</span
+        >
+        <q-list dense>
+          <q-item v-for="(field, i) in customFields" :key="field + i">
+            <q-item-section thumbnail>
+              <q-icon name="fas fa-user" size="xs" />
+            </q-item-section>
+            <q-item-section>{{ field.name }}: {{ field.value }}</q-item-section>
+          </q-item>
+        </q-list>
       </div>
       <div class="col-1"></div>
       <!-- right -->
@@ -193,6 +207,7 @@ import {
   openAgentWindow,
 } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { fetchCustomFields } from "@/api/core";
 
 // ui imports
 import AgentActionMenu from "@/components/agents/AgentActionMenu.vue";
@@ -210,6 +225,7 @@ export default {
 
     // summary tab logic
     const summary = ref(null);
+    const customFieldsDefinitions = ref(null);
     const loading = ref(false);
 
     function diskBarColor(percent) {
@@ -236,9 +252,37 @@ export default {
       return ret;
     });
 
+    const customFields = computed(() => {
+      if (!summary.value.custom_fields) {
+        return [];
+      }
+      if (!customFieldsDefinitions.value) {
+        return [];
+      }
+      const ret = [];
+      for (const customField of summary.value.custom_fields) {
+        const definition = customFieldsDefinitions.value.find(
+          (def) => def.id === customField.field
+        );
+        if (
+          definition &&
+          !definition.hide_in_ui &&
+          customField.value?.length > 0
+        ) {
+          ret.push({
+            name: definition.name,
+            value: customField.value,
+          });
+        }
+      }
+
+      return ret;
+    });
+
     async function getSummary() {
       loading.value = true;
       summary.value = await fetchAgent(selectedAgent.value);
+      customFieldsDefinitions.value = await fetchCustomFields();
       store.commit("setRefreshSummaryTab", false);
       store.commit("setAgentPlatform", summary.value.plat);
       loading.value = false;
@@ -277,6 +321,7 @@ export default {
     return {
       // reactive data
       summary,
+      customFields,
       loading,
       selectedAgent,
       disks,
