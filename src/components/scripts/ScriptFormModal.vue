@@ -11,7 +11,17 @@
       :style="maximized ? '' : 'width: 90vw; max-width: 90vw'"
     >
       <q-bar>
-        {{ title }}
+        <span class="q-pr-sm">{{ title }}</span>
+        <q-btn
+          v-if="!script && openAIEnabled"
+          size="xs"
+          :disable="loading"
+          dense
+          label="Generate Script"
+          color="primary"
+          no-caps
+          @click="generateScriptOpenAI"
+        />
         <q-space />
         <q-btn
           dense
@@ -57,116 +67,133 @@
           ><br />Add one to get rid of this warning. Ignore if windows.
         </q-banner>
         <div class="row q-pa-sm">
-          <div class="col-4 q-gutter-sm q-pr-sm">
-            <q-input
-              filled
-              dense
-              :readonly="readonly"
-              v-model="formScript.name"
-              label="Name"
-              :rules="[(val) => !!val || '*Required']"
-              hide-bottom-space
-            />
-            <q-input
-              filled
-              dense
-              :readonly="readonly"
-              v-model="formScript.description"
-              label="Description"
-            />
-            <q-select
-              :readonly="readonly"
-              options-dense
-              filled
-              dense
-              v-model="formScript.shell"
-              :options="shellOptions"
-              emit-value
-              map-options
-              label="Shell Type"
-            />
-            <tactical-dropdown
-              v-model="formScript.supported_platforms"
-              :options="agentPlatformOptions"
-              label="Supported Platforms (All supported if blank)"
-              clearable
-              mapOptions
-              filled
-              multiple
-              :readonly="readonly"
-            />
-            <tactical-dropdown
-              filled
-              v-model="formScript.category"
-              :options="categories"
-              use-input
-              clearable
-              new-value-mode="add-unique"
-              filterable
-              label="Category"
-              :readonly="readonly"
-              hide-bottom-space
-            />
-            <tactical-dropdown
-              v-model="formScript.args"
-              label="Script Arguments (press Enter after typing each argument)"
-              filled
-              use-input
-              multiple
-              hide-dropdown-icon
-              input-debounce="0"
-              new-value-mode="add"
-              :readonly="readonly"
-            />
-            <tactical-dropdown
-              v-model="formScript.env_vars"
-              :label="envVarsLabel"
-              filled
-              use-input
-              multiple
-              hide-dropdown-icon
-              input-debounce="0"
-              new-value-mode="add"
-              :readonly="readonly"
-            />
-            <q-input
-              type="number"
-              filled
-              dense
-              :readonly="readonly"
-              v-model.number="formScript.default_timeout"
-              label="Timeout (seconds)"
-              :rules="[(val) => val >= 5 || 'Minimum is 5']"
-              hide-bottom-space
-            />
-            <q-checkbox
-              v-model="formScript.run_as_user"
-              label="Run As User (Windows only)"
-            >
-              <q-tooltip
-                >Setting this value on the script model will always override any
-                'Run As User' checkboxes in the UI and force this script to
-                always be run in the context of the logged in user. If no user
-                is logged in, the script will not run and an error will be
-                returned.
-              </q-tooltip>
-            </q-checkbox>
-            <q-input
-              label="Syntax"
-              type="textarea"
-              style="height: 150px; overflow-y: auto; resize: none"
-              v-model="formScript.syntax"
-              dense
-              filled
-              :readonly="readonly"
-            />
-          </div>
+          <q-scroll-area
+            :thumb-style="{
+              right: '4px',
+              borderRadius: '5px',
+              width: '5px',
+              opacity: 0.75,
+            }"
+            :bar-style="{
+              right: '2px',
+              borderRadius: '9px',
+              width: '9px',
+              opacity: 0.2,
+            }"
+            class="col-4 q-mb-none q-pb-none"
+            :style="{ height: `${maximized ? '82vh' : '64vh'}` }"
+          >
+            <div class="q-gutter-sm q-pr-sm">
+              <q-input
+                filled
+                dense
+                :readonly="readonly"
+                v-model="formScript.name"
+                label="Name"
+                :rules="[(val) => !!val || '*Required']"
+                hide-bottom-space
+              />
+              <q-input
+                filled
+                dense
+                :readonly="readonly"
+                v-model="formScript.description"
+                label="Description"
+              />
+              <q-select
+                :readonly="readonly"
+                options-dense
+                filled
+                dense
+                v-model="formScript.shell"
+                :options="shellOptions"
+                emit-value
+                map-options
+                label="Shell Type"
+              />
+              <tactical-dropdown
+                v-model="formScript.supported_platforms"
+                :options="agentPlatformOptions"
+                label="Supported Platforms (All supported if blank)"
+                clearable
+                mapOptions
+                filled
+                multiple
+                :readonly="readonly"
+              />
+              <tactical-dropdown
+                filled
+                v-model="formScript.category"
+                :options="categories"
+                use-input
+                clearable
+                new-value-mode="add-unique"
+                filterable
+                label="Category"
+                :readonly="readonly"
+                hide-bottom-space
+              />
+              <tactical-dropdown
+                v-model="formScript.args"
+                label="Script Arguments (press Enter after typing each argument)"
+                filled
+                use-input
+                multiple
+                hide-dropdown-icon
+                input-debounce="0"
+                new-value-mode="add"
+                :readonly="readonly"
+              />
+              <tactical-dropdown
+                v-model="formScript.env_vars"
+                :label="envVarsLabel"
+                filled
+                use-input
+                multiple
+                hide-dropdown-icon
+                input-debounce="0"
+                new-value-mode="add"
+                :readonly="readonly"
+              />
+              <q-input
+                type="number"
+                filled
+                dense
+                :readonly="readonly"
+                v-model.number="formScript.default_timeout"
+                label="Timeout (seconds)"
+                :rules="[(val) => val >= 5 || 'Minimum is 5']"
+                hide-bottom-space
+              />
+              <q-checkbox
+                v-model="formScript.run_as_user"
+                label="Run As User (Windows only)"
+              >
+                <q-tooltip
+                  >Setting this value on the script model will always override
+                  any 'Run As User' checkboxes in the UI and force this script
+                  to always be run in the context of the logged in user. If no
+                  user is logged in, the script will not run and an error will
+                  be returned.
+                </q-tooltip>
+              </q-checkbox>
+              <q-input
+                label="Syntax"
+                type="textarea"
+                style="height: 150px; overflow-y: auto; resize: none"
+                v-model="formScript.syntax"
+                dense
+                filled
+                :readonly="readonly"
+              />
+            </div>
+          </q-scroll-area>
           <v-ace-editor
             v-model:value="formScript.script_body"
             class="col-8"
             :lang="lang"
             :theme="$q.dark.isActive ? 'tomorrow_night_eighties' : 'tomorrow'"
-            :style="{ height: `${maximized ? '87vh' : '64vh'}` }"
+            :style="{ height: `${maximized ? '82vh' : '64vh'}` }"
             wrap
             :printMargin="false"
             :options="{ fontSize: '14px' }"
@@ -220,9 +247,11 @@
 <script>
 // composable imports
 import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { saveScript, editScript, downloadScript } from "@/api/scripts";
 import { useAgentDropdown, agentPlatformOptions } from "@/composables/agents";
+import { generateScript } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
@@ -265,6 +294,10 @@ export default {
     // setup quasar plugins
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
     const $q = useQuasar();
+
+    // setup store
+    const store = useStore();
+    const openAIEnabled = computed(() => store.state.openAIIntegrationEnabled);
 
     // setup agent dropdown
     const { agent, agentOptions, getAgentOptions } = useAgentDropdown();
@@ -355,6 +388,23 @@ export default {
       });
     }
 
+    function generateScriptOpenAI() {
+      $q.dialog({
+        title: "Ask ChatGPT what you need!",
+        prompt: {
+          model: `${lang.value} code that `,
+          type: "text",
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk(async (data) => {
+        const completion = await generateScript({
+          prompt: data,
+        });
+        script.value.script_body = completion;
+      });
+    }
+
     // component life cycle hooks
     onMounted(async () => {
       agentLoading.value = true;
@@ -380,10 +430,12 @@ export default {
 
       //computed
       title,
+      openAIEnabled,
 
       //methods
       submitForm,
       openTestScriptModal,
+      generateScriptOpenAI,
 
       // quasar dialog plugin
       dialogRef,

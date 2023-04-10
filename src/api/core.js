@@ -38,3 +38,8 @@ export async function runURLAction(payload) {
     console.error(e);
   }
 }
+
+export async function generateScript(payload) {
+  const { data } = await axios.post(`${baseUrl}/openai/generate/`, payload);
+  return data;
+}

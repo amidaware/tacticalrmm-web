@@ -11,7 +11,17 @@
       :style="maximized ? '' : 'width: 70vw; max-width: 90vw'"
     >
       <q-bar>
-        {{ title }}
+        <span class="q-pr-sm">{{ title }}</span>
+        <q-btn
+          v-if="!snippet && openAIEnabled"
+          :disable="loading"
+          dense
+          size="xs"
+          label="Generate Script"
+          color="primary"
+          no-caps
+          @click="generateScriptOpenAI"
+        />
         <q-space />
         <q-btn
           dense
@@ -97,6 +107,9 @@
 <script>
 // composable imports
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import { useQuasar } from "quasar";
+import { generateScript } from "@/api/core";
 import { useDialogPluginComponent } from "quasar";
 import { saveScriptSnippet, editScriptSnippet } from "@/api/scripts";
 import { notifySuccess } from "@/utils/notify";
@@ -127,6 +140,13 @@ export default {
   setup(props) {
     // setup quasar plugins
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+
+    // setup quasar
+    const $q = useQuasar();
+
+    // setup store
+    const store = useStore();
+    const openAIEnabled = computed(() => store.state.openAIIntegrationEnabled);
 
     // snippet form logic
     const snippet = props.snippet
@@ -167,6 +187,23 @@ export default {
       loading.value = false;
     }
 
+    function generateScriptOpenAI() {
+      $q.dialog({
+        title: "Ask ChatGPT what you need!",
+        prompt: {
+          model: `${lang.value} code that `,
+          type: "text",
+        },
+        cancel: true,
+        persistent: true,
+      }).onOk(async (data) => {
+        const completion = await generateScript({
+          prompt: data,
+        });
+        snippet.value.code = completion;
+      });
+    }
+
     return {
       // reactive data
       formSnippet: snippet.value,
@@ -179,9 +216,11 @@ export default {
 
       //computed
       title,
+      openAIEnabled,
 
       //methods
       submitForm,
+      generateScriptOpenAI,
 
       // quasar dialog plugin
       dialogRef,
