@@ -191,7 +191,7 @@ export default {
       $q.dialog({
         title: "Ask ChatGPT what you need!",
         prompt: {
-          model: `Please output ${lang.value} code that `,
+          model: `${lang.value} code that `,
           type: "text",
         },
         cancel: true,
