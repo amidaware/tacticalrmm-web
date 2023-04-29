@@ -86,6 +86,10 @@
               <q-item clickable v-close-popup @click="showPermissionsManager">
                 <q-item-section>Permissions Manager</q-item-section>
               </q-item>
+              <!-- reports manager -->
+              <q-item clickable v-close-popup @click="showReportsManager">
+                <q-item-section>Reports Manager</q-item-section>
+              </q-item>
               <!-- admin manager -->
               <q-item clickable v-close-popup @click="showAdminManager = true">
                 <q-item-section>User Administration</q-item-section>
@@ -233,6 +237,7 @@ import DeploymentTable from "@/components/clients/DeploymentTable.vue";
 import ServerMaintenance from "@/components/modals/core/ServerMaintenance.vue";
 import CodeSign from "@/components/modals/coresettings/CodeSign.vue";
 import PermissionsManager from "@/components/accounts/PermissionsManager.vue";
+import ReportsManager from "@/ee/reporting/components/ReportsManager.vue";
 
 export default {
   name: "FileBar",
@@ -394,6 +399,11 @@ export default {
     showDeployments() {
       this.$q.dialog({
         component: DeploymentTable,
+      });
+    },
+    showReportsManager() {
+      this.$q.dialog({
+        component: ReportsManager,
       });
     },
   },

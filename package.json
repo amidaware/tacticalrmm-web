@@ -21,6 +21,9 @@
     "vue3-apexcharts": "1.4.4",
     "vuedraggable": "4.1.0",
     "vue-router": "4.2.5",
+    "@vueuse/core": "^10.1.0",
+    "@vueuse/shared": "^10.1.0",
+    "monaco-editor": "^0.37.1",
     "vuex": "4.1.0"
   },
   "devDependencies": {
