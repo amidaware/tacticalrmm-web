@@ -52,6 +52,7 @@ import { useDialogPluginComponent, extend } from "quasar";
 import { useSharedReportDataQueries } from "../api/reporting";
 import { until } from "@vueuse/shared";
 import * as monaco from "monaco-editor";
+import { getBaseUrl } from "@/boot/axios";
 
 // ui imports
 
@@ -102,13 +103,11 @@ function loadEditor() {
 
   monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     validate: true,
+    enableSchemaRequest: true,
     schemas: [
       {
-        uri: "http://local/foo-schema.json",
+        uri: `${getBaseUrl()}/static/schemas/query_schema.json`,
         fileMatch: [modelUri.toString()],
-        schema: {
-          // TODO: Load schema from url
-        },
       },
     ],
   });
