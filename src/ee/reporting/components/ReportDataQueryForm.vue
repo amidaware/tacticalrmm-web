@@ -106,7 +106,7 @@ function loadEditor() {
     enableSchemaRequest: true,
     schemas: [
       {
-        uri: `${getBaseUrl()}/static/schemas/query_schema.json`,
+        uri: `${getBaseUrl()}/static/reporting/schemas/query_schema.json`,
         fileMatch: [modelUri.toString()],
       },
     ],
