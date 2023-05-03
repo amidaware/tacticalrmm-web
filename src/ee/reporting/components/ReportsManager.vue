@@ -147,7 +147,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   @click="runReport(props.row.id, props.row)"
                 >
                   <q-item-section side>
-                    <q-icon name="file-pdf-box" />
+                    <q-icon name="mdi-file-pdf-box" />
                   </q-item-section>
                   <q-item-section>Get Report PDF</q-item-section>
                 </q-item>
