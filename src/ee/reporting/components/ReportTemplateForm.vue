@@ -144,6 +144,7 @@ import type { ReportTemplate, ReportTemplateType } from "../types/reporting";
 const props = defineProps<{
   templateType: ReportTemplateType;
   reportTemplate?: ReportTemplate;
+  cloneTemplate?: ReportTemplate;
 }>();
 
 // emits
@@ -160,10 +161,12 @@ const state: ReportTemplate = props.reportTemplate
   ? reactive(extend({}, props.reportTemplate))
   : reactive({
       id: 0,
-      name: "",
-      template_md: "",
-      template_css: "",
-      template_html: undefined,
+      name: props.cloneTemplate ? `Copy of ${props.cloneTemplate.name}` : "",
+      template_md: props.cloneTemplate ? props.cloneTemplate.template_md : "",
+      template_css: props.cloneTemplate ? props.cloneTemplate.template_css : "",
+      template_html: props.cloneTemplate
+        ? props.cloneTemplate.template_html
+        : undefined,
       type: props.templateType,
     });
 

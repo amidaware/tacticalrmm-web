@@ -57,7 +57,10 @@ import * as monaco from "monaco-editor";
 import { type ReportHTMLTemplate } from "../types/reporting";
 
 // props
-const props = defineProps<{ template?: ReportHTMLTemplate }>();
+const props = defineProps<{
+  template?: ReportHTMLTemplate;
+  cloneTemplate?: ReportHTMLTemplate;
+}>();
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -82,8 +85,8 @@ const state: ReportHTMLTemplate = props.template
   ? reactive(extend({}, props.template))
   : reactive({
       id: 0,
-      name: "",
-      html: defaultTemplate,
+      name: props.cloneTemplate ? props.cloneTemplate.name : "",
+      html: props.cloneTemplate ? props.cloneTemplate.html : defaultTemplate,
     });
 
 const { isLoading, isError, addReportHTMLTemplate, editReportHTMLTemplate } =

@@ -122,17 +122,6 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
-                  @click="cloneTemplate(props.row)"
-                >
-                  <q-item-section side>
-                    <q-icon name="content_copy" />
-                  </q-item-section>
-                  <q-item-section>Clone</q-item-section>
-                </q-item>
-
-                <q-item
-                  v-close-popup
-                  clickable
                   @click="openEditReportTemplateForm(props.row)"
                 >
                   <q-item-section side>
@@ -144,10 +133,21 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  @click="cloneTemplate(props.row)"
+                >
+                  <q-item-section side>
+                    <q-icon name="content_copy" />
+                  </q-item-section>
+                  <q-item-section>Clone</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-close-popup
+                  clickable
                   @click="runReport(props.row.id, props.row)"
                 >
                   <q-item-section side>
-                    <q-icon name="edit" />
+                    <q-icon name="file-pdf-box" />
                   </q-item-section>
                   <q-item-section>Get Report PDF</q-item-section>
                 </q-item>
@@ -271,7 +271,12 @@ function deleteTemplate(template: ReportTemplate) {
 }
 
 async function cloneTemplate(template: ReportTemplate) {
-  // TODO: fill out function
-  console.log(template);
+  $q.dialog({
+    component: ReportTemplateForm,
+    componentProps: {
+      cloneTemplate: template,
+      templateType: template.type,
+    },
+  });
 }
 </script>

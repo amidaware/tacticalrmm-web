@@ -77,23 +77,23 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
-                  @click="cloneHTMLTemplate(props.row)"
-                >
-                  <q-item-section side>
-                    <q-icon name="content_copy" />
-                  </q-item-section>
-                  <q-item-section>Clone</q-item-section>
-                </q-item>
-
-                <q-item
-                  v-close-popup
-                  clickable
                   @click="openEditHTMLTemplate(props.row)"
                 >
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
                   <q-item-section>Edit</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-close-popup
+                  clickable
+                  @click="cloneHTMLTemplate(props.row)"
+                >
+                  <q-item-section side>
+                    <q-icon name="content_copy" />
+                  </q-item-section>
+                  <q-item-section>Clone</q-item-section>
                 </q-item>
 
                 <q-item
@@ -189,8 +189,12 @@ function deleteHTMLTemplate(template: ReportHTMLTemplate) {
 }
 
 async function cloneHTMLTemplate(template: ReportHTMLTemplate) {
-  // TODO: fill out function
-  console.log(template);
+  $q.dialog({
+    component: ReportHTMLTemplateForm,
+    componentProps: {
+      cloneTemplate: template,
+    },
+  });
 }
 
 onMounted(getReportHTMLTemplates);
