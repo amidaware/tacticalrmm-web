@@ -212,8 +212,13 @@ For details, see: https://license.tacticalrmm.com/ee
     >
       <q-tooltip :delay="800">Add Data Query</q-tooltip>
     </q-btn>
-    <!-- TODO: dataquery insert -->
-    <q-btn flat dense :ripple="false" icon="mdi-database-arrow-down">
+    <q-btn
+      flat
+      dense
+      :ripple="false"
+      icon="mdi-database-arrow-down"
+      @click="insertDataQuery"
+    >
       <q-tooltip :delay="800">Insert Data Query</q-tooltip>
     </q-btn>
     <q-btn
@@ -239,13 +244,17 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 // composition imports
 import { ref, toRaw, onMounted } from "vue";
+import { useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
 
 // ui import
 import ReportDataQueryForm from "./ReportDataQueryForm.vue";
+import DataQuerySelect from "./DataQuerySelect.vue";
 
 // props
 const props = defineProps<{ editor: monaco.editor.IStandaloneCodeEditor }>();
+
+const $q = useQuasar();
 
 const _editor = toRaw(props.editor);
 const isMultiLineSelection = ref(false);
@@ -301,6 +310,12 @@ function insertCodeBlock() {
     insertWrap("`", "`");
   }
   _editor.focus();
+}
+
+function insertDataQuery() {
+  $q.dialog({
+    component: DataQuerySelect,
+  }).onOk((query: string) => insert(query));
 }
 
 function insertLink() {

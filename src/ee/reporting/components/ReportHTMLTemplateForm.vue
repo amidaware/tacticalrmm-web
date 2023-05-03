@@ -85,7 +85,7 @@ const state: ReportHTMLTemplate = props.template
   ? reactive(extend({}, props.template))
   : reactive({
       id: 0,
-      name: props.cloneTemplate ? props.cloneTemplate.name : "",
+      name: props.cloneTemplate ? `Copy of ${props.cloneTemplate.name}` : "",
       html: props.cloneTemplate ? props.cloneTemplate.html : defaultTemplate,
     });
 
