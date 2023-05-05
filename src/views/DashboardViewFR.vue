@@ -263,7 +263,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Checks Failing</q-item-label>
+                            <q-item-label>Vérifs en échec</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -273,7 +273,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Patches Pending</q-item-label>
+                            <q-item-label>Patches en attente</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -283,7 +283,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Actions Pending</q-item-label>
+                            <q-item-label>Actions en attente</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -293,11 +293,11 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Reboot Needed</q-item-label>
+                            <q-item-label>Redémarrage requis</q-item-label>
                           </q-item-section>
                         </q-item>
 
-                        <q-item-label header>Availability</q-item-label>
+                        <q-item-label header>Disponibilité</q-item-label>
 
                         <q-item>
                           <q-item-section side>
@@ -305,7 +305,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show All Agents</q-item-label>
+                            <q-item-label>Afficher tous les agents</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -318,7 +318,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Online Only</q-item-label>
+                            <q-item-label>Uniquement en ligne</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -331,7 +331,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Offline Only</q-item-label>
+                            <q-item-label>Uniquement hors ligne</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -344,7 +344,7 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Overdue Only</q-item-label>
+                            <q-item-label>Uniquement les retards</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -358,7 +358,7 @@
 
                           <q-item-section>
                             <q-item-label
-                              >Show Offline for over 30 days</q-item-label
+                              >Afficher les hors ligne depuis plus de 30 jours</q-item-label
                             >
                           </q-item-section>
                         </q-item>
@@ -368,14 +368,14 @@
                         <div class="column">
                           <q-btn
                             v-close-popup
-                            label="Appliquer"
+                            label="Valider"
                             color="primary"
                             @click="applyFilter"
                           />
                         </div>
                         <q-space />
                         <div class="column">
-                          <q-btn label="Clear" @click="clearFilter" />
+                          <q-btn label="Effacer" @click="clearFilter" />
                         </div>
                       </div>
                     </q-menu>
