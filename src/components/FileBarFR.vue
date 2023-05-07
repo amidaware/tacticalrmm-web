@@ -120,15 +120,15 @@
                 v-close-popup
                 @click="showBulkAction('command')"
               >
-                <q-item-section>Bulk Command</q-item-section>
+                <q-item-section>Commande groupée</q-item-section>
               </q-item>
               <!-- bulk script -->
               <q-item clickable v-close-popup @click="showBulkAction('script')">
-                <q-item-section>Bulk Script</q-item-section>
+                <q-item-section>Script groupé</q-item-section>
               </q-item>
               <!-- bulk patch management -->
               <q-item clickable v-close-popup @click="showBulkAction('patch')">
-                <q-item-section>Bulk Patch Management</q-item-section>
+                <q-item-section>Patch Management groupé</q-item-section>
               </q-item>
               <!-- server maintenance -->
               <q-item
@@ -136,15 +136,15 @@
                 v-close-popup
                 @click="showServerMaintenance = true"
               >
-                <q-item-section>Server Maintenance</q-item-section>
+                <q-item-section>Maintenance serveur</q-item-section>
               </q-item>
               <!-- clear cache -->
               <q-item clickable v-close-popup @click="clearCache">
-                <q-item-section>Clear Cache</q-item-section>
+                <q-item-section>Effacer le cache</q-item-section>
               </q-item>
               <!-- bulk recover agents -->
               <q-item clickable v-close-popup @click="bulkRecoverAgents">
-                <q-item-section>Recover All Agents</q-item-section>
+                <q-item-section>Retrouver tous les agents</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
