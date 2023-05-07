@@ -468,7 +468,7 @@
 
             <q-card-section>
               <q-select
-                label="Envoyer un email uniquement on alert severity"
+                label="Envoyer un email uniquement en cas d'alerte severity"
                 hint="Defaults to 'error' and 'warning'"
                 v-model="template.check_email_alert_severity"
                 outlined
@@ -484,7 +484,7 @@
 
             <q-card-section>
               <q-select
-                label="Only text on alert severity"
+                label="Envoyer un message texte uniquement en cas d'alerte severity"
                 hint="Defaults to 'error' and 'warning'"
                 v-model="template.check_text_alert_severity"
                 outlined
@@ -500,7 +500,7 @@
 
             <q-card-section>
               <q-select
-                label="Only show dashboard alert on severity"
+                label="Afficher uniquement un alerte sur le tableau de bord en cas d'alerte on severity"
                 hint="Defaults to 'error', 'warning', and 'info'"
                 v-model="template.check_dashboard_alert_severity"
                 outlined
@@ -516,7 +516,7 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved after (days)"
+                label="Envoyer à nouveau une alerte si non résolu après (jours)"
                 outlined
                 type="number"
                 v-model.number="template.check_periodic_alert_days"
@@ -531,8 +531,7 @@
               <span style="text-decoration: underline; cursor: help"
                 >Alert Resolved Settings
                 <q-tooltip>
-                  Select what notifications are sent when a failed check is
-                  resolved.
+                  Sélectionner quelles notifications sont envoyées lorsqu'un contrôle échoué est résolu.
                 </q-tooltip>
               </span>
             </div>
@@ -545,7 +544,7 @@
               />
               <q-toggle
                 v-model="template.check_text_on_resolved"
-                label="Text"
+                label="Texte"
                 color="green"
                 left-label
               />
@@ -553,17 +552,14 @@
           </q-card>
         </q-step>
 
-        <q-step :name="5" title="Automated Task Settings" icon="fas fa-tasks">
+        <q-step :name="5" title="Paramètres des tâches automatisées" icon="fas fa-tasks">
           <q-card flat>
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
                 >Alert Failure Settings
-                <q-tooltip>
-                  Select what notifications are sent when an automated task
-                  fails. Enabled will override the task notification settings
-                  and always notify. Not configured will use the notification
-                  settings configured on the task. Disabled will override the
-                  task notification settings and never notify.
+                <q-tooltip>Sélectionner quelles notifications devront êtres envoyées quand une tâche automatique échoue. En étant activé, cela effacera les paramètres de notification de la tâche
+                  et sera toujours notifié. Non configuré cela utilisera les paramètres de notification
+                  configurés de la tâche. Désactivé, cela effacera les paramètres de notification de la tâche et ne sera jamais notifié.                  
                 </q-tooltip>
               </span>
             </div>
@@ -578,14 +574,14 @@
               />
               <q-toggle
                 v-model="template.task_always_text"
-                label="Text"
+                label="Texte"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.task_always_alert"
-                label="Dashboard"
+                label="Tableau de bord"
                 color="green"
                 left-label
                 toggle-indeterminate
@@ -594,7 +590,7 @@
 
             <q-card-section>
               <q-select
-                label="Only email on alert severity"
+                label="Envoyer uniquement un email en cas d'alerte severity"
                 hint="Defaults to 'error' and 'warning'"
                 v-model="template.task_email_alert_severity"
                 outlined
@@ -610,7 +606,7 @@
 
             <q-card-section>
               <q-select
-                label="Only text on alert severity"
+                label="Envoyer uniquement un message en cas d'alerte severity"
                 hint="Defaults to 'error' and 'warning'"
                 v-model="template.task_text_alert_severity"
                 outlined
@@ -626,7 +622,7 @@
 
             <q-card-section>
               <q-select
-                label="Only show dashboard alert on severity"
+                label="Afficher uniquement une alerte sur le tableau de bord en cas de severity"
                 hint="Defaults to 'error', 'warning', and 'info'"
                 v-model="template.task_dashboard_alert_severity"
                 outlined
@@ -642,7 +638,7 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved (days)"
+                label="Envoyer à nouveau une alerte si non résolu après (jours)"
                 outlined
                 type="number"
                 v-model.number="template.task_periodic_alert_days"
@@ -671,7 +667,7 @@
               />
               <q-toggle
                 v-model="template.check_text_on_resolved"
-                label="Text"
+                label="Texte"
                 color="green"
                 left-label
               />
@@ -800,14 +796,14 @@ export default {
     toggleAddEmail() {
       this.$q
         .dialog({
-          title: "Add email",
+          title: "Ajouter un email",
           prompt: {
             model: "",
             isValid: (val) => this.isValidEmail(val),
             type: "email",
           },
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: "Ajouter", color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
@@ -817,7 +813,7 @@ export default {
     toggleAddSMSNumber() {
       this.$q
         .dialog({
-          title: "Add number",
+          title: "Ajouter un chiffre",
           message:
             "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
           prompt: {
@@ -825,7 +821,7 @@ export default {
           },
           html: true,
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: "Ajouter", color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
