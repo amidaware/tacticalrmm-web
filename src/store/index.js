@@ -33,6 +33,7 @@ export default function () {
         currentTRMMVersion: null,
         latestTRMMVersion: null,
         dateFormat: "MMM-DD-YYYY - HH:mm",
+        openAIIntegrationEnabled: false,
       };
     },
     getters: {
@@ -136,6 +137,9 @@ export default function () {
       setDateFormat(state, val) {
         state.dateFormat = val;
       },
+      setOpenAIIntegrationStatus(state, val) {
+        state.openAIIntegrationEnabled = val;
+      },
     },
     actions: {
       setClientTreeSplitter(context, val) {
@@ -217,6 +221,10 @@ export default function () {
         context.commit("setShowCommunityScripts", data.show_community_scripts);
         context.commit("SET_HOSTED", data.hosted);
         context.commit("SET_TOKEN_EXPIRED", data.token_is_expired);
+        context.commit(
+          "setOpenAIIntegrationStatus",
+          data.open_ai_integration_enabled
+        );
 
         if (data.date_format && data.date_format !== "")
           context.commit("setDateFormat", data.date_format);

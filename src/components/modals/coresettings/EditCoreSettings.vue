@@ -12,6 +12,7 @@
           <q-tab name="urlactions" label="URL Actions" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
+          <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
       <template v-slot:after>
@@ -508,6 +509,49 @@
               <q-tab-panel name="apikeys">
                 <APIKeysTable />
               </q-tab-panel>
+
+              <!-- Open AI -->
+              <!-- <q-tab-panel name="openai">
+                <div class="text-subtitle2">Open AI</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <div class="col-4">API Key:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    dense
+                    outlined
+                    v-model="settings.open_ai_token"
+                    class="col-6"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Open AI Model:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    dense
+                    outlined
+                    v-model="settings.open_ai_model"
+                    class="col-6"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        round
+                        dense
+                        flat
+                        icon="info"
+                        size="sm"
+                        @click="
+                          openURL(
+                            'https://platform.openai.com/docs/models/overview'
+                          )
+                        "
+                      >
+                        <q-tooltip>Click to see available options</q-tooltip>
+                      </q-btn>
+                    </template>
+                  </q-input>
+                </q-card-section>
+              </q-tab-panel> -->
             </q-tab-panels>
           </q-scroll-area>
           <q-card-section class="row items-center">
