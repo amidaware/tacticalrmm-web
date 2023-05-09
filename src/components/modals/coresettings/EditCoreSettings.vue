@@ -12,7 +12,7 @@
           <q-tab name="urlactions" label="URL Actions" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
-          <q-tab name="openai" label="Open AI" />
+          <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
       <template v-slot:after>
@@ -511,7 +511,7 @@
               </q-tab-panel>
 
               <!-- Open AI -->
-              <q-tab-panel name="openai">
+              <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
                 <q-separator />
                 <q-card-section class="row">
@@ -551,7 +551,7 @@
                     </template>
                   </q-input>
                 </q-card-section>
-              </q-tab-panel>
+              </q-tab-panel> -->
             </q-tab-panels>
           </q-scroll-area>
           <q-card-section class="row items-center">
