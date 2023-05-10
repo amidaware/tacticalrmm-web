@@ -72,7 +72,7 @@ const defaultTemplate = `<html>
         </style>
     </head>
     <body>
-        {{ body }}
+        \{% block content %\}\{% endblock %\}
     </body>
 </html>
 `;

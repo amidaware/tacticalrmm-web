@@ -106,7 +106,7 @@ For details, see: https://license.tacticalrmm.com/ee
     </q-btn-dropdown>
 
     <q-btn flat dense :ripple="false" icon="format_bold" @click="insertBold">
-      <q-tooltip :delay="800">Bold</q-tooltip>
+      <q-tooltip :delay="500">Bold</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -115,7 +115,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_italic"
       @click="insertItalic"
     >
-      <q-tooltip :delay="800">Italic</q-tooltip>
+      <q-tooltip :delay="500">Italic</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -125,7 +125,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_numbered"
       @click="insertNumberedList"
     >
-      <q-tooltip :delay="800">Numbered List</q-tooltip>
+      <q-tooltip :delay="500">Numbered List</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -134,7 +134,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_bulleted"
       @click="insertBulletList"
     >
-      <q-tooltip :delay="800">Bullet List</q-tooltip>
+      <q-tooltip :delay="500">Bullet List</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -144,21 +144,21 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_quote"
       @click="insertBlockQuote"
     >
-      <q-tooltip :delay="800">Block Quote</q-tooltip>
+      <q-tooltip :delay="500">Block Quote</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="undo" @click="undo">
-      <q-tooltip :delay="800">Undo</q-tooltip>
+      <q-tooltip :delay="500">Undo</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="redo" @click="redo">
-      <q-tooltip :delay="800">Redo</q-tooltip>
+      <q-tooltip :delay="500">Redo</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="code" @click="insertCodeBlock">
-      <q-tooltip :delay="800">Code Block</q-tooltip>
+      <q-tooltip :delay="500">Code Block</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="link">
-      <q-tooltip :delay="800">Link</q-tooltip>
+      <q-tooltip :delay="500">Link</q-tooltip>
       <q-menu>
         <div class="no-wrap q-pa-md">
           <div class="text-subtitle1">Create Link</div>
@@ -179,7 +179,7 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-menu>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="image">
-      <q-tooltip :delay="800">Image</q-tooltip>
+      <q-tooltip :delay="500">Image</q-tooltip>
       <q-menu>
         <div class="no-wrap q-pa-md">
           <div class="text-subtitle1">Insert Image</div>
@@ -200,7 +200,7 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-menu>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="horizontal_rule" @click="insertHr">
-      <q-tooltip :delay="800">Horizontal Rule</q-tooltip>
+      <q-tooltip :delay="500">Horizontal Rule</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -210,7 +210,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-plus-outline"
       @click="$q.dialog({ component: ReportDataQueryForm })"
     >
-      <q-tooltip :delay="800">Add Data Query</q-tooltip>
+      <q-tooltip :delay="500">Add Data Query</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -219,7 +219,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-arrow-down"
       @click="insertDataQuery"
     >
-      <q-tooltip :delay="800">Insert Data Query</q-tooltip>
+      <q-tooltip :delay="500">Insert Data Query</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -228,15 +228,15 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-table-large-plus"
       @click="insertTable"
     >
-      <q-tooltip :delay="800">Table</q-tooltip>
+      <q-tooltip :delay="500">Table</q-tooltip>
     </q-btn>
     <!-- TODO: chart insert -->
     <q-btn flat dense :ripple="false" icon="add_chart">
-      <q-tooltip :delay="800">Chart</q-tooltip>
+      <q-tooltip :delay="500">Chart</q-tooltip>
     </q-btn>
     <!-- TODO: asset insert -->
     <q-btn flat dense :ripple="false" icon="mdi-image-plus-outline">
-      <q-tooltip :delay="800">Insert Asset</q-tooltip>
+      <q-tooltip :delay="500">Insert Asset</q-tooltip>
     </q-btn>
   </q-bar>
 </template>
@@ -319,12 +319,12 @@ function insertDataQuery() {
 }
 
 function insertLink() {
-  insert(`[${linkUrl.value}](${linkText.value})`);
+  insert(`[${linkText.value}](${linkUrl.value})`);
   _editor.focus();
 }
 
 function insertImage() {
-  insert(`![${linkUrl.value}](${linkText.value})`);
+  insert(`![${linkText.value}](${linkUrl.value})`);
   _editor.focus();
 }
 
