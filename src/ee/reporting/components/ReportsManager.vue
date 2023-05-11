@@ -72,7 +72,7 @@ For details, see: https://license.tacticalrmm.com/ee
           </q-btn-dropdown>
           <q-btn
             class="q-ml-sm"
-            label="HTML Templates"
+            label="Base Templates"
             no-caps
             dense
             flat

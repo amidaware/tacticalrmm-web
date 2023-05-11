@@ -168,6 +168,9 @@ const state: ReportTemplate = props.reportTemplate
         ? props.cloneTemplate.template_html
         : undefined,
       type: props.templateType,
+      template_variables: props.cloneTemplate
+        ? props.cloneTemplate.template_variables
+        : "",
     });
 
 const previewFormat = ref<"html" | "pdf">("html");

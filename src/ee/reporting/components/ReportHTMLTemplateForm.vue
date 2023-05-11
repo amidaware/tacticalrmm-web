@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" maximized @hide="unloadEditor" @show="loadEditor">
     <q-card>
       <q-bar>
-        New HTML Template
+        New Base Template
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>

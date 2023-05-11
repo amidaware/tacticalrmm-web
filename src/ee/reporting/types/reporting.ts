@@ -12,6 +12,7 @@ export interface ReportTemplate {
   template_css: string;
   template_html?: number;
   type: ReportTemplateType;
+  template_variables?: string;
 }
 
 export interface ReportHTMLTemplate {

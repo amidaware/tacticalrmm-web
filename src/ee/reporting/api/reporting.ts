@@ -127,7 +127,6 @@ export function useReportTemplates(): useReportingTemplates {
       })
       .then(({ data }) => {
         reportData.value = data;
-        console.log(data);
         exportFile("Report.pdf", data, {
           mimeType: "application/pdf",
         });
@@ -163,6 +162,18 @@ export async function fetchReportAssets(
   if (folderOnly) params.folders = true;
 
   const { data } = await axios.get(`${baseUrl}/assets/`, { params: params });
+  return data;
+}
+
+export async function fetchAllReportAssets(
+  foldersOnly?: boolean
+): Promise<QTreeFileNode[]> {
+  const params = {} as { onlyFolders?: boolean };
+  if (foldersOnly) params.onlyFolders = true;
+
+  const { data } = await axios.get(`${baseUrl}/assets/all/`, {
+    params: params,
+  });
   return data;
 }
 

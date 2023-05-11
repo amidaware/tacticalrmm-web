@@ -178,26 +178,8 @@ For details, see: https://license.tacticalrmm.com/ee
         </div>
       </q-menu>
     </q-btn>
-    <q-btn flat dense :ripple="false" icon="image">
+    <q-btn flat dense :ripple="false" icon="image" @click="insertImage">
       <q-tooltip :delay="500">Image</q-tooltip>
-      <q-menu>
-        <div class="no-wrap q-pa-md">
-          <div class="text-subtitle1">Insert Image</div>
-          <q-input v-model="linkText" label="Text" type="text" />
-
-          <q-input v-model="linkUrl" label="Url" type="text" />
-
-          <q-btn
-            v-close-popup
-            color="primary"
-            label="Insert Link"
-            class="full-width q-mt-sm"
-            flat
-            dense
-            @click="insertImage"
-          />
-        </div>
-      </q-menu>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="horizontal_rule" @click="insertHr">
       <q-tooltip :delay="500">Horizontal Rule</q-tooltip>
@@ -234,10 +216,6 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-btn flat dense :ripple="false" icon="add_chart">
       <q-tooltip :delay="500">Chart</q-tooltip>
     </q-btn>
-    <!-- TODO: asset insert -->
-    <q-btn flat dense :ripple="false" icon="mdi-image-plus-outline">
-      <q-tooltip :delay="500">Insert Asset</q-tooltip>
-    </q-btn>
   </q-bar>
 </template>
 
@@ -250,6 +228,7 @@ import * as monaco from "monaco-editor";
 // ui import
 import ReportDataQueryForm from "./ReportDataQueryForm.vue";
 import DataQuerySelect from "./DataQuerySelect.vue";
+import ReportAssetSelect from "./ReportAssetSelect.vue";
 
 // props
 const props = defineProps<{ editor: monaco.editor.IStandaloneCodeEditor }>();
@@ -324,8 +303,13 @@ function insertLink() {
 }
 
 function insertImage() {
-  insert(`![${linkText.value}](${linkUrl.value})`);
-  _editor.focus();
+  $q.dialog({
+    component: ReportAssetSelect,
+  })
+    .onOk((text) => {
+      insert(text);
+    })
+    .onDismiss(() => _editor.focus());
 }
 
 function redo() {

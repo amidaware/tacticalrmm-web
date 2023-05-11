@@ -15,7 +15,7 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportHTMLTemplates"
-        />HTML Templates
+        />Base Templates
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
