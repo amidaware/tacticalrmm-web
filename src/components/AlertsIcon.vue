@@ -3,7 +3,7 @@
     <q-badge v-if="alertsCount > 0" :color="badgeColor" floating transparent>{{
       alertsCountText()
     }}</q-badge>
-    <q-menu style="max-height: 30vh">
+    <q-menu :style="{ 'max-height': `${$q.screen.height - 100}px` }">
       <q-list separator>
         <q-item v-if="alertsCount === 0">No New Alerts</q-item>
         <q-item v-for="alert in topAlerts" :key="alert.id">
