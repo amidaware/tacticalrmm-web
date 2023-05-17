@@ -262,6 +262,11 @@ export default {
       // moved computed token inside the function since it is not refreshing
       // when ws is closed causing ws to connect with expired token
       const token = computed(() => store.state.token);
+
+      if (!token.value) {
+        console.log("Access token is null or invalid, not setting up WebSocket");
+        return;
+      }
       console.log("Starting websocket");
       let url = getWSUrl("dashinfo", token.value);
       ws.value = new WebSocket(url);
