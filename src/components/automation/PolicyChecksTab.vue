@@ -217,6 +217,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import mixins from "@/mixins/mixins";
 import PolicyStatus from "@/components/automation/modals/PolicyStatus.vue";
 import DiskSpaceCheck from "@/components/checks/DiskSpaceCheck.vue";
@@ -268,6 +269,9 @@ export default {
       if (newValue !== oldValue) this.getChecks();
     },
   },
+  computed: {
+    ...mapState(["dash_positive_color", "dash_warning_color"]),
+  },
   methods: {
     getChecks() {
       this.$q.loading.show();
@@ -295,7 +299,9 @@ export default {
 
       data.check_alert = true;
       const act = !action ? "enabled" : "disabled";
-      const color = !action ? "positive" : "warning";
+      const color = !action
+        ? this.dash_positive_color
+        : this.dash_warning_color;
       this.$axios
         .put(`/checks/${id}/`, data)
         .then(() => {

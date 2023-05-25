@@ -57,7 +57,7 @@
             >v{{ currentTRMMVersion }}</span
           >
           <span class="text-overline q-ml-md" v-if="updateAvailable()"
-            ><q-badge color="warning"
+            ><q-badge :color="dash_warning_color"
               ><a :href="latestReleaseURL" target="_blank"
                 >v{{ latestTRMMVersion }} available</a
               ></q-badge
@@ -94,7 +94,11 @@
               </q-item>
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="power_off" size="sm" color="negative" />
+                  <q-icon
+                    name="power_off"
+                    size="sm"
+                    :color="dash_negative_color"
+                  />
                 </q-item-section>
 
                 <q-item-section no-wrap>
@@ -113,7 +117,11 @@
               </q-item>
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="power_off" size="sm" color="negative" />
+                  <q-icon
+                    name="power_off"
+                    size="sm"
+                    :color="dash_negative_color"
+                  />
                 </q-item-section>
 
                 <q-item-section no-wrap>
@@ -218,6 +226,8 @@ export default {
     const user = computed(() => store.state.username);
     const hosted = computed(() => store.state.hosted);
     const tokenExpired = computed(() => store.state.tokenExpired);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
 
     const latestReleaseURL = computed(() => {
       return latestTRMMVersion.value
@@ -264,7 +274,9 @@ export default {
       const token = computed(() => store.state.token);
 
       if (!token.value) {
-        console.log("Access token is null or invalid, not setting up WebSocket");
+        console.log(
+          "Access token is null or invalid, not setting up WebSocket"
+        );
         return;
       }
       console.log("Starting websocket");
@@ -337,6 +349,8 @@ export default {
       darkMode,
       hosted,
       tokenExpired,
+      dash_warning_color,
+      dash_negative_color,
 
       // methods
       showUserPreferences,

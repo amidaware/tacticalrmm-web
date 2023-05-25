@@ -94,7 +94,7 @@
                         class="q-pr-sm"
                         name="fas fa-signal"
                         size="1.2em"
-                        color="warning"
+                        :color="dash_warning_color"
                       />
                       Mark an agent as
                       <span class="text-weight-bold">offline</span> if it has
@@ -120,7 +120,7 @@
                         class="q-pr-sm"
                         name="fas fa-signal"
                         size="1.2em"
-                        color="negative"
+                        :color="dash_negative_color"
                       />
                       Mark an agent as
                       <span class="text-weight-bold">overdue</span> if it has
@@ -373,6 +373,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 import mixins from "@/mixins/mixins";
 import PatchPolicyForm from "@/components/modals/agents/PatchPolicyForm.vue";
@@ -548,6 +549,9 @@ export default {
 
       return result.trimEnd(",");
     },
+  },
+  computed: {
+    ...mapState(["dash_warning_color", "dash_negative_color"]),
   },
   mounted() {
     // Get custom fields

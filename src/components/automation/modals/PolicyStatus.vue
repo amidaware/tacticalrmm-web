@@ -41,7 +41,7 @@
               <q-td v-if="props.row.status === 'passing'">
                 <q-icon
                   style="font-size: 1.3rem"
-                  color="positive"
+                  :color="dash_positive_color"
                   name="check_circle"
                 >
                   <q-tooltip>Passing</q-tooltip>
@@ -51,7 +51,7 @@
                 <q-icon
                   v-if="props.row.alert_severity === 'info'"
                   style="font-size: 1.3rem"
-                  color="info"
+                  :color="dash_info_color"
                   name="info"
                 >
                   <q-tooltip>Informational</q-tooltip>
@@ -59,7 +59,7 @@
                 <q-icon
                   v-else-if="props.row.alert_severity === 'warning'"
                   style="font-size: 1.3rem"
-                  color="warning"
+                  :color="dash_warning_color"
                   name="warning"
                 >
                   <q-tooltip>Warning</q-tooltip>
@@ -67,7 +67,7 @@
                 <q-icon
                   v-else
                   style="font-size: 1.3rem"
-                  color="negative"
+                  :color="dash_negative_color"
                   name="error"
                 >
                   <q-tooltip>Error</q-tooltip>
@@ -148,7 +148,7 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useStore, mapState } from "vuex";
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import EventLogCheckOutput from "@/components/checks/EventLogCheckOutput.vue";
 
@@ -220,6 +220,12 @@ export default {
     };
   },
   computed: {
+    ...mapState([
+      "dash_info_color",
+      "dash_positive_color",
+      "dash_negative_color",
+      "dash_warning_color",
+    ]),
     title() {
       return !!this.item.readable_desc
         ? this.item.readable_desc + " Status"

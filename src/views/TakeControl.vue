@@ -15,7 +15,7 @@
         @click="restartMeshService"
       />
       <q-btn
-        color="negative"
+        :color="dash_negative_color"
         size="sm"
         label="Recover Connection"
         icon="fas fa-first-aid"
@@ -35,6 +35,7 @@
 <script>
 // composition imports
 import { ref, computed, onMounted } from "vue";
+import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import { useMeta, useQuasar } from "quasar";
 import { fetchAgentMeshCentralURLs, sendAgentRecoverMesh } from "@/api/agents";
@@ -47,12 +48,17 @@ export default {
   setup() {
     // vue lifecycle hooks
     onMounted(() => {
+      dashInfo();
       getDashInfo();
       getMeshURLs();
     });
 
     // quasar setup
     const $q = useQuasar();
+    const store = useStore();
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // vue router
     const { params } = useRoute();
@@ -64,13 +70,18 @@ export default {
     const statusColor = computed(() => {
       switch (status.value) {
         case "online":
-          return "positive";
+          return dash_positive_color.value;
         case "offline":
-          return "warning";
+          return dash_warning_color.value;
         default:
-          return "negative";
+          return dash_negative_color.value;
       }
     });
+
+    // TODO refactor this so we're not calling the api twice
+    const dashInfo = () => {
+      store.dispatch("getDashInfo", false);
+    };
 
     async function getMeshURLs() {
       $q.loading.show();
@@ -131,6 +142,7 @@ export default {
       control,
       status,
       statusColor,
+      dash_negative_color,
 
       // methods
       repairMeshCentral,

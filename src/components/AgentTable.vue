@@ -211,7 +211,7 @@
               v-if="props.row.maintenance_mode"
               name="construction"
               size="1.2em"
-              color="green"
+              :color="dash_positive_color"
             >
               <q-tooltip>Maintenance Mode Enabled</q-tooltip>
             </q-icon>
@@ -219,7 +219,7 @@
               v-else-if="props.row.checks.failing > 0"
               name="fas fa-check-double"
               size="1.2em"
-              color="negative"
+              :color="dash_negative_color"
             >
               <q-tooltip>Checks failing</q-tooltip>
             </q-icon>
@@ -227,7 +227,7 @@
               v-else-if="props.row.checks.warning > 0"
               name="fas fa-check-double"
               size="1.2em"
-              color="warning"
+              :color="dash_warning_color"
             >
               <q-tooltip>Checks warning</q-tooltip>
             </q-icon>
@@ -235,7 +235,7 @@
               v-else-if="props.row.checks.info > 0"
               name="fas fa-check-double"
               size="1.2em"
-              color="info"
+              :color="dash_info_color"
             >
               <q-tooltip>Checks info</q-tooltip>
             </q-icon>
@@ -243,7 +243,7 @@
               v-else
               name="fas fa-check-double"
               size="1.2em"
-              color="positive"
+              :color="dash_positive_color"
             >
               <q-tooltip>Checks passing</q-tooltip>
             </q-icon>
@@ -279,7 +279,7 @@
               @click="showPendingActionsModal(props.row)"
               name="far fa-clock"
               size="1.4em"
-              color="warning"
+              :color="dash_warning_color"
               class="cursor-pointer"
             >
               <q-tooltip
@@ -303,7 +303,7 @@
               v-if="props.row.status === 'overdue'"
               name="fas fa-signal"
               size="1.2em"
-              color="negative"
+              :color="dash_negative_color"
             >
               <q-tooltip>Agent overdue</q-tooltip>
             </q-icon>
@@ -311,11 +311,16 @@
               v-else-if="props.row.status === 'offline'"
               name="fas fa-signal"
               size="1.2em"
-              color="warning"
+              :color="dash_warning_color"
             >
               <q-tooltip>Agent offline</q-tooltip>
             </q-icon>
-            <q-icon v-else name="fas fa-signal" size="1.2em" color="positive">
+            <q-icon
+              v-else
+              name="fas fa-signal"
+              size="1.2em"
+              :color="dash_positive_color"
+            >
               <q-tooltip>Agent online</q-tooltip>
             </q-icon>
           </q-td>
@@ -373,7 +378,7 @@ export default {
         "local_ips",
         "make_model",
         "physical_disks",
-        "custom_fields"
+        "custom_fields",
       ];
       // quasar filter only does visible columns so this is a hack to add hidden columns we want to filter
       // originally I was modifying cols directly but this led to phantom colum so doing it this way now
@@ -435,7 +440,7 @@ export default {
         return allColumns.some((col) => {
           let valObj = cellValue(col, row);
           if (Array.isArray(valObj)) {
-            valObj = valObj.map((item) => item.value ? item.value : item);
+            valObj = valObj.map((item) => (item.value ? item.value : item));
           }
           const val = valObj + "";
           const haystack =
@@ -488,7 +493,9 @@ export default {
       const data = {
         [db_field]: !alert_action,
       };
-      const alertColor = !alert_action ? "positive" : "info";
+      const alertColor = !alert_action
+        ? this.dash_positive_color
+        : this.dash_info_color;
       this.$axios.put(`/agents/${agent.agent_id}/`, data).then(() => {
         this.$q.notify({
           color: alertColor,
@@ -532,7 +539,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(["tableHeight"]),
+    ...mapState([
+      "tableHeight",
+      "dash_info_color",
+      "dash_positive_color",
+      "dash_negative_color",
+      "dash_warning_color",
+    ]),
     agentDblClickAction() {
       return this.$store.state.agentDblClickAction;
     },
