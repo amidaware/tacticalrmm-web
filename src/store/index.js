@@ -231,78 +231,81 @@ export default function () {
         else context.commit("setDateFormat", data.default_date_format);
       },
       loadTree({ commit, state }) {
-        axios
-          .get("/clients/")
-          .then((r) => {
-            if (r.data.length === 0) {
-              this.$router.push({ name: "InitialSetup" });
-            }
+        // TODO fix this hack, need to refactor to load dash info first, see issue #1439
+        setTimeout(() => {
+          axios
+            .get("/clients/")
+            .then((r) => {
+              if (r.data.length === 0) {
+                this.$router.push({ name: "InitialSetup" });
+              }
 
-            let output = [];
-            for (let client of r.data) {
-              let childSites = [];
-              for (let site of client.sites) {
-                let siteNode = {
-                  label: site.name,
-                  id: site.id,
-                  raw: `Site|${site.id}`,
-                  header: "generic",
-                  icon: "apartment",
-                  selectable: true,
-                  site: site,
-                };
+              let output = [];
+              for (let client of r.data) {
+                let childSites = [];
+                for (let site of client.sites) {
+                  let siteNode = {
+                    label: site.name,
+                    id: site.id,
+                    raw: `Site|${site.id}`,
+                    header: "generic",
+                    icon: "apartment",
+                    selectable: true,
+                    site: site,
+                  };
 
-                if (site.maintenance_mode) {
-                  siteNode["color"] = "green";
-                } else if (site.failing_checks.error) {
-                  siteNode["color"] = "negative";
-                } else if (site.failing_checks.warning) {
-                  siteNode["color"] = "warning";
+                  if (site.maintenance_mode) {
+                    siteNode["color"] = "green";
+                  } else if (site.failing_checks.error) {
+                    siteNode["color"] = "negative";
+                  } else if (site.failing_checks.warning) {
+                    siteNode["color"] = "warning";
+                  }
+
+                  childSites.push(siteNode);
                 }
 
-                childSites.push(siteNode);
+                let clientNode = {
+                  label: client.name,
+                  id: client.id,
+                  raw: `Client|${client.id}`,
+                  header: "root",
+                  icon: "business",
+                  children: childSites,
+                  client: client,
+                };
+
+                if (client.maintenance_mode) clientNode["color"] = "green";
+                else if (client.failing_checks.error) {
+                  clientNode["color"] = "negative";
+                } else if (client.failing_checks.warning) {
+                  clientNode["color"] = "warning";
+                }
+
+                output.push(clientNode);
               }
 
-              let clientNode = {
-                label: client.name,
-                id: client.id,
-                raw: `Client|${client.id}`,
-                header: "root",
-                icon: "business",
-                children: childSites,
-                client: client,
-              };
-
-              if (client.maintenance_mode) clientNode["color"] = "green";
-              else if (client.failing_checks.error) {
-                clientNode["color"] = "negative";
-              } else if (client.failing_checks.warning) {
-                clientNode["color"] = "warning";
+              const sorted = output.sort((a, b) =>
+                a.label.localeCompare(b.label)
+              );
+              if (state.clientTreeSort === "alphafail") {
+                // move failing clients to the top
+                const failing = sorted.filter(
+                  (i) => i.color === "negative" || i.color === "warning"
+                );
+                const ok = sorted.filter(
+                  (i) => i.color !== "negative" && i.color !== "warning"
+                );
+                const sortedByFailing = [...failing, ...ok];
+                commit("loadTree", sortedByFailing);
+              } else {
+                commit("loadTree", sorted);
               }
-
-              output.push(clientNode);
-            }
-
-            const sorted = output.sort((a, b) =>
-              a.label.localeCompare(b.label)
-            );
-            if (state.clientTreeSort === "alphafail") {
-              // move failing clients to the top
-              const failing = sorted.filter(
-                (i) => i.color === "negative" || i.color === "warning"
-              );
-              const ok = sorted.filter(
-                (i) => i.color !== "negative" && i.color !== "warning"
-              );
-              const sortedByFailing = [...failing, ...ok];
-              commit("loadTree", sortedByFailing);
-            } else {
-              commit("loadTree", sorted);
-            }
-          })
-          .catch(() => {
-            state.treeReady = true;
-          });
+            })
+            .catch(() => {
+              state.treeReady = true;
+            });
+        }, 150);
       },
       checkVer(context) {
         axios.get("/core/version/").then((r) => {
