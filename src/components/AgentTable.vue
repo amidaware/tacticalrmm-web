@@ -379,6 +379,7 @@ export default {
         "make_model",
         "physical_disks",
         "custom_fields",
+        "serial_number",
       ];
       // quasar filter only does visible columns so this is a hack to add hidden columns we want to filter
       // originally I was modifying cols directly but this led to phantom colum so doing it this way now
