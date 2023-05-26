@@ -183,6 +183,24 @@
       <q-item-section>Assign Automation Policy</q-item-section>
     </q-item>
 
+    <q-item
+      clickable
+      v-if="
+        $integrations &&
+        $integrations.agentMenuIntegrations &&
+        $integrations.agentMenuIntegrations.length > 0
+      "
+    >
+      <q-item-section side>
+        <q-icon size="xs" name="integration_instructions" />
+      </q-item-section>
+      <q-item-section>Integrations</q-item-section>
+      <q-item-section side>
+        <q-icon name="keyboard_arrow_right" />
+      </q-item-section>
+      <integrations-context-menu type="agent" :id="agent.agent_id" />
+    </q-item>
+
     <q-item clickable v-close-popup @click="showAgentRecovery(agent)">
       <q-item-section side>
         <q-icon size="xs" name="fas fa-first-aid" />
@@ -232,9 +250,13 @@ import RebootLater from "@/components/modals/agents/RebootLater.vue";
 import EditAgent from "@/components/modals/agents/EditAgent.vue";
 import SendCommand from "@/components/modals/agents/SendCommand.vue";
 import RunScript from "@/components/modals/agents/RunScript.vue";
+import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
 
 export default {
   name: "AgentActionMenu",
+  components: {
+    IntegrationsContextMenu,
+  },
   props: {
     agent: !Object,
   },

@@ -24,7 +24,8 @@
     "@vueuse/core": "^10.1.0",
     "@vueuse/shared": "^10.1.0",
     "monaco-editor": "^0.37.1",
-    "vuex": "4.1.0"
+    "vuex": "4.1.0",
+    "yaml": "^2.3.1"
   },
   "devDependencies": {
     "@quasar/cli": "2.3.0",

@@ -91,7 +91,7 @@ async function submit() {
   await until(isLoading).not.toBeTruthy();
   if (isError.value) return;
 
-  onDialogOK();
+  onDialogOK(state.name);
 }
 
 const queryEditor = ref<HTMLElement | null>(null);

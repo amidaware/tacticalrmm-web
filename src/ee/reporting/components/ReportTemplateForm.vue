@@ -43,6 +43,27 @@ For details, see: https://license.tacticalrmm.com/ee
           clearable
         />
 
+        <q-select
+          v-model="state.depends_on"
+          style="width: 250px"
+          class="q-pr-sm"
+          :options="dependsOnFilterOptions"
+          label="Template Dependencies"
+          multiple
+          dense
+          filled
+          use-input
+          input-debounce="0"
+          @new-value="createValue"
+          @filter="filterFn"
+        >
+          <template v-slot:selected>
+            <span v-if="state.depends_on && state.depends_on?.length > 0"
+              >{{ state.depends_on?.length }} Selected</span
+            >
+          </template>
+        </q-select>
+
         <q-option-group
           v-model="previewFormat"
           :options="formatOptions"
@@ -73,12 +94,48 @@ For details, see: https://license.tacticalrmm.com/ee
         v-show="tab === 'markdown' || tab === 'html' || tab === 'css'"
         class="q-px-sm"
       >
-        <EditorToolbar v-if="tab === 'markdown' && editor" :editor="editor" />
+        <EditorToolbar
+          v-if="(tab === 'markdown' || tab === 'html') && editor"
+          :editor="editor"
+          :variablesEditor="variablesEditor"
+          :templateType="templateType"
+        >
+          <template v-slot:buttons>
+            <q-btn
+              flat
+              dense
+              :ripple="false"
+              label="vars"
+              no-caps
+              @click="splitter > 0 ? (splitter = 0) : (splitter = 50)"
+            >
+              <q-tooltip :delay="500">{{
+                splitter > 0 ? "Hide variables" : "Show variables"
+              }}</q-tooltip>
+            </q-btn>
+          </template>
+        </EditorToolbar>
 
-        <div
-          ref="editorDiv"
-          :style="{ height: `${$q.screen.height - 164}px` }"
-        ></div>
+        <q-splitter
+          v-model="splitter"
+          emit-immediately
+          reverse
+          :limits="[0, 50]"
+        >
+          <template v-slot:before>
+            <div
+              ref="editorDiv"
+              :style="{ height: `${$q.screen.height - 164}px` }"
+            ></div>
+          </template>
+          <template v-slot:after>
+            <div
+              ref="variablesDiv"
+              v-show="splitter > 0"
+              :style="{ height: `${$q.screen.height - 164}px` }"
+            ></div>
+          </template>
+        </q-splitter>
       </div>
 
       <!-- preview -->
@@ -136,9 +193,15 @@ import * as monaco from "monaco-editor";
 
 // ui imports
 import EditorToolbar from "./EditorToolbar.vue";
+import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
 
 // type imports
-import type { ReportTemplate, ReportTemplateType } from "../types/reporting";
+import type {
+  ReportTemplate,
+  ReportTemplateType,
+  ReportFormat,
+  ReportDependencies,
+} from "../types/reporting";
 
 // props
 const props = defineProps<{
@@ -171,13 +234,66 @@ const state: ReportTemplate = props.reportTemplate
       template_variables: props.cloneTemplate
         ? props.cloneTemplate.template_variables
         : "",
+      depends_on: props.cloneTemplate ? props.cloneTemplate?.depends_on : [],
     });
 
-const previewFormat = ref<"html" | "pdf">("html");
+// splitter
+const splitter = ref(0);
+
+const previewFormat = ref<ReportFormat>("html");
 const formatOptions = [
   { label: "HTML", value: "html" },
   { label: "PDF", value: "pdf" },
 ];
+
+const dependencies = ref<ReportDependencies>({});
+
+watch(
+  () => state.depends_on,
+  (newArray, oldArray) => {
+    if (newArray && oldArray) {
+      const removed = oldArray.filter((item) => newArray.indexOf(item) == -1);
+      removed.forEach((item) => delete dependencies.value[item]);
+    }
+  }
+);
+
+// initial set of depends on options
+const dependsOnOptions = ["client", "site", "agent"];
+
+// will add any custom added depend_on options to the list
+state.depends_on?.forEach((item) =>
+  !dependsOnOptions.includes(item) ? dependsOnOptions.push(item) : null
+);
+
+// the filtered list that the select uses
+const dependsOnFilterOptions = ref(dependsOnOptions);
+
+function createValue(
+  val: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  done: (val: any, mode: "add-unique" | "add" | "toggle" | undefined) => void
+) {
+  if (val.length > 0) {
+    if (!dependsOnOptions.includes(val)) {
+      dependsOnOptions.push(val);
+    }
+    done(val, "add-unique");
+  }
+}
+
+function filterFn(val: string, update: (callback: () => void) => void) {
+  update(() => {
+    if (val === "") {
+      dependsOnFilterOptions.value = dependsOnOptions;
+    } else {
+      const needle = val.toLowerCase();
+      dependsOnFilterOptions.value = dependsOnOptions.filter(
+        (v) => v.toLowerCase().indexOf(needle) > -1
+      );
+    }
+  });
+}
 
 const {
   isLoading,
@@ -194,6 +310,7 @@ const { reportHTMLTemplates, getReportHTMLTemplates } =
 const tab = ref(props.templateType === "markdown" ? "markdown" : "html");
 
 onBeforeMount(getReportHTMLTemplates);
+
 const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
   reportHTMLTemplates.value.map((template) => ({
     label: template.name,
@@ -201,14 +318,42 @@ const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
   }))
 );
 
-// load preview when preview tab is selected
-watch(tab, (newValue) => {
-  if (newValue === "preview") {
+function previewReport() {
+  let needsPrompt: string[] = [];
+  if (state.depends_on && state.depends_on.length > 0) {
+    needsPrompt = state.depends_on.filter((dep) => !dependencies.value[dep]);
+  }
+
+  if (needsPrompt.length > 0) {
+    $q.dialog({
+      component: ReportDependencyPrompt,
+      componentProps: { dependsOn: needsPrompt },
+    })
+      .onOk((deps: ReportDependencies) => {
+        dependencies.value = { ...dependencies.value, ...deps };
+      })
+      .onDismiss(() => {
+        const request = {
+          ...state,
+          format: previewFormat.value,
+          dependencies: dependencies.value,
+        };
+        runReportPreview(request);
+      });
+  } else {
     const request = {
       ...state,
       format: previewFormat.value,
+      dependencies: dependencies.value,
     };
     runReportPreview(request);
+  }
+}
+
+// load preview when preview tab is selected
+watch(tab, (newValue) => {
+  if (newValue === "preview") {
+    previewReport();
   } else if (newValue === props.templateType) {
     editor.value?.setModel(templateModel);
   } else if (newValue === "css") {
@@ -216,17 +361,14 @@ watch(tab, (newValue) => {
   }
 });
 
-// load preview when preview tab is selected
+// load preview when preview format changes
 watch(previewFormat, () => {
   if (tab.value === "preview") {
-    const request = {
-      ...state,
-      format: previewFormat.value,
-    };
-    runReportPreview(request);
+    previewReport();
   }
 });
 
+// main editor
 const editorDiv = ref<HTMLElement | null>(null);
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>();
 
@@ -238,10 +380,18 @@ const templateUri = monaco.Uri.parse(`editor://${props.templateType}`);
 let cssModel: monaco.editor.ITextModel;
 const cssUri = monaco.Uri.parse("editor://css");
 
+// saves state for variables editor
+const variablesDiv = ref<HTMLElement | null>(null);
+const variablesEditor = shallowRef<monaco.editor.IStandaloneCodeEditor>();
+let variablesModel: monaco.editor.ITextModel;
+const variablesUri = monaco.Uri.parse("editor://variables");
+
 function unloadEditor() {
   editor.value?.dispose();
+  variablesEditor.value?.dispose();
   templateModel?.dispose();
   cssModel?.dispose();
+  variablesModel?.dispose();
   onDialogHide();
 }
 
@@ -258,6 +408,7 @@ function initializeEditor() {
     automaticLayout: true,
     model: templateModel,
     theme: "vs-dark",
+    minimap: { enabled: false },
   });
 
   editor.value?.onDidChangeModelContent(() => {
@@ -269,6 +420,27 @@ function initializeEditor() {
       } else {
         state.template_md = currentModel.getValue();
       }
+    }
+  });
+
+  variablesModel = monaco.editor.createModel(
+    state.template_variables,
+    "yaml",
+    variablesUri
+  );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  variablesEditor.value = monaco.editor.create(variablesDiv.value!, {
+    automaticLayout: true,
+    model: variablesModel,
+    theme: "vs-dark",
+    minimap: { enabled: false },
+  });
+
+  variablesEditor.value?.onDidChangeModelContent(() => {
+    const currentModel = variablesEditor.value?.getModel();
+
+    if (currentModel) {
+      state.template_variables = currentModel.getValue();
     }
   });
 }

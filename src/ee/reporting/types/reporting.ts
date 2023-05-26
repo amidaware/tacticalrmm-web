@@ -5,6 +5,16 @@ For details, see: https://license.tacticalrmm.com/ee
 */
 
 export type ReportTemplateType = "markdown" | "html";
+
+export type ReportFormat = "pdf" | "html";
+
+export interface ReportDependencies {
+  client?: number;
+  site?: number;
+  agent?: string;
+  [x: string]: string | number;
+}
+
 export interface ReportTemplate {
   id: number;
   name: string;
@@ -12,7 +22,8 @@ export interface ReportTemplate {
   template_css: string;
   template_html?: number;
   type: ReportTemplateType;
-  template_variables?: string;
+  template_variables: string;
+  depends_on?: string[];
 }
 
 export interface ReportHTMLTemplate {
@@ -31,5 +42,18 @@ export interface UploadAssetsResponse {
 }
 
 export interface RunReportPreviewRequest extends ReportTemplate {
-  format: "pdf" | "html";
+  format: ReportFormat;
+  dependencies?: ReportDependencies;
+}
+
+export interface RunReportRequest {
+  format: ReportFormat;
+  dependencies?: ReportDependencies;
+}
+
+export interface OpenReportParams {
+  id: number;
+  format: ReportFormat;
+  dependsOn: string[];
+  dependencies: ReportDependencies;
 }

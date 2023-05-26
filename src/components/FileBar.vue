@@ -150,7 +150,18 @@
           </q-menu>
         </q-btn>
         <!-- integrations -->
-        <q-btn size="md" dense no-caps flat label="Integrations">
+        <q-btn
+          v-if="
+            $integrations &&
+            $integrations.fileBarIntegrations &&
+            $integrations.fileBarIntegrations.length > 0
+          "
+          size="md"
+          dense
+          no-caps
+          flat
+          label="Integrations"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <q-item

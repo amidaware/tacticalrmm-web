@@ -5,14 +5,17 @@ For details, see: https://license.tacticalrmm.com/ee
 */
 
 import axios from "axios";
-import { exportFile } from "quasar";
 import { ref, type Ref } from "vue";
+import { router } from "@/router";
 import type {
+  ReportFormat,
+  ReportDependencies,
   ReportTemplate,
   ReportHTMLTemplate,
   ReportDataQuery,
   UploadAssetsResponse,
   RunReportPreviewRequest,
+  RunReportRequest,
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
@@ -23,14 +26,20 @@ export interface useReportingTemplates {
   reportTemplates: Ref<ReportTemplate[]>;
   isLoading: Ref<boolean>;
   isError: Ref<boolean>;
-  getReportTemplates: () => void;
+  getReportTemplates: (dependsOn?: string[]) => void;
   addReportTemplate: (payload: ReportTemplate) => void;
   editReportTemplate: (id: number, payload: ReportTemplate) => void;
   deleteReportTemplate: (id: number) => void;
   renderedPreview: Ref<string>;
   runReportPreview: (payload: RunReportPreviewRequest) => void;
   reportData: Ref<string>;
-  runReport: (id: number, payload: ReportTemplate) => void;
+  runReport: (id: number, payload: RunReportRequest) => void;
+  openReport: (
+    id: number,
+    format: ReportFormat,
+    dependsOn: string[],
+    dependencies?: ReportDependencies
+  ) => void;
 }
 
 // reporting endpoints
@@ -41,11 +50,16 @@ export function useReportTemplates(): useReportingTemplates {
   const renderedPreview = ref("");
   const reportData = ref("");
 
-  const getReportTemplates = () => {
+  const getReportTemplates = (dependsOn?: string[]) => {
     isLoading.value = true;
     isError.value = false;
+
+    const query = {} as { dependsOn?: string[] };
+    if (dependsOn) {
+      query.dependsOn = dependsOn;
+    }
     axios
-      .get(`${baseUrl}/templates/`)
+      .get(`${baseUrl}/templates/`, { params: query })
       .then(({ data }) => {
         reportTemplates.value = data;
       })
@@ -118,21 +132,33 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
-  function runReport(id: number, payload: ReportTemplate): void {
+  function runReport(id: number, payload: RunReportRequest): void {
     isLoading.value = true;
     isError.value = false;
     axios
       .post(`${baseUrl}/templates/${id}/run/`, payload, {
-        responseType: "blob",
+        responseType: payload.format === "html" ? "json" : "blob",
       })
       .then(({ data }) => {
-        reportData.value = data;
-        exportFile("Report.pdf", data, {
-          mimeType: "application/pdf",
-        });
+        reportData.value =
+          payload.format === "html" ? data : URL.createObjectURL(data);
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
+  }
+
+  function openReport(
+    id: number,
+    format: ReportFormat,
+    dependsOn: string[],
+    dependencies?: ReportDependencies
+  ) {
+    const dependencyString = JSON.stringify(dependencies);
+    const dependsOnString = JSON.stringify(dependsOn);
+    const url = router.resolve(
+      `/reports/${id}?format=${format}&dependsOn=${dependsOnString}&dependencies=${dependencyString}`
+    ).href;
+    window.open(url, "_blank");
   }
 
   return {
@@ -147,6 +173,7 @@ export function useReportTemplates(): useReportingTemplates {
     runReportPreview,
     reportData,
     runReport,
+    openReport,
   };
 }
 

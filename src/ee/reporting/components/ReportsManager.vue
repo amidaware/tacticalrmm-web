@@ -14,7 +14,7 @@ For details, see: https://license.tacticalrmm.com/ee
           flat
           push
           icon="refresh"
-          @click="getReportTemplates"
+          @click="getReportTemplates()"
         />Reports Manager
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
@@ -141,16 +141,35 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section>Clone</q-item-section>
                 </q-item>
 
+                <q-separator />
+
                 <q-item
                   v-close-popup
                   clickable
-                  @click="runReport(props.row.id, props.row)"
+                  @click="
+                    openReport(props.row.id, 'pdf', props.row.depends_on, {})
+                  "
                 >
                   <q-item-section side>
                     <q-icon name="mdi-file-pdf-box" />
                   </q-item-section>
-                  <q-item-section>Get Report PDF</q-item-section>
+                  <q-item-section>Get PDF Report</q-item-section>
                 </q-item>
+
+                <q-item
+                  v-close-popup
+                  clickable
+                  @click="
+                    openReport(props.row.id, 'html', props.row.depends_on, {})
+                  "
+                >
+                  <q-item-section side>
+                    <q-icon name="mdi-file-pdf-box" />
+                  </q-item-section>
+                  <q-item-section>Open HTML Report</q-item-section>
+                </q-item>
+
+                <q-separator />
 
                 <q-item
                   v-close-popup
@@ -163,7 +182,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section>Delete</q-item-section>
                 </q-item>
 
-                <q-separator></q-separator>
+                <q-separator />
 
                 <q-item v-close-popup clickable>
                   <q-item-section>Close</q-item-section>
@@ -217,7 +236,7 @@ const {
   isLoading,
   getReportTemplates,
   deleteReportTemplate,
-  runReport,
+  openReport,
 } = useSharedReportTemplates;
 
 onMounted(getReportTemplates);

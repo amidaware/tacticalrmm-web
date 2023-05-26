@@ -185,6 +185,32 @@
                         <q-item-section>Run Checks</q-item-section>
                       </q-item>
 
+                      <q-item
+                        clickable
+                        v-if="
+                          ($integrations &&
+                            props.node.children &&
+                            $integrations.clientMenuIntegrations &&
+                            $integrations.clientMenuIntegrations.length > 0) ||
+                          ($integrations &&
+                            !props.node.children &&
+                            $integrations.siteMenuIntegrations &&
+                            $integrations.siteMenuIntegrations.length > 0)
+                        "
+                      >
+                        <q-item-section side>
+                          <q-icon name="integration_instructions" />
+                        </q-item-section>
+                        <q-item-section>Integrations</q-item-section>
+                        <q-item-section side>
+                          <q-icon name="keyboard_arrow_right" />
+                        </q-item-section>
+                        <integrations-context-menu
+                          :type="props.node.children ? 'client' : 'site'"
+                          :id="props.node.id"
+                        />
+                      </q-item>
+
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
@@ -425,6 +451,7 @@ import SitesForm from "@/components/clients/SitesForm.vue";
 import DeleteClient from "@/components/clients/DeleteClient.vue";
 import InstallAgent from "@/components/modals/agents/InstallAgent.vue";
 import AlertTemplateAdd from "@/components/modals/alerts/AlertTemplateAdd.vue";
+import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
 
 import { removeClient, removeSite } from "@/api/clients";
 
@@ -435,6 +462,7 @@ export default {
     AgentTable,
     SubTableTabs,
     InstallAgent,
+    IntegrationsContextMenu,
   },
   // allow child components to refresh table
   provide() {

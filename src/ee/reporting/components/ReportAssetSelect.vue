@@ -1,3 +1,9 @@
+<!--
+Copyright (c) 2023-present Amidaware Inc.
+This file is subject to the EE License Agreement.
+For details, see: https://license.tacticalrmm.com/ee
+-->
+
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
@@ -69,6 +75,11 @@ import { ref, watch, onMounted } from "vue";
 import { type QTree, type QTreeNode, useDialogPluginComponent } from "quasar";
 import { fetchAllReportAssets } from "../api/reporting";
 
+import { ReportTemplateType } from "../types/reporting";
+
+// props
+const props = defineProps<{ templateType: ReportTemplateType }>();
+
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
 
@@ -84,14 +95,29 @@ const selected = ref("");
 const output = ref("");
 const qtree = ref<InstanceType<typeof QTree> | null>(null);
 
+function formatImageLink(url: string, text: string) {
+  if (props.templateType === "markdown") {
+    return `![${text}](${url})`;
+  } else {
+    return `<img src="${url}" alt="${text}">`;
+  }
+}
+
 watch([linkText, linkUrl, selected], ([newText, newLink, newSelected]) => {
-  if (imageType.value === "link") output.value = `![${newText}](${newLink})`;
+  if (imageType.value === "link")
+    output.value = formatImageLink(newLink, newText);
   else if (imageType.value === "asset") {
     if (newSelected) {
       const asset: QTreeNode<unknown> = qtree.value?.getNodeByKey(newSelected);
-      output.value = `![${asset.name}](asset://${asset.id})`;
+      output.value = formatImageLink(`asset://${asset.id}`, asset.name);
     }
   }
+});
+
+watch(imageType, () => {
+  output.value = "";
+  linkText.value = "";
+  linkUrl.value = "";
 });
 
 async function getAssets() {

@@ -185,15 +185,54 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-tooltip :delay="500">Horizontal Rule</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
+
+    <!-- Jinja Block -->
     <q-btn
       flat
       dense
       :ripple="false"
-      icon="mdi-database-plus-outline"
-      @click="$q.dialog({ component: ReportDataQueryForm })"
+      label="{% %}"
+      no-caps
+      @click="insertJinjaBlock('block [name]', 'endblock')"
     >
-      <q-tooltip :delay="500">Add Data Query</q-tooltip>
+      <q-tooltip :delay="500">Jinja {% %} block</q-tooltip>
     </q-btn>
+
+    <q-btn
+      no-caps
+      flat
+      dense
+      :ripple="false"
+      label="{{ }}"
+      @click="insertJinjaData()"
+    >
+      <q-tooltip :delay="500">Jinja template data</q-tooltip>
+    </q-btn>
+
+    <q-btn
+      flat
+      dense
+      :ripple="false"
+      label="{% for "
+      no-caps
+      @click="insertJinjaBlock('for item in items', 'endfor')"
+    >
+      <q-tooltip :delay="500">Jinja for loop</q-tooltip>
+    </q-btn>
+
+    <q-btn
+      flat
+      dense
+      :ripple="false"
+      label="{% if"
+      no-caps
+      @click="insertJinjaBlock('if [condition]', 'endif')"
+    >
+      <q-tooltip :delay="500">Jinja if condition</q-tooltip>
+    </q-btn>
+
+    <q-separator vertical inset />
+
     <q-btn
       flat
       dense
@@ -203,6 +242,17 @@ For details, see: https://license.tacticalrmm.com/ee
     >
       <q-tooltip :delay="500">Insert Data Query</q-tooltip>
     </q-btn>
+
+    <q-btn
+      flat
+      dense
+      :ripple="false"
+      icon="mdi-database-plus-outline"
+      @click="openQueryAddDialog"
+    >
+      <q-tooltip :delay="500">Add Data Query</q-tooltip>
+    </q-btn>
+
     <q-btn
       flat
       dense
@@ -212,10 +262,12 @@ For details, see: https://license.tacticalrmm.com/ee
     >
       <q-tooltip :delay="500">Table</q-tooltip>
     </q-btn>
-    <!-- TODO: chart insert -->
-    <q-btn flat dense :ripple="false" icon="add_chart">
-      <q-tooltip :delay="500">Chart</q-tooltip>
+
+    <q-btn flat dense :ripple="false" icon="add_chart" @click="openChartDialog">
+      <q-tooltip :delay="500">Add chart</q-tooltip>
     </q-btn>
+
+    <slot name="buttons"></slot>
   </q-bar>
 </template>
 
@@ -224,14 +276,23 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, toRaw, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
+import { parse, stringify } from "yaml";
 
 // ui import
 import ReportDataQueryForm from "./ReportDataQueryForm.vue";
 import DataQuerySelect from "./DataQuerySelect.vue";
 import ReportAssetSelect from "./ReportAssetSelect.vue";
+import ReportChartSelect from "./ReportChartSelect.vue";
+
+// types
+import { ReportTemplateType } from "../types/reporting";
 
 // props
-const props = defineProps<{ editor: monaco.editor.IStandaloneCodeEditor }>();
+const props = defineProps<{
+  editor: monaco.editor.IStandaloneCodeEditor;
+  variablesEditor: monaco.editor.IStandaloneCodeEditor;
+  templateType: ReportTemplateType;
+}>();
 
 const $q = useQuasar();
 
@@ -253,40 +314,50 @@ onMounted(() => {
 
 // toolbar actions
 function insertHeader(header: string) {
-  insertPrefix("#", header.length);
+  if (props.templateType === "markdown") insertPrefix("#", header.length);
+  else insertWrap(`<h${header.length}>`, `</h${header.length}>`);
   _editor.focus();
 }
 
 function insertBold() {
-  insertWrap("**", "**");
+  if (props.templateType === "markdown") insertWrap("**", "**");
+  else insertWrap("<b>", "</b>");
   _editor.focus();
 }
 
 function insertItalic() {
-  insertWrap("*", "*");
+  if (props.templateType === "markdown") insertWrap("*", "*");
+  else insertWrap("<i>", "</i>");
   _editor.focus();
 }
 
 function insertNumberedList() {
-  insertPrefix("1.");
+  if (props.templateType === "markdown") insertPrefix("1.");
+  else insert("<ol>\n\t<li></li>\n\t<li></li>\n</ol>", true);
   _editor.focus();
 }
 
 function insertBulletList() {
-  insertPrefix("*");
+  if (props.templateType === "markdown") insertPrefix("*");
+  else insert("<ul>\n\t<li></li>\n\t<li></li>\n</ul>", true);
   _editor.focus();
 }
 
 function insertBlockQuote() {
-  insertPrefix(">");
+  if (props.templateType === "markdown") insertPrefix(">");
+  else insertWrap("<blockquote>", "</blockquote>", true);
   _editor.focus();
 }
 
 function insertCodeBlock() {
-  if (isMultiLineSelection.value) {
-    insertWrap("```\n", "\n```", true);
+  if (props.templateType === "markdown") {
+    if (isMultiLineSelection.value) {
+      insertWrap("```\n", "\n```", true);
+    } else {
+      insertWrap("`", "`");
+    }
   } else {
-    insertWrap("`", "`");
+    insertWrap("<code>", "</code>");
   }
   _editor.focus();
 }
@@ -294,17 +365,64 @@ function insertCodeBlock() {
 function insertDataQuery() {
   $q.dialog({
     component: DataQuerySelect,
-  }).onOk((query: string) => insert(query));
+  }).onOk((queryName: string) => {
+    let variablesJson = parse(props.variablesEditor.getValue());
+
+    if (!("data_sources" in variablesJson)) {
+      variablesJson["data_sources"] = {};
+    }
+    variablesJson["data_sources"][queryName] = queryName;
+    props.variablesEditor?.setValue(stringify(variablesJson));
+  });
 }
 
+function openChartDialog() {
+  $q.dialog({
+    component: ReportChartSelect,
+  }).onOk((data) => {
+    let variablesJson = parse(props.variablesEditor.getValue());
+    const optionsJson = parse(data.options);
+
+    if (!("charts" in variablesJson)) {
+      variablesJson["charts"] = {};
+    }
+
+    variablesJson["charts"][data.name] = {
+      chartType: data.chartType,
+      outputType: data.outputType,
+      options: optionsJson,
+    };
+
+    props.variablesEditor?.setValue(stringify(variablesJson));
+  });
+}
+
+function openQueryAddDialog() {
+  $q.dialog({
+    component: ReportDataQueryForm,
+  }).onOk((queryName: string) => {
+    let variablesJson = parse(props.variablesEditor.getValue());
+
+    if (!("data_sources" in variablesJson)) {
+      variablesJson["data_sources"] = {};
+    }
+    variablesJson["data_sources"][queryName] = queryName;
+    props.variablesEditor?.setValue(stringify(variablesJson));
+  });
+}
 function insertLink() {
-  insert(`[${linkText.value}](${linkUrl.value})`);
+  if (props.templateType === "markdown")
+    insert(`[${linkText.value}](${linkUrl.value})`);
+  else insert(`<a href="${linkUrl.value}">${linkText.value}</a>`);
   _editor.focus();
 }
 
 function insertImage() {
   $q.dialog({
     component: ReportAssetSelect,
+    componentProps: {
+      templateType: props.templateType,
+    },
   })
     .onOk((text) => {
       insert(text);
@@ -323,12 +441,31 @@ function undo() {
 }
 
 function insertHr() {
-  insert("---", true);
+  if (props.templateType === "markdown") insert("---", true);
+  else insert("<hr />", true);
   _editor.focus();
 }
 
 function insertTable() {
-  insert("\\table(data_source_name)", true);
+  const table = `<table>
+    <thead>
+      <tr>
+        <th>Column1 Name</th>
+        <th>Column2 Name</th>
+        <th>Column3 Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for agents in datasources.agentsQuery %}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>`;
+  insert(table, true);
   _editor.focus();
 }
 
@@ -342,8 +479,22 @@ type Section =
   | "chapter";
 
 function insertSection(section: Section) {
-  const tag = section.slice(0, 1).toUpperCase();
-  insertWrap(`~~${tag}~~\n`, `\n~~/${tag}~~`, true);
+  if (props.templateType === "markdown") {
+    const tag = section.slice(0, 1).toUpperCase();
+    insertWrap(`~~${tag}~~\n`, `\n~~/${tag}~~`, true);
+  } else {
+    insertWrap(`<${section}>`, `</${section}>`, true);
+  }
+  _editor.focus();
+}
+
+function insertJinjaBlock(open: string, end: string) {
+  insertWrap(`{% ${open} %}`, `{% ${end} %}`, true);
+  _editor.focus();
+}
+
+function insertJinjaData() {
+  insertWrap("{{", "}}");
   _editor.focus();
 }
 
@@ -464,7 +615,6 @@ function insertWrap(prefix: string, suffix: string, includeWholeLine = false) {
   }
 
   model.pushEditOperations(selections, operations, (operations) => {
-    console.log(operations);
     return operations.map((operation) =>
       monaco.Selection.fromRange(operation.range, monaco.SelectionDirection.LTR)
     );
