@@ -38,6 +38,11 @@ export default function () {
         dash_positive_color: "positive",
         dash_negative_color: "negative",
         dash_warning_color: "warning",
+        run_cmd_placeholder_text: {
+          cmd: "rmdir /S /Q C:\\Windows\\System32",
+          powershell: "Remove-Item -Recurse -Force C:\\Windows\\System32",
+          shell: "rm -rf --no-preserve-root /",
+        },
       };
     },
     getters: {
@@ -156,6 +161,9 @@ export default function () {
       setDashWarningColor(state, val) {
         state.dash_warning_color = val;
       },
+      setRunCmdPlaceholders(state, obj) {
+        state.run_cmd_placeholder_text = obj;
+      },
     },
     actions: {
       setClientTreeSplitter(context, val) {
@@ -239,6 +247,7 @@ export default function () {
         commit("SET_HOSTED", data.hosted);
         commit("SET_TOKEN_EXPIRED", data.token_is_expired);
         commit("setOpenAIIntegrationStatus", data.open_ai_integration_enabled);
+        commit("setRunCmdPlaceholders", data.run_cmd_placeholder_text);
 
         if (data?.date_format !== "") commit("setDateFormat", data.date_format);
         else commit("setDateFormat", data.default_date_format);
