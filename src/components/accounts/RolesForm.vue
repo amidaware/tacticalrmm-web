@@ -99,6 +99,10 @@
                 label="Reboot Agents"
               />
               <q-checkbox
+                v-model="localRole.can_send_wol"
+                label="Wake-Up (WoL) Agents"
+              />
+              <q-checkbox
                 v-model="localRole.can_install_agents"
                 label="Install Agents"
               />
@@ -437,8 +441,8 @@ export default {
           can_run_scripts: false,
           can_run_bulk: false,
           can_manage_winsvcs: false,
-          can_recover_agents: false,
           can_list_agent_history: false,
+          can_send_wol: false,
           // software perms
           can_list_software: false,
           can_manage_software: false,
