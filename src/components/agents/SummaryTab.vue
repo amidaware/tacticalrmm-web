@@ -87,7 +87,7 @@
             </q-item-section>
             <q-item-section>{{ summary.make_model }}</q-item-section>
           </q-item>
-          <q-item v-for="(cpu, i) in summary.cpu_model" :key="cpu + i">
+          <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-microchip" />
             </q-item-section>
@@ -270,6 +270,13 @@ export default {
       return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
     });
 
+    const cpu = computed(() => {
+      if (summary.value.cpu_model?.length > 1) {
+        return `${summary.value.cpu_model.length}x ${summary.value.cpu_model[0]}`;
+      }
+      return summary.value.cpu_model[0];
+    });
+
     function diskBarColor(percent) {
       if (percent < 80) {
         return dash_positive_color.value;
@@ -373,6 +380,7 @@ export default {
       dash_warning_color,
       dash_negative_color,
       serial_number,
+      cpu,
 
       // methods
       getSummary,
