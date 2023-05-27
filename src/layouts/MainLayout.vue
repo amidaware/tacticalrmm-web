@@ -56,15 +56,27 @@
           Tactical RMM<span class="text-overline q-ml-sm"
             >v{{ currentTRMMVersion }}</span
           >
-          <span class="text-overline q-ml-md" v-if="updateAvailable()"
-            ><q-badge :color="dash_warning_color"
-              ><a :href="latestReleaseURL" target="_blank"
-                >v{{ latestTRMMVersion }} available</a
-              ></q-badge
-            ></span
+          <!-- update check -->
+          <q-chip
+            v-if="updateAvailable"
+            class="text-overline q-ml-sm"
+            :color="dash_warning_color"
+            icon="update"
+            dense
+            ><a :href="latestReleaseURL" target="_blank"
+              >v{{ latestTRMMVersion }} available</a
+            ></q-chip
+          >
+          <!-- cert expiring soon check -->
+          <q-chip
+            v-if="daysUntilCertExpires <= 15"
+            dense
+            :color="dash_negative_color"
+            text-color="black"
+            icon="warning"
+            >Certificate expires in {{ daysUntilCertExpires }} days</q-chip
           >
         </q-toolbar-title>
-
         <!-- temp dark mode toggle -->
         <q-toggle
           v-model="darkMode"
@@ -265,6 +277,7 @@ export default {
     const serverOfflineCount = ref(0);
     const workstationCount = ref(0);
     const workstationOfflineCount = ref(0);
+    const daysUntilCertExpires = ref(100);
 
     const ws = ref(null);
 
@@ -291,6 +304,7 @@ export default {
         serverOfflineCount.value = data.total_server_offline_count;
         workstationCount.value = data.total_workstation_count;
         workstationOfflineCount.value = data.total_workstation_offline_count;
+        daysUntilCertExpires.value = data.days_until_cert_expires;
       };
       ws.value.onclose = (e) => {
         try {
@@ -314,13 +328,18 @@ export default {
       poll.value = setInterval(() => {
         store.dispatch("checkVer");
         store.dispatch("getDashInfo", false);
-      }, 60 * 5 * 1000);
+      }, 60 * 4 * 1000);
     }
 
-    function updateAvailable() {
-      if (latestTRMMVersion.value === "error" || hosted.value) return false;
+    const updateAvailable = computed(() => {
+      if (
+        latestTRMMVersion.value === "error" ||
+        hosted.value ||
+        currentTRMMVersion.value?.includes("-dev")
+      )
+        return false;
       return currentTRMMVersion.value !== latestTRMMVersion.value;
-    }
+    });
 
     onMounted(() => {
       setupWS();
@@ -341,6 +360,7 @@ export default {
       serverOfflineCount,
       workstationCount,
       workstationOfflineCount,
+      daysUntilCertExpires,
       latestReleaseURL,
       currentTRMMVersion,
       latestTRMMVersion,
