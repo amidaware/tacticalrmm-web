@@ -114,6 +114,13 @@
             </q-item-section>
             <q-item-section>{{ summary.graphics }}</q-item-section>
           </q-item>
+          <!-- serial -->
+          <q-item v-if="serial_number">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-barcode" />
+            </q-item-section>
+            <q-item-section>{{ serial_number }}</q-item-section>
+          </q-item>
           <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-globe-americas" />
@@ -259,6 +266,10 @@ export default {
     const customFieldsDefinitions = ref(null);
     const loading = ref(false);
 
+    const serial_number = computed(() => {
+      return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+    });
+
     function diskBarColor(percent) {
       if (percent < 80) {
         return dash_positive_color.value;
@@ -361,6 +372,7 @@ export default {
       dash_positive_color,
       dash_warning_color,
       dash_negative_color,
+      serial_number,
 
       // methods
       getSummary,
