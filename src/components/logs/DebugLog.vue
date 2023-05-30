@@ -68,25 +68,25 @@
         />
         <q-radio
           v-model="logLevelFilter"
-          color="cyan"
+          :color="dash_info_color"
           val="info"
           label="Info"
         />
         <q-radio
           v-model="logLevelFilter"
-          color="red"
+          :color="dash_negative_color"
           val="critical"
           label="Critical"
         />
         <q-radio
           v-model="logLevelFilter"
-          color="red"
+          :color="dash_negative_color"
           val="error"
           label="Error"
         />
         <q-radio
           v-model="logLevelFilter"
-          color="yellow"
+          :color="dash_warning_color"
           val="warning"
           label="Warning"
         />
@@ -109,7 +109,7 @@
       <template v-slot:top-row>
         <q-tr v-if="Array.isArray(debugLog) && debugLog.length === 1000">
           <q-td colspan="100%">
-            <q-icon name="warning" color="warning" />
+            <q-icon name="warning" :color="dash_warning_color" />
             Results are limited to 1000 rows.
           </q-td>
         </q-tr>
@@ -203,6 +203,10 @@ export default {
     const store = useStore();
 
     const formatDate = computed(() => store.getters.formatDate);
+    const dash_info_color = computed(() => store.state.dash_info_color);
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // setup dropdowns
     const { agentOptions, getAgentOptions } = useAgentDropdown();
@@ -261,6 +265,10 @@ export default {
       agentOptions,
       loading,
       filter,
+      dash_info_color,
+      dash_positive_color,
+      dash_warning_color,
+      dash_negative_color,
 
       // non-reactive data
       columns,

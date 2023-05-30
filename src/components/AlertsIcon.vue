@@ -3,7 +3,7 @@
     <q-badge v-if="alertsCount > 0" :color="badgeColor" floating transparent>{{
       alertsCountText()
     }}</q-badge>
-    <q-menu style="max-height: 30vh">
+    <q-menu :style="{ 'max-height': `${$q.screen.height - 100}px` }">
       <q-list separator>
         <q-item v-if="alertsCount === 0">No New Alerts</q-item>
         <q-item v-for="alert in topAlerts" :key="alert.id">
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import mixins from "@/mixins/mixins";
 import AlertsOverview from "@/components/modals/alerts/AlertsOverview.vue";
 import { getTimeLapse } from "@/utils/format";
@@ -75,19 +76,21 @@ export default {
     return {
       alertsCount: 0,
       topAlerts: [],
-      errorColor: "red",
-      warningColor: "orange",
-      infoColor: "blue",
       poll: null,
     };
   },
   computed: {
+    ...mapState([
+      "dash_info_color",
+      "dash_warning_color",
+      "dash_negative_color",
+    ]),
     badgeColor() {
       const severities = this.topAlerts.map((alert) => alert.severity);
 
-      if (severities.includes("error")) return this.errorColor;
-      else if (severities.includes("warning")) return this.warningColor;
-      else return this.infoColor;
+      if (severities.includes("error")) return this.dash_negative_color;
+      else if (severities.includes("warning")) return this.dash_warning_color;
+      else return this.dash_info_color;
     },
   },
   methods: {
@@ -159,9 +162,9 @@ export default {
         });
     },
     alertIconColor(severity) {
-      if (severity === "error") return this.errorColor;
-      else if (severity === "warning") return this.warningColor;
-      else return this.infoColor;
+      if (severity === "error") return this.dash_negative_color;
+      else if (severity === "warning") return this.dash_warning_color;
+      else return this.dash_info_color;
     },
     alertsCountText() {
       if (this.alertsCount > 99) return "99+";

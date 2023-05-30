@@ -232,3 +232,8 @@ export async function removeAgentNote(pk) {
   const { data } = await axios.delete(`${baseUrl}/notes/${pk}/`);
   return data;
 }
+
+export async function wakeUpWOL(agent_id) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/wol/`);
+  return data;
+}

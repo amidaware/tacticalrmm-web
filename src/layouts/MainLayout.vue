@@ -56,15 +56,27 @@
           Tactical RMM<span class="text-overline q-ml-sm"
             >v{{ currentTRMMVersion }}</span
           >
-          <span class="text-overline q-ml-md" v-if="updateAvailable()"
-            ><q-badge color="warning"
-              ><a :href="latestReleaseURL" target="_blank"
-                >v{{ latestTRMMVersion }} available</a
-              ></q-badge
-            ></span
+          <!-- update check -->
+          <q-chip
+            v-if="updateAvailable"
+            class="text-overline q-ml-sm"
+            :color="dash_warning_color"
+            icon="update"
+            dense
+            ><a :href="latestReleaseURL" target="_blank"
+              >v{{ latestTRMMVersion }} available</a
+            ></q-chip
+          >
+          <!-- cert expiring soon check -->
+          <q-chip
+            v-if="daysUntilCertExpires <= 15"
+            dense
+            :color="dash_negative_color"
+            text-color="black"
+            icon="warning"
+            >Certificate expires in {{ daysUntilCertExpires }} days</q-chip
           >
         </q-toolbar-title>
-
         <!-- temp dark mode toggle -->
         <q-toggle
           v-model="darkMode"
@@ -94,7 +106,11 @@
               </q-item>
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="power_off" size="sm" color="negative" />
+                  <q-icon
+                    name="power_off"
+                    size="sm"
+                    :color="dash_negative_color"
+                  />
                 </q-item-section>
 
                 <q-item-section no-wrap>
@@ -113,7 +129,11 @@
               </q-item>
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="power_off" size="sm" color="negative" />
+                  <q-icon
+                    name="power_off"
+                    size="sm"
+                    :color="dash_negative_color"
+                  />
                 </q-item-section>
 
                 <q-item-section no-wrap>
@@ -218,6 +238,8 @@ export default {
     const user = computed(() => store.state.username);
     const hosted = computed(() => store.state.hosted);
     const tokenExpired = computed(() => store.state.tokenExpired);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
 
     const latestReleaseURL = computed(() => {
       return latestTRMMVersion.value
@@ -255,6 +277,7 @@ export default {
     const serverOfflineCount = ref(0);
     const workstationCount = ref(0);
     const workstationOfflineCount = ref(0);
+    const daysUntilCertExpires = ref(100);
 
     const ws = ref(null);
 
@@ -262,6 +285,13 @@ export default {
       // moved computed token inside the function since it is not refreshing
       // when ws is closed causing ws to connect with expired token
       const token = computed(() => store.state.token);
+
+      if (!token.value) {
+        console.log(
+          "Access token is null or invalid, not setting up WebSocket"
+        );
+        return;
+      }
       console.log("Starting websocket");
       let url = getWSUrl("dashinfo", token.value);
       ws.value = new WebSocket(url);
@@ -274,6 +304,7 @@ export default {
         serverOfflineCount.value = data.total_server_offline_count;
         workstationCount.value = data.total_workstation_count;
         workstationOfflineCount.value = data.total_workstation_offline_count;
+        daysUntilCertExpires.value = data.days_until_cert_expires;
       };
       ws.value.onclose = (e) => {
         try {
@@ -297,13 +328,18 @@ export default {
       poll.value = setInterval(() => {
         store.dispatch("checkVer");
         store.dispatch("getDashInfo", false);
-      }, 60 * 5 * 1000);
+      }, 60 * 4 * 1000);
     }
 
-    function updateAvailable() {
-      if (latestTRMMVersion.value === "error" || hosted.value) return false;
+    const updateAvailable = computed(() => {
+      if (
+        latestTRMMVersion.value === "error" ||
+        hosted.value ||
+        currentTRMMVersion.value?.includes("-dev")
+      )
+        return false;
       return currentTRMMVersion.value !== latestTRMMVersion.value;
-    }
+    });
 
     onMounted(() => {
       setupWS();
@@ -324,6 +360,7 @@ export default {
       serverOfflineCount,
       workstationCount,
       workstationOfflineCount,
+      daysUntilCertExpires,
       latestReleaseURL,
       currentTRMMVersion,
       latestTRMMVersion,
@@ -332,6 +369,8 @@ export default {
       darkMode,
       hosted,
       tokenExpired,
+      dash_warning_color,
+      dash_negative_color,
 
       // methods
       showUserPreferences,

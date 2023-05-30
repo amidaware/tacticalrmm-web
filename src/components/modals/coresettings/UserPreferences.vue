@@ -83,6 +83,98 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
+                  <div class="col-2">Dashboard Info Color:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="dash_info_color"
+                    class="col-8"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        round
+                        dense
+                        flat
+                        size="sm"
+                        icon="info"
+                        @click="openURL(quasar_color_url)"
+                      >
+                        <q-tooltip>Click to see color options</q-tooltip>
+                      </q-btn>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Dashboard Positive Color:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="dash_positive_color"
+                    class="col-8"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        round
+                        dense
+                        flat
+                        size="sm"
+                        icon="info"
+                        @click="openURL(quasar_color_url)"
+                      >
+                        <q-tooltip>Click to see color options</q-tooltip>
+                      </q-btn>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Dashboard Negative Color:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="dash_negative_color"
+                    class="col-8"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        round
+                        dense
+                        flat
+                        size="sm"
+                        icon="info"
+                        @click="openURL(quasar_color_url)"
+                      >
+                        <q-tooltip>Click to see color options</q-tooltip>
+                      </q-btn>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Dashboard Warning Color:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="dash_warning_color"
+                    class="col-8"
+                  >
+                    <template v-slot:after>
+                      <q-btn
+                        round
+                        dense
+                        flat
+                        size="sm"
+                        icon="info"
+                        @click="openURL(quasar_color_url)"
+                      >
+                        <q-tooltip>Click to see color options</q-tooltip>
+                      </q-btn>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section class="row">
                   <div class="col-2">Client Sort:</div>
                   <div class="col-2"></div>
                   <q-select
@@ -156,9 +248,14 @@ export default {
       tab: "ui",
       splitterModel: 20,
       loading_bar_color: "",
+      dash_info_color: "",
+      dash_positive_color: "",
+      dash_negative_color: "",
+      dash_warning_color: "",
       urlActions: [],
       clear_search_when_switching: true,
       date_format: "",
+      quasar_color_url: "https://quasar.dev/style/color-palette",
       clientTreeSortOptions: [
         {
           label: "Sort alphabetically, moving failing clients to the top",
@@ -235,6 +332,10 @@ export default {
         this.defaultAgentTblTab = r.data.default_agent_tbl_tab;
         this.clientTreeSort = r.data.client_tree_sort;
         this.loading_bar_color = r.data.loading_bar_color;
+        this.dash_info_color = r.data.dash_info_color;
+        this.dash_positive_color = r.data.dash_positive_color;
+        this.dash_negative_color = r.data.dash_negative_color;
+        this.dash_warning_color = r.data.dash_warning_color;
         this.clear_search_when_switching = r.data.clear_search_when_switching;
         this.date_format = r.data.date_format;
       });
@@ -253,6 +354,10 @@ export default {
         default_agent_tbl_tab: this.defaultAgentTblTab,
         client_tree_sort: this.clientTreeSort,
         loading_bar_color: this.loading_bar_color,
+        dash_info_color: this.dash_info_color,
+        dash_positive_color: this.dash_positive_color,
+        dash_negative_color: this.dash_negative_color,
+        dash_warning_color: this.dash_warning_color,
         clear_search_when_switching: this.clear_search_when_switching,
         date_format: this.date_format,
       };

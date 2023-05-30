@@ -146,6 +146,13 @@
       <q-item-section>Run Checks</q-item-section>
     </q-item>
 
+    <q-item clickable v-close-popup @click="wakeUp(agent)">
+      <q-item-section side>
+        <q-icon size="xs" name="offline_bolt" />
+      </q-item-section>
+      <q-item-section>Wake-Up (WoL)</q-item-section>
+    </q-item>
+
     <q-item clickable>
       <q-item-section side>
         <q-icon size="xs" name="power_settings_new" />
@@ -210,6 +217,7 @@ import {
   removeAgent,
   runRemoteBackground,
   runTakeControl,
+  wakeUpWOL,
 } from "@/api/agents";
 import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
 import { runAgentChecks } from "@/api/checks";
@@ -370,6 +378,15 @@ export default {
       }
     }
 
+    async function wakeUp(agent) {
+      try {
+        const data = await wakeUpWOL(agent.agent_id);
+        notifySuccess(data);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     function showRebootLaterModal(agent) {
       $q.dialog({
         component: RebootLater,
@@ -498,6 +515,7 @@ export default {
       showPolicyAdd,
       showAgentRecovery,
       pingAgent,
+      wakeUp,
     };
   },
 };

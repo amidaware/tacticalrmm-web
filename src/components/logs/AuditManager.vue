@@ -304,6 +304,9 @@ export default {
     // setup vuex
     const store = useStore();
     const formatDate = computed(() => store.getters.formatDate);
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // setup dropdowns
     const { clientOptions, getClientOptions } = useClientDropdown();
@@ -381,12 +384,18 @@ export default {
     }
 
     function formatActionColor(action) {
-      if (action === "add") return "success";
-      else if (action === "agent_install") return "success";
-      else if (action === "modify") return "warning";
-      else if (action === "delete") return "negative";
-      else if (action === "failed_login") return "negative";
-      else return "primary";
+      switch (action.toLowerCase()) {
+        case "modify":
+          return dash_warning_color.value;
+        case "add":
+        case "agent_install":
+          return dash_positive_color.value;
+        case "delete":
+        case "failed_login":
+          return dash_negative_color.value;
+        default:
+          return "primary";
+      }
     }
 
     // watchers

@@ -452,7 +452,7 @@ export default {
       showInstallAgentModal: false,
       sitePk: null,
       innerModel: (this.$q.screen.height - 82) / 2,
-      search: (this.$route.query.search ? this.$route.query.search : ""),
+      search: this.$route.query.search ? this.$route.query.search : "",
       filterTextLength: 0,
       filterAvailability: "all",
       filterPatchesPending: false,

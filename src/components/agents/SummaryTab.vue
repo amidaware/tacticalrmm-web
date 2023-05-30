@@ -18,6 +18,33 @@
         icon="refresh"
         @click="refreshSummary"
       />
+      <q-icon
+        v-if="summary.status === 'overdue'"
+        name="fas fa-signal"
+        size="1.2em"
+        :color="dash_negative_color"
+        class="q-mr-sm"
+      >
+        <q-tooltip>Agent overdue</q-tooltip>
+      </q-icon>
+      <q-icon
+        v-else-if="summary.status === 'offline'"
+        name="fas fa-signal"
+        size="1.2em"
+        :color="dash_warning_color"
+        class="q-mr-sm"
+      >
+        <q-tooltip>Agent offline</q-tooltip>
+      </q-icon>
+      <q-icon
+        v-else
+        name="fas fa-signal"
+        size="1.2em"
+        :color="dash_positive_color"
+        class="q-mr-sm"
+      >
+        <q-tooltip>Agent online</q-tooltip>
+      </q-icon>
       <b>{{ summary.hostname }}</b>
       <span v-if="summary.maintenance_mode">
         &bull; <q-badge color="green"> Maintenance Mode </q-badge>
@@ -60,7 +87,7 @@
             </q-item-section>
             <q-item-section>{{ summary.make_model }}</q-item-section>
           </q-item>
-          <q-item v-for="(cpu, i) in summary.cpu_model" :key="cpu + i">
+          <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-microchip" />
             </q-item-section>
@@ -87,6 +114,13 @@
             </q-item-section>
             <q-item-section>{{ summary.graphics }}</q-item-section>
           </q-item>
+          <!-- serial -->
+          <q-item v-if="serial_number">
+            <q-item-section avatar>
+              <q-icon name="fa-solid fa-barcode" />
+            </q-item-section>
+            <q-item-section>{{ serial_number }}</q-item-section>
+          </q-item>
           <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-globe-americas" />
@@ -110,7 +144,7 @@
               size="lg"
               square
               icon="done"
-              color="green"
+              :color="dash_positive_color"
               text-color="white"
             />
             <small>{{ summary.checks.passing }} checks passing</small>
@@ -120,7 +154,7 @@
               size="lg"
               square
               icon="cancel"
-              color="red"
+              :color="dash_negative_color"
               text-color="white"
             />
             <small>{{ summary.checks.failing }} checks failing</small>
@@ -130,7 +164,7 @@
               size="lg"
               square
               icon="warning"
-              color="warning"
+              :color="dash_warning_color"
               text-color="white"
             />
             <small>{{ summary.checks.warning }} checks warning</small>
@@ -140,7 +174,7 @@
               size="lg"
               square
               icon="info"
-              color="info"
+              :color="dash_info_color"
               text-color="white"
             />
             <small>{{ summary.checks.info }} checks info</small>
@@ -222,19 +256,34 @@ export default {
     const store = useStore();
     const selectedAgent = computed(() => store.state.selectedRow);
     const refreshSummaryTab = computed(() => store.state.refreshSummaryTab);
+    const dash_info_color = computed(() => store.state.dash_info_color);
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // summary tab logic
     const summary = ref(null);
     const customFieldsDefinitions = ref(null);
     const loading = ref(false);
 
+    const serial_number = computed(() => {
+      return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+    });
+
+    const cpu = computed(() => {
+      if (summary.value.cpu_model?.length > 1) {
+        return `${summary.value.cpu_model.length}x ${summary.value.cpu_model[0]}`;
+      }
+      return summary.value.cpu_model[0];
+    });
+
     function diskBarColor(percent) {
       if (percent < 80) {
-        return "positive";
+        return dash_positive_color.value;
       } else if (percent > 80 && percent < 95) {
-        return "warning";
+        return dash_warning_color.value;
       } else {
-        return "negative";
+        return dash_negative_color.value;
       }
     }
 
@@ -290,6 +339,7 @@ export default {
 
     async function refreshSummary() {
       loading.value = true;
+      summary.value = await fetchAgent(selectedAgent.value);
       try {
         const result = await refreshAgentWMI(selectedAgent.value);
         await getSummary();
@@ -325,6 +375,12 @@ export default {
       loading,
       selectedAgent,
       disks,
+      dash_info_color,
+      dash_positive_color,
+      dash_warning_color,
+      dash_negative_color,
+      serial_number,
+      cpu,
 
       // methods
       getSummary,

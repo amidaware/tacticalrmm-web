@@ -301,7 +301,7 @@
           <q-td v-else-if="props.row.check_result.status === 'passing'">
             <q-icon
               style="font-size: 1.3rem"
-              color="positive"
+              :color="dash_positive_color"
               name="check_circle"
             >
               <q-tooltip>Passing</q-tooltip>
@@ -311,7 +311,7 @@
             <q-icon
               v-if="getAlertSeverity(props.row) === 'info'"
               style="font-size: 1.3rem"
-              color="info"
+              :color="dash_info_color"
               name="info"
             >
               <q-tooltip>Informational</q-tooltip>
@@ -319,7 +319,7 @@
             <q-icon
               v-else-if="getAlertSeverity(props.row) === 'warning'"
               style="font-size: 1.3rem"
-              color="warning"
+              :color="dash_warning_color"
               name="warning"
             >
               <q-tooltip>Warning</q-tooltip>
@@ -327,7 +327,7 @@
             <q-icon
               v-else
               style="font-size: 1.3rem"
-              color="negative"
+              :color="dash_negative_color"
               name="error"
             >
               <q-tooltip>Error</q-tooltip>
@@ -479,6 +479,10 @@ export default {
     const tabHeight = computed(() => store.state.tabHeight);
     const agentPlatform = computed(() => store.state.agentPlatform);
     const formatDate = computed(() => store.getters.formatDate);
+    const dash_info_color = computed(() => store.state.dash_info_color);
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // setup quasar
     const $q = useQuasar();
@@ -653,6 +657,10 @@ export default {
       tabHeight,
       selectedAgent,
       agentPlatform,
+      dash_info_color,
+      dash_positive_color,
+      dash_warning_color,
+      dash_negative_color,
 
       // non-reactive data
       columns,

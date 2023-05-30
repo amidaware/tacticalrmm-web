@@ -128,7 +128,7 @@
             <q-icon
               v-else-if="props.row.action === 'ignore'"
               name="fas fa-check"
-              color="negative"
+              :color="dash_negative_color"
             >
               <q-tooltip>Ignore</q-tooltip>
             </q-icon>
@@ -144,7 +144,7 @@
             <q-icon
               v-if="props.row.installed"
               name="fas fa-check"
-              color="positive"
+              :color="dash_positive_color"
             >
               <q-tooltip>Installed</q-tooltip>
             </q-icon>
@@ -158,11 +158,15 @@
             <q-icon
               v-else-if="props.row.action == 'ignore'"
               name="fas fa-ban"
-              color="negative"
+              :color="dash_negative_color"
             >
               <q-tooltip>Ignored</q-tooltip>
             </q-icon>
-            <q-icon v-else name="fas fa-exclamation" color="warning">
+            <q-icon
+              v-else
+              name="fas fa-exclamation"
+              :color="dash_warning_color"
+            >
               <q-tooltip>Missing</q-tooltip>
             </q-icon>
           </q-td>
@@ -251,6 +255,9 @@ export default {
     const tabHeight = computed(() => store.state.tabHeight);
     const agentPlatform = computed(() => store.state.agentPlatform);
     const formatDate = computed(() => store.getters.formatDate);
+    const dash_positive_color = computed(() => store.state.dash_positive_color);
+    const dash_negative_color = computed(() => store.state.dash_negative_color);
+    const dash_warning_color = computed(() => store.state.dash_warning_color);
 
     // setup quasar
     const $q = useQuasar();
@@ -348,6 +355,9 @@ export default {
       selectedAgent,
       tabHeight,
       agentPlatform,
+      dash_positive_color,
+      dash_warning_color,
+      dash_negative_color,
 
       // non-reactive data
       columns,

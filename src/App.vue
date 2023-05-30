@@ -12,6 +12,9 @@ export default {
 body
   overflow-y: hidden
 
+a
+  color: #1976D2
+
 .tbl-sticky
   thead tr th
     position: sticky
