@@ -357,6 +357,7 @@ watch(tab, (newValue) => {
   } else if (newValue === props.templateType) {
     editor.value?.setModel(templateModel);
   } else if (newValue === "css") {
+    splitter.value = 0;
     editor.value?.setModel(cssModel);
   }
 });

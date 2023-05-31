@@ -188,14 +188,11 @@
                       <q-item
                         clickable
                         v-if="
-                          ($integrations &&
-                            props.node.children &&
-                            $integrations.clientMenuIntegrations &&
-                            $integrations.clientMenuIntegrations.length > 0) ||
-                          ($integrations &&
-                            !props.node.children &&
-                            $integrations.siteMenuIntegrations &&
-                            $integrations.siteMenuIntegrations.length > 0)
+                          (props.node.children &&
+                            $integrations?.clientMenuIntegrations?.length >
+                              0) ||
+                          (!props.node.children &&
+                            $integrations?.siteMenuIntegrations.length > 0)
                         "
                       >
                         <q-item-section side>
