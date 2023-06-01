@@ -4,8 +4,17 @@
       <div class="col"></div>
       <div class="col">
         <q-card>
+          <q-card-actions align="center">
+            <q-btn
+              label="Getting Started"
+              color="info"
+              class="full-width"
+              href="https://docs.tacticalrmm.com/guide_gettingstarted/"
+              target="_blank"
+            />
+          </q-card-actions>
           <q-card-section class="row items-center">
-            <div class="text-h6">Initial Setup</div>
+            <div class="text-h5 text-weight-bold">Initial Setup</div>
           </q-card-section>
           <q-form @submit.prevent="finish">
             <q-card-section>
