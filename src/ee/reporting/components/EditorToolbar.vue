@@ -284,6 +284,9 @@ import DataQuerySelect from "./DataQuerySelect.vue";
 import ReportAssetSelect from "./ReportAssetSelect.vue";
 import ReportChartSelect from "./ReportChartSelect.vue";
 
+// utils
+import { convertCamelCase } from "@/utils/format";
+
 // types
 import { ReportTemplateType } from "../types/reporting";
 
@@ -366,12 +369,12 @@ function insertDataQuery() {
   $q.dialog({
     component: DataQuerySelect,
   }).onOk((queryName: string) => {
-    let variablesJson = parse(props.variablesEditor.getValue());
+    let variablesJson = parse(props.variablesEditor.getValue()) || {};
 
     if (!("data_sources" in variablesJson)) {
       variablesJson["data_sources"] = {};
     }
-    variablesJson["data_sources"][queryName] = queryName;
+    variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
     props.variablesEditor?.setValue(stringify(variablesJson));
   });
 }
@@ -380,14 +383,14 @@ function openChartDialog() {
   $q.dialog({
     component: ReportChartSelect,
   }).onOk((data) => {
-    let variablesJson = parse(props.variablesEditor.getValue());
+    let variablesJson = parse(props.variablesEditor.getValue()) || {};
     const optionsJson = parse(data.options);
 
     if (!("charts" in variablesJson)) {
       variablesJson["charts"] = {};
     }
 
-    variablesJson["charts"][data.name] = {
+    variablesJson["charts"][convertCamelCase(data.name)] = {
       chartType: data.chartType,
       outputType: data.outputType,
       options: optionsJson,
@@ -401,12 +404,12 @@ function openQueryAddDialog() {
   $q.dialog({
     component: ReportDataQueryForm,
   }).onOk((queryName: string) => {
-    let variablesJson = parse(props.variablesEditor.getValue());
+    let variablesJson = parse(props.variablesEditor.getValue()) || {};
 
     if (!("data_sources" in variablesJson)) {
       variablesJson["data_sources"] = {};
     }
-    variablesJson["data_sources"][queryName] = queryName;
+    variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
     props.variablesEditor?.setValue(stringify(variablesJson));
   });
 }

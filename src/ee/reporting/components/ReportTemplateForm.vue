@@ -319,6 +319,7 @@ const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
 );
 
 function previewReport() {
+  wrapDoubleQuotes();
   let needsPrompt: string[] = [];
   if (state.depends_on && state.depends_on.length > 0) {
     needsPrompt = state.depends_on.filter((dep) => !dependencies.value[dep]);
@@ -446,6 +447,20 @@ function initializeEditor() {
   });
 }
 
+// make sure to put quotes around any variable values that have { or }
+function wrapDoubleQuotes() {
+  const matchJsonCharacters = /(\b.*: *?[^\n])(([^"].*[{}]+.*[^"]))$/gm;
+  const putDoubleQuotes = '$1"$2"';
+
+  if (matchJsonCharacters.test(state.template_variables)) {
+    const newText = variablesEditor.value
+      ?.getValue()
+      .replace(matchJsonCharacters, putDoubleQuotes);
+    variablesEditor.value?.setValue(newText);
+    state.template_variables = newText;
+  }
+}
+
 const isNameValid = ref(true);
 function validate(): boolean {
   if (!state.template_md) {
@@ -464,6 +479,7 @@ function validate(): boolean {
 
 function applyChanges() {
   if (validate()) {
+    wrapDoubleQuotes();
     props.reportTemplate
       ? editReportTemplate(state.id, state)
       : addReportTemplate(state);
@@ -472,6 +488,7 @@ function applyChanges() {
 
 async function submit() {
   if (validate()) {
+    wrapDoubleQuotes();
     props.reportTemplate
       ? editReportTemplate(state.id, state)
       : addReportTemplate(state);
