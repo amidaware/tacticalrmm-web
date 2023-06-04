@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog
     ref="dialogRef"
     maximized
-    @hide="unloadEditor"
+    @hide="onDialogHide"
     @show="initializeEditor"
   >
     <q-card>
@@ -151,9 +151,18 @@ For details, see: https://license.tacticalrmm.com/ee
         }"
       ></iframe>
 
-      <q-card-actions align="right">
+      <q-card-actions>
+        <q-toggle
+          v-if="reportTemplate"
+          v-model="autoSave"
+          label="Auto-save"
+          dense
+        />
+        <span class="q-pl-sm" v-if="showSaved">Template Saved!</span>
+        <q-space />
         <q-btn v-close-popup dense flat label="Cancel" />
         <q-btn
+          v-if="reportTemplate"
           :loading="isLoading"
           dense
           flat
@@ -176,8 +185,16 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script setup lang="ts">
 // composition imports
-import { ref, reactive, computed, watch, onBeforeMount, shallowRef } from "vue";
-import { until } from "@vueuse/shared";
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onBeforeMount,
+  shallowRef,
+  onUnmounted,
+} from "vue";
+import { until, useDebounceFn, useTimeoutFn } from "@vueuse/shared";
 import {
   useQuasar,
   useDialogPluginComponent,
@@ -388,14 +405,13 @@ const variablesEditor = shallowRef<monaco.editor.IStandaloneCodeEditor>();
 let variablesModel: monaco.editor.ITextModel;
 const variablesUri = monaco.Uri.parse("editor://variables");
 
-function unloadEditor() {
+onUnmounted(() => {
   editor.value?.dispose();
   variablesEditor.value?.dispose();
   templateModel?.dispose();
   cssModel?.dispose();
   variablesModel?.dispose();
-  onDialogHide();
-}
+});
 
 function initializeEditor() {
   templateModel = monaco.editor.createModel(
@@ -411,6 +427,7 @@ function initializeEditor() {
     model: templateModel,
     theme: "vs-dark",
     minimap: { enabled: false },
+    quickSuggestions: false,
   });
 
   editor.value?.onDidChangeModelContent(() => {
@@ -422,6 +439,7 @@ function initializeEditor() {
       } else {
         state.template_md = currentModel.getValue();
       }
+      autoSave.value && applyChanges();
     }
   });
 
@@ -443,6 +461,7 @@ function initializeEditor() {
 
     if (currentModel) {
       state.template_variables = currentModel.getValue();
+      autoSave.value && applyChanges();
     }
   });
 }
@@ -456,8 +475,11 @@ function wrapDoubleQuotes() {
     const newText = variablesEditor.value
       ?.getValue()
       .replace(matchJsonCharacters, putDoubleQuotes);
-    variablesEditor.value?.setValue(newText);
-    state.template_variables = newText;
+
+    if (newText) {
+      variablesEditor.value?.setValue(newText);
+      state.template_variables = newText;
+    }
   }
 }
 
@@ -477,14 +499,19 @@ function validate(): boolean {
   return true;
 }
 
-function applyChanges() {
+const autoSave = ref(true);
+const showSaved = ref(false);
+
+const applyChanges = useDebounceFn(() => {
+  isLoading.value = true;
   if (validate()) {
     wrapDoubleQuotes();
-    props.reportTemplate
-      ? editReportTemplate(state.id, state)
-      : addReportTemplate(state);
+    editReportTemplate(state.id, state, { dontNotify: true });
+
+    showSaved.value = true;
+    useTimeoutFn(() => (showSaved.value = false), 5000);
   }
-}
+}, 2000);
 
 async function submit() {
   if (validate()) {

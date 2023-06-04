@@ -28,7 +28,11 @@ export interface useReportingTemplates {
   isError: Ref<boolean>;
   getReportTemplates: (dependsOn?: string[]) => void;
   addReportTemplate: (payload: ReportTemplate) => void;
-  editReportTemplate: (id: number, payload: ReportTemplate) => void;
+  editReportTemplate: (
+    id: number,
+    payload: ReportTemplate,
+    options?: { dontNotify?: boolean }
+  ) => void;
   deleteReportTemplate: (id: number) => void;
   renderedPreview: Ref<string>;
   runReportPreview: (payload: RunReportPreviewRequest) => void;
@@ -97,7 +101,11 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
-  function editReportTemplate(id: number, payload: ReportTemplate) {
+  function editReportTemplate(
+    id: number,
+    payload: ReportTemplate,
+    options?: { dontNotify?: boolean }
+  ) {
     isLoading.value = true;
     isError.value = false;
     axios
@@ -107,7 +115,8 @@ export function useReportTemplates(): useReportingTemplates {
           (template) => template.id === id
         );
         reportTemplates.value[index] = data;
-        notifySuccess("The report template was edited successfully");
+        options?.dontNotify ||
+          notifySuccess("The report template was edited successfully");
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -290,6 +299,7 @@ export function useReportingHTMLTemplates(): useReportingHTMLTemplates {
           (template) => template.id === id
         );
         reportHTMLTemplates.value[index] = data;
+
         notifySuccess("HTML Template was edited successfully");
       })
       .catch(() => (isError.value = true))

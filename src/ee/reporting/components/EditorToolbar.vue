@@ -526,7 +526,10 @@ function insert(text: string, moveToNewLine = false) {
     });
   }
 
-  model.pushEditOperations(selections, operations, null);
+  model.pushEditOperations(selections, operations, (operations) => {
+    console.log(operations);
+    return selections;
+  });
 }
 
 // inserts a prefix before selected text
@@ -557,8 +560,8 @@ function insertPrefix(prefix: string, prefixCount = 1) {
       let text = model?.getLineContent(i).trimStart();
 
       // prefix and prefix character amount match so should toggle off prefix in editor
-      const re_toggle = new RegExp(`^${prefix}{${prefixCount}}\\s`);
-      const re_replace = new RegExp(`^${prefix}+\\s`);
+      const re_toggle = new RegExp(`^\\${prefix}{${prefixCount}}\\s`);
+      const re_replace = new RegExp(`^\\${prefix}+\\s`);
 
       if (text.match(re_toggle)) {
         // remove prefix since it is present already (toggled off)
@@ -580,11 +583,10 @@ function insertPrefix(prefix: string, prefixCount = 1) {
     });
   }
 
-  model.pushEditOperations(
-    selections,
-    operations,
-    (/* operations */) => newSelections
-  );
+  model.pushEditOperations(selections, operations, (operations) => {
+    console.log(operations);
+    return newSelections;
+  });
 }
 
 // wraps selected text beginning with a prefix and ending with a suffix
@@ -618,6 +620,7 @@ function insertWrap(prefix: string, suffix: string, includeWholeLine = false) {
   }
 
   model.pushEditOperations(selections, operations, (operations) => {
+    console.log(operations);
     return operations.map((operation) =>
       monaco.Selection.fromRange(operation.range, monaco.SelectionDirection.LTR)
     );
