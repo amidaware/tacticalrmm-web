@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref, toRaw } from "vue";
+import { ref } from "vue";
 import { type QTableColumn } from "quasar";
 const props = withDefaults(
   defineProps<{
@@ -50,7 +50,7 @@ const props = withDefaults(
 );
 
 // save a non-reactive copy of columns to modify
-const localColumns = toRaw(props.columns);
+const localColumns: QTableColumn[] = Object.assign([], props.columns);
 if (props.columnSelect)
   localColumns.push({
     name: "columnSelect",
