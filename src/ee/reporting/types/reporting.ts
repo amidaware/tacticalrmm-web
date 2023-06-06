@@ -44,6 +44,7 @@ export interface UploadAssetsResponse {
 export interface RunReportPreviewRequest extends ReportTemplate {
   format: ReportFormat;
   dependencies?: ReportDependencies;
+  debug?: boolean;
 }
 
 export interface RunReportRequest {

@@ -69,6 +69,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="formatOptions"
           dense
           color="primary"
+          :disable="debug"
         />
         <q-space />
 
@@ -95,7 +96,9 @@ For details, see: https://license.tacticalrmm.com/ee
         class="q-px-sm"
       >
         <EditorToolbar
-          v-if="(tab === 'markdown' || tab === 'html') && editor"
+          v-if="
+            (tab === 'markdown' || tab === 'html') && editor && variablesEditor
+          "
           :editor="editor"
           :variablesEditor="variablesEditor"
           :templateType="templateType"
@@ -113,6 +116,18 @@ For details, see: https://license.tacticalrmm.com/ee
                 splitter > 0 ? "Hide variables" : "Show variables"
               }}</q-tooltip>
             </q-btn>
+            <q-btn
+              flat
+              dense
+              :ripple="false"
+              label="base"
+              no-caps
+              @click="openBaseTemplateForm"
+            >
+              <q-tooltip :delay="500">Add Base Template</q-tooltip>
+            </q-btn>
+            <q-space />
+            <q-toggle v-model="debug" dense label="Debug" />
           </template>
         </EditorToolbar>
 
@@ -139,19 +154,23 @@ For details, see: https://license.tacticalrmm.com/ee
       </div>
 
       <!-- preview -->
-      <iframe
-        v-show="tab === 'preview'"
-        :srcdoc="previewFormat === 'html' ? renderedPreview : undefined"
-        :src="previewFormat === 'pdf' ? renderedPreview : undefined"
-        :style="{
-          'max-height': `${$q.screen.height - 132}px`,
-          'min-height': `${$q.screen.height - 132}px`,
-          'min-width': '100%',
-          'background-color': 'white',
-        }"
-      ></iframe>
+      <ReportTemplatePreview
+        v-if="tab == 'preview' && !isLoading"
+        :previewFormat="previewFormat"
+        :source="renderedPreview"
+        :debug="debug"
+        :variables="renderedVariables"
+      />
 
-      <q-card-actions>
+      <q-inner-loading
+        v-if="tab == 'preview'"
+        :showing="isLoading"
+        label="Generating Report..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
+
+      <q-card-actions v-if="tab !== 'preview'">
         <q-toggle
           v-if="reportTemplate"
           v-model="autoSave"
@@ -210,7 +229,9 @@ import * as monaco from "monaco-editor";
 
 // ui imports
 import EditorToolbar from "./EditorToolbar.vue";
+import ReportTemplatePreview from "./ReportTemplatePreview.vue";
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
+import ReportHTMLTemplateForm from "./ReportHTMLTemplateForm.vue";
 
 // type imports
 import type {
@@ -316,9 +337,11 @@ const {
   isLoading,
   isError,
   renderedPreview,
+  renderedVariables,
   addReportTemplate,
   editReportTemplate,
   runReportPreview,
+  runReportPreviewDebug,
 } = useSharedReportTemplates;
 
 const { reportHTMLTemplates, getReportHTMLTemplates } =
@@ -334,6 +357,18 @@ const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
     value: template.id,
   }))
 );
+
+const debug = ref(false);
+
+watch(debug, (newValue) => {
+  if (newValue) previewFormat.value = "html";
+});
+
+function openBaseTemplateForm() {
+  $q.dialog({
+    component: ReportHTMLTemplateForm,
+  }).onOk(() => getReportHTMLTemplates);
+}
 
 function previewReport() {
   wrapDoubleQuotes();
@@ -355,16 +390,20 @@ function previewReport() {
           ...state,
           format: previewFormat.value,
           dependencies: dependencies.value,
+          debug: debug.value,
         };
-        runReportPreview(request);
+        debug.value
+          ? runReportPreviewDebug(request)
+          : runReportPreview(request);
       });
   } else {
     const request = {
       ...state,
       format: previewFormat.value,
       dependencies: dependencies.value,
+      debug: debug.value,
     };
-    runReportPreview(request);
+    debug.value ? runReportPreviewDebug(request) : runReportPreview(request);
   }
 }
 
@@ -499,7 +538,7 @@ function validate(): boolean {
   return true;
 }
 
-const autoSave = ref(true);
+const autoSave = ref(props.reportTemplate ? true : false);
 const showSaved = ref(false);
 
 const applyChanges = useDebounceFn(() => {

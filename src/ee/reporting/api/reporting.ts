@@ -19,6 +19,7 @@ import type {
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
+import { exportFile } from "quasar";
 
 const baseUrl = "/reporting";
 
@@ -35,7 +36,9 @@ export interface useReportingTemplates {
   ) => void;
   deleteReportTemplate: (id: number) => void;
   renderedPreview: Ref<string>;
+  renderedVariables: Ref<string>;
   runReportPreview: (payload: RunReportPreviewRequest) => void;
+  runReportPreviewDebug: (payload: RunReportPreviewRequest) => void;
   reportData: Ref<string>;
   runReport: (id: number, payload: RunReportRequest) => void;
   openReport: (
@@ -44,6 +47,8 @@ export interface useReportingTemplates {
     dependsOn: string[],
     dependencies?: ReportDependencies
   ) => void;
+  exportReport: (id: number) => void;
+  importReport: (payload: string) => void;
 }
 
 // reporting endpoints
@@ -52,6 +57,7 @@ export function useReportTemplates(): useReportingTemplates {
   const isLoading = ref(false);
   const isError = ref(false);
   const renderedPreview = ref("");
+  const renderedVariables = ref("");
   const reportData = ref("");
 
   const getReportTemplates = (dependsOn?: string[]) => {
@@ -122,6 +128,21 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
+  function runReportPreviewDebug(payload: RunReportPreviewRequest) {
+    isLoading.value = true;
+    isError.value = false;
+    renderedPreview.value = "";
+    renderedVariables.value = "";
+    axios
+      .post(`${baseUrl}/templates/preview/`, payload)
+      .then(({ data }) => {
+        renderedPreview.value = data.template;
+        renderedVariables.value = JSON.stringify(data.variables, undefined, 4);
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
   function runReportPreview(payload: RunReportPreviewRequest) {
     isLoading.value = true;
     isError.value = false;
@@ -170,6 +191,31 @@ export function useReportTemplates(): useReportingTemplates {
     window.open(url, "_blank");
   }
 
+  function exportReport(id: number) {
+    isLoading.value = true;
+    isError.value = false;
+    axios
+      .post(`${baseUrl}/templates/${id}/export/`)
+      .then(({ data }) => {
+        exportFile(`${data.template.name}-export.json`, JSON.stringify(data));
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
+  function importReport(payload: string) {
+    isLoading.value = true;
+    isError.value = false;
+    axios
+      .post(`${baseUrl}/templates/import/`, { template: payload })
+      .then(({ data }: { data: ReportTemplate }) => {
+        reportTemplates.value.push(data);
+        notifySuccess("Report Template was successfully imported.");
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
   return {
     reportTemplates,
     isLoading,
@@ -179,10 +225,14 @@ export function useReportTemplates(): useReportingTemplates {
     editReportTemplate,
     deleteReportTemplate,
     renderedPreview,
+    renderedVariables,
     runReportPreview,
+    runReportPreviewDebug,
     reportData,
     runReport,
     openReport,
+    exportReport,
+    importReport,
   };
 }
 

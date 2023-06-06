@@ -108,6 +108,18 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-icon name="search" color="primary" />
             </template>
           </q-input>
+
+          <q-btn icon="menu" dropdown-icon="none" dense>
+            <q-menu>
+              <q-list dense>
+                <q-item clickable v-close-popup @click="importReportTemplate">
+                  <q-item-section>
+                    <q-item-label>Import Report Template</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </template>
 
         <template #body="props">
@@ -174,6 +186,19 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  @click="exportReport(props.row.id)"
+                >
+                  <q-item-section side>
+                    <q-icon name="download" />
+                  </q-item-section>
+                  <q-item-section>Export</q-item-section>
+                </q-item>
+
+                <q-separator />
+
+                <q-item
+                  v-close-popup
+                  clickable
                   @click="deleteTemplate(props.row)"
                 >
                   <q-item-section side>
@@ -210,6 +235,7 @@ import ReportTemplateForm from "./ReportTemplateForm.vue";
 import ReportAssets from "./ReportAssets.vue";
 import ReportHTMLTemplateTable from "./ReportHTMLTemplateTable.vue";
 import ReportDataQueryTable from "./ReportDataQueryTable.vue";
+import ReportTemplateImport from "./ReportTemplateImport.vue";
 
 // type imports
 import type { ReportTemplate } from "../types/reporting";
@@ -237,6 +263,7 @@ const {
   getReportTemplates,
   deleteReportTemplate,
   openReport,
+  exportReport,
 } = useSharedReportTemplates;
 
 onMounted(getReportTemplates);
@@ -296,6 +323,12 @@ async function cloneTemplate(template: ReportTemplate) {
       cloneTemplate: template,
       templateType: template.type,
     },
+  });
+}
+
+function importReportTemplate() {
+  $q.dialog({
+    component: ReportTemplateImport,
   });
 }
 </script>
