@@ -5,6 +5,8 @@
     :table-class="{
       'table-bgcolor': !$q.dark.isActive,
       'table-bgcolor-dark': $q.dark.isActive,
+      'column-bgcolor-dark': $q.dark.isActive && columnSelect,
+      'column-bgcolor': !$q.dark.isActive && columnSelect,
       'sticky-header-right-column': columnSelect,
       'tbl-sticky': !columnSelect,
     }"
@@ -48,7 +50,6 @@ const props = withDefaults(
   }>(),
   { columnSelect: false, excludeColumns: () => ["columnSelect"] }
 );
-
 // save a non-reactive copy of columns to modify
 const localColumns: QTableColumn[] = Object.assign([], props.columns);
 if (props.columnSelect)
@@ -57,7 +58,6 @@ if (props.columnSelect)
     label: "Column Select",
     field: "columnSelect",
   });
-
 const visibleColumns = ref(localColumns.map((column) => column.name));
 const columnOptions = ref(
   localColumns
@@ -67,16 +67,22 @@ const columnOptions = ref(
 </script>
 
 <style lang="sass">
-.sticky-header-right-column
+
+.column-bgcolor-dark
   td:last-child
     /* bg color is important for td; just specify one */
     background-color: #1d1d1d
+
+.column-bgcolor
+  td:last-child
+    /* bg color is important for td; just specify one */
+    background-color: #ffffff
+
+.sticky-header-right-column
   tr th
     position: sticky
     /* higher than z-index for td below */
     z-index: 2
-    /* bg color is important; just specify one */
-    background: #1d1d1d
   /* this will be the loading indicator */
   thead tr:last-child th
     /* height of all previous header rows */
