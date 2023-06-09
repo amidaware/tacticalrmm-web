@@ -49,6 +49,13 @@ export interface useReportingTemplates {
   ) => void;
   exportReport: (id: number) => void;
   importReport: (payload: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  variableAnalysis: Ref<any>;
+  getAllowedValues: (payload: {
+    variables: string;
+    dependencies?: ReportDependencies;
+    base_template?: number;
+  }) => void;
 }
 
 // reporting endpoints
@@ -59,6 +66,8 @@ export function useReportTemplates(): useReportingTemplates {
   const renderedPreview = ref("");
   const renderedVariables = ref("");
   const reportData = ref("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const variableAnalysis = ref<any>({});
 
   const getReportTemplates = (dependsOn?: string[]) => {
     isLoading.value = true;
@@ -216,6 +225,23 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
+  function getAllowedValues(payload: {
+    variables: string;
+    dependencies?: ReportDependencies;
+    base_template?: number;
+  }) {
+    isLoading.value = true;
+    isError.value = false;
+    axios
+      .post(`${baseUrl}/templates/preview/analysis/`, payload)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then(({ data }: { data: any }) => {
+        variableAnalysis.value = data;
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
   return {
     reportTemplates,
     isLoading,
@@ -233,6 +259,8 @@ export function useReportTemplates(): useReportingTemplates {
     openReport,
     exportReport,
     importReport,
+    variableAnalysis,
+    getAllowedValues,
   };
 }
 

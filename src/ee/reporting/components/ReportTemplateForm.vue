@@ -91,6 +91,7 @@ For details, see: https://license.tacticalrmm.com/ee
         </q-tabs>
       </q-toolbar>
 
+      <!-- main editor -->
       <div
         v-show="tab === 'markdown' || tab === 'html' || tab === 'css'"
         class="q-px-sm"
@@ -110,10 +111,10 @@ For details, see: https://license.tacticalrmm.com/ee
               :ripple="false"
               label="vars"
               no-caps
-              @click="splitter > 0 ? (splitter = 0) : (splitter = 50)"
+              @click="splitter > 1 ? (splitter = 1) : (splitter = 35)"
             >
               <q-tooltip :delay="500">{{
-                splitter > 0 ? "Hide variables" : "Show variables"
+                splitter >= 1 ? "Hide variables" : "Show variables"
               }}</q-tooltip>
             </q-btn>
             <q-btn
@@ -130,29 +131,71 @@ For details, see: https://license.tacticalrmm.com/ee
             <q-toggle v-model="debug" dense label="Debug" />
           </template>
         </EditorToolbar>
-
-        <q-splitter
-          v-model="splitter"
-          emit-immediately
-          reverse
-          :limits="[0, 50]"
+        <q-layout
+          view="lHh lpR lFf"
+          :style="{ height: `${$q.screen.height - 162}px` }"
+          container
         >
-          <template v-slot:before>
-            <div
-              ref="editorDiv"
-              :style="{ height: `${$q.screen.height - 164}px` }"
-            ></div>
-          </template>
-          <template v-slot:after>
-            <div
-              ref="variablesDiv"
-              v-show="splitter > 0"
-              :style="{ height: `${$q.screen.height - 164}px` }"
-            ></div>
-          </template>
-        </q-splitter>
-      </div>
+          <q-drawer
+            v-model="showVariablesDrawer"
+            :mini="drawerMiniState"
+            side="left"
+            bordered
+            :width="300"
+            :mini-width="40"
+          >
+            <q-btn
+              icon="chevron_left"
+              color="dark"
+              class="absolute"
+              style="top: 15px; right: -17px"
+              @click="drawerMiniState = true"
+              dense
+              round
+            />
+            <template v-slot:mini>
+              <div class="q-pt-sm">
+                <q-btn
+                  class=""
+                  icon="chevron_right"
+                  color="dark"
+                  @click="drawerMiniState = false"
+                  dense
+                  round
+                />
+              </div>
+            </template>
+            <VariablesSelector
+              :variables="state.template_variables"
+              :dependencies="dependencies"
+              :base_template="state.template_html"
+            />
+          </q-drawer>
 
+          <q-page-container>
+            <q-splitter
+              v-model="splitter"
+              emit-immediately
+              reverse
+              :limits="[1, 50]"
+            >
+              <template v-slot:before>
+                <div
+                  ref="editorDiv"
+                  :style="{ height: `${$q.screen.height - 164}px` }"
+                ></div>
+              </template>
+              <template v-slot:after>
+                <div
+                  ref="variablesDiv"
+                  v-show="splitter > 1"
+                  :style="{ height: `${$q.screen.height - 164}px` }"
+                ></div>
+              </template>
+            </q-splitter>
+          </q-page-container>
+        </q-layout>
+      </div>
       <!-- preview -->
       <ReportTemplatePreview
         v-if="tab == 'preview' && !isLoading"
@@ -232,6 +275,7 @@ import EditorToolbar from "./EditorToolbar.vue";
 import ReportTemplatePreview from "./ReportTemplatePreview.vue";
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
 import ReportHTMLTemplateForm from "./ReportHTMLTemplateForm.vue";
+import VariablesSelector from "./VariablesSelector.vue";
 
 // type imports
 import type {
@@ -275,8 +319,12 @@ const state: ReportTemplate = props.reportTemplate
       depends_on: props.cloneTemplate ? props.cloneTemplate?.depends_on : [],
     });
 
+// variables drawer menu state
+const showVariablesDrawer = ref(true);
+const drawerMiniState = ref(true);
+
 // splitter
-const splitter = ref(0);
+const splitter = ref(1);
 
 const previewFormat = ref<ReportFormat>("html");
 const formatOptions = [
@@ -414,7 +462,7 @@ watch(tab, (newValue) => {
   } else if (newValue === props.templateType) {
     editor.value?.setModel(templateModel);
   } else if (newValue === "css") {
-    splitter.value = 0;
+    splitter.value = 1;
     editor.value?.setModel(cssModel);
   }
 });
@@ -507,9 +555,10 @@ function initializeEditor() {
 
 // make sure to put quotes around any variable values that have { or }
 function wrapDoubleQuotes() {
-  const matchJsonCharacters = /(\b.*: *?[^\n])(([^"].*[{}]+.*[^"]))$/gm;
+  const matchJsonCharacters = /(\b.*: *?[^\n\r])([^"].*[{}]+.*[^"])\r?$/gm;
   const putDoubleQuotes = '$1"$2"';
 
+  console.log(state.template_variables);
   if (matchJsonCharacters.test(state.template_variables)) {
     const newText = variablesEditor.value
       ?.getValue()
