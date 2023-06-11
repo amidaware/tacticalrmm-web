@@ -167,7 +167,9 @@ For details, see: https://license.tacticalrmm.com/ee
             </template>
             <VariablesSelector
               :variables="state.template_variables"
+              :template="state.template_md"
               :dependencies="dependencies"
+              :dependsOn="state.depends_on"
               :base_template="state.template_html"
             />
           </q-drawer>
@@ -558,7 +560,6 @@ function wrapDoubleQuotes() {
   const matchJsonCharacters = /(\b.*: *?[^\n\r])([^"].*[{}]+.*[^"])\r?$/gm;
   const putDoubleQuotes = '$1"$2"';
 
-  console.log(state.template_variables);
   if (matchJsonCharacters.test(state.template_variables)) {
     const newText = variablesEditor.value
       ?.getValue()

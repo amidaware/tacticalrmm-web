@@ -54,7 +54,6 @@ export interface useReportingTemplates {
   getAllowedValues: (payload: {
     variables: string;
     dependencies?: ReportDependencies;
-    base_template?: number;
   }) => void;
 }
 
@@ -228,7 +227,6 @@ export function useReportTemplates(): useReportingTemplates {
   function getAllowedValues(payload: {
     variables: string;
     dependencies?: ReportDependencies;
-    base_template?: number;
   }) {
     isLoading.value = true;
     isError.value = false;
