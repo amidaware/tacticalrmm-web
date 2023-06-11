@@ -258,7 +258,7 @@ For details, see: https://license.tacticalrmm.com/ee
       dense
       :ripple="false"
       icon="mdi-table-large-plus"
-      @click="insertTable"
+      @click="openTableMaker"
     >
       <q-tooltip :delay="500">Table</q-tooltip>
     </q-btn>
@@ -283,6 +283,7 @@ import ReportDataQueryForm from "./ReportDataQueryForm.vue";
 import DataQuerySelect from "./DataQuerySelect.vue";
 import ReportAssetSelect from "./ReportAssetSelect.vue";
 import ReportChartSelect from "./ReportChartSelect.vue";
+import ReportTableMaker from "./ReportTableMaker.vue";
 
 // utils
 import { convertCamelCase } from "@/utils/format";
@@ -449,26 +450,13 @@ function insertHr() {
   _editor.focus();
 }
 
-function insertTable() {
-  const table = `<table>
-    <thead>
-      <tr>
-        <th>Column1 Name</th>
-        <th>Column2 Name</th>
-        <th>Column3 Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for agents in datasources.agentsQuery %}
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>`;
-  insert(table, true);
+function openTableMaker() {
+  $q.dialog({
+    component: ReportTableMaker,
+  }).onOk((table) => {
+    insert(table, true);
+    _editor.focus();
+  });
   _editor.focus();
 }
 

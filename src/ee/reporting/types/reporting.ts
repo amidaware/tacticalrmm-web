@@ -15,6 +15,10 @@ export interface ReportDependencies {
   [x: string]: string | number;
 }
 
+export interface VariableAnalysis {
+  [x: string]: string;
+}
+
 export interface ReportTemplate {
   id: number;
   name: string;

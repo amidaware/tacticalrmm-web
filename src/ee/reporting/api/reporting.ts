@@ -16,6 +16,7 @@ import type {
   UploadAssetsResponse,
   RunReportPreviewRequest,
   RunReportRequest,
+  VariableAnalysis,
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
@@ -49,8 +50,7 @@ export interface useReportingTemplates {
   ) => void;
   exportReport: (id: number) => void;
   importReport: (payload: string) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  variableAnalysis: Ref<any>;
+  variableAnalysis: Ref<VariableAnalysis>;
   getAllowedValues: (payload: {
     variables: string;
     dependencies?: ReportDependencies;
@@ -65,8 +65,7 @@ export function useReportTemplates(): useReportingTemplates {
   const renderedPreview = ref("");
   const renderedVariables = ref("");
   const reportData = ref("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const variableAnalysis = ref<any>({});
+  const variableAnalysis = ref<VariableAnalysis>({});
 
   const getReportTemplates = (dependsOn?: string[]) => {
     isLoading.value = true;
@@ -232,8 +231,7 @@ export function useReportTemplates(): useReportingTemplates {
     isError.value = false;
     axios
       .post(`${baseUrl}/templates/preview/analysis/`, payload)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .then(({ data }: { data: any }) => {
+      .then(({ data }: { data: VariableAnalysis }) => {
         variableAnalysis.value = data;
       })
       .catch(() => (isError.value = true))
