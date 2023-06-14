@@ -14,6 +14,13 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-card>
       <q-bar>
         New Report Template
+        <q-btn
+          icon="help"
+          round
+          flat
+          color="info"
+          @click="showHelp = !showHelp"
+        />
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -174,6 +181,16 @@ For details, see: https://license.tacticalrmm.com/ee
             />
           </q-drawer>
 
+          <q-drawer
+            v-model="showHelp"
+            side="right"
+            :width="600"
+            overlay
+            bordered
+          >
+            <ReportingHelpMenu section="template" />
+          </q-drawer>
+
           <q-page-container>
             <q-splitter
               v-model="splitter"
@@ -278,6 +295,7 @@ import ReportTemplatePreview from "./ReportTemplatePreview.vue";
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
 import ReportHTMLTemplateForm from "./ReportHTMLTemplateForm.vue";
 import VariablesSelector from "./VariablesSelector.vue";
+import ReportingHelpMenu from "./ReportingHelpMenu.vue";
 
 // type imports
 import type {
@@ -320,6 +338,9 @@ const state: ReportTemplate = props.reportTemplate
         : "",
       depends_on: props.cloneTemplate ? props.cloneTemplate?.depends_on : [],
     });
+
+// help menu
+const showHelp = ref(false);
 
 // variables drawer menu state
 const showVariablesDrawer = ref(true);
