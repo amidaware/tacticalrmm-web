@@ -150,20 +150,17 @@
           </q-menu>
         </q-btn>
         <!-- integrations -->
-        <q-btn
-          v-if="
-            $integrations &&
-            $integrations.fileBarIntegrations &&
-            $integrations.fileBarIntegrations.length > 0
-          "
-          size="md"
-          dense
-          no-caps
-          flat
-          label="Integrations"
-        >
+        <q-btn size="md" dense no-caps flat label="Integrations">
           <q-menu auto-close>
-            <q-list dense style="min-width: 100px">
+            <q-list
+              v-if="
+                $integrations &&
+                $integrations.fileBarIntegrations &&
+                $integrations.fileBarIntegrations.length > 0
+              "
+              dense
+              style="min-width: 100px"
+            >
               <q-item
                 v-for="integration in $integrations.fileBarIntegrations"
                 :key="integration.name"
@@ -177,6 +174,19 @@
                 v-close-popup
               >
                 <q-item-section>{{ integration.name }}</q-item-section>
+              </q-item>
+            </q-list>
+            <q-list v-else dense style="min-width: 100px">
+              <q-item
+                clickable
+                v-close-popup
+                @click="
+                  notifyWarning(
+                    'This feature requires a valid code signing token.'
+                  )
+                "
+              >
+                <q-item-section>Reporting Manager</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -265,6 +275,8 @@ import DeploymentTable from "@/components/clients/DeploymentTable.vue";
 import ServerMaintenance from "@/components/modals/core/ServerMaintenance.vue";
 import CodeSign from "@/components/modals/coresettings/CodeSign.vue";
 import PermissionsManager from "@/components/accounts/PermissionsManager.vue";
+
+import { notifyWarning } from "@/utils/notify";
 
 export default {
   name: "FileBar",
