@@ -286,15 +286,10 @@
           </template>
         </q-tree>
       </div>
-      <q-table
+      <tactical-table
         v-if="tableView"
         dense
-        :table-class="{
-          'table-bgcolor': !$q.dark.isActive,
-          'table-bgcolor-dark': $q.dark.isActive,
-        }"
         :style="{ 'max-height': `${$q.screen.height - 182}px` }"
-        class="tbl-sticky"
         :rows="visibleScripts"
         :columns="columns"
         :loading="loading"
@@ -304,6 +299,7 @@
         binary-state-sort
         virtual-scroll
         :rows-per-page-options="[0]"
+        column-select
       >
         <template v-slot:header-cell-favorite="props">
           <q-th :props="props" auto-width>
@@ -425,7 +421,7 @@
               </q-list>
             </q-menu>
             <!-- favorite -->
-            <q-td>
+            <q-td key="favorite" :props="props">
               <q-icon
                 v-if="props.row.favorite"
                 color="yellow-8"
@@ -434,7 +430,7 @@
               />
             </q-td>
             <!-- shell icon -->
-            <q-td>
+            <q-td key="shell" :props="props">
               <q-icon
                 v-if="props.row.shell === 'powershell'"
                 name="mdi-powershell"
@@ -469,7 +465,7 @@
               </q-icon>
             </q-td>
             <!-- supported platforms -->
-            <q-td>
+            <q-td key="supported_platforms" :props="props">
               <q-badge
                 v-if="
                   !props.row.supported_platforms ||
@@ -487,7 +483,11 @@
               >
             </q-td>
             <!-- name -->
-            <q-td :style="{ color: props.row.hidden ? 'grey' : '' }">
+            <q-td
+              key="name"
+              :props="props"
+              :style="{ color: props.row.hidden ? 'grey' : '' }"
+            >
               {{ truncateText(props.row.name, 50) }}
               <q-tooltip
                 v-if="props.row.name.length >= 50"
@@ -497,7 +497,7 @@
               </q-tooltip>
             </q-td>
             <!-- args -->
-            <q-td>
+            <q-td key="args" :props="props">
               <span v-if="props.row.args.length > 0">
                 {{ truncateText(props.row.args.toString(), 30) }}
                 <q-tooltip
@@ -509,8 +509,8 @@
               </span>
             </q-td>
 
-            <q-td>{{ props.row.category }}</q-td>
-            <q-td>
+            <q-td key="category" :props="props">{{ props.row.category }}</q-td>
+            <q-td key="desc" :props="props">
               {{ truncateText(props.row.description, 30) }}
               <q-tooltip
                 v-if="props.row.description.length >= 30"
@@ -518,10 +518,13 @@
                 >{{ props.row.description }}</q-tooltip
               >
             </q-td>
-            <q-td>{{ props.row.default_timeout }}</q-td>
+            <q-td key="default_timeout" :props="props">{{
+              props.row.default_timeout
+            }}</q-td>
+            <q-td></q-td>
           </q-tr>
         </template>
-      </q-table>
+      </tactical-table>
     </q-card>
   </q-dialog>
 </template>
@@ -545,12 +548,13 @@ import { notifySuccess } from "@/utils/notify";
 import ScriptUploadModal from "@/components/scripts/ScriptUploadModal.vue";
 import ScriptFormModal from "@/components/scripts/ScriptFormModal.vue";
 import ScriptSnippets from "@/components/scripts/ScriptSnippets.vue";
+import TacticalTable from "@/components/ui/TacticalTable.vue";
 
 // static data
 const columns = [
   {
     name: "favorite",
-    label: "",
+    label: "Favorites",
     field: "favorite",
     align: "left",
     sortable: true,
@@ -608,6 +612,9 @@ const columns = [
 
 export default {
   name: "ScriptManager",
+  components: {
+    TacticalTable,
+  },
   emits: [...useDialogPluginComponent.emits],
   setup() {
     // setup vuex store
