@@ -36,7 +36,12 @@ For details, see: https://license.tacticalrmm.com/ee
         style="max-height: 50vh"
         class="scroll"
       >
+        <div v-if="tree.length === 0">
+          No Report Assets found. Go to Reporting Manager and use the Report
+          Assets button to upload
+        </div>
         <q-tree
+          v-else
           ref="qtree"
           :nodes="tree"
           v-model:selected="selected"
@@ -122,6 +127,7 @@ watch(imageType, () => {
 
 async function getAssets() {
   tree.value = await fetchAllReportAssets();
+  console.log(tree.value);
 }
 
 onMounted(getAssets);

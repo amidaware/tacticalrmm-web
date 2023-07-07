@@ -288,6 +288,7 @@ import {
 } from "../api/reporting";
 import { notifyError } from "@/utils/notify";
 import * as monaco from "monaco-editor";
+import { parseDocument } from "yaml";
 
 // ui imports
 import EditorToolbar from "./EditorToolbar.vue";
@@ -594,19 +595,30 @@ function wrapDoubleQuotes() {
 }
 
 const isNameValid = ref(true);
-function validate(): boolean {
+function validate(dontNotify = false): boolean {
+  let isValid = true;
+
   if (!state.template_md) {
-    notifyError("Template Text is required");
-    return false;
+    dontNotify || notifyError("Template Text is required");
+    isValid = false;
   }
 
   if (!state.name) {
-    notifyError("Template Name is required");
+    dontNotify || notifyError("Template Name is required");
     isNameValid.value = false;
-    return false;
+    isValid = false;
   }
 
-  return true;
+  // check if yaml is valid
+  const doc = parseDocument(state.template_variables, { prettyErrors: true });
+  if (doc.errors.length > 0) {
+    dontNotify ||
+      notifyError("Error in variables: " + doc.errors[0].message, 5000);
+    isValid = false;
+  }
+
+  isNameValid.value = true;
+  return isValid;
 }
 
 const autoSave = ref(props.reportTemplate ? true : false);
@@ -614,13 +626,14 @@ const showSaved = ref(false);
 
 const applyChanges = useDebounceFn(() => {
   isLoading.value = true;
-  if (validate()) {
+  if (validate(true)) {
     wrapDoubleQuotes();
     editReportTemplate(state.id, state, { dontNotify: true });
 
     showSaved.value = true;
     useTimeoutFn(() => (showSaved.value = false), 5000);
   }
+  isLoading.value = false;
 }, 2000);
 
 async function submit() {

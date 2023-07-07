@@ -144,6 +144,16 @@ function copy(content: string, is_for = false, block = false) {
 async function getVariables() {
   variableWarnings.value = [];
 
+  // don't send variable analysis if client, site, or agent dependency isn't selected
+  if (props.dependsOn) {
+    for (let i = 0; i < props.dependsOn.length; i++) {
+      let dep = props.dependsOn[i];
+      if (dep === "client" || dep === "site" || dep === "agent") {
+        if (!props.dependencies?.[dep]) return;
+      }
+    }
+  }
+
   getAllowedValues({
     variables: props.variables,
     dependencies: props?.dependencies,
@@ -151,7 +161,7 @@ async function getVariables() {
 
   await until(isLoading).not.toBeTruthy();
 
-  // check if any data queries returned empt results
+  // check if any data queries returned empty results
   for (let key in variableAnalysis.value) {
     if (variableAnalysis.value[key].includes("0 Results")) {
       variableWarnings.value.push(`Data Query: ${key} returned no results`);
