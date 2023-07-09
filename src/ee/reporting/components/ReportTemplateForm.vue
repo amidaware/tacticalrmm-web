@@ -532,11 +532,13 @@ function initializeEditor() {
   );
   cssModel = monaco.editor.createModel(state.template_css, "css", cssUri);
 
+  const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   editor.value = monaco.editor.create(editorDiv.value!, {
     automaticLayout: true,
     model: templateModel,
-    theme: "vs-dark",
+    theme: theme,
     minimap: { enabled: false },
     quickSuggestions: false,
   });
@@ -563,7 +565,7 @@ function initializeEditor() {
   variablesEditor.value = monaco.editor.create(variablesDiv.value!, {
     automaticLayout: true,
     model: variablesModel,
-    theme: "vs-dark",
+    theme: theme,
     minimap: { enabled: false },
   });
 

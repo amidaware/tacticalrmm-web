@@ -180,11 +180,13 @@ function loadEditor() {
   var modelUri = monaco.Uri.parse("model://new"); // a made up unique URI for our model
   var model = monaco.editor.createModel(snippet.code, lang.value, modelUri);
 
+  const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   editor = monaco.editor.create(snippetEditor.value!, {
     automaticLayout: true,
     model: model,
-    theme: "vs-dark",
+    theme: theme,
   });
 
   editor.onDidChangeModelContent(() => {

@@ -53,8 +53,11 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
+
+// setup quasar
+const $q = useQuasar();
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -96,10 +99,12 @@ function loadEditor() {
   var modelUri = monaco.Uri.parse("model://new"); // a made up unique URI for our model
   var model = monaco.editor.createModel(options.value, "yaml", modelUri);
 
+  const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   editor = monaco.editor.create(chartEditor.value!, {
     model: model,
-    theme: "vs-dark",
+    theme: theme,
     minimap: { enabled: false },
   });
 

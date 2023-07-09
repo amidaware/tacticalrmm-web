@@ -80,13 +80,15 @@ if (props.debug) {
   let variablesEditor: monaco.editor.IStandaloneCodeEditor;
 
   onMounted(() => {
+    const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
     templateEditor = monaco.editor.create(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       document.getElementById("templateDiv")!,
       {
         automaticLayout: true,
         value: props.source || "",
-        theme: "vs-dark",
+        theme: theme,
         language: "html",
         minimap: { enabled: false },
         readOnly: true,
@@ -100,7 +102,7 @@ if (props.debug) {
         automaticLayout: true,
         value: props.variables || "",
         language: "json",
-        theme: "vs-dark",
+        theme: theme,
         minimap: { enabled: false },
         readOnly: true,
       }

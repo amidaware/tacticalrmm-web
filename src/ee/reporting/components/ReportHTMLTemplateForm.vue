@@ -48,10 +48,12 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 // composition imports
 import { ref, reactive } from "vue";
-import { useDialogPluginComponent, extend } from "quasar";
+import { useDialogPluginComponent, extend, useQuasar } from "quasar";
 import { useSharedReportHTMLTemplates } from "../api/reporting";
 import { until } from "@vueuse/shared";
 import * as monaco from "monaco-editor";
+
+const $q = useQuasar();
 
 // type imports
 import { type ReportHTMLTemplate } from "../types/reporting";
@@ -107,12 +109,14 @@ async function submit() {
 const htmlEditor = ref<HTMLElement | null>(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
+const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
 function loadEditor() {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   editor = monaco.editor.create(htmlEditor.value!, {
     language: "html",
     value: state.html,
-    theme: "vs-dark",
+    theme: theme,
   });
 
   editor.onDidChangeModelContent(() => {
