@@ -48,13 +48,13 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 // composition imports
 import { reactive, ref, onUnmounted } from "vue";
-import { useDialogPluginComponent, extend } from "quasar";
+import { useDialogPluginComponent, extend, useQuasar } from "quasar";
 import { useSharedReportDataQueries } from "../api/reporting";
 import { until } from "@vueuse/shared";
 import * as monaco from "monaco-editor";
-import { getBaseUrl } from "@/boot/axios";
+import axios from "axios";
 
-// ui imports
+const $q = useQuasar();
 
 // type imports
 import { type ReportDataQuery } from "../types/reporting";
@@ -97,25 +97,29 @@ async function submit() {
 const queryEditor = ref<HTMLElement | null>(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
-function loadEditor() {
+async function loadEditor() {
+  const r = await axios.get("/reporting/queryschema/");
+
   var modelUri = monaco.Uri.parse("model://new"); // a made up unique URI for our model
   var model = monaco.editor.createModel(json_string.value, "json", modelUri);
 
   monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     validate: true,
-    enableSchemaRequest: true,
     schemas: [
       {
-        uri: `${getBaseUrl()}/static/reporting/schemas/query_schema.json`,
+        uri: "schema://model-schema",
         fileMatch: [modelUri.toString()],
+        schema: r.data,
       },
     ],
   });
 
+  const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   editor = monaco.editor.create(queryEditor.value!, {
     model: model,
-    theme: "vs-dark",
+    theme: theme,
   });
 
   editor.onDidChangeModelContent(() => {
