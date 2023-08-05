@@ -3,7 +3,7 @@
     ref="dialogRef"
     @hide="onDialogHide"
     persistent
-    @keydown.esc="onDialogHide"
+    @keydown.esc.stop="onDialogHide"
     :maximized="maximized"
   >
     <q-card
