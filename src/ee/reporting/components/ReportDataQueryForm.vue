@@ -5,7 +5,13 @@ For details, see: https://license.tacticalrmm.com/ee
 -->
 
 <template>
-  <q-dialog ref="dialogRef" maximized @hide="onDialogHide" @show="loadEditor">
+  <q-dialog
+    ref="dialogRef"
+    maximized
+    @hide="onDialogHide"
+    @show="loadEditor"
+    @before-hide="cleanupEditors"
+  >
     <q-card>
       <q-bar>
         New Data Query
@@ -47,7 +53,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script setup lang="ts">
 // composition imports
-import { reactive, ref, onUnmounted } from "vue";
+import { reactive, ref } from "vue";
 import { useDialogPluginComponent, extend, useQuasar } from "quasar";
 import { useSharedReportDataQueries } from "../api/reporting";
 import { until } from "@vueuse/shared";
@@ -127,8 +133,8 @@ async function loadEditor() {
   });
 }
 
-onUnmounted(() => {
+function cleanupEditors() {
   editor.getModel()?.dispose();
   editor.dispose();
-});
+}
 </script>

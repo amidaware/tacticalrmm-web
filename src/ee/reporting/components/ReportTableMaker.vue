@@ -47,6 +47,9 @@ import { ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
 
+// emits
+defineEmits([...useDialogPluginComponent.emits]);
+
 const { variableAnalysis } = useSharedReportTemplates;
 
 // quasar dialog setup

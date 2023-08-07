@@ -53,7 +53,7 @@ export interface useReportingTemplates {
   variableAnalysis: Ref<VariableAnalysis>;
   getAllowedValues: (payload: {
     variables: string;
-    dependencies?: ReportDependencies;
+    dependencies: ReportDependencies;
   }) => void;
 }
 
@@ -225,7 +225,7 @@ export function useReportTemplates(): useReportingTemplates {
 
   function getAllowedValues(payload: {
     variables: string;
-    dependencies?: ReportDependencies;
+    dependencies: ReportDependencies;
   }) {
     isLoading.value = true;
     isError.value = false;

@@ -10,6 +10,7 @@ For details, see: https://license.tacticalrmm.com/ee
     maximized
     @hide="onDialogHide"
     @show="initializeEditor"
+    @before-hide="cleanupEditors"
   >
     <q-card>
       <q-bar>
@@ -148,7 +149,7 @@ For details, see: https://license.tacticalrmm.com/ee
             :mini="drawerMiniState"
             side="left"
             bordered
-            :width="300"
+            :width="500"
             :mini-width="40"
           >
             <q-btn
@@ -266,15 +267,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script setup lang="ts">
 // composition imports
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onBeforeMount,
-  shallowRef,
-  onUnmounted,
-} from "vue";
+import { ref, reactive, computed, watch, onBeforeMount, shallowRef } from "vue";
 import { until, useDebounceFn, useTimeoutFn } from "@vueuse/shared";
 import {
   useQuasar,
@@ -348,7 +341,7 @@ const showVariablesDrawer = ref(true);
 const drawerMiniState = ref(true);
 
 // splitter
-const splitter = ref(1);
+const splitter = ref(35);
 
 const previewFormat = ref<ReportFormat>("html");
 const formatOptions = [
@@ -414,6 +407,7 @@ const {
   editReportTemplate,
   runReportPreview,
   runReportPreviewDebug,
+  getAllowedValues,
 } = useSharedReportTemplates;
 
 const { reportHTMLTemplates, getReportHTMLTemplates } =
@@ -421,7 +415,13 @@ const { reportHTMLTemplates, getReportHTMLTemplates } =
 
 const tab = ref(props.templateType === "markdown" ? "markdown" : "html");
 
-onBeforeMount(getReportHTMLTemplates);
+onBeforeMount(() => {
+  getReportHTMLTemplates();
+  getAllowedValues({
+    variables: state.template_variables,
+    dependencies: dependencies.value,
+  });
+});
 
 const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
   reportHTMLTemplates.value.map((template) => ({
@@ -516,13 +516,14 @@ const variablesEditor = shallowRef<monaco.editor.IStandaloneCodeEditor>();
 let variablesModel: monaco.editor.ITextModel;
 const variablesUri = monaco.Uri.parse("editor://variables");
 
-onUnmounted(() => {
+function cleanupEditors() {
   editor.value?.dispose();
   variablesEditor.value?.dispose();
   templateModel?.dispose();
   cssModel?.dispose();
   variablesModel?.dispose();
-});
+  onDialogHide();
+}
 
 function initializeEditor() {
   templateModel = monaco.editor.createModel(

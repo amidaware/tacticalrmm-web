@@ -5,7 +5,13 @@ For details, see: https://license.tacticalrmm.com/ee
 -->
 
 <template>
-  <q-dialog ref="dialogRef" maximized @hide="unloadEditor" @show="loadEditor">
+  <q-dialog
+    ref="dialogRef"
+    maximized
+    @hide="onDialogHide"
+    @show="loadEditor"
+    @before-hide="cleanupEditors"
+  >
     <q-card>
       <q-bar>
         New Base Template
@@ -124,8 +130,7 @@ function loadEditor() {
   });
 }
 
-function unloadEditor() {
+function cleanupEditors() {
   editor.dispose();
-  onDialogHide();
 }
 </script>
