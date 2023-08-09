@@ -23,7 +23,7 @@ For details, see: https://license.tacticalrmm.com/ee
           @click="showHelp = !showHelp"
         />
         <q-space />
-        <q-btn v-close-popup dense flat icon="close">
+        <q-btn dense flat icon="close" @click="openClosePrompt">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
@@ -242,7 +242,7 @@ For details, see: https://license.tacticalrmm.com/ee
         />
         <span class="q-pl-sm" v-if="showSaved">Template Saved!</span>
         <q-space />
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn dense flat label="Cancel" @click="openClosePrompt" />
         <q-btn
           v-if="reportTemplate"
           :loading="isLoading"
@@ -333,6 +333,33 @@ const state: ReportTemplate = props.reportTemplate
       depends_on: props.cloneTemplate ? props.cloneTemplate?.depends_on : [],
     });
 
+// are you sure? close prompt if work isn't saved
+const edited = ref(false);
+
+// watch variables and set the edited variable
+watch(
+  state,
+  () => {
+    edited.value = true;
+  },
+  { deep: true }
+);
+
+function openClosePrompt() {
+  if (edited.value) {
+    $q.dialog({
+      title: "You have unsaved changes",
+      message: "Would you like to close?",
+      cancel: true,
+      persistent: true,
+    }).onOk(() => {
+      dialogRef.value?.hide();
+    });
+  } else {
+    dialogRef.value?.hide();
+  }
+}
+
 // help menu
 const showHelp = ref(false);
 
@@ -417,10 +444,13 @@ const tab = ref(props.templateType === "markdown" ? "markdown" : "html");
 
 onBeforeMount(() => {
   getReportHTMLTemplates();
-  getAllowedValues({
-    variables: state.template_variables,
-    dependencies: dependencies.value,
-  });
+
+  if (state.depends_on?.length === 0) {
+    getAllowedValues({
+      variables: state.template_variables,
+      dependencies: dependencies.value,
+    });
+  }
 });
 
 const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
@@ -633,6 +663,7 @@ const applyChanges = useDebounceFn(() => {
     wrapDoubleQuotes();
     editReportTemplate(state.id, state, { dontNotify: true });
 
+    edited.value = false;
     showSaved.value = true;
     useTimeoutFn(() => (showSaved.value = false), 5000);
   }
