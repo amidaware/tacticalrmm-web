@@ -6,7 +6,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card style="width: 600px">
+    <q-card style="width: 80vw">
       <q-bar>
         Insert Table
         <q-space />
@@ -31,8 +31,8 @@ For details, see: https://license.tacticalrmm.com/ee
           label="Data Source"
         />
       </q-card-section>
-      <q-card-section>
-        <q-input v-model="output" filled type="textarea" lines="20" />
+      <q-card-section style="max-height: 60vh" class="scroll">
+        <q-input v-model="output" filled type="textarea" autogrow />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn v-close-popup dense flat label="Cancel" />
@@ -46,6 +46,7 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
+import { capitalize } from "@/utils/format";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -81,7 +82,10 @@ const output = ref(blankOutput);
 watch(source, (newSource) => {
   let columns = [] as string[];
   for (let key in variableAnalysis.value)
-    if (key.startsWith(newSource + "[0]"))
+    if (
+      variableAnalysis.value[key] !== "Object" &&
+      key.startsWith(newSource + "[0]")
+    )
       columns.push(key.replace(newSource + "[0].", ""));
 
   generateTable(columns);
@@ -100,11 +104,27 @@ const arrayOptions = computed(() => {
   return options;
 });
 
+function capitalizeHeader(header: string) {
+  let words = header.split("__");
+
+  // get the last two words
+  if (words.length > 1) {
+    words = words.slice(-2);
+  }
+
+  const columnName = words.join("_");
+
+  return columnName
+    .split("_")
+    .map((word) => capitalize(word))
+    .join(" ");
+}
+
 function generateTable(columns: string[]) {
   let headers = "";
   let cells = "";
   columns.forEach((column) => {
-    headers += `\t<th>${column}</th>\n`;
+    headers += `\t<th>${capitalizeHeader(column)}</th>\n`;
     cells += `\t<td>{{ item.${column} }}</td>\n`;
   });
 
