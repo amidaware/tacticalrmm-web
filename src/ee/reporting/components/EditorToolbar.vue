@@ -371,8 +371,7 @@ function insertDataQuery() {
     component: DataQuerySelect,
   }).onOk((queryName: string) => {
     let variablesJson = parse(props.variablesEditor.getValue()) || {};
-
-    if (!("data_sources" in variablesJson)) {
+    if (!("data_sources" in variablesJson) || !variablesJson.data_sources) {
       variablesJson["data_sources"] = {};
     }
     variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
@@ -387,7 +386,7 @@ function openChartDialog() {
     let variablesJson = parse(props.variablesEditor.getValue()) || {};
     const optionsJson = parse(data.options);
 
-    if (!("charts" in variablesJson)) {
+    if (!("charts" in variablesJson) || !variablesJson.charts) {
       variablesJson["charts"] = {};
     }
 
@@ -407,7 +406,7 @@ function openQueryAddDialog() {
   }).onOk((queryName: string) => {
     let variablesJson = parse(props.variablesEditor.getValue()) || {};
 
-    if (!("data_sources" in variablesJson)) {
+    if (!("data_sources" in variablesJson) || !variablesJson.data_sources) {
       variablesJson["data_sources"] = {};
     }
     variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
