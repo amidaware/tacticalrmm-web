@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.101.27-dev",
+  "version": "0.101.28",
   "private": true,
   "productName": "Tactical RMM",
   "scripts": {
