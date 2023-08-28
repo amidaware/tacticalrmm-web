@@ -52,21 +52,26 @@ const $route = useRoute();
 const $q = useQuasar();
 
 // logic
-const { reportData, isLoading, runReport } = useReportTemplates();
+const { reportData, isLoading, runReport, openReport } = useReportTemplates();
 const needsPrompt = props.dependsOn.filter((dep) => !props.dependencies[dep]);
-
-const dialogOpen = ref(false);
 
 const dependencies = ref(Object.assign({}, props.dependencies));
 
 if (needsPrompt.length > 0) {
-  dialogOpen.value = true;
   $q.dialog({
     component: ReportDependencyPrompt,
     componentProps: { dependsOn: needsPrompt },
   })
     .onOk((deps) => (dependencies.value = { ...dependencies.value, ...deps }))
     .onDismiss(() => {
+      openReport(
+        props.id,
+        props.format,
+        props.dependsOn,
+        dependencies.value,
+        false,
+      );
+
       runReport(props.id, {
         format: props.format,
         dependencies: dependencies.value,

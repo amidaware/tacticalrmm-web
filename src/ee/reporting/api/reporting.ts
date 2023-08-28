@@ -33,7 +33,7 @@ export interface useReportingTemplates {
   editReportTemplate: (
     id: number,
     payload: ReportTemplate,
-    options?: { dontNotify?: boolean }
+    options?: { dontNotify?: boolean },
   ) => void;
   deleteReportTemplate: (id: number) => void;
   renderedPreview: Ref<string>;
@@ -46,7 +46,8 @@ export interface useReportingTemplates {
     id: number,
     format: ReportFormat,
     dependsOn: string[],
-    dependencies?: ReportDependencies
+    dependencies?: ReportDependencies,
+    newWindow?: boolean,
   ) => void;
   exportReport: (id: number) => void;
   importReport: (payload: string) => void;
@@ -93,7 +94,7 @@ export function useReportTemplates(): useReportingTemplates {
       .delete(`${baseUrl}/templates/${id}/`)
       .then(() => {
         reportTemplates.value = reportTemplates.value.filter(
-          (template) => template.id != id
+          (template) => template.id != id,
         );
         notifySuccess("The report template was successfully removed");
       })
@@ -117,7 +118,7 @@ export function useReportTemplates(): useReportingTemplates {
   function editReportTemplate(
     id: number,
     payload: ReportTemplate,
-    options?: { dontNotify?: boolean }
+    options?: { dontNotify?: boolean },
   ) {
     isLoading.value = true;
     isError.value = false;
@@ -125,7 +126,7 @@ export function useReportTemplates(): useReportingTemplates {
       .put(`${baseUrl}/templates/${id}/`, payload)
       .then(({ data }: { data: ReportTemplate }) => {
         const index = reportTemplates.value.findIndex(
-          (template) => template.id === id
+          (template) => template.id === id,
         );
         reportTemplates.value[index] = data;
         options?.dontNotify ||
@@ -188,14 +189,24 @@ export function useReportTemplates(): useReportingTemplates {
     id: number,
     format: ReportFormat,
     dependsOn: string[],
-    dependencies?: ReportDependencies
+    dependencies?: ReportDependencies,
+    newWindow?: boolean,
   ) {
-    const dependencyString = JSON.stringify(dependencies);
-    const dependsOnString = JSON.stringify(dependsOn);
-    const url = router.resolve(
-      `/reports/${id}?format=${format}&dependsOn=${dependsOnString}&dependencies=${dependencyString}`
-    ).href;
-    window.open(url, "_blank");
+    const dependencyString = JSON.stringify(dependencies) || "{}";
+    const dependsOnString =
+      dependsOn.length > 0 ? JSON.stringify(dependsOn) : null;
+
+    const params = dependsOnString
+      ? `format=${format}&dependsOn=${dependsOnString}&dependencies=${dependencyString}`
+      : `format=${format}`;
+
+    const url = router.resolve(`/reports/${id}?${params}`).href;
+
+    if (newWindow === undefined || newWindow) {
+      window.open(url, "_blank");
+    } else {
+      router.push(url);
+    }
   }
 
   function exportReport(id: number) {
@@ -265,7 +276,7 @@ export const useSharedReportTemplates = useReportTemplates();
 // reporting asset endpoints
 export async function fetchReportAssets(
   path?: string,
-  folderOnly?: boolean
+  folderOnly?: boolean,
 ): Promise<QTreeFileNode[]> {
   const params = {} as { path?: string; folders?: boolean };
   if (path) params.path = path;
@@ -276,7 +287,7 @@ export async function fetchReportAssets(
 }
 
 export async function fetchAllReportAssets(
-  foldersOnly?: boolean
+  foldersOnly?: boolean,
 ): Promise<QTreeFileNode[]> {
   const params = {} as { onlyFolders?: boolean };
   if (foldersOnly) params.onlyFolders = true;
@@ -289,7 +300,7 @@ export async function fetchAllReportAssets(
 
 export async function renameReportAsset(
   path: string,
-  newName: string
+  newName: string,
 ): Promise<string> {
   const payload = { path, newName };
   const { data } = await axios.put(`${baseUrl}/assets/rename/`, payload);
@@ -319,7 +330,7 @@ export async function downloadAsset(path: string): Promise<Blob> {
 
 export async function uploadAssets(
   form: FormData,
-  path = ""
+  path = "",
 ): Promise<UploadAssetsResponse> {
   form.append("parentPath", path);
   const { data } = await axios.post(`${baseUrl}/assets/upload/`, form);
@@ -370,7 +381,7 @@ export function useReportingHTMLTemplates(): useReportingHTMLTemplates {
       .put(`${baseUrl}/htmltemplates/${id}/`, payload)
       .then(({ data }: { data: ReportHTMLTemplate }) => {
         const index = reportHTMLTemplates.value.findIndex(
-          (template) => template.id === id
+          (template) => template.id === id,
         );
         reportHTMLTemplates.value[index] = data;
 
@@ -386,7 +397,7 @@ export function useReportingHTMLTemplates(): useReportingHTMLTemplates {
       .delete(`${baseUrl}/htmltemplates/${id}/`)
       .then(() => {
         reportHTMLTemplates.value = reportHTMLTemplates.value.filter(
-          (template) => template.id != id
+          (template) => template.id != id,
         );
         notifySuccess("The HTML template was successfully removed");
       })
@@ -453,7 +464,7 @@ export function useReportingDataQueries(): useReportingDataQueries {
       .then(({ data }: { data: ReportDataQuery }) => {
         isLoading.value = true;
         const index = reportDataQueries.value.findIndex(
-          (template) => template.id === id
+          (template) => template.id === id,
         );
         reportDataQueries.value[index] = data;
         notifySuccess("Data Query was edited successfully");
@@ -467,7 +478,7 @@ export function useReportingDataQueries(): useReportingDataQueries {
       .delete(`${baseUrl}/dataqueries/${id}/`)
       .then(() => {
         reportDataQueries.value = reportDataQueries.value.filter(
-          (template) => template.id != id
+          (template) => template.id != id,
         );
         notifySuccess("The Data Query was successfully removed");
       })

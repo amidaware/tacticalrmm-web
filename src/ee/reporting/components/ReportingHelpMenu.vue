@@ -3,7 +3,7 @@
     <div class="text-h5">Report Template</div>
 
     <div class="q-px-sm">
-      <div class="text-body1">Test</div>
+      <div class="text-body1">Report Templates</div>
     </div>
 
     <div class="text-h5">Base Template</div>
@@ -16,7 +16,7 @@
 
     <div class="q-px-sm">
       <div class="text-body1">
-        Data Queries are used to save common database queries use them in
+        Data Queries are used to save common database queries to use them in
         templates. Behind the scenes, we are just creating a Django queryset.
         The only difference is these querysets are restricted to only retrieve
         data versus modifying data.
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   section: "template" | "baseTemplate" | "dataQuery";
 }>();
 </script>

@@ -182,7 +182,7 @@
                 v-close-popup
                 @click="
                   notifyWarning(
-                    'This feature requires a valid code signing token.'
+                    'This feature requires a valid code signing token.',
                   )
                 "
               >
@@ -276,6 +276,7 @@ import ServerMaintenance from "@/components/modals/core/ServerMaintenance.vue";
 import CodeSign from "@/components/modals/coresettings/CodeSign.vue";
 import PermissionsManager from "@/components/accounts/PermissionsManager.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { notifyWarning } from "@/utils/notify";
 
 export default {

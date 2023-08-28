@@ -123,11 +123,11 @@ watch(imageType, () => {
   output.value = "";
   linkText.value = "";
   linkUrl.value = "";
+  selected.value = "";
 });
 
 async function getAssets() {
   tree.value = await fetchAllReportAssets();
-  console.log(tree.value);
 }
 
 onMounted(getAssets);

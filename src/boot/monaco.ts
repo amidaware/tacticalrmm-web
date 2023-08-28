@@ -7,7 +7,7 @@ import { boot } from "quasar/wrappers";
 
 export default boot(() => {
   self.MonacoEnvironment = {
-    getWorker(_: any, label: string) {
+    getWorker(_: unknown, label: string) {
       if (label === "json") {
         return new jsonWorker();
       }
@@ -18,6 +18,6 @@ export default boot(() => {
         return new htmlWorker();
       }
       return new editorWorker();
-    }
+    },
   };
-})
+});

@@ -15,7 +15,7 @@ For details, see: https://license.tacticalrmm.com/ee
         </q-btn>
       </q-bar>
 
-      <q-card-section v-for="(value, label) in dependencies" :key="label">
+      <q-card-section v-for="(_, label) in dependencies" :key="label">
         <tactical-dropdown
           v-if="label === 'client'"
           v-model="dependencies[label]"
@@ -68,7 +68,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, reactive, onBeforeMount } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { notifyError } from "@/utils/notify";
 import { capitalize } from "@/utils/format";
@@ -95,22 +95,22 @@ const { clientOptions, getClientOptions } = useClientDropdown();
 const { siteOptions, getSiteOptions } = useSiteDropdown();
 
 // logic
-const dependencies = ref<{ [x: string]: string | number | null }>({});
-props.dependsOn.forEach((dep) => {
-  if (dep === "client" || dep === "site") dependencies.value[dep] = null;
-  else dependencies.value[dep] = "";
-});
+const dependencies = reactive<{ [x: string]: string | number | null }>({});
+props.dependsOn.forEach((dep) => (dependencies[dep] = null));
 
 const loading = ref(false);
 
 function validate() {
-  for (let dep in dependencies.value) {
-    return dependencies.value[dep];
-  }
+  let valid = true;
+  props.dependsOn.forEach((dep) => {
+    if (!dependencies[dep]) valid = false;
+  });
+
+  return valid;
 }
 
 function submit() {
-  if (validate()) onDialogOK(dependencies.value);
+  if (validate()) onDialogOK(dependencies);
   else notifyError("All fields must have a value");
 }
 
