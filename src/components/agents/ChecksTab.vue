@@ -595,7 +595,7 @@ export default {
       console.info(selectedAgent.value);
       $q.dialog({
         title: "Are you sure?",
-        message: `Reset all checks status`,
+        message: "Reset all checks status",
         cancel: true,
         ok: { label: "Reset", color: "negative" },
         persistent: true,
