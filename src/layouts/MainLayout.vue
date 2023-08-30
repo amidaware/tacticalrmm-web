@@ -74,7 +74,7 @@
             :color="dash_negative_color"
             text-color="black"
             icon="warning"
-            >Certificate expires in {{ daysUntilCertExpires }} days</q-chip
+            >SSL certificate expires in {{ daysUntilCertExpires }} days</q-chip
           >
         </q-toolbar-title>
         <!-- temp dark mode toggle -->
@@ -288,7 +288,7 @@ export default {
 
       if (!token.value) {
         console.log(
-          "Access token is null or invalid, not setting up WebSocket"
+          "Access token is null or invalid, not setting up WebSocket",
         );
         return;
       }
@@ -325,10 +325,13 @@ export default {
 
     const poll = ref(null);
     function livePoll() {
-      poll.value = setInterval(() => {
-        store.dispatch("checkVer");
-        store.dispatch("getDashInfo", false);
-      }, 60 * 4 * 1000);
+      poll.value = setInterval(
+        () => {
+          store.dispatch("checkVer");
+          store.dispatch("getDashInfo", false);
+        },
+        60 * 4 * 1000,
+      );
     }
 
     const updateAvailable = computed(() => {

@@ -13,7 +13,7 @@
         >
           <q-spinner size="40px" color="primary" />
         </div>
-        <div v-else class="q-pa-sm q-gutter-sm scroll" style="height: 85vh">
+        <div v-else class="q-pa-sm q-gutter-sm scroll" style="height: 85vh; overflow: initial;">
           <q-list dense class="rounded-borders">
             <q-item
               clickable

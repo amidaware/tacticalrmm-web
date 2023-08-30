@@ -31,6 +31,11 @@ export async function resetCheck(id) {
   return data;
 }
 
+export async function resetAllChecksStatus(agent_id) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/resetall/`);
+  return data;
+}
+
 export async function runAgentChecks(agent_id) {
   const { data } = await axios.post(`${baseUrl}/${agent_id}/run/`);
   return data;

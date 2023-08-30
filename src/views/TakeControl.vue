@@ -2,7 +2,7 @@
   <div>
     <q-bar>
       <span class="text-caption">
-        Agent Status:
+        TRMM Agent Status:
         <q-badge :color="statusColor" :label="status" />
       </span>
       <q-space />

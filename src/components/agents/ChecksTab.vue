@@ -119,6 +119,16 @@
           no-caps
           icon="play_arrow"
           @click="runChecks"
+          class="q-mr-md"
+        />
+        <q-btn
+          label="Reset All Checks Status"
+          dense
+          flat
+          push
+          no-caps
+          icon="restart_alt"
+          @click="resetAllChecks"
         />
       </template>
 
@@ -415,6 +425,7 @@ import {
   updateCheck,
   removeCheck,
   resetCheck,
+  resetAllChecksStatus,
   runAgentChecks,
 } from "@/api/checks";
 import { fetchAgentChecks } from "@/api/agents";
@@ -572,12 +583,33 @@ export default {
         notifySuccess(result);
         refreshDashboard(
           false /* clearTreeSelected */,
-          false /* clearSubTable */
+          false /* clearSubTable */,
         );
       } catch (e) {
         console.error(e);
       }
       loading.value = false;
+    }
+
+    function resetAllChecks() {
+      console.info(selectedAgent.value);
+      $q.dialog({
+        title: "Are you sure?",
+        message: "Reset all checks status",
+        cancel: true,
+        ok: { label: "Reset", color: "negative" },
+        persistent: true,
+      }).onOk(async () => {
+        loading.value = true;
+        try {
+          const result = await resetAllChecksStatus(selectedAgent.value);
+          await getChecks();
+          notifySuccess(result);
+        } catch (e) {
+          console.error(e);
+        }
+        loading.value = false;
+      });
     }
 
     function showEventInfo(data) {
@@ -674,6 +706,7 @@ export default {
       formatDate,
       getAlertSeverity,
       runChecks,
+      resetAllChecks,
 
       // dialogs
       showScriptOutput,
