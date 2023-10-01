@@ -173,8 +173,7 @@
                   >Setting this value on the script model will always override
                   any 'Run As User' checkboxes in the UI and force this script
                   to always be run in the context of the logged in user. If no
-                  user is logged in, the script will not run and an error will
-                  be returned.
+                  user is logged in, the script will run as SYSTEM.
                 </q-tooltip>
               </q-checkbox>
               <q-input
@@ -353,7 +352,7 @@ export default {
       downloadScript(script.value.id, { with_snippets: props.readonly }).then(
         (r) => {
           script.value.script_body = r.code;
-        }
+        },
       );
 
     async function submitForm() {
