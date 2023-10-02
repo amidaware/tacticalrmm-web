@@ -342,7 +342,7 @@ watch(
   () => {
     edited.value = true;
   },
-  { deep: true }
+  { deep: true },
 );
 
 function openClosePrompt() {
@@ -385,7 +385,7 @@ watch(
       const removed = oldArray.filter((item) => newArray.indexOf(item) == -1);
       removed.forEach((item) => delete dependencies.value[item]);
     }
-  }
+  },
 );
 
 // initial set of depends on options
@@ -393,7 +393,7 @@ const dependsOnOptions = ["client", "site", "agent"];
 
 // will add any custom added depend_on options to the list
 state.depends_on?.forEach((item) =>
-  !dependsOnOptions.includes(item) ? dependsOnOptions.push(item) : null
+  !dependsOnOptions.includes(item) ? dependsOnOptions.push(item) : null,
 );
 
 // the filtered list that the select uses
@@ -402,7 +402,7 @@ const dependsOnFilterOptions = ref(dependsOnOptions);
 function createValue(
   val: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  done: (val: any, mode: "add-unique" | "add" | "toggle" | undefined) => void
+  done: (val: any, mode: "add-unique" | "add" | "toggle" | undefined) => void,
 ) {
   if (val.length > 0) {
     if (!dependsOnOptions.includes(val)) {
@@ -419,7 +419,7 @@ function filterFn(val: string, update: (callback: () => void) => void) {
     } else {
       const needle = val.toLowerCase();
       dependsOnFilterOptions.value = dependsOnOptions.filter(
-        (v) => v.toLowerCase().indexOf(needle) > -1
+        (v) => v.toLowerCase().indexOf(needle) > -1,
       );
     }
   });
@@ -457,7 +457,7 @@ const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
   reportHTMLTemplates.value.map((template) => ({
     label: template.name,
     value: template.id,
-  }))
+  })),
 );
 
 const debug = ref(false);
@@ -559,7 +559,7 @@ function initializeEditor() {
   templateModel = monaco.editor.createModel(
     state.template_md,
     props.templateType,
-    templateUri
+    templateUri,
   );
   cssModel = monaco.editor.createModel(state.template_css, "css", cssUri);
 
@@ -590,7 +590,7 @@ function initializeEditor() {
   variablesModel = monaco.editor.createModel(
     state.template_variables,
     "yaml",
-    variablesUri
+    variablesUri,
   );
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   variablesEditor.value = monaco.editor.create(variablesDiv.value!, {
@@ -612,8 +612,8 @@ function initializeEditor() {
 
 // make sure to put quotes around any variable values that have { or }
 function wrapDoubleQuotes() {
-  const matchJsonCharacters = /(\b.*: *?[^\n\r])([^"].*[{}]+.*[^"])\r?$/gm;
-  const putDoubleQuotes = '$1"$2"';
+  const matchJsonCharacters = /(\b.*: *?[^\n\r])([^'].*[{}]+.*[^'])\r?$/gm;
+  const putDoubleQuotes = "$1'$2'";
 
   if (matchJsonCharacters.test(state.template_variables)) {
     const newText = variablesEditor.value

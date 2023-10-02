@@ -20,7 +20,9 @@ For details, see: https://license.tacticalrmm.com/ee
           dense
           filled
           label="Import File"
-          style="width: 250px"
+          style="width: 400px"
+          accept=".json"
+          hint="Only accepts exported report template json files"
         />
       </q-card-section>
 

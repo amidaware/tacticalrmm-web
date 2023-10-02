@@ -68,6 +68,12 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-label>Html Template</q-item-label>
                 </q-item-section>
               </q-item>
+
+              <q-item clickable v-close-popup @click="importReportTemplate">
+                <q-item-section>
+                  <q-item-label>Import Report Template</q-item-label>
+                </q-item-section>
+              </q-item>
             </q-list>
           </q-btn-dropdown>
           <q-btn
@@ -108,18 +114,6 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-icon name="search" color="primary" />
             </template>
           </q-input>
-
-          <q-btn icon="menu" dropdown-icon="none" dense>
-            <q-menu>
-              <q-list dense>
-                <q-item clickable v-close-popup @click="importReportTemplate">
-                  <q-item-section>
-                    <q-item-label>Import Report Template</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
         </template>
 
         <template #body="props">
