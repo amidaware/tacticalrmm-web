@@ -612,18 +612,15 @@ function initializeEditor() {
 
 // make sure to put quotes around any variable values that have { or }
 function wrapDoubleQuotes() {
-  const matchJsonCharacters = /(\b.*: *?[^\n\r])([^'].*[{}]+.*[^'])\r?$/gm;
-  const putDoubleQuotes = "$1'$2'";
+  const matchJsonCharacters = /([^:\s'"]+:\s*)([^']*[{}][^'\n]*)/;
+  const editorValue = variablesEditor.value?.getValue();
+  if (editorValue && matchJsonCharacters.test(editorValue)) {
+    state.template_variables = editorValue
+      .split("\n")
+      .map((line) => line.replace(matchJsonCharacters, "$1'$2'"))
+      .join("\n");
 
-  if (matchJsonCharacters.test(state.template_variables)) {
-    const newText = variablesEditor.value
-      ?.getValue()
-      .replace(matchJsonCharacters, putDoubleQuotes);
-
-    if (newText) {
-      variablesEditor.value?.setValue(newText);
-      state.template_variables = newText;
-    }
+    variablesEditor.value?.setValue(state.template_variables);
   }
 }
 
