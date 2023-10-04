@@ -15,13 +15,13 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-card>
       <q-bar>
         New Report Template
-        <q-btn
+        <!-- <q-btn
           icon="help"
           round
           flat
           color="info"
           @click="showHelp = !showHelp"
-        />
+        /> -->
         <q-space />
         <q-btn dense flat icon="close" @click="openClosePrompt">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -79,6 +79,7 @@ For details, see: https://license.tacticalrmm.com/ee
           color="primary"
           :disable="debug"
         />
+        <q-toggle v-model="debug" dense label="Debug" class="q-pl-sm" />
         <q-space />
 
         <q-tabs v-model="tab" dense shrink>
@@ -104,44 +105,9 @@ For details, see: https://license.tacticalrmm.com/ee
         v-show="tab === 'markdown' || tab === 'html' || tab === 'css'"
         class="q-px-sm"
       >
-        <EditorToolbar
-          v-if="
-            (tab === 'markdown' || tab === 'html') && editor && variablesEditor
-          "
-          :editor="editor"
-          :variablesEditor="variablesEditor"
-          :templateType="templateType"
-        >
-          <template v-slot:buttons>
-            <q-btn
-              flat
-              dense
-              :ripple="false"
-              label="vars"
-              no-caps
-              @click="splitter > 1 ? (splitter = 1) : (splitter = 35)"
-            >
-              <q-tooltip :delay="500">{{
-                splitter >= 1 ? "Hide variables" : "Show variables"
-              }}</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              dense
-              :ripple="false"
-              label="base"
-              no-caps
-              @click="openBaseTemplateForm"
-            >
-              <q-tooltip :delay="500">Add Base Template</q-tooltip>
-            </q-btn>
-            <q-space />
-            <q-toggle v-model="debug" dense label="Debug" />
-          </template>
-        </EditorToolbar>
         <q-layout
           view="lHh lpR lFf"
-          :style="{ height: `${$q.screen.height - 162}px` }"
+          :style="{ height: `${$q.screen.height - 132}px` }"
           container
         >
           <q-drawer
@@ -182,7 +148,7 @@ For details, see: https://license.tacticalrmm.com/ee
             />
           </q-drawer>
 
-          <q-drawer
+          <!-- <q-drawer
             v-model="showHelp"
             side="right"
             :width="600"
@@ -190,26 +156,83 @@ For details, see: https://license.tacticalrmm.com/ee
             bordered
           >
             <ReportingHelpMenu section="template" />
-          </q-drawer>
+          </q-drawer> -->
 
           <q-page-container>
             <q-splitter
               v-model="splitter"
               emit-immediately
               reverse
-              :limits="[1, 50]"
+              :limits="[3, 45]"
             >
               <template v-slot:before>
+                <EditorToolbar
+                  v-if="
+                    (tab === 'markdown' || tab === 'html') &&
+                    editor &&
+                    variablesEditor
+                  "
+                  :editor="editor"
+                  :variablesEditor="variablesEditor"
+                  :templateType="templateType"
+                >
+                  <template v-slot:buttons>
+                    <q-btn
+                      flat
+                      dense
+                      :ripple="false"
+                      label="vars"
+                      no-caps
+                      @click="splitter > 3 ? (splitter = 3) : (splitter = 35)"
+                    >
+                      <q-tooltip :delay="500">{{
+                        splitter >= 3 ? "Hide variables" : "Show variables"
+                      }}</q-tooltip>
+                    </q-btn>
+                    <q-btn
+                      flat
+                      dense
+                      :ripple="false"
+                      label="base"
+                      no-caps
+                      @click="openBaseTemplateForm"
+                    >
+                      <q-tooltip :delay="500">Add Base Template</q-tooltip>
+                    </q-btn>
+                  </template>
+                </EditorToolbar>
                 <div
                   ref="editorDiv"
-                  :style="{ height: `${$q.screen.height - 164}px` }"
+                  :style="{ height: `${$q.screen.height - 168}px` }"
                 ></div>
               </template>
               <template v-slot:after>
+                <q-bar>
+                  <q-btn
+                    v-if="splitter > 6"
+                    round
+                    dense
+                    flat
+                    icon="chevron_right"
+                    @click="splitter = 3"
+                  ></q-btn>
+                  <q-btn
+                    v-else
+                    round
+                    dense
+                    flat
+                    icon="chevron_left"
+                    @click="splitter = 35"
+                  ></q-btn>
+
+                  <div v-if="splitter > 8" class="q-pl-xs text-subtitle">
+                    Variables
+                  </div>
+                </q-bar>
                 <div
                   ref="variablesDiv"
-                  v-show="splitter > 1"
-                  :style="{ height: `${$q.screen.height - 164}px` }"
+                  v-show="splitter > 8"
+                  :style="{ height: `${$q.screen.height - 168}px` }"
                 ></div>
               </template>
             </q-splitter>
@@ -289,7 +312,7 @@ import ReportTemplatePreview from "./ReportTemplatePreview.vue";
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
 import ReportHTMLTemplateForm from "./ReportHTMLTemplateForm.vue";
 import VariablesSelector from "./VariablesSelector.vue";
-import ReportingHelpMenu from "./ReportingHelpMenu.vue";
+//import ReportingHelpMenu from "./ReportingHelpMenu.vue";
 
 // type imports
 import type {
@@ -361,7 +384,7 @@ function openClosePrompt() {
 }
 
 // help menu
-const showHelp = ref(false);
+//const showHelp = ref(false);
 
 // variables drawer menu state
 const showVariablesDrawer = ref(true);
@@ -516,7 +539,7 @@ watch(tab, (newValue) => {
   } else if (newValue === props.templateType) {
     editor.value?.setModel(templateModel);
   } else if (newValue === "css") {
-    splitter.value = 1;
+    splitter.value = 3;
     editor.value?.setModel(cssModel);
   }
 });
