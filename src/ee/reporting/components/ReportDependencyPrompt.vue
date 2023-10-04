@@ -23,6 +23,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="clientOptions"
           outlined
           mapOptions
+          filterable
         />
 
         <tactical-dropdown
@@ -32,6 +33,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="siteOptions"
           outlined
           mapOptions
+          filterable
         />
 
         <tactical-dropdown
@@ -41,6 +43,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="agentOptions"
           outlined
           mapOptions
+          filterable
         />
 
         <q-input
