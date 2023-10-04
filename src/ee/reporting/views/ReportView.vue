@@ -41,8 +41,8 @@ import type { ReportFormat, ReportDependencies } from "../types/reporting";
 const props = defineProps<{
   id: number;
   format: ReportFormat;
-  dependencies: ReportDependencies;
-  dependsOn: string[];
+  dependencies?: ReportDependencies;
+  dependsOn?: string[];
 }>();
 
 // setup vue router
@@ -52,10 +52,11 @@ const $route = useRoute();
 const $q = useQuasar();
 
 // logic
-const { reportData, isLoading, runReport, openReport } = useReportTemplates();
-const needsPrompt = props.dependsOn.filter((dep) => !props.dependencies[dep]);
-
+const dependsOn = props.dependsOn || [];
 const dependencies = ref(Object.assign({}, props.dependencies));
+
+const { reportData, isLoading, runReport, openReport } = useReportTemplates();
+const needsPrompt = dependsOn.filter((dep) => !dependencies[dep]);
 
 if (needsPrompt.length > 0) {
   $q.dialog({
@@ -64,13 +65,7 @@ if (needsPrompt.length > 0) {
   })
     .onOk((deps) => (dependencies.value = { ...dependencies.value, ...deps }))
     .onDismiss(() => {
-      openReport(
-        props.id,
-        props.format,
-        props.dependsOn,
-        dependencies.value,
-        false,
-      );
+      openReport(props.id, props.format, dependsOn, dependencies.value, false);
 
       runReport(props.id, {
         format: props.format,
