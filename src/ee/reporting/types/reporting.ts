@@ -4,9 +4,9 @@ This file is subject to the EE License Agreement.
 For details, see: https://license.tacticalrmm.com/ee
 */
 
-export type ReportTemplateType = "markdown" | "html";
+export type ReportTemplateType = "markdown" | "html" | "plaintext";
 
-export type ReportFormat = "pdf" | "html";
+export type ReportFormat = "pdf" | "html" | "plaintext";
 
 export interface ReportDependencies {
   client?: number;

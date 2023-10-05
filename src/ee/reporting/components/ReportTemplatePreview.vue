@@ -18,7 +18,7 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <template v-slot:before>
       <iframe
-        :srcdoc="previewFormat === 'html' ? source : undefined"
+        :srcdoc="previewFormat !== 'pdf' ? source : undefined"
         :src="previewFormat === 'pdf' ? source : undefined"
         :style="{
           'min-width': '100%',
@@ -30,7 +30,9 @@ For details, see: https://license.tacticalrmm.com/ee
     <template v-slot:after>
       <q-splitter v-if="debug" v-model="verticalSplitter">
         <template v-slot:before>
-          <div class="q-pa-xs">HTML</div>
+          <div class="q-pa-xs">
+            {{ previewFormat === "plaintext" ? "Text" : "HTML" }}
+          </div>
           <div
             id="templateDiv"
             :style="{ height: `${splitterHeight - horizontalSplitter - 33}px` }"
@@ -69,7 +71,7 @@ const $q = useQuasar();
 const splitterHeight = ref($q.screen.height - 82);
 
 const horizontalSplitter = ref(
-  props.debug ? splitterHeight.value / 2 : splitterHeight.value - 8
+  props.debug ? splitterHeight.value / 2 : splitterHeight.value - 8,
 );
 
 const verticalSplitter = ref(props.debug ? 50 : 0);
@@ -92,7 +94,7 @@ if (props.debug) {
         language: "html",
         minimap: { enabled: false },
         readOnly: true,
-      }
+      },
     );
 
     variablesEditor = monaco.editor.create(
@@ -105,7 +107,7 @@ if (props.debug) {
         theme: theme,
         minimap: { enabled: false },
         readOnly: true,
-      }
+      },
     );
   });
 

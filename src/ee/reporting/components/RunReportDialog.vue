@@ -17,21 +17,10 @@ For details, see: https://license.tacticalrmm.com/ee
 
       <q-card-section v-if="reportTemplates.length === 0">
         There are no report templates that depend on {{ capitalize(type) }}. You
-        can specify {{ `\{\{ ${type}.property \}\}` }} in the variables section
-        of a report template.
+        must select a dependency in the Report Template of type {{ type }} using
+        the dependencies dropdown.
       </q-card-section>
       <div v-else>
-        <q-card-section>
-          <q-option-group
-            v-model="reportFormat"
-            :options="[
-              { label: 'PDF', value: 'pdf' },
-              { label: 'HTML', value: 'html' },
-            ]"
-            inline
-          />
-        </q-card-section>
-
         <q-card-section>
           <tactical-dropdown
             v-model="reportTemplate"
@@ -39,8 +28,18 @@ For details, see: https://license.tacticalrmm.com/ee
             label="Report Template"
             outlined
             mapOptions
+            filterable
           />
         </q-card-section>
+
+        <q-card-section>
+          <q-option-group
+            v-model="reportFormat"
+            :options="reportFormatOptions"
+            inline
+          />
+        </q-card-section>
+
         <q-card-actions align="right">
           <q-btn v-close-popup dense flat label="Cancel" />
           <q-btn
@@ -95,25 +94,44 @@ const reportTemplateOptions = computed(() =>
   reportTemplates.value.map((template) => ({
     label: template.name,
     value: template.id,
-  }))
+  })),
 );
+
+const selectedTemplate = computed(() => {
+  return reportTemplates.value.find(
+    (template) => template.id === reportTemplate.value,
+  );
+});
+
+const reportFormatOptions = computed(() => {
+  if (selectedTemplate.value) {
+    if (selectedTemplate.value.type !== "plaintext")
+      return [
+        { label: "PDF", value: "pdf" },
+        { label: "HTML", value: "html" },
+      ];
+    else
+      return [
+        { label: "PDF", value: "pdf" },
+        { label: "Text", value: "plaintext" },
+      ];
+  } else return [];
+});
 
 async function submit() {
   if (reportTemplate.value === null) {
     notifyError("Report Template is required.");
     return;
   }
-  const selectedTemplate = reportTemplates.value.find(
-    (template) => template.id === reportTemplate.value
-  );
-  if (selectedTemplate && selectedTemplate.depends_on) {
+
+  if (selectedTemplate.value && selectedTemplate.value.depends_on) {
     openReport(
       reportTemplate.value,
       reportFormat.value,
-      selectedTemplate.depends_on,
+      selectedTemplate.value.depends_on,
       {
         [props.type]: props.id,
-      }
+      },
     );
   }
 

@@ -13,7 +13,7 @@ For details, see: https://license.tacticalrmm.com/ee
       label-style="font-size: 1.1em"
     />
     <iframe
-      :srcdoc="$route.query.format === 'html' ? reportData : undefined"
+      :srcdoc="$route.query.format !== 'pdf' ? reportData : undefined"
       :src="$route.query.format === 'pdf' ? reportData : undefined"
       :style="{
         'max-height': `${$q.screen.height}px`,
@@ -26,7 +26,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { useReportTemplates } from "../api/reporting";
@@ -53,7 +53,9 @@ const $q = useQuasar();
 
 // logic
 const dependsOn = props.dependsOn || [];
-const dependencies = ref(Object.assign({}, props.dependencies));
+console.log(dependsOn);
+const dependencies = reactive(Object.assign({}, props.dependencies));
+console.log(dependencies);
 
 const { reportData, isLoading, runReport, openReport } = useReportTemplates();
 const needsPrompt = dependsOn.filter((dep) => !dependencies[dep]);
@@ -63,19 +65,19 @@ if (needsPrompt.length > 0) {
     component: ReportDependencyPrompt,
     componentProps: { dependsOn: needsPrompt },
   })
-    .onOk((deps) => (dependencies.value = { ...dependencies.value, ...deps }))
+    .onOk((deps) => (dependencies = { ...dependencies, ...deps }))
     .onDismiss(() => {
-      openReport(props.id, props.format, dependsOn, dependencies.value, false);
+      openReport(props.id, props.format, dependsOn, dependencies, false);
 
       runReport(props.id, {
         format: props.format,
-        dependencies: dependencies.value,
+        dependencies: dependencies,
       });
     });
 } else {
   runReport(props.id, {
     format: props.format,
-    dependencies: dependencies.value,
+    dependencies: dependencies,
   });
 }
 </script>

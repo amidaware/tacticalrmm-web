@@ -43,7 +43,7 @@ For details, see: https://license.tacticalrmm.com/ee
           style="width: 250px"
           class="q-pr-sm"
           :options="HTMLTemplateOptions"
-          label="HTML Templates"
+          label="Base Templates"
           map-options
           emit-value
           dense
@@ -95,16 +95,19 @@ For details, see: https://license.tacticalrmm.com/ee
             label="Html"
             :ripple="false"
           />
-          <q-tab name="css" label="CSS" :ripple="false" />
+          <q-tab v-else name="plaintext" label="Plain Text" :ripple="false" />
+          <q-tab
+            v-if="templateType !== 'plaintext'"
+            name="css"
+            label="CSS"
+            :ripple="false"
+          />
           <q-tab name="preview" label="Preview" :ripple="false" />
         </q-tabs>
       </q-toolbar>
 
       <!-- main editor -->
-      <div
-        v-show="tab === 'markdown' || tab === 'html' || tab === 'css'"
-        class="q-px-sm"
-      >
+      <div v-show="tab !== 'preview'" class="q-px-sm">
         <q-layout
           view="lHh lpR lFf"
           :style="{ height: `${$q.screen.height - 132}px` }"
@@ -168,7 +171,8 @@ For details, see: https://license.tacticalrmm.com/ee
               <template v-slot:before>
                 <EditorToolbar
                   v-if="
-                    (tab === 'markdown' || tab === 'html') &&
+                    tab !== 'preview' &&
+                    tab !== 'css' &&
                     editor &&
                     variablesEditor
                   "
@@ -393,9 +397,14 @@ const drawerMiniState = ref(true);
 // splitter
 const splitter = ref(35);
 
-const previewFormat = ref<ReportFormat>("html");
+const previewFormat = ref<ReportFormat>(
+  props.templateType === "html" ? "html" : "plaintext",
+);
 const formatOptions = [
-  { label: "HTML", value: "html" },
+  {
+    label: props.templateType === "html" ? "HTML" : "Text",
+    value: props.templateType === "html" ? "html" : "plaintext",
+  },
   { label: "PDF", value: "pdf" },
 ];
 
@@ -463,7 +472,13 @@ const {
 const { reportHTMLTemplates, getReportHTMLTemplates } =
   useSharedReportHTMLTemplates;
 
-const tab = ref(props.templateType === "markdown" ? "markdown" : "html");
+const tab = ref(
+  props.templateType === "markdown"
+    ? "markdown"
+    : props.templateType === "html"
+    ? "html"
+    : "plaintext",
+);
 
 onBeforeMount(() => {
   getReportHTMLTemplates();
@@ -486,7 +501,10 @@ const HTMLTemplateOptions = computed<QSelectOption<number>[]>(() =>
 const debug = ref(false);
 
 watch(debug, (newValue) => {
-  if (newValue) previewFormat.value = "html";
+  if (newValue)
+    props.templateType === "html"
+      ? (previewFormat.value = "html")
+      : (previewFormat.value = "plaintext");
 });
 
 function openBaseTemplateForm() {

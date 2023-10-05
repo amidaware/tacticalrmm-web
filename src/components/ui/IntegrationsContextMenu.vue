@@ -17,7 +17,7 @@
             : undefined
         "
         :to="integration.type === 'route' ? integration.uri : undefined"
-        auto-close
+        v-close-popup
       >
         <q-item-section>{{ integration.name }}</q-item-section>
       </q-item>

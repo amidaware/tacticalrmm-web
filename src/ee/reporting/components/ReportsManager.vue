@@ -69,6 +69,18 @@ For details, see: https://license.tacticalrmm.com/ee
                 </q-item-section>
               </q-item>
 
+              <q-item
+                v-close-popup
+                clickable
+                @click="openNewReportTemplateForm('plaintext')"
+              >
+                <q-item-section>
+                  <q-item-label>Plain Text Template</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-separator />
+
               <q-item clickable v-close-popup @click="importReportTemplate">
                 <q-item-section>
                   <q-item-label>Import Report Template</q-item-label>
@@ -159,10 +171,11 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-file-pdf-box" />
                   </q-item-section>
-                  <q-item-section>Get PDF Report</q-item-section>
+                  <q-item-section>Open PDF Report</q-item-section>
                 </q-item>
 
                 <q-item
+                  v-if="props.row.type === 'html'"
                   v-close-popup
                   clickable
                   @click="
@@ -170,9 +183,28 @@ For details, see: https://license.tacticalrmm.com/ee
                   "
                 >
                   <q-item-section side>
-                    <q-icon name="mdi-file-pdf-box" />
+                    <q-icon name="code" />
                   </q-item-section>
                   <q-item-section>Open HTML Report</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-if="props.row.type === 'plaintext'"
+                  v-close-popup
+                  clickable
+                  @click="
+                    openReport(
+                      props.row.id,
+                      'plaintext',
+                      props.row.depends_on,
+                      {},
+                    )
+                  "
+                >
+                  <q-item-section side>
+                    <q-icon name="description" />
+                  </q-item-section>
+                  <q-item-section>Open Text Report</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -211,6 +243,8 @@ For details, see: https://license.tacticalrmm.com/ee
 
             <!-- rows -->
             <td>{{ props.row.name }}</td>
+            <td>{{ props.row.type }}</td>
+            <td>{{ props.row.depends_on }}</td>
           </q-tr>
         </template>
       </q-table>
@@ -239,6 +273,20 @@ const columns: QTableColumn[] = [
     name: "name",
     label: "Name",
     field: "name",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "type",
+    label: "Template Type",
+    field: "type",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "depends_on",
+    label: "Template Dependencies",
+    field: "depends_on",
     align: "left",
     sortable: true,
   },

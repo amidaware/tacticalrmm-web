@@ -144,7 +144,8 @@ export function useReportTemplates(): useReportingTemplates {
     axios
       .post(`${baseUrl}/templates/preview/`, payload)
       .then(({ data }) => {
-        renderedPreview.value = data.template;
+        if (payload.format === "html") renderedPreview.value = data.template;
+        else renderedPreview.value = `<pre>${data.template}</pre>`;
         renderedVariables.value = JSON.stringify(data.variables, undefined, 4);
       })
       .catch(() => (isError.value = true))
@@ -157,14 +158,13 @@ export function useReportTemplates(): useReportingTemplates {
     renderedPreview.value = "";
     axios
       .post(`${baseUrl}/templates/preview/`, payload, {
-        responseType: payload.format === "html" ? "json" : "blob",
+        responseType: payload.format !== "pdf" ? "json" : "blob",
       })
       .then(({ data }) => {
-        if (payload.format === "html") {
-          renderedPreview.value = data;
-        } else {
-          renderedPreview.value = URL.createObjectURL(data);
-        }
+        if (payload.format === "html") renderedPreview.value = data;
+        else if (payload.format === "plaintext")
+          renderedPreview.value = `<pre>${data}</pre>`;
+        else renderedPreview.value = URL.createObjectURL(data);
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -175,11 +175,13 @@ export function useReportTemplates(): useReportingTemplates {
     isError.value = false;
     axios
       .post(`${baseUrl}/templates/${id}/run/`, payload, {
-        responseType: payload.format === "html" ? "json" : "blob",
+        responseType: payload.format !== "pdf" ? "json" : "blob",
       })
       .then(({ data }) => {
-        reportData.value =
-          payload.format === "html" ? data : URL.createObjectURL(data);
+        if (payload.format === "html") reportData.value = data;
+        else if (payload.format === "pdf")
+          reportData.value = URL.createObjectURL(data);
+        else reportData.value = `<pre>${data}</pre>`;
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
