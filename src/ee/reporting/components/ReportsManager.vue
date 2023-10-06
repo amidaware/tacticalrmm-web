@@ -175,7 +175,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 </q-item>
 
                 <q-item
-                  v-if="props.row.type === 'html'"
+                  v-if="props.row.type !== 'plaintext'"
                   v-close-popup
                   clickable
                   @click="
