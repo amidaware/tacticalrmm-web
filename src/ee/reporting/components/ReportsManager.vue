@@ -244,7 +244,9 @@ For details, see: https://license.tacticalrmm.com/ee
             <!-- rows -->
             <td>{{ props.row.name }}</td>
             <td>{{ props.row.type }}</td>
-            <td>{{ props.row.depends_on }}</td>
+            <td>
+              {{ props.row.depends_on.length > 0 ? props.row.depends_on : "" }}
+            </td>
           </q-tr>
         </template>
       </q-table>

@@ -398,12 +398,21 @@ const drawerMiniState = ref(true);
 const splitter = ref(35);
 
 const previewFormat = ref<ReportFormat>(
-  props.templateType === "html" ? "html" : "plaintext",
+  props.templateType === "html" || props.templateType === "markdown"
+    ? "html"
+    : "plaintext",
 );
+
 const formatOptions = [
   {
-    label: props.templateType === "html" ? "HTML" : "Text",
-    value: props.templateType === "html" ? "html" : "plaintext",
+    label:
+      props.templateType === "html" || props.templateType === "markdown"
+        ? "HTML"
+        : "Text",
+    value:
+      props.templateType === "html" || props.templateType === "markdown"
+        ? "html"
+        : "plaintext",
   },
   { label: "PDF", value: "pdf" },
 ];
@@ -473,9 +482,7 @@ const { reportHTMLTemplates, getReportHTMLTemplates } =
   useSharedReportHTMLTemplates;
 
 const tab = ref(
-  props.templateType === "markdown"
-    ? "markdown"
-    : props.templateType === "html"
+  props.templateType === "markdown" || props.templateType === "html"
     ? "html"
     : "plaintext",
 );
@@ -502,7 +509,7 @@ const debug = ref(false);
 
 watch(debug, (newValue) => {
   if (newValue)
-    props.templateType === "html"
+    props.templateType === "html" || props.templateType === "markdown"
       ? (previewFormat.value = "html")
       : (previewFormat.value = "plaintext");
 });
