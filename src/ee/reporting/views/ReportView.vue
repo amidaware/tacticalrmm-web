@@ -26,7 +26,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { useReportTemplates } from "../api/reporting";
@@ -53,31 +53,29 @@ const $q = useQuasar();
 
 // logic
 const dependsOn = props.dependsOn || [];
-console.log(dependsOn);
-const dependencies = reactive(Object.assign({}, props.dependencies));
-console.log(dependencies);
+const dependencies = ref(Object.assign({}, props.dependencies));
 
 const { reportData, isLoading, runReport, openReport } = useReportTemplates();
-const needsPrompt = dependsOn.filter((dep) => !dependencies[dep]);
+const needsPrompt = dependsOn.filter((dep) => !dependencies.value[dep]);
 
 if (needsPrompt.length > 0) {
   $q.dialog({
     component: ReportDependencyPrompt,
     componentProps: { dependsOn: needsPrompt },
   })
-    .onOk((deps) => (dependencies = { ...dependencies, ...deps }))
+    .onOk((deps) => (dependencies.value = { ...dependencies, ...deps }))
     .onDismiss(() => {
-      openReport(props.id, props.format, dependsOn, dependencies, false);
+      openReport(props.id, props.format, dependsOn, dependencies.value, false);
 
       runReport(props.id, {
         format: props.format,
-        dependencies: dependencies,
+        dependencies: dependencies.value,
       });
     });
 } else {
   runReport(props.id, {
     format: props.format,
-    dependencies: dependencies,
+    dependencies: dependencies.value,
   });
 }
 </script>
