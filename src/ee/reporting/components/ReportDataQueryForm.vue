@@ -64,6 +64,7 @@ const $q = useQuasar();
 
 // type imports
 import { type ReportDataQuery } from "../types/reporting";
+import { notifyError } from "@/utils/notify";
 
 // props
 const props = defineProps<{
@@ -92,7 +93,12 @@ const { isLoading, isError, addReportDataQuery, editReportDataQuery } =
   useSharedReportDataQueries;
 
 async function submit() {
-  state.json_query = JSON.parse(json_string.value);
+  try {
+    state.json_query = JSON.parse(json_string.value);
+  } catch (e) {
+    notifyError(`There was an error parsing the json: ${e}`);
+    return;
+  }
 
   if (!props.editInTemplate) {
     props.dataQuery
