@@ -43,12 +43,16 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, computed, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportDataQueries } from "../api/reporting";
+import { notifyError } from "@/utils/notify";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const props = defineProps<{ dataSources?: any }>();
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -57,15 +61,36 @@ const { reportDataQueries, getReportDataQueries } = useSharedReportDataQueries;
 
 const selectedQuery = ref<string | null>(null);
 const loading = ref(false);
-const queryOptions = computed(() =>
-  reportDataQueries.value.map((query) => query.name)
-);
+
+const queryOptions = computed(() => {
+  if (props.dataSources === undefined)
+    return reportDataQueries.value.map((query) => query.name);
+  else return Object.keys(props.dataSources);
+});
 
 function submit() {
-  if (selectedQuery.value !== null) {
-    onDialogOK(selectedQuery.value);
+  if (selectedQuery.value === null)
+    notifyError("Select a query from the dropdown");
+  else {
+    let dataQuery;
+    if (props.dataSources === undefined) {
+      dataQuery = reportDataQueries.value.find(
+        (query) => query.name === selectedQuery.value,
+      );
+    } else {
+      dataQuery = {
+        id: 0,
+        name: selectedQuery.value,
+        json_query: props.dataSources[selectedQuery.value],
+      };
+    }
+    onDialogOK(dataQuery);
   }
 }
 
-onMounted(getReportDataQueries);
+onMounted(() => {
+  if (props.dataSources === undefined) {
+    getReportDataQueries();
+  }
+});
 </script>

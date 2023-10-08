@@ -14,7 +14,7 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        New Data Query
+        {{ props.dataQuery ? "Edit Data Query" : "New Data Query" }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -66,7 +66,10 @@ const $q = useQuasar();
 import { type ReportDataQuery } from "../types/reporting";
 
 // props
-const props = defineProps<{ dataQuery?: ReportDataQuery }>();
+const props = defineProps<{
+  dataQuery?: ReportDataQuery;
+  editInTemplate?: boolean;
+}>();
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -90,14 +93,16 @@ const { isLoading, isError, addReportDataQuery, editReportDataQuery } =
 
 async function submit() {
   state.json_query = JSON.parse(json_string.value);
-  props.dataQuery
-    ? editReportDataQuery(state.id, state)
-    : addReportDataQuery(state);
 
-  await until(isLoading).not.toBeTruthy();
-  if (isError.value) return;
+  if (!props.editInTemplate) {
+    props.dataQuery
+      ? editReportDataQuery(state.id, state)
+      : addReportDataQuery(state);
 
-  onDialogOK(state.name);
+    await until(isLoading).not.toBeTruthy();
+    if (isError.value) return;
+  }
+  onDialogOK(state);
 }
 
 const queryEditor = ref<HTMLElement | null>(null);

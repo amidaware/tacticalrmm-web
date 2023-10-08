@@ -660,7 +660,7 @@ function initializeEditor() {
 
 // make sure to put quotes around any variable values that have { or }
 function wrapDoubleQuotes() {
-  const matchJsonCharacters = /([^:\s'"]+:\s*)([^']*[{}][^'\n]*)/;
+  const matchJsonCharacters = /([^:\s'"]+:\s*)([^'"]*[{}][^'"\n]*)/;
   const editorValue = variablesEditor.value?.getValue();
   if (editorValue && matchJsonCharacters.test(editorValue)) {
     state.template_variables = editorValue

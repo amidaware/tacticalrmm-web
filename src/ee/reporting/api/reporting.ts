@@ -162,9 +162,9 @@ export function useReportTemplates(): useReportingTemplates {
       })
       .then(({ data }) => {
         if (payload.format === "html") renderedPreview.value = data;
-        else if (payload.format === "plaintext")
-          renderedPreview.value = `<pre>${data}</pre>`;
-        else renderedPreview.value = URL.createObjectURL(data);
+        else if (payload.format === "pdf")
+          renderedPreview.value = URL.createObjectURL(data);
+        else renderedPreview.value = `<pre>${data}</pre>`;
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));

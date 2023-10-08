@@ -237,20 +237,30 @@ For details, see: https://license.tacticalrmm.com/ee
       flat
       dense
       :ripple="false"
-      icon="mdi-database-arrow-down"
-      @click="insertDataQuery"
+      icon="mdi-database-plus-outline"
+      @click="openQueryAddDialog"
     >
-      <q-tooltip :delay="500">Insert Data Query</q-tooltip>
+      <q-tooltip :delay="500">Add Data Query</q-tooltip>
     </q-btn>
 
     <q-btn
       flat
       dense
       :ripple="false"
-      icon="mdi-database-plus-outline"
-      @click="openQueryAddDialog"
+      icon="mdi-database-arrow-down"
+      @click="insertDataQuery"
     >
-      <q-tooltip :delay="500">Add Data Query</q-tooltip>
+      <q-tooltip :delay="500">Insert Saved Data Query</q-tooltip>
+    </q-btn>
+
+    <q-btn
+      flat
+      dense
+      :ripple="false"
+      icon="mdi-database-edit"
+      @click="editDataQuery"
+    >
+      <q-tooltip :delay="500">Edit Data Query</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -263,9 +273,9 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-tooltip :delay="500">Table</q-tooltip>
     </q-btn>
 
-    <q-btn flat dense :ripple="false" icon="add_chart" @click="openChartDialog">
+    <!-- <q-btn flat dense :ripple="false" icon="add_chart" @click="openChartDialog">
       <q-tooltip :delay="500">Add chart</q-tooltip>
-    </q-btn>
+    </q-btn> -->
 
     <slot name="buttons"></slot>
   </q-bar>
@@ -282,14 +292,15 @@ import { parse, stringify } from "yaml";
 import ReportDataQueryForm from "./ReportDataQueryForm.vue";
 import DataQuerySelect from "./DataQuerySelect.vue";
 import ReportAssetSelect from "./ReportAssetSelect.vue";
-import ReportChartSelect from "./ReportChartSelect.vue";
+// import ReportChartSelect from "./ReportChartSelect.vue";
 import ReportTableMaker from "./ReportTableMaker.vue";
 
 // utils
 import { convertCamelCase } from "@/utils/format";
 
 // types
-import { ReportTemplateType } from "../types/reporting";
+import { ReportDataQuery, ReportTemplateType } from "../types/reporting";
+import { notifyWarning, notifySuccess } from "@/utils/notify";
 
 // props
 const props = defineProps<{
@@ -311,7 +322,7 @@ onMounted(() => {
   // disable certain toolbar options if a multiline text selection is made
   _editor.onDidChangeCursorSelection((evt) => {
     isMultiLineSelection.value = monaco.Selection.spansMultipleLines(
-      evt.selection
+      evt.selection,
     );
   });
 });
@@ -366,53 +377,96 @@ function insertCodeBlock() {
   _editor.focus();
 }
 
-function insertDataQuery() {
-  $q.dialog({
-    component: DataQuerySelect,
-  }).onOk((queryName: string) => {
-    let variablesJson = parse(props.variablesEditor.getValue()) || {};
-    if (!("data_sources" in variablesJson) || !variablesJson.data_sources) {
-      variablesJson["data_sources"] = {};
-    }
-    variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
-    props.variablesEditor?.setValue(stringify(variablesJson));
-  });
+function _getDataSourcesInTemplate() {
+  let variablesJson = parse(props.variablesEditor.getValue()) || {};
+
+  if (!("data_sources" in variablesJson) || !variablesJson.data_sources)
+    return null;
+  else return variablesJson["data_sources"];
 }
 
-function openChartDialog() {
-  $q.dialog({
-    component: ReportChartSelect,
-  }).onOk((data) => {
-    let variablesJson = parse(props.variablesEditor.getValue()) || {};
-    const optionsJson = parse(data.options);
+function _saveDataSourcesInTemplate(
+  dataQuery: ReportDataQuery,
+  convertNameToCamelCase = true,
+) {
+  let variablesJson = parse(props.variablesEditor.getValue()) || {};
 
-    if (!("charts" in variablesJson) || !variablesJson.charts) {
-      variablesJson["charts"] = {};
-    }
+  if (!("data_sources" in variablesJson) || !variablesJson.data_sources) {
+    variablesJson["data_sources"] = {};
+  }
 
-    variablesJson["charts"][convertCamelCase(data.name)] = {
-      chartType: data.chartType,
-      outputType: data.outputType,
-      options: optionsJson,
-    };
-
-    props.variablesEditor?.setValue(stringify(variablesJson));
-  });
+  const dataQueryName = convertNameToCamelCase
+    ? convertCamelCase(dataQuery.name)
+    : dataQuery.name;
+  variablesJson["data_sources"][dataQueryName] = dataQuery.json_query;
+  props.variablesEditor?.setValue(stringify(variablesJson));
 }
 
 function openQueryAddDialog() {
   $q.dialog({
     component: ReportDataQueryForm,
-  }).onOk((queryName: string) => {
-    let variablesJson = parse(props.variablesEditor.getValue()) || {};
-
-    if (!("data_sources" in variablesJson) || !variablesJson.data_sources) {
-      variablesJson["data_sources"] = {};
-    }
-    variablesJson["data_sources"][convertCamelCase(queryName)] = queryName;
-    props.variablesEditor?.setValue(stringify(variablesJson));
+  }).onOk((dataQuery: ReportDataQuery) => {
+    _saveDataSourcesInTemplate(dataQuery);
   });
 }
+
+function insertDataQuery() {
+  $q.dialog({
+    component: DataQuerySelect,
+  }).onOk((dataQuery: ReportDataQuery) => {
+    _saveDataSourcesInTemplate(dataQuery);
+    notifySuccess(`${dataQuery.name} was saved successfully in template`);
+  });
+}
+
+function editDataQuery() {
+  const dataSources = _getDataSourcesInTemplate();
+
+  if (!dataSources) {
+    notifyWarning("No data sources exist in template variables");
+    return;
+  }
+
+  $q.dialog({
+    component: DataQuerySelect,
+    componentProps: {
+      dataSources,
+    },
+  }).onOk((dataQuery) => {
+    $q.dialog({
+      component: ReportDataQueryForm,
+      componentProps: {
+        dataQuery: dataQuery,
+        editInTemplate: true,
+      },
+    }).onOk((dataQuery: ReportDataQuery) => {
+      _saveDataSourcesInTemplate(dataQuery, false);
+      notifySuccess(`${dataQuery.name} was saved successfully in template`);
+    });
+  });
+}
+
+// function openChartDialog() {
+//   $q.dialog({
+//     component: ReportChartSelect,
+//   }).onOk((data) => {
+//     let variablesJson = parse(props.variablesEditor.getValue()) || {};
+//     const optionsJson = parse(data.options);
+
+//     if (!("charts" in variablesJson) || !variablesJson.charts) {
+//       variablesJson["charts"] = {};
+//     }
+
+//     variablesJson["charts"][convertCamelCase(data.name)] = {
+//       chartType: data.chartType,
+//       outputType: data.outputType,
+//       options: optionsJson,
+//     };
+
+//     props.variablesEditor?.setValue(stringify(variablesJson));
+//   });
+// }
+
 function insertLink() {
   if (props.templateType === "markdown")
     insert(`[${linkText.value}](${linkUrl.value})`);
@@ -513,8 +567,7 @@ function insert(text: string, moveToNewLine = false) {
     });
   }
 
-  model.pushEditOperations(selections, operations, (operations) => {
-    console.log(operations);
+  model.pushEditOperations(selections, operations, (/*operations*/) => {
     return selections;
   });
 }
@@ -536,7 +589,7 @@ function insertPrefix(prefix: string, prefixCount = 1) {
       {
         lineNumber: end.lineNumber,
         column: model.getLineMaxColumn(end.lineNumber),
-      }
+      },
     );
     let replacementText = [] as string[];
 
@@ -570,8 +623,7 @@ function insertPrefix(prefix: string, prefixCount = 1) {
     });
   }
 
-  model.pushEditOperations(selections, operations, (operations) => {
-    console.log(operations);
+  model.pushEditOperations(selections, operations, (/*operations*/) => {
     return newSelections;
   });
 }
@@ -593,7 +645,7 @@ function insertWrap(prefix: string, suffix: string, includeWholeLine = false) {
           {
             lineNumber: end.lineNumber,
             column: model.getLineMaxColumn(end.lineNumber),
-          }
+          },
         )
       : selection;
 
@@ -607,9 +659,11 @@ function insertWrap(prefix: string, suffix: string, includeWholeLine = false) {
   }
 
   model.pushEditOperations(selections, operations, (operations) => {
-    console.log(operations);
     return operations.map((operation) =>
-      monaco.Selection.fromRange(operation.range, monaco.SelectionDirection.LTR)
+      monaco.Selection.fromRange(
+        operation.range,
+        monaco.SelectionDirection.LTR,
+      ),
     );
   });
 }
