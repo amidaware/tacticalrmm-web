@@ -175,36 +175,63 @@ For details, see: https://license.tacticalrmm.com/ee
                 </q-item>
 
                 <q-item
-                  v-if="props.row.type !== 'plaintext'"
-                  v-close-popup
-                  clickable
-                  @click="
-                    openReport(props.row.id, 'html', props.row.depends_on, {})
-                  "
-                >
-                  <q-item-section side>
-                    <q-icon name="code" />
-                  </q-item-section>
-                  <q-item-section>Open HTML Report</q-item-section>
-                </q-item>
-
-                <q-item
-                  v-if="props.row.type === 'plaintext'"
                   v-close-popup
                   clickable
                   @click="
                     openReport(
                       props.row.id,
-                      'plaintext',
+                      props.row.type !== 'plaintext' ? 'html' : 'plaintext',
                       props.row.depends_on,
                       {},
                     )
                   "
                 >
                   <q-item-section side>
-                    <q-icon name="description" />
+                    <q-icon
+                      :name="
+                        props.row.type !== 'plaintext' ? 'code' : 'description'
+                      "
+                    />
                   </q-item-section>
-                  <q-item-section>Open Text Report</q-item-section>
+                  <q-item-section
+                    >Open
+                    {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
+                    Report</q-item-section
+                  >
+                </q-item>
+
+                <q-separator />
+
+                <q-item
+                  v-close-popup
+                  clickable
+                  @click="downloadReport(props.row, 'pdf', {})"
+                >
+                  <q-item-section side>
+                    <q-icon name="mdi-download" />
+                  </q-item-section>
+                  <q-item-section>Download PDF Report</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-close-popup
+                  clickable
+                  @click="
+                    downloadReport(
+                      props.row,
+                      props.row.type !== 'plaintext' ? 'html' : 'plaintext',
+                      {},
+                    )
+                  "
+                >
+                  <q-item-section side>
+                    <q-icon name="mdi-download" />
+                  </q-item-section>
+                  <q-item-section
+                    >Download
+                    {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
+                    Report</q-item-section
+                  >
                 </q-item>
 
                 <q-separator />
@@ -215,7 +242,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   @click="exportReport(props.row.id)"
                 >
                   <q-item-section side>
-                    <q-icon name="download" />
+                    <q-icon name="mdi-export" />
                   </q-item-section>
                   <q-item-section>Export</q-item-section>
                 </q-item>
@@ -308,6 +335,7 @@ const {
   deleteReportTemplate,
   openReport,
   exportReport,
+  downloadReport,
 } = useSharedReportTemplates;
 
 onMounted(getReportTemplates);

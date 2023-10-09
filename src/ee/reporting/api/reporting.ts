@@ -20,7 +20,10 @@ import type {
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
-import { exportFile } from "quasar";
+import { exportFile, Dialog } from "quasar";
+import { until } from "@vueuse/shared";
+
+import ReportDependencyPrompt from "../components/ReportDependencyPrompt.vue";
 
 const baseUrl = "/reporting";
 
@@ -41,7 +44,11 @@ export interface useReportingTemplates {
   runReportPreview: (payload: RunReportPreviewRequest) => void;
   runReportPreviewDebug: (payload: RunReportPreviewRequest) => void;
   reportData: Ref<string>;
-  runReport: (id: number, payload: RunReportRequest) => void;
+  runReport: (
+    id: number,
+    payload: RunReportRequest,
+    forDownload: boolean,
+  ) => void;
   openReport: (
     id: number,
     format: ReportFormat,
@@ -51,6 +58,11 @@ export interface useReportingTemplates {
   ) => void;
   exportReport: (id: number) => void;
   importReport: (payload: string) => void;
+  downloadReport: (
+    template: ReportTemplate,
+    format: ReportFormat,
+    dependencies?: ReportDependencies,
+  ) => void;
   variableAnalysis: Ref<VariableAnalysis>;
   getAllowedValues: (payload: {
     variables: string;
@@ -170,7 +182,11 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
-  function runReport(id: number, payload: RunReportRequest): void {
+  function runReport(
+    id: number,
+    payload: RunReportRequest,
+    forDownload = false,
+  ): void {
     isLoading.value = true;
     isError.value = false;
     axios
@@ -178,13 +194,76 @@ export function useReportTemplates(): useReportingTemplates {
         responseType: payload.format !== "pdf" ? "json" : "blob",
       })
       .then(({ data }) => {
-        if (payload.format === "html") reportData.value = data;
+        if (payload.format === "html" || forDownload) reportData.value = data;
         else if (payload.format === "pdf")
           reportData.value = URL.createObjectURL(data);
         else reportData.value = `<pre>${data}</pre>`;
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
+  }
+
+  function downloadReport(
+    template: ReportTemplate,
+    format: ReportFormat,
+    dependencies: ReportDependencies = {},
+  ) {
+    isLoading.value = true;
+    isError.value = false;
+    reportData.value = "";
+
+    const needsPrompt =
+      template.depends_on?.filter((dep) => !dependencies[dep]) || [];
+
+    let extension;
+    if (format === "plaintext") extension = "csv";
+    else extension = format;
+
+    // get filename
+    Dialog.create({
+      title: "Confirm File Name",
+      prompt: {
+        model: `${template.name}.${extension}`,
+        isValid: (val) => !!val,
+        type: "text",
+      },
+      cancel: true,
+      persistent: true,
+    }).onOk(async (name: string) => {
+      // get dependencies
+      if (needsPrompt.length > 0) {
+        Dialog.create({
+          component: ReportDependencyPrompt,
+          componentProps: { dependsOn: needsPrompt },
+        })
+          .onOk((deps) => (dependencies = { ...dependencies, ...deps }))
+          .onDismiss(() => {
+            runReport(
+              template.id,
+              {
+                format: format,
+                dependencies: dependencies,
+              },
+              true,
+            );
+          });
+      } else {
+        // no dependencies run report
+        runReport(
+          template.id,
+          {
+            format: format,
+            dependencies: dependencies,
+          },
+          true,
+        );
+      }
+
+      await until(isLoading).not.toBeTruthy();
+      if (isError.value) return;
+
+      exportFile(name, reportData.value);
+    });
   }
 
   function openReport(
@@ -268,6 +347,7 @@ export function useReportTemplates(): useReportingTemplates {
     openReport,
     exportReport,
     importReport,
+    downloadReport,
     variableAnalysis,
     getAllowedValues,
   };

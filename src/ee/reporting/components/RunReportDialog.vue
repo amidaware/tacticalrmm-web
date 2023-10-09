@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        Run {{ capitalize(type) }} Report
+        {{ download ? "Download" : "Run" }} {{ capitalize(type) }} Report
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -78,13 +78,19 @@ defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps<{
   id: string | number;
   type: "client" | "site" | "agent";
+  download: boolean;
 }>();
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
-const { reportTemplates, isLoading, getReportTemplates, openReport } =
-  useSharedReportTemplates;
+const {
+  reportTemplates,
+  isLoading,
+  getReportTemplates,
+  openReport,
+  downloadReport,
+} = useSharedReportTemplates;
 
 // run report logic
 const reportTemplate = ref<number | null>(null);
@@ -125,14 +131,19 @@ async function submit() {
   }
 
   if (selectedTemplate.value && selectedTemplate.value.depends_on) {
-    openReport(
-      reportTemplate.value,
-      reportFormat.value,
-      selectedTemplate.value.depends_on,
-      {
+    if (!props.download)
+      openReport(
+        reportTemplate.value,
+        reportFormat.value,
+        selectedTemplate.value.depends_on,
+        {
+          [props.type]: props.id,
+        },
+      );
+    else
+      downloadReport(selectedTemplate.value, reportFormat.value, {
         [props.type]: props.id,
-      },
-    );
+      });
   }
 
   onDialogOK();
