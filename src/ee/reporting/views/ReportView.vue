@@ -63,7 +63,7 @@ if (needsPrompt.length > 0) {
     component: ReportDependencyPrompt,
     componentProps: { dependsOn: needsPrompt },
   })
-    .onOk((deps) => (dependencies.value = { ...dependencies, ...deps }))
+    .onOk((deps) => (dependencies.value = { ...dependencies.value, ...deps }))
     .onDismiss(() => {
       openReport(props.id, props.format, dependsOn, dependencies.value, false);
 

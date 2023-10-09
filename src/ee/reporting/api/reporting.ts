@@ -47,7 +47,7 @@ export interface useReportingTemplates {
   runReport: (
     id: number,
     payload: RunReportRequest,
-    forDownload: boolean,
+    forDownload?: boolean,
   ) => void;
   openReport: (
     id: number,
@@ -185,7 +185,7 @@ export function useReportTemplates(): useReportingTemplates {
   function runReport(
     id: number,
     payload: RunReportRequest,
-    forDownload = false,
+    forDownload?: boolean,
   ): void {
     isLoading.value = true;
     isError.value = false;
