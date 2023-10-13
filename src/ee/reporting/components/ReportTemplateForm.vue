@@ -482,7 +482,9 @@ const { reportHTMLTemplates, getReportHTMLTemplates } =
   useSharedReportHTMLTemplates;
 
 const tab = ref(
-  props.templateType === "markdown" || props.templateType === "html"
+  props.templateType === "markdown"
+    ? "markdown"
+    : props.templateType === "html"
     ? "html"
     : "plaintext",
 );
