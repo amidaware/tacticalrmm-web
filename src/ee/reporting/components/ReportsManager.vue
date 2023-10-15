@@ -32,7 +32,7 @@ For details, see: https://license.tacticalrmm.com/ee
         :rows="reportTemplates"
         :columns="columns"
         :loading="isLoading"
-        :pagination="{ rowsPerPage: 0, sortBy: 'favorite', descending: true }"
+        :pagination="{ rowsPerPage: 0, sortBy: 'name', descending: true }"
         :filter="search"
         row-key="id"
         binary-state-sort
@@ -111,6 +111,14 @@ For details, see: https://license.tacticalrmm.com/ee
             dense
             flat
             @click="openDataQueries"
+          />
+          <q-btn
+            class="q-ml-sm"
+            label="Shared Templates"
+            no-caps
+            dense
+            flat
+            @click="openSharedTemplates"
           />
           <q-space />
           <q-input
@@ -293,6 +301,7 @@ import ReportAssets from "./ReportAssets.vue";
 import ReportHTMLTemplateTable from "./ReportHTMLTemplateTable.vue";
 import ReportDataQueryTable from "./ReportDataQueryTable.vue";
 import ReportTemplateImport from "./ReportTemplateImport.vue";
+import SharedTemplatesImport from "./SharedTemplatesImport.vue";
 
 // type imports
 import type { ReportTemplate } from "../types/reporting";
@@ -402,5 +411,11 @@ function importReportTemplate() {
   $q.dialog({
     component: ReportTemplateImport,
   });
+}
+
+function openSharedTemplates() {
+  $q.dialog({
+    component: SharedTemplatesImport,
+  }).onDismiss(() => getReportTemplates());
 }
 </script>

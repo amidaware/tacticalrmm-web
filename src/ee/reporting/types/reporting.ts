@@ -28,12 +28,16 @@ export interface ReportTemplate {
   type: ReportTemplateType;
   template_variables: string;
   depends_on?: string[];
+  uuid: string;
+  revision: number;
 }
 
 export interface ReportHTMLTemplate {
   id: number;
   name: string;
   html: string;
+  uuid: string;
+  revision: number;
 }
 export interface ReportDataQuery {
   id: number;
@@ -61,4 +65,9 @@ export interface OpenReportParams {
   format: ReportFormat;
   dependsOn: string[];
   dependencies: ReportDependencies;
+}
+
+export interface SharedTemplate {
+  name: string;
+  url: string;
 }

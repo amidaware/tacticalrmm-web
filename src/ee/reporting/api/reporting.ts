@@ -17,6 +17,7 @@ import type {
   RunReportPreviewRequest,
   RunReportRequest,
   VariableAnalysis,
+  SharedTemplate,
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
@@ -57,12 +58,17 @@ export interface useReportingTemplates {
     newWindow?: boolean,
   ) => void;
   exportReport: (id: number) => void;
-  importReport: (payload: string) => void;
+  importReport: (payload: { overwrite: boolean; template: string }) => void;
   downloadReport: (
     template: ReportTemplate,
     format: ReportFormat,
     dependencies?: ReportDependencies,
   ) => void;
+  getSharedTemplates: () => void;
+  importSharedTemplates: (payload: {
+    templates: SharedTemplate[];
+    overwrite: boolean;
+  }) => void;
   variableAnalysis: Ref<VariableAnalysis>;
   getAllowedValues: (payload: {
     variables: string;
@@ -79,8 +85,9 @@ export function useReportTemplates(): useReportingTemplates {
   const renderedVariables = ref("");
   const reportData = ref("");
   const variableAnalysis = ref<VariableAnalysis>({});
+  const sharedTemplates = ref<SharedTemplate[]>([]);
 
-  const getReportTemplates = (dependsOn?: string[]) => {
+  function getReportTemplates(dependsOn?: string[]) {
     isLoading.value = true;
     isError.value = false;
 
@@ -95,9 +102,7 @@ export function useReportTemplates(): useReportingTemplates {
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
-
-    isLoading.value = false;
-  };
+  }
 
   function deleteReportTemplate(id: number) {
     isLoading.value = true;
@@ -302,14 +307,48 @@ export function useReportTemplates(): useReportingTemplates {
       .finally(() => (isLoading.value = false));
   }
 
-  function importReport(payload: string) {
+  function importReport(payload: { overwrite: boolean; template: string }) {
     isLoading.value = true;
     isError.value = false;
     axios
-      .post(`${baseUrl}/templates/import/`, { template: payload })
-      .then(({ data }: { data: ReportTemplate }) => {
-        reportTemplates.value.push(data);
+      .post(`${baseUrl}/templates/import/`, payload)
+      .then(({ data }: ReportTemplate) => {
+        const index = reportTemplates.value.findIndex(
+          (report) => report.id === data.id,
+        );
+        if (index !== -1) reportTemplates.value[index] = data;
+        else reportTemplates.value.push(data);
+
         notifySuccess("Report Template was successfully imported.");
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
+  function getSharedTemplates() {
+    isLoading.value = true;
+    isError.value = false;
+
+    axios
+      .get(`${baseUrl}/templates/shared/`)
+      .then(({ data }: { data: SharedTemplate[] }) => {
+        sharedTemplates.value = data;
+      })
+      .catch(() => (isError.value = true))
+      .finally(() => (isLoading.value = false));
+  }
+
+  function importSharedTemplates(payload: {
+    templates: SharedTemplate[];
+    overwrite: boolean;
+  }) {
+    isLoading.value = true;
+    isError.value = false;
+
+    axios
+      .post(`${baseUrl}/templates/shared/`, payload)
+      .then(() => {
+        notifySuccess("Shared templates imported successfully");
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -348,6 +387,9 @@ export function useReportTemplates(): useReportingTemplates {
     exportReport,
     importReport,
     downloadReport,
+    getSharedTemplates,
+    sharedTemplates,
+    importSharedTemplates,
     variableAnalysis,
     getAllowedValues,
   };

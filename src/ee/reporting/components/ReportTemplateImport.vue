@@ -26,6 +26,13 @@ For details, see: https://license.tacticalrmm.com/ee
         />
       </q-card-section>
 
+      <q-card-section>
+        <q-checkbox
+          v-model="overwriteOnNameConflict"
+          label="Overwrite if name exists"
+        />
+      </q-card-section>
+
       <q-card-actions>
         <q-space />
         <q-btn v-close-popup dense flat label="Cancel" />
@@ -57,10 +64,14 @@ const { isLoading, isError, importReport } = useSharedReportTemplates;
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 const file = ref<File | null>(null);
+const overwriteOnNameConflict = ref(false);
 
 async function submit() {
   if (file.value) {
-    importReport(await file.value.text());
+    importReport({
+      overwrite: overwriteOnNameConflict.value,
+      template: await file.value.text(),
+    });
 
     // stops the dialog from closing when there is an error
     await until(isLoading).not.toBeTruthy();
