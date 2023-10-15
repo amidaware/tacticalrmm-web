@@ -65,6 +65,7 @@ export interface useReportingTemplates {
     dependencies?: ReportDependencies,
   ) => void;
   getSharedTemplates: () => void;
+  sharedTemplates: Ref<SharedTemplate[]>;
   importSharedTemplates: (payload: {
     templates: SharedTemplate[];
     overwrite: boolean;
@@ -312,7 +313,7 @@ export function useReportTemplates(): useReportingTemplates {
     isError.value = false;
     axios
       .post(`${baseUrl}/templates/import/`, payload)
-      .then(({ data }: ReportTemplate) => {
+      .then(({ data }: { data: ReportTemplate }) => {
         const index = reportTemplates.value.findIndex(
           (report) => report.id === data.id,
         );

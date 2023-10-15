@@ -27,7 +27,7 @@ For details, see: https://license.tacticalrmm.com/ee
           'table-bgcolor': !$q.dark.isActive,
           'table-bgcolor-dark': $q.dark.isActive,
         }"
-        :style="{ 'max-height': `${$q.screen.height - 24}px` }"
+        :style="{ 'max-height': `${$q.screen.height - 32}px` }"
         class="tbl-sticky"
         :rows="reportTemplates"
         :columns="columns"
