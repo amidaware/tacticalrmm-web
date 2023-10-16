@@ -38,6 +38,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             label="Import"
+            icon="fa-solid fa-file-import"
             no-caps
             dense
             flat
