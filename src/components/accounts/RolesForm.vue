@@ -27,6 +27,21 @@
             </div>
           </q-card-section>
 
+          <div class="text-subtitle2">Reporting</div>
+          <q-separator />
+          <q-card-section class="row">
+            <div class="q-gutter-sm">
+              <q-checkbox
+                v-model="localRole.can_view_reports"
+                label="Reporting Viewer"
+              />
+              <q-checkbox
+                v-model="localRole.can_manage_reports"
+                label="Reporting Manager"
+              />
+            </div>
+          </q-card-section>
+
           <div class="text-subtitle2">Accounts</div>
           <q-separator />
           <q-card-section class="row">
@@ -501,6 +516,9 @@ export default {
           can_manage_roles: false,
           can_view_clients: [],
           can_view_sites: [],
+          // reporting perms
+          can_view_reports: false,
+          can_manage_reports: false,
         });
 
     const loading = ref(false);
@@ -528,7 +546,7 @@ export default {
             role.value[key] = newValue;
           }
         });
-      }
+      },
     );
 
     return {
