@@ -592,7 +592,6 @@ export default {
     }
 
     function resetAllChecks() {
-      console.info(selectedAgent.value);
       $q.dialog({
         title: "Are you sure?",
         message: "Reset all checks status",

@@ -9,6 +9,15 @@ export const getBaseUrl = () => {
   }
 };
 
+export function setErrorMessage(data, message) {
+  console.log(data);
+  return [
+    () => {
+      message;
+    },
+  ];
+}
+
 export default function ({ app, router, store }) {
   app.config.globalProperties.$axios = axios;
 
@@ -19,6 +28,12 @@ export default function ({ app, router, store }) {
       if (token != null) {
         config.headers.Authorization = `Token ${token}`;
       }
+      // config.transformResponse = [
+      //   function (data) {
+      //     console.log(data);
+      //     return data;
+      //   },
+      // ];
       return config;
     },
     function (err) {
