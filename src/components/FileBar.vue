@@ -182,7 +182,8 @@
                 v-close-popup
                 @click="
                   notifyWarning(
-                    'This feature requires a valid code signing token.',
+                    'Reporting feature requires a valid code signing token. Please check the docs for more info.',
+                    10000,
                   )
                 "
               >
