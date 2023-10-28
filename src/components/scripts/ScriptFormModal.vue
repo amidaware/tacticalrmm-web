@@ -170,8 +170,7 @@
                 >Setting this value on the script model will always override any
                 'Run As User' checkboxes in the UI and force this script to
                 always be run in the context of the logged in user. If no user
-                is logged in, the script will not run and an error will be
-                returned.
+                is logged in, the script will run as SYSTEM.
               </q-tooltip>
             </q-checkbox>
             <q-input
@@ -266,7 +265,7 @@ const props = withDefaults(
   {
     clone: false,
     readonly: false,
-  }
+  },
 );
 
 // emits
@@ -376,7 +375,7 @@ function loadEditor() {
   var model = monaco.editor.createModel(
     script.script_body,
     lang.value,
-    modelUri
+    modelUri,
   );
 
   const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
