@@ -302,7 +302,10 @@ export function useReportTemplates(): useReportingTemplates {
     axios
       .post(`${baseUrl}/templates/${id}/export/`)
       .then(({ data }) => {
-        exportFile(`${data.template.name}-export.json`, JSON.stringify(data));
+        exportFile(
+          `${data.template.name}-export.json`,
+          JSON.stringify(data, null, 2),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
