@@ -150,7 +150,7 @@
           </q-menu>
         </q-btn>
         <!-- integrations -->
-        <q-btn size="md" dense no-caps flat label="Integrations">
+        <q-btn size="md" dense no-caps flat label="Reporting">
           <q-menu auto-close>
             <q-list
               v-if="

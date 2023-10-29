@@ -13,7 +13,11 @@
         >
           <q-spinner size="40px" color="primary" />
         </div>
-        <div v-else class="q-pa-sm q-gutter-sm scroll" style="height: 85vh; overflow: initial;">
+        <div
+          v-else
+          class="q-pa-sm q-gutter-sm scroll"
+          style="height: 85vh; overflow: initial"
+        >
           <q-list dense class="rounded-borders">
             <q-item
               clickable
@@ -163,7 +167,7 @@
                                 runURLAction(
                                   props.node.id,
                                   action.id,
-                                  props.node.children ? 'client' : 'site'
+                                  props.node.children ? 'client' : 'site',
                                 )
                               "
                             >
@@ -196,9 +200,9 @@
                         "
                       >
                         <q-item-section side>
-                          <q-icon name="integration_instructions" />
+                          <q-icon name="analytics" />
                         </q-item-section>
-                        <q-item-section>Integrations</q-item-section>
+                        <q-item-section>Reporting</q-item-section>
                         <q-item-section side>
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
@@ -816,7 +820,7 @@ export default {
       this.$axios.get("/core/urlaction/").then((r) => {
         if (r.data.length === 0) {
           this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
           return;
         }
