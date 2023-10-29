@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 // composable imports
-import { ref, reactive, computed } from "vue";
+import { ref, watch, reactive, computed } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 import { generateScript } from "@/api/core";
@@ -192,6 +192,11 @@ function loadEditor() {
 
   editor.onDidChangeModelContent(() => {
     snippet.code = editor.getValue();
+  });
+
+  // watch for changes in language
+  watch(lang, () => {
+    monaco.editor.setModelLanguage(model, lang.value);
   });
 }
 
