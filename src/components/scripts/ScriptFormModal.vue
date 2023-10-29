@@ -234,7 +234,7 @@
 
 <script setup lang="ts">
 // composable imports
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { saveScript, editScript, downloadScript } from "@/api/scripts";
@@ -392,6 +392,11 @@ function loadEditor() {
       script.script_body = r.code;
       editor.setValue(r.code);
     });
+
+  // watch for changes in language
+  watch(lang, () => {
+    monaco.editor.setModelLanguage(model, lang.value);
+  });
 }
 
 function unloadEditor() {
