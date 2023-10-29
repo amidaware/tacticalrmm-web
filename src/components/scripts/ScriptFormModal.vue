@@ -52,7 +52,7 @@
         </q-btn>
       </q-bar>
       <q-banner
-        v-if="missingShebang"
+        v-if="script.script_body && missingShebang"
         dense
         inline-actions
         class="text-black bg-warning"
