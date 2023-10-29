@@ -2,10 +2,11 @@
   <q-dialog
     ref="dialogRef"
     persistent
-    @keydown.esc="unloadEditor"
+    @keydown.esc.stop="onDialogHide"
     :maximized="maximized"
-    @hide="unloadEditor"
+    @hide="onDialogHide"
     @show="loadEditor"
+    @before-hide="unloadEditor"
   >
     <q-card
       class="q-dialog-plugin"
@@ -177,7 +178,7 @@ const snippetEditor = ref<HTMLElement | null>(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
 function loadEditor() {
-  var modelUri = monaco.Uri.parse("model://new"); // a made up unique URI for our model
+  var modelUri = monaco.Uri.parse("model://snippet"); // a made up unique URI for our model
   var model = monaco.editor.createModel(snippet.code, lang.value, modelUri);
 
   const theme = $q.dark.isActive ? "vs-dark" : "vs-light";

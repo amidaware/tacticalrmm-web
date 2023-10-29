@@ -4,9 +4,9 @@
     persistent
     @keydown.esc.stop="onDialogHide"
     :maximized="maximized"
-    @keydown.esc="unloadEditor"
-    @hide="unloadEditor"
+    @hide="onDialogHide"
     @show="loadEditor"
+    @before-hide="unloadEditor"
   >
     <q-card
       class="q-dialog-plugin"
@@ -329,12 +329,6 @@ const lang = computed(() => {
   else return "";
 });
 
-// get code if editing or cloning script
-if (props.script)
-  downloadScript(script.id, { with_snippets: props.readonly }).then((r) => {
-    script.script_body = r.code;
-  });
-
 async function submit() {
   loading.value = true;
   let result = "";
@@ -391,6 +385,13 @@ function loadEditor() {
   editor.onDidChangeModelContent(() => {
     script.script_body = editor.getValue();
   });
+
+  // get code if editing or cloning script
+  if (props.script)
+    downloadScript(script.id, { with_snippets: props.readonly }).then((r) => {
+      script.script_body = r.code;
+      editor.setValue(r.code);
+    });
 }
 
 function unloadEditor() {
