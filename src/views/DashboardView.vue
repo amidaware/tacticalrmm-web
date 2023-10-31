@@ -13,7 +13,11 @@
         >
           <q-spinner size="40px" color="primary" />
         </div>
-        <div v-else class="q-pa-sm q-gutter-sm scroll" style="height: 85vh; overflow: initial;">
+        <div
+          v-else
+          class="q-pa-sm q-gutter-sm scroll"
+          style="height: 85vh; overflow: initial"
+        >
           <q-list dense class="rounded-borders">
             <q-item
               clickable
@@ -163,7 +167,7 @@
                                 runURLAction(
                                   props.node.id,
                                   action.id,
-                                  props.node.children ? 'client' : 'site'
+                                  props.node.children ? 'client' : 'site',
                                 )
                               "
                             >
@@ -183,6 +187,29 @@
                           <q-icon name="fas fa-check-double" />
                         </q-item-section>
                         <q-item-section>Run Checks</q-item-section>
+                      </q-item>
+
+                      <q-item
+                        clickable
+                        v-if="
+                          (props.node.children &&
+                            $integrations?.clientMenuIntegrations?.length >
+                              0) ||
+                          (!props.node.children &&
+                            $integrations?.siteMenuIntegrations.length > 0)
+                        "
+                      >
+                        <q-item-section side>
+                          <q-icon name="analytics" />
+                        </q-item-section>
+                        <q-item-section>Reporting</q-item-section>
+                        <q-item-section side>
+                          <q-icon name="keyboard_arrow_right" />
+                        </q-item-section>
+                        <integrations-context-menu
+                          :type="props.node.children ? 'client' : 'site'"
+                          :id="props.node.id"
+                        />
                       </q-item>
 
                       <q-separator></q-separator>
@@ -425,6 +452,7 @@ import SitesForm from "@/components/clients/SitesForm.vue";
 import DeleteClient from "@/components/clients/DeleteClient.vue";
 import InstallAgent from "@/components/modals/agents/InstallAgent.vue";
 import AlertTemplateAdd from "@/components/modals/alerts/AlertTemplateAdd.vue";
+import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
 
 import { removeClient, removeSite } from "@/api/clients";
 
@@ -435,6 +463,7 @@ export default {
     AgentTable,
     SubTableTabs,
     InstallAgent,
+    IntegrationsContextMenu,
   },
   // allow child components to refresh table
   provide() {
@@ -791,7 +820,7 @@ export default {
       this.$axios.get("/core/urlaction/").then((r) => {
         if (r.data.length === 0) {
           this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
           return;
         }

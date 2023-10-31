@@ -9,13 +9,12 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.watcherExclude": {
-    "files.watcherExclude": {
       "**/.git/objects/**": true,
       "**/.git/subtree-cache/**": true,
       "**/node_modules/": true,
       "/node_modules/**": true,
       "**/env/": true,
       "/env/**": true
-    }
-  }
+  },
+  "prettier.prettierPath": "./node_modules/prettier"
 }
