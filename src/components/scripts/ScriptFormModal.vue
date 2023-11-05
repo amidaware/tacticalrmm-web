@@ -1,17 +1,12 @@
 <template>
   <q-dialog
     ref="dialogRef"
-    persistent
-    @keydown.esc.stop="onDialogHide"
-    :maximized="maximized"
+    maximized
     @hide="onDialogHide"
     @show="loadEditor"
     @before-hide="unloadEditor"
   >
-    <q-card
-      class="q-dialog-plugin"
-      :style="maximized ? '' : 'width: 90vw; max-width: 90vw'"
-    >
+    <q-card class="q-dialog-plugin">
       <q-bar>
         <span class="q-pr-sm">{{ title }}</span>
         <q-btn
@@ -25,28 +20,6 @@
           @click="generateScriptOpenAI"
         />
         <q-space />
-        <q-btn
-          dense
-          flat
-          icon="minimize"
-          @click="maximized = false"
-          :disable="!maximized"
-        >
-          <q-tooltip v-if="maximized" class="bg-white text-primary"
-            >Minimize</q-tooltip
-          >
-        </q-btn>
-        <q-btn
-          dense
-          flat
-          icon="crop_square"
-          @click="maximized = true"
-          :disable="maximized"
-        >
-          <q-tooltip v-if="!maximized" class="bg-white text-primary"
-            >Maximize</q-tooltip
-          >
-        </q-btn>
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
@@ -78,7 +51,7 @@
             opacity: '0.2',
           }"
           class="col-4 q-mb-none q-pb-none"
-          :style="{ height: `${maximized ? '82vh' : '64vh'}` }"
+          :style="{ height: `${$q.screen.height - 106}px` }"
         >
           <div class="q-gutter-sm q-pr-sm">
             <q-input
@@ -187,7 +160,7 @@
         <div
           ref="scriptEditor"
           class="col-8 q-mb-none q-pb-none"
-          :style="{ height: `${maximized ? '82vh' : '64vh'}` }"
+          :style="{ height: `${$q.screen.height - 106}px` }"
         ></div>
       </div>
       <q-card-actions>
@@ -296,7 +269,6 @@ const script: Script = props.script
     });
 
 if (props.clone) script.name = `(Copy) ${script.name}`;
-const maximized = ref(false);
 const loading = ref(false);
 const agentLoading = ref(false);
 

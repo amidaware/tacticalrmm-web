@@ -1,17 +1,12 @@
 <template>
   <q-dialog
     ref="dialogRef"
-    persistent
-    @keydown.esc.stop="onDialogHide"
-    :maximized="maximized"
+    maximized
     @hide="onDialogHide"
     @show="loadEditor"
     @before-hide="unloadEditor"
   >
-    <q-card
-      class="q-dialog-plugin"
-      :style="maximized ? '' : 'width: 70vw; max-width: 90vw'"
-    >
+    <q-card class="q-dialog-plugin">
       <q-bar>
         <span class="q-pr-sm">{{ title }}</span>
         <q-btn
@@ -25,35 +20,13 @@
           @click="generateScriptOpenAI"
         />
         <q-space />
-        <q-btn
-          dense
-          flat
-          icon="minimize"
-          @click="maximized = false"
-          :disable="!maximized"
-        >
-          <q-tooltip v-if="maximized" class="bg-white text-primary"
-            >Minimize</q-tooltip
-          >
-        </q-btn>
-        <q-btn
-          dense
-          flat
-          icon="crop_square"
-          @click="maximized = true"
-          :disable="maximized"
-        >
-          <q-tooltip v-if="!maximized" class="bg-white text-primary"
-            >Maximize</q-tooltip
-          >
-        </q-btn>
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row">
         <q-input
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val: string) => !!val || '*Required']"
           class="q-pa-sm col-4"
           v-model="snippet.name"
           label="Name"
@@ -82,7 +55,7 @@
 
       <div
         ref="snippetEditor"
-        :style="{ height: `${maximized ? '82vh' : '64vh'}` }"
+        :style="{ height: `${$q.screen.height - 132}px` }"
       ></div>
 
       <q-card-actions align="right">
@@ -139,7 +112,6 @@ const openAIEnabled = computed(() => store.state.openAIIntegrationEnabled);
 const snippet: ScriptSnippet = props.snippet
   ? reactive(Object.assign({}, props.snippet))
   : reactive({ name: "", code: "", shell: "powershell" });
-const maximized = ref(false);
 const loading = ref(false);
 
 const title = computed(() => {
