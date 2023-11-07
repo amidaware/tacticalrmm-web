@@ -34,7 +34,7 @@ For details, see: https://license.tacticalrmm.com/ee
           class="q-pr-sm"
           filled
           dense
-          style="width: 250px"
+          style="width: 425px"
           :error="!isNameValid"
           hide-bottom-space
         />
