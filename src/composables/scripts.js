@@ -65,4 +65,6 @@ export const shellOptions = [
   { label: "Batch", value: "cmd" },
   { label: "Python", value: "python" },
   { label: "Shell", value: "shell" },
+  { label: "Nushell", value: "nushell" },
+  { label: "Deno", value: "deno" },
 ];

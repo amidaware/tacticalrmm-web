@@ -175,6 +175,20 @@
               >
                 <q-tooltip> Shell </q-tooltip>
               </q-icon>
+              <q-icon
+                v-else-if="props.node.shell === 'nushell'"
+                name="mdi-code-greater-than"
+                color="primary"
+              >
+                <q-tooltip> Nushell </q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="props.node.shell === 'deno'"
+                name="mdi-language-typescript"
+                color="primary"
+              >
+                <q-tooltip> Deno </q-tooltip>
+              </q-icon>
 
               <span
                 class="q-pl-xs text-weight-bold"
@@ -462,6 +476,22 @@
                 color="primary"
               >
                 <q-tooltip> Shell </q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="props.row.shell === 'nushell'"
+                size="sm"
+                name="mdi-code-greater-than"
+                color="primary"
+              >
+                <q-tooltip> Nushell </q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="props.row.shell === 'deno'"
+                size="sm"
+                name="mdi-language-typescript"
+                color="primary"
+              >
+                <q-tooltip> Deno </q-tooltip>
               </q-icon>
             </q-td>
             <!-- supported platforms -->

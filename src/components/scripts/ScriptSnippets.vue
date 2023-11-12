@@ -124,6 +124,22 @@
               >
                 <q-tooltip> Shell </q-tooltip>
               </q-icon>
+              <q-icon
+                v-else-if="props.row.shell === 'nushell'"
+                name="mdi-nushell"
+                color="primary"
+                size="sm"
+              >
+                <q-tooltip> Nushell </q-tooltip>
+              </q-icon>
+              <q-icon
+                v-else-if="props.row.shell === 'deno'"
+                name="mdi-typescript"
+                color="primary"
+                size="sm"
+              >
+                <q-tooltip> Deno </q-tooltip>
+              </q-icon>
             </q-td>
             <!-- name -->
             <q-td>{{ props.row.name }}</q-td>
