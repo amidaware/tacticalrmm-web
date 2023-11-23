@@ -87,181 +87,183 @@
           :done="step > 2"
           :error="!isValidStep2"
         >
-          <q-form @submit.prevent="addAction">
-            <div class="row q-pa-sm q-gutter-x-xs items-center">
-              <div class="text-subtitle2 col-12">Action Type:</div>
-              <q-option-group
-                class="col-12"
-                inline
-                v-model="actionType"
-                :options="[
-                  { label: 'Script', value: 'script' },
-                  { label: 'Command', value: 'cmd' },
-                ]"
-              />
+          <div class="scroll" style="max-height: 60vh">
+            <q-form @submit.prevent="addAction">
+              <div class="row q-pa-sm q-gutter-x-xs items-center">
+                <div class="text-subtitle2 col-12">Action Type:</div>
+                <q-option-group
+                  class="col-12"
+                  inline
+                  v-model="actionType"
+                  :options="[
+                    { label: 'Script', value: 'script' },
+                    { label: 'Command', value: 'cmd' },
+                  ]"
+                />
 
-              <tactical-dropdown
-                v-if="actionType === 'script'"
-                class="col-3"
-                label="Select script"
-                v-model="script"
-                :options="scriptOptions"
-                filled
-                mapOptions
-                filterable
-              />
+                <tactical-dropdown
+                  v-if="actionType === 'script'"
+                  class="col-3"
+                  label="Select script"
+                  v-model="script"
+                  :options="scriptOptions"
+                  filled
+                  mapOptions
+                  filterable
+                />
 
-              <q-select
-                v-if="actionType === 'script'"
-                class="col-3"
-                dense
-                label="Script Arguments (press Enter after typing each argument)"
-                filled
-                v-model="defaultArgs"
-                use-input
-                use-chips
-                multiple
-                hide-dropdown-icon
-                input-debounce="0"
-                new-value-mode="add"
-              />
+                <q-select
+                  v-if="actionType === 'script'"
+                  class="col-3"
+                  dense
+                  label="Script Arguments (press Enter after typing each argument)"
+                  filled
+                  v-model="defaultArgs"
+                  use-input
+                  use-chips
+                  multiple
+                  hide-dropdown-icon
+                  input-debounce="0"
+                  new-value-mode="add"
+                />
 
-              <q-select
-                v-if="actionType === 'script'"
-                class="col-3"
-                dense
-                :label="envVarsLabel"
-                filled
-                v-model="defaultEnvVars"
-                use-input
-                use-chips
-                multiple
-                hide-dropdown-icon
-                input-debounce="0"
-                new-value-mode="add"
-              />
+                <q-select
+                  v-if="actionType === 'script'"
+                  class="col-3"
+                  dense
+                  :label="envVarsLabel"
+                  filled
+                  v-model="defaultEnvVars"
+                  use-input
+                  use-chips
+                  multiple
+                  hide-dropdown-icon
+                  input-debounce="0"
+                  new-value-mode="add"
+                />
 
-              <q-input
-                v-if="actionType === 'script'"
-                class="col-2"
-                filled
-                dense
-                v-model.number="defaultTimeout"
-                type="number"
-                label="Timeout (seconds)"
-              />
+                <q-input
+                  v-if="actionType === 'script'"
+                  class="col-2"
+                  filled
+                  dense
+                  v-model.number="defaultTimeout"
+                  type="number"
+                  label="Timeout (seconds)"
+                />
 
-              <q-input
-                v-if="actionType === 'cmd'"
-                label="Command"
-                v-model="command"
+                <q-input
+                  v-if="actionType === 'cmd'"
+                  label="Command"
+                  v-model="command"
+                  dense
+                  filled
+                  class="col-7"
+                />
+                <q-input
+                  v-if="actionType === 'cmd'"
+                  class="col-2"
+                  filled
+                  dense
+                  v-model.number="defaultTimeout"
+                  type="number"
+                  label="Timeout (seconds)"
+                />
+                <q-option-group
+                  v-if="actionType === 'cmd'"
+                  class="col-2 q-pl-sm"
+                  inline
+                  v-model="shell"
+                  :options="[
+                    { label: 'Batch', value: 'cmd' },
+                    { label: 'Powershell', value: 'powershell' },
+                  ]"
+                />
+                <q-btn
+                  class="col-1"
+                  type="submit"
+                  style="width: 50px"
+                  flat
+                  dense
+                  icon="add"
+                  color="primary"
+                />
+              </div>
+            </q-form>
+            <div class="text-subtitle2 q-pa-sm">
+              Actions:
+              <q-checkbox
+                class="float-right"
+                label="Continue on Errors"
+                v-model="state.continue_on_error"
                 dense
-                filled
-                class="col-7"
-              />
-              <q-input
-                v-if="actionType === 'cmd'"
-                class="col-2"
-                filled
-                dense
-                v-model.number="defaultTimeout"
-                type="number"
-                label="Timeout (seconds)"
-              />
-              <q-option-group
-                v-if="actionType === 'cmd'"
-                class="col-2 q-pl-sm"
-                inline
-                v-model="shell"
-                :options="[
-                  { label: 'Batch', value: 'cmd' },
-                  { label: 'Powershell', value: 'powershell' },
-                ]"
-              />
-              <q-btn
-                class="col-1"
-                type="submit"
-                style="width: 50px"
-                flat
-                dense
-                icon="add"
-                color="primary"
-              />
+              >
+                <q-tooltip>Continue task if an action fails</q-tooltip>
+              </q-checkbox>
             </div>
-          </q-form>
-          <div class="text-subtitle2 q-pa-sm">
-            Actions:
-            <q-checkbox
-              class="float-right"
-              label="Continue on Errors"
-              v-model="state.continue_on_error"
-              dense
-            >
-              <q-tooltip>Continue task if an action fails</q-tooltip>
-            </q-checkbox>
-          </div>
-          <div class="scroll q-pt-sm" style="height: 40vh; max-height: 40vh">
-            <draggable
-              class="q-list"
-              handle=".handle"
-              ghost-class="ghost"
-              v-model="state.actions"
-              item-key="index"
-            >
-              <template v-slot:item="{ index, element }">
-                <q-item>
-                  <q-item-section avatar>
-                    <q-icon
-                      class="handle"
-                      style="cursor: move"
-                      name="drag_handle"
-                    />
-                  </q-item-section>
-                  <q-item-section v-if="element.type === 'script'">
-                    <q-item-label>
-                      <q-icon size="sm" name="description" color="primary" />
-                      &nbsp; {{ element.name }}
-                    </q-item-label>
-                    <q-item-label caption>
-                      Arguments: {{ element.script_args }}
-                    </q-item-label>
-                    <q-item-label caption>
-                      Env Vars: {{ element.env_vars }}
-                    </q-item-label>
-                    <q-item-label caption>
-                      Timeout: {{ element.timeout }}
-                    </q-item-label>
-                  </q-item-section>
-                  <q-item-section v-else>
-                    <q-item-label>
-                      <q-icon size="sm" name="terminal" color="primary" />
-                      &nbsp;
+            <div class="q-pt-sm" style="height: 150px">
+              <draggable
+                class="q-list"
+                handle=".handle"
+                ghost-class="ghost"
+                v-model="state.actions"
+                item-key="index"
+              >
+                <template v-slot:item="{ index, element }">
+                  <q-item>
+                    <q-item-section avatar>
                       <q-icon
-                        size="sm"
-                        :name="
-                          element.shell === 'cmd'
-                            ? 'mdi-microsoft-windows'
-                            : 'mdi-powershell'
-                        "
-                        color="primary"
+                        class="handle"
+                        style="cursor: move"
+                        name="drag_handle"
                       />
-                      {{ element.command }}
-                    </q-item-label>
-                    <q-item-label caption>
-                      Timeout: {{ element.timeout }}
-                    </q-item-label>
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-icon
-                      class="cursor-pointer"
-                      color="negative"
-                      name="close"
-                      @click="removeAction(index)"
-                    />
-                  </q-item-section>
-                </q-item>
-              </template>
-            </draggable>
+                    </q-item-section>
+                    <q-item-section v-if="element.type === 'script'">
+                      <q-item-label>
+                        <q-icon size="sm" name="description" color="primary" />
+                        &nbsp; {{ element.name }}
+                      </q-item-label>
+                      <q-item-label caption>
+                        Arguments: {{ element.script_args }}
+                      </q-item-label>
+                      <q-item-label caption>
+                        Env Vars: {{ element.env_vars }}
+                      </q-item-label>
+                      <q-item-label caption>
+                        Timeout: {{ element.timeout }}
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section v-else>
+                      <q-item-label>
+                        <q-icon size="sm" name="terminal" color="primary" />
+                        &nbsp;
+                        <q-icon
+                          size="sm"
+                          :name="
+                            element.shell === 'cmd'
+                              ? 'mdi-microsoft-windows'
+                              : 'mdi-powershell'
+                          "
+                          color="primary"
+                        />
+                        {{ element.command }}
+                      </q-item-label>
+                      <q-item-label caption>
+                        Timeout: {{ element.timeout }}
+                      </q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-icon
+                        class="cursor-pointer"
+                        color="negative"
+                        name="close"
+                        @click="removeAction(index)"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </draggable>
+            </div>
           </div>
         </q-step>
 
@@ -283,7 +285,7 @@
               <q-card-section
                 v-if="
                   ['runonce', 'daily', 'weekly', 'monthly'].includes(
-                    state.task_type
+                    state.task_type,
                   )
                 "
                 class="row"
@@ -312,6 +314,22 @@
                   v-model="state.expire_date"
                   hint="Agent timezone will be used"
                 />
+              </q-card-section>
+
+              <q-card-section
+                v-if="
+                  state.task_type === 'onboarding' ||
+                  state.task_type === 'runonce'
+                "
+                class="row"
+              >
+                <span v-if="state.task_type === 'onboarding'"
+                  >This task will run as soon as it is created on the
+                  agent</span
+                >
+                <span v-else-if="state.task_type === 'runonce'"
+                  >Start Time must be in the future for run once tasks</span
+                >
               </q-card-section>
 
               <!-- daily options -->
@@ -579,7 +597,8 @@
               <q-card-section
                 v-if="
                   state.task_type !== 'checkfailure' &&
-                  state.task_type !== 'manual'
+                  state.task_type !== 'manual' &&
+                  state.task_type !== 'onboarding'
                 "
                 class="row"
               >
@@ -617,7 +636,7 @@
                     (val) =>
                       convertPeriodToSeconds(val) >=
                         convertPeriodToSeconds(
-                          state.task_repetition_interval
+                          state.task_repetition_interval,
                         ) ||
                       'Repetition duration must be greater than repetition interval',
                   ]"
@@ -712,7 +731,7 @@
           @click="
             validateStep(
               step === 1 ? $refs.taskGeneralForm : undefined,
-              $refs.stepper
+              $refs.stepper,
             )
           "
           color="primary"
@@ -769,6 +788,7 @@ const taskTypeOptions = [
   { label: "Monthly", value: "monthly" },
   { label: "Run Once", value: "runonce" },
   { label: "On check failure", value: "checkfailure" },
+  { label: "Onboarding", value: "onboarding" },
   { label: "Manual", value: "manual" },
 ];
 
@@ -933,7 +953,7 @@ export default {
         task.value.actions.push({
           type: "script",
           name: scriptOptions.value.find(
-            (option) => option.value === script.value
+            (option) => option.value === script.value,
           ).label,
           script: script.value,
           timeout: defaultTimeout.value,
@@ -1019,13 +1039,13 @@ export default {
       // remove milliseconds and Z to work with native date input
       task.value.run_time_date = formatDateInputField(
         task.value.run_time_date,
-        true
+        true,
       );
 
       if (task.value.expire_date)
         task.value.expire_date = formatDateInputField(
           task.value.expire_date,
-          true
+          true,
         );
 
       // set task type if monthlydow is being used
@@ -1069,7 +1089,7 @@ export default {
         task.value.monthly_weeks_of_month = [];
         task.value.task_instance_policy = 0;
         task.value.expire_date = null;
-      }
+      },
     );
 
     // check the collector box when editing task and custom field is set
