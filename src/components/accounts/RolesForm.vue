@@ -86,10 +86,6 @@
                 label="Uninstall Agents"
               />
               <q-checkbox
-                v-model="localRole.can_ping_agents"
-                label="Ping Agents"
-              />
-              <q-checkbox
                 v-model="localRole.can_update_agents"
                 label="Update Agents"
               />
@@ -447,7 +443,6 @@ export default {
           can_uninstall_agents: false,
           can_update_agents: false,
           can_edit_agent: false,
-          can_ping_agents: false,
           can_manage_procs: false,
           can_view_eventlogs: false,
           can_send_cmd: false,
