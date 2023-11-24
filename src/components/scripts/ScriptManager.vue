@@ -177,10 +177,9 @@
               </q-icon>
 
               <!-- is community script icon -->
-              <q-img
+              <img
                 v-if="props.row.script_type === 'builtin'"
-                src="../../assets/trmm_256.png"
-                spinner-color="red"
+                :src="trmmLogo"
                 style="height: 20px; max-width: 20px"
               />
 
@@ -497,10 +496,9 @@
               :style="{ color: props.row.hidden ? 'grey' : '' }"
             >
               <!-- is community script icon -->
-              <q-img
+              <img
                 v-if="props.row.script_type === 'builtin'"
-                src="../../assets/trmm_256.png"
-                spinner-color="red"
+                :src="trmmLogo"
                 style="height: 20px; max-width: 20px"
               />
               {{ truncateText(props.row.name, 50) }}
@@ -564,6 +562,8 @@ import ScriptUploadModal from "@/components/scripts/ScriptUploadModal.vue";
 import ScriptFormModal from "@/components/scripts/ScriptFormModal.vue";
 import ScriptSnippets from "@/components/scripts/ScriptSnippets.vue";
 import TacticalTable from "@/components/ui/TacticalTable.vue";
+
+import trmmLogo from "@/assets/trmm_256.png";
 
 // static data
 const columns = [
@@ -899,6 +899,7 @@ export default {
       loading,
       showCommunityScripts,
       showHiddenScripts,
+      trmmLogo,
 
       // computed
       visibleScripts,
