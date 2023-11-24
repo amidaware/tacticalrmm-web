@@ -2,9 +2,11 @@
   <q-dialog
     ref="dialogRef"
     maximized
+    no-esc-dismiss
     @hide="onDialogHide"
     @show="loadEditor"
     @before-hide="unloadEditor"
+    @keydown.esc.stop="closeEditor"
   >
     <q-card class="q-dialog-plugin">
       <q-bar>
@@ -363,6 +365,13 @@ function loadEditor() {
     downloadScript(script.id, { with_snippets: props.readonly }).then((r) => {
       script.script_body = r.code;
       editor.setValue(r.code);
+
+      watch(
+        () => script.script_body,
+        () => {
+          edited.value = true;
+        },
+      );
     });
 
   // watch for changes in language
@@ -392,6 +401,21 @@ function generateScriptOpenAI() {
     });
     script.script_body = completion;
   });
+}
+
+// add are you sure prompt to unsaved script
+const edited = ref(false);
+
+function closeEditor() {
+  if (edited.value)
+    $q.dialog({
+      title: "You have unsaved changes. Are you sure you want to close?",
+      cancel: true,
+      ok: true,
+    }).onOk(async () => {
+      unloadEditor();
+    });
+  else unloadEditor();
 }
 
 // component life cycle hooks
