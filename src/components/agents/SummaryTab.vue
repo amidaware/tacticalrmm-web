@@ -34,7 +34,7 @@
         :color="dash_warning_color"
         class="q-mr-sm"
       >
-        <q-tooltip>Agent offline</q-tooltip>
+        <q-tooltip>{{ store.getters.formatDate(summary.last_seen) }}</q-tooltip>
       </q-icon>
       <q-icon
         v-else
@@ -43,7 +43,7 @@
         :color="dash_positive_color"
         class="q-mr-sm"
       >
-        <q-tooltip>Agent online</q-tooltip>
+        <q-tooltip>{{ store.getters.formatDate(summary.last_seen) }}</q-tooltip>
       </q-icon>
       <b>{{ summary.hostname }}</b>
       <span v-if="summary.maintenance_mode">
@@ -311,7 +311,7 @@ export default {
       const ret = [];
       for (const customField of summary.value.custom_fields) {
         const definition = customFieldsDefinitions.value.find(
-          (def) => def.id === customField.field
+          (def) => def.id === customField.field,
         );
         if (
           definition &&
@@ -381,6 +381,7 @@ export default {
       dash_negative_color,
       serial_number,
       cpu,
+      store,
 
       // methods
       getSummary,
