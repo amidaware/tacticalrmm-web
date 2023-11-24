@@ -32,7 +32,7 @@ For details, see: https://license.tacticalrmm.com/ee
         :rows="reportTemplates"
         :columns="columns"
         :loading="isLoading"
-        :pagination="{ rowsPerPage: 0, sortBy: 'name', descending: true }"
+        :pagination="{ rowsPerPage: 0, sortBy: 'name', descending: false }"
         :filter="search"
         row-key="id"
         binary-state-sort
