@@ -176,6 +176,14 @@
                 <q-tooltip> Shell </q-tooltip>
               </q-icon>
 
+              <!-- is community script icon -->
+              <q-img
+                v-if="props.row.script_type === 'builtin'"
+                src="../../assets/trmm_256.png"
+                spinner-color="red"
+                style="height: 20px; max-width: 20px"
+              />
+
               <span
                 class="q-pl-xs text-weight-bold"
                 :style="{ color: props.node.hidden ? 'grey' : '' }"
@@ -488,6 +496,13 @@
               :props="props"
               :style="{ color: props.row.hidden ? 'grey' : '' }"
             >
+              <!-- is community script icon -->
+              <q-img
+                v-if="props.row.script_type === 'builtin'"
+                src="../../assets/trmm_256.png"
+                spinner-color="red"
+                style="height: 20px; max-width: 20px"
+              />
               {{ truncateText(props.row.name, 50) }}
               <q-tooltip
                 v-if="props.row.name.length >= 50"
@@ -620,7 +635,7 @@ export default {
     // setup vuex store
     const store = useStore();
     const showCommunityScripts = computed(
-      () => store.state.showCommunityScripts
+      () => store.state.showCommunityScripts,
     );
 
     // setup quasar plugins
@@ -721,7 +736,7 @@ export default {
         return showCommunityScripts.value
           ? scripts.value.filter((i) => !i.hidden)
           : scripts.value.filter(
-              (i) => i.script_type !== "builtin" && !i.hidden
+              (i) => i.script_type !== "builtin" && !i.hidden,
             );
       }
     });
