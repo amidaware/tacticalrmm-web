@@ -7,8 +7,6 @@ export default function () {
   const Store = new createStore({
     state() {
       return {
-        username: localStorage.getItem("user_name") || null,
-        token: localStorage.getItem("access_token") || null,
         tree: [],
         agents: [],
         treeReady: false,
@@ -49,9 +47,6 @@ export default function () {
       clientTreeSplitterModel(state) {
         return state.clientTreeSplitter;
       },
-      loggedIn(state) {
-        return state.token !== null;
-      },
       selectedAgentId(state) {
         return state.selectedRow;
       },
@@ -75,14 +70,6 @@ export default function () {
       },
       setAgentPlatform(state, agentPlatform) {
         state.agentPlatform = agentPlatform;
-      },
-      retrieveToken(state, { token, username }) {
-        state.token = token;
-        state.username = username;
-      },
-      destroyCommit(state) {
-        state.token = null;
-        state.username = null;
       },
       loadTree(state, treebar) {
         state.tree = treebar;
@@ -213,7 +200,7 @@ export default function () {
         }
         try {
           const { data } = await axios.get(
-            `/agents/${localParams ? localParams : ""}`
+            `/agents/${localParams ? localParams : ""}`,
           );
           commit("setAgents", data);
         } catch (e) {
@@ -232,7 +219,7 @@ export default function () {
           LoadingBar.setDefaults({ color: data.loading_bar_color });
           commit(
             "setClearSearchWhenSwitching",
-            data.clear_search_when_switching
+            data.clear_search_when_switching,
           );
           commit("SET_DEFAULT_AGENT_TBL_TAB", data.default_agent_tbl_tab);
           commit("SET_CLIENT_TREE_SORT", data.client_tree_sort);
@@ -307,15 +294,15 @@ export default function () {
               }
 
               const sorted = output.sort((a, b) =>
-                a.label.localeCompare(b.label)
+                a.label.localeCompare(b.label),
               );
               if (state.clientTreeSort === "alphafail") {
                 // move failing clients to the top
                 const failing = sorted.filter(
-                  (i) => i.color === "negative" || i.color === "warning"
+                  (i) => i.color === "negative" || i.color === "warning",
                 );
                 const ok = sorted.filter(
-                  (i) => i.color !== "negative" && i.color !== "warning"
+                  (i) => i.color !== "negative" && i.color !== "warning",
                 );
                 const sortedByFailing = [...failing, ...ok];
                 commit("loadTree", sortedByFailing);
@@ -348,37 +335,6 @@ export default function () {
       reload() {
         localStorage.removeItem("rmmver");
         location.reload();
-      },
-      retrieveToken(context, credentials) {
-        return new Promise((resolve) => {
-          axios.post("/login/", credentials).then((response) => {
-            const token = response.data.token;
-            const username = credentials.username;
-            localStorage.setItem("access_token", token);
-            localStorage.setItem("user_name", username);
-            context.commit("retrieveToken", { token, username });
-            resolve(response);
-          });
-        });
-      },
-      destroyToken(context) {
-        if (context.getters.loggedIn) {
-          return new Promise((resolve) => {
-            axios
-              .post("/logout/")
-              .then((response) => {
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("user_name");
-                context.commit("destroyCommit");
-                resolve(response);
-              })
-              .catch(() => {
-                localStorage.removeItem("access_token");
-                localStorage.removeItem("user_name");
-                context.commit("destroyCommit");
-              });
-          });
-        }
       },
     },
   });

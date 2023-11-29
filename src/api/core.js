@@ -30,6 +30,33 @@ export async function fetchURLActions(params = {}) {
   }
 }
 
+export async function saveURLAction(payload) {
+  try {
+    const { data } = await axios.post(`${baseUrl}/urlaction/`, payload);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function editURLAction(id, payload) {
+  try {
+    const { data } = await axios.put(`${baseUrl}/urlaction/${id}/`, payload);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function removeURLAction(id) {
+  try {
+    const { data } = await axios.delete(`${baseUrl}/urlaction/${id}/`);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export async function runURLAction(payload) {
   try {
     const { data } = await axios.patch(`${baseUrl}/urlaction/run/`, payload);

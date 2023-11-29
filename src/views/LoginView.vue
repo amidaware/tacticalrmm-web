@@ -11,7 +11,7 @@
             </div>
           </q-card-section>
           <q-card-section>
-            <q-form @submit.prevent="checkCreds" class="q-gutter-md">
+            <q-form ref="form" @submit.prevent="checkCreds" class="q-gutter-md">
               <q-input
                 filled
                 v-model="credentials.username"
@@ -24,7 +24,7 @@
               <q-input
                 v-model="credentials.password"
                 filled
-                :type="isPwd ? 'password' : 'text'"
+                :type="showPassword ? 'password' : 'text'"
                 label="Password"
                 lazy-rules
                 :rules="[
@@ -33,9 +33,9 @@
               >
                 <template v-slot:append>
                   <q-icon
-                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    :name="showPassword ? 'visibility_off' : 'visibility'"
                     class="cursor-pointer"
-                    @click="isPwd = !isPwd"
+                    @click="showPassword = !showPassword"
                   />
                 </template>
               </q-input>
@@ -53,7 +53,7 @@
         <!-- 2 factor modal -->
         <q-dialog persistent v-model="prompt">
           <q-card style="min-width: 400px">
-            <q-form @submit.prevent="onSubmit">
+            <q-form ref="formToken" @submit.prevent="onSubmit">
               <q-card-section class="text-center text-h6"
                 >Two-Factor Token</q-card-section
               >
@@ -62,8 +62,8 @@
                 <q-input
                   autofocus
                   outlined
-                  v-model="credentials.twofactor"
                   autocomplete="one-time-code"
+                  v-model="twofactor"
                   :rules="[
                     (val) =>
                       (val && val.length > 0) || 'This field is required',
@@ -83,53 +83,51 @@
   </q-layout>
 </template>
 
-<script>
-import mixins from "@/mixins/mixins";
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+import { type QForm, useQuasar } from "quasar";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
-export default {
-  name: "LoginView",
-  mixins: [mixins],
-  data() {
-    return {
-      credentials: {},
-      prompt: false,
-      isPwd: true,
-    };
-  },
+// setup quasar
+const $q = useQuasar();
+$q.dark.set(true);
 
-  methods: {
-    checkCreds() {
-      this.$axios.post("/checkcreds/", this.credentials).then((r) => {
-        if (r.data.totp === "totp not set") {
-          // sign in to setup two factor temporarily
-          const token = r.data.token;
-          const username = r.data.username;
-          localStorage.setItem("access_token", token);
-          localStorage.setItem("user_name", username);
-          this.$store.commit("retrieveToken", { token, username });
-          this.$router.push({ name: "TOTPSetup" });
-        } else {
-          this.prompt = true;
-        }
-      });
-    },
-    onSubmit() {
-      this.$store
-        .dispatch("retrieveToken", this.credentials)
-        .then(() => {
-          this.credentials = {};
-          this.$router.push({ name: "Dashboard" });
-        })
-        .catch(() => {
-          this.credentials = {};
-          this.prompt = false;
-        });
-    },
-  },
-  mounted() {
-    this.$q.dark.set(true);
-  },
-};
+// setup auth store
+const auth = useAuthStore();
+
+// setup router
+const router = useRouter();
+
+const form = ref<QForm | null>(null);
+const formToken = ref<QForm | null>(null);
+
+// login logic
+const credentials = reactive({ username: "", password: "" });
+const twofactor = ref("");
+const prompt = ref(false);
+const showPassword = ref(true);
+
+async function checkCreds() {
+  const { totp } = await auth.checkCredentials(credentials);
+
+  if (!totp) {
+    router.push({ name: "TOTPSetup" });
+  } else {
+    prompt.value = true;
+  }
+}
+
+async function onSubmit() {
+  try {
+    await auth.login({ ...credentials, twofactor: twofactor.value });
+    router.push({ name: "Dashboard" });
+  } finally {
+    form.value?.reset();
+    formToken.value?.reset();
+    prompt.value = false;
+  }
+}
 </script>
 
 <style>
