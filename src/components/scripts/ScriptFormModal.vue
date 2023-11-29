@@ -22,7 +22,7 @@
           @click="generateScriptOpenAI"
         />
         <q-space />
-        <q-btn dense flat icon="close" v-close-popup>
+        <q-btn dense flat icon="close" @click="closeEditor">
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
@@ -192,7 +192,7 @@
           </template>
         </tactical-dropdown>
         <q-space />
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat label="Cancel" @click="closeEditor" />
         <q-btn
           v-if="!readonly"
           :loading="loading"
@@ -366,6 +366,7 @@ function loadEditor() {
       script.script_body = r.code;
       editor.setValue(r.code);
 
+      // need to add this in the download function otherwise the above will trigger an edit
       watch(
         () => script.script_body,
         () => {
@@ -373,6 +374,14 @@ function loadEditor() {
         },
       );
     });
+  else {
+    watch(
+      () => script.script_body,
+      () => {
+        edited.value = true;
+      },
+    );
+  }
 
   // watch for changes in language
   watch(lang, () => {
