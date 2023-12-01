@@ -25,13 +25,21 @@
         :key="mapOptions ? scope.opt.value : scope.opt"
       >
         <q-item-section>
-          <q-item-label
-            v-html="mapOptions ? scope.opt.label : scope.opt"
-          ></q-item-label>
+          <q-item-label v-html="mapOptions ? scope.opt.label : scope.opt" />
         </q-item-section>
-        <q-item-section v-if="filtered && mapOptions && scope.opt.cat" side>{{
-          scope.opt.cat
-        }}</q-item-section>
+        <q-item-section
+          v-if="
+            (filtered && mapOptions && scope.opt.cat) || scope.opt.img_right
+          "
+          side
+        >
+          {{ scope.opt.cat || "" }}
+          <img
+            v-if="scope.opt.img_right"
+            :src="scope.opt.img_right"
+            style="height: 20px; max-width: 20px"
+          />
+        </q-item-section>
       </q-item>
       <q-item-label
         v-if="scope.opt.category"
@@ -80,7 +88,7 @@ export default {
 
           if (!props.mapOptions)
             filteredOptions.value = props.options.filter(
-              (v) => v.toLowerCase().indexOf(needle) > -1
+              (v) => v.toLowerCase().indexOf(needle) > -1,
             );
           else
             filteredOptions.value = props.options.filter((v) => {

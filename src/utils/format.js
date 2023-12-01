@@ -1,5 +1,6 @@
 import { date } from "quasar";
 import { validateTimePeriod } from "@/utils/validation";
+import trmmLogo from "@/assets/trmm_256.png";
 // dropdown options formatting
 
 export function removeExtraOptionCategories(array) {
@@ -24,7 +25,7 @@ function _formatOptions(
     flat = false,
     allowDuplicates = true,
     appendToOptionObject = {},
-  }
+  },
 ) {
   if (!flat)
     // returns array of options in object format [{label: label, value: 1}]
@@ -64,6 +65,7 @@ export function formatScriptOptions(data) {
     data.forEach((script) => {
       if (script.category === cat) {
         tmp.push({
+          img_right: script.script_type === "builtin" ? trmmLogo : undefined,
           label: script.name,
           value: script.id,
           timeout: script.default_timeout,
@@ -100,7 +102,7 @@ export function formatScriptOptions(data) {
 export function formatAgentOptions(
   data,
   flat = false,
-  value_field = "agent_id"
+  value_field = "agent_id",
 ) {
   if (flat) {
     // returns just agent hostnames in array
@@ -185,7 +187,7 @@ export function formatSiteOptions(data, flat = false) {
         label: "name",
         flat: flat,
         appendToOptionObject: { cat: client.name },
-      })
+      }),
     );
   });
 
@@ -361,7 +363,7 @@ export function convertToBitArray(number) {
         bitArray.push(1);
       } else {
         bitArray.push(
-          parseInt(binary.slice(i), 2) - parseInt(binary.slice(i + 1), 2)
+          parseInt(binary.slice(i), 2) - parseInt(binary.slice(i + 1), 2),
         );
       }
     }

@@ -254,7 +254,7 @@ export default {
       pagination: {
         rowsPerPage: 0,
         sortBy: "name",
-        descending: true,
+        descending: false,
       },
     };
   },
@@ -321,7 +321,7 @@ export default {
     runTask(task) {
       if (!task.enabled) {
         this.notifyError(
-          "Task cannot be run when it's disabled. Enable it first."
+          "Task cannot be run when it's disabled. Enable it first.",
         );
         return;
       }
