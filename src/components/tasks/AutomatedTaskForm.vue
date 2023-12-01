@@ -324,11 +324,11 @@
                 class="row"
               >
                 <span v-if="state.task_type === 'onboarding'"
-                  >This task will run as soon as it is created on the
-                  agent</span
+                  >This task will run as soon as it's created on the
+                  agent.</span
                 >
                 <span v-else-if="state.task_type === 'runonce'"
-                  >Start Time must be in the future for run once tasks</span
+                  >Start Time must be in the future for run once tasks.</span
                 >
               </q-card-section>
 
