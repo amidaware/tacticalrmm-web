@@ -178,7 +178,8 @@
 
               <!-- is community script icon -->
               <img
-                v-if="props.row.script_type === 'builtin'"
+                v-if="props.node.script_type === 'builtin'"
+                class="vertical-middle"
                 :src="trmmLogo"
                 style="height: 20px; max-width: 20px"
               />
