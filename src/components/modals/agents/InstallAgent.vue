@@ -137,7 +137,7 @@
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
-              label="Apple Silicon (M1, M2)"
+              label="Apple Silicon (M1, M2, M3)"
               v-show="agentOS === 'darwin'"
             />
             <q-radio
