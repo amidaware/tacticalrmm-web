@@ -25,8 +25,8 @@
           If you have downgraded or cancelled your sponsorship, please delete
           your token from the Code Signing modal and refresh to get rid of this
           banner.<br /><br />
-          For any issues or to renew your sponsorship please email
-          support@amidaware.com<br /><br
+          For any issues or to renew your sponsorship please open a ticket at
+          support.amidaware.com<br /><br
         /></span>
         <q-btn
           color="dark"
