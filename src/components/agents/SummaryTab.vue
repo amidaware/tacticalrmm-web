@@ -280,7 +280,7 @@ export default {
     function diskBarColor(percent) {
       if (percent < 80) {
         return dash_positive_color.value;
-      } else if (percent > 80 && percent < 95) {
+      } else if (percent >= 80 && percent < 95) {
         return dash_warning_color.value;
       } else {
         return dash_negative_color.value;
