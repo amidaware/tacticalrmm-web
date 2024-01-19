@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onHide">
-    <q-card class="q-dialog-plugin" style="min-width: 85vh">
+    <q-card class="q-dialog-plugin" style="min-width: 60vw">
       <q-splitter v-model="splitterModel">
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
@@ -201,7 +201,7 @@
                         icon="info"
                         @click="
                           openURL(
-                            'https://quasar.dev/quasar-utils/date-utils#format-for-display'
+                            'https://quasar.dev/quasar-utils/date-utils#format-for-display',
                           )
                         "
                       >
@@ -315,7 +315,7 @@ export default {
       this.$axios.get("/core/urlaction/").then((r) => {
         if (r.data.length === 0) {
           this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
           return;
         }
