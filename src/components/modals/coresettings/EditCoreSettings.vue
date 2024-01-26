@@ -71,7 +71,7 @@
                         icon="info"
                         @click="
                           openURL(
-                            'https://quasar.dev/quasar-utils/date-utils#format-for-display'
+                            'https://quasar.dev/quasar-utils/date-utils#format-for-display',
                           )
                         "
                       >
@@ -216,7 +216,7 @@
                 <div class="text-subtitle2">SMTP Settings</div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-2">From:</div>
+                  <div class="col-2">From email:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -224,6 +224,16 @@
                     v-model="settings.smtp_from_email"
                     class="col-6 q-pa-none"
                     :rules="[(val) => isValidEmail(val) || 'Invalid email']"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">From name:</div>
+                  <div class="col-4"></div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="settings.smtp_from_name"
+                    class="col-6 q-pa-none"
                   />
                 </q-card-section>
                 <q-card-section class="row">
@@ -711,13 +721,13 @@ export default {
     },
     removeEmail(email) {
       const removed = this.settings.email_alert_recipients.filter(
-        (k) => k !== email
+        (k) => k !== email,
       );
       this.settings.email_alert_recipients = removed;
     },
     removeSMSNumber(num) {
       const removed = this.settings.sms_alert_recipients.filter(
-        (k) => k !== num
+        (k) => k !== num,
       );
       this.settings.sms_alert_recipients = removed;
     },
