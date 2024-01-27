@@ -267,7 +267,11 @@ export default {
     const loading = ref(false);
 
     const serial_number = computed(() => {
-      return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+      if (summary.value.plat === "windows") {
+        return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+      } else {
+        return summary.value.wmi_detail.serialnumber;
+      }
     });
 
     const cpu = computed(() => {
