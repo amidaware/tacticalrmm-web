@@ -319,7 +319,7 @@ export default {
         );
         if (
           definition &&
-          !definition.hide_in_ui &&
+          !definition.hide_in_summary &&
           customField.value?.length > 0
         ) {
           ret.push({

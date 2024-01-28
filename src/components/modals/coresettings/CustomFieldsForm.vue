@@ -142,6 +142,11 @@
             v-model="localField.hide_in_ui"
             color="green"
           />
+          <q-toggle
+            label="Hide in Summary Tab"
+            v-model="localField.hide_in_summary"
+            color="green"
+          />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" v-close-popup />
@@ -172,6 +177,7 @@ export default {
         default_value_bool: false,
         default_values_multiple: [],
         hide_in_ui: false,
+        hide_in_summary: false,
       },
       modelOptions: [
         { label: "Client", value: "client" },

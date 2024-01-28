@@ -57,6 +57,10 @@
         <q-td>
           <q-icon v-if="props.row.hide_in_ui" name="check" />
         </q-td>
+        <!-- hide in summary tab -->
+        <q-td>
+          <q-icon v-if="props.row.hide_in_summary" name="check" />
+        </q-td>
         <!-- default value -->
         <q-td v-if="props.row.type === 'checkbox'">
           {{ props.row.default_value_bool }}
@@ -120,6 +124,13 @@ export default {
           name: "hide_in_ui",
           label: "Hide in UI",
           field: "hide_in_ui",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "hide_in_summary",
+          label: "Hide in Summary Tab",
+          field: "hide_in_summary",
           align: "left",
           sortable: true,
         },
