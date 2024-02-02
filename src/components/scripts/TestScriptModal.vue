@@ -8,8 +8,25 @@
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
-      <q-card-section class="scroll" style="max-height: 70vh; height: 70vh">
-        <pre v-if="ret">{{ ret }}</pre>
+      <q-card-section style="height: 70vh" class="scroll">
+        <div>
+          Run Time:
+          <code>{{ ret.execution_time }} seconds</code>
+          <br />Return Code:
+          <code>{{ ret.retcode }}</code>
+          <br />
+        </div>
+        <br />
+        <div v-if="ret.stdout">
+          Standard Output
+          <q-separator />
+          <pre>{{ ret.stdout }}</pre>
+        </div>
+        <div v-if="ret.stderr">
+          Standard Error
+          <q-separator />
+          <pre>{{ ret.stderr }}</pre>
+        </div>
         <q-inner-loading :showing="loading" />
       </q-card-section>
     </q-card>
@@ -34,7 +51,12 @@ export default {
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
     // main run script functionality
-    const ret = ref(null);
+    const ret = ref({
+      execution_time: "",
+      retcode: "",
+      stdout: "",
+      stderr: "",
+    });
     const loading = ref(false);
 
     async function runTestScript() {

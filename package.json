@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.101.38",
+  "version": "0.101.39",
   "private": true,
   "productName": "Tactical RMM",
   "scripts": {
@@ -10,34 +10,34 @@
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
-    "@quasar/extras": "1.16.8",
-    "apexcharts": "3.44.0",
-    "axios": "1.6.2",
-    "dotenv": "16.3.1",
+    "@quasar/extras": "1.16.9",
+    "apexcharts": "3.45.2",
+    "axios": "1.6.7",
+    "dotenv": "16.4.1",
     "qrcode.vue": "3.4.1",
-    "quasar": "2.13.0",
-    "vue": "3.3.9",
+    "quasar": "2.14.3",
+    "vue": "3.4.15",
     "vue3-apexcharts": "1.4.4",
     "vuedraggable": "4.1.0",
     "vue-router": "4.2.5",
-    "@vueuse/core": "10.6.1",
-    "@vueuse/shared": "10.6.1",
-    "monaco-editor": "0.44.0",
+    "@vueuse/core": "10.7.2",
+    "@vueuse/shared": "10.7.2",
+    "monaco-editor": "0.45.0",
     "vuex": "4.1.0",
     "yaml": "2.3.4"
   },
   "devDependencies": {
     "@quasar/cli": "2.3.0",
-    "@intlify/unplugin-vue-i18n": "1.5.0",
-    "@quasar/app-vite": "1.6.2",
-    "@types/node": "20.10.0",
-    "@typescript-eslint/eslint-plugin": "6.13.1",
-    "@typescript-eslint/parser": "6.13.1",
-    "autoprefixer": "10.4.16",
-    "eslint": "8.54.0",
-    "eslint-config-prettier": "9.0.0",
+    "@intlify/unplugin-vue-i18n": "2.0.0",
+    "@quasar/app-vite": "1.7.3",
+    "@types/node": "20.11.6",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
+    "autoprefixer": "10.4.17",
+    "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-plugin-vue": "8.7.1",
-    "prettier": "3.1.0",
-    "typescript": "5.3.2"
+    "prettier": "3.2.4",
+    "typescript": "5.3.3"
   }
 }

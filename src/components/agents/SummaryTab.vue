@@ -267,7 +267,11 @@ export default {
     const loading = ref(false);
 
     const serial_number = computed(() => {
-      return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+      if (summary.value.plat === "windows") {
+        return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
+      } else {
+        return summary.value.wmi_detail.serialnumber;
+      }
     });
 
     const cpu = computed(() => {
@@ -280,7 +284,7 @@ export default {
     function diskBarColor(percent) {
       if (percent < 80) {
         return dash_positive_color.value;
-      } else if (percent > 80 && percent < 95) {
+      } else if (percent >= 80 && percent < 95) {
         return dash_warning_color.value;
       } else {
         return dash_negative_color.value;
@@ -315,7 +319,7 @@ export default {
         );
         if (
           definition &&
-          !definition.hide_in_ui &&
+          !definition.hide_in_summary &&
           customField.value?.length > 0
         ) {
           ret.push({
