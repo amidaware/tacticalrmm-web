@@ -63,6 +63,7 @@
                   autofocus
                   outlined
                   v-model="credentials.twofactor"
+                  autocomplete="one-time-code"
                   :rules="[
                     (val) =>
                       (val && val.length > 0) || 'This field is required',
