@@ -64,6 +64,8 @@
             :options="URLActionMethods"
             outlined
             dense
+            map-options
+            emit-value
           />
         </q-card-section>
 
@@ -71,14 +73,16 @@
           <q-toolbar>
             <q-space />
             <q-tabs v-model="tab" dense shrink>
-              <q-tab name="body" label="Request Body" :ripple="false" />
+              <q-tab
+                name="body"
+                label="Request Body"
+                :ripple="false"
+                :disable="disableBodyTab"
+              />
               <q-tab name="headers" label="Request Headers" :ripple="false" />
             </q-tabs>
           </q-toolbar>
-          <div
-            ref="editorDiv"
-            :style="{ height: `${$q.screen.height - 450}px` }"
-          ></div>
+          <div ref="editorDiv" :style="{ height: '30vh' }"></div>
         </q-card-section>
       </div>
 
@@ -92,7 +96,7 @@
 
 <script setup lang="ts">
 // composition imports
-import { ref, reactive, watch } from "vue";
+import { ref, computed, reactive, watch } from "vue";
 import { useDialogPluginComponent, useQuasar, extend } from "quasar";
 import { editURLAction, saveURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
@@ -131,12 +135,22 @@ const localAction: URLAction = props.action
       desc: "",
       pattern: "",
       action_type: "web",
-      rest_body: "",
+      rest_body: "{\n    \n}",
       rest_method: "get",
-      rest_headers: "",
+      rest_headers: "{\n    \n}",
     } as URLAction);
 
-const tab = ref("body");
+const disableBodyTab = computed(() =>
+  ["get", "delete"].includes(localAction.rest_method),
+);
+const tab = ref(disableBodyTab.value ? "headers" : "body");
+
+watch(
+  () => localAction.rest_method,
+  () => {
+    disableBodyTab.value ? (tab.value = "headers") : undefined;
+  },
+);
 
 async function submit() {
   $q.loading.show();
@@ -190,7 +204,15 @@ function loadEditor() {
   });
 
   editor.onDidChangeModelContent(() => {
-    localAction.rest_body = editor.getValue();
+    const currentModel = editor.getModel();
+
+    if (currentModel) {
+      if (currentModel?.uri === modelBodyUri) {
+        localAction.rest_body = currentModel.getValue();
+      } else {
+        localAction.rest_headers = currentModel.getValue();
+      }
+    }
   });
 }
 

@@ -15,6 +15,11 @@ export interface Script {
   env_vars: string[];
   script_body: string;
   supported_platforms?: AgentPlatformType[];
+  guid?: string;
+  script_type: "userdefined" | "builtin";
+  favorite: boolean;
+  hidden: boolean;
+  filename?: string;
 }
 
 export interface ScriptSnippet {
