@@ -222,6 +222,35 @@ import TestScriptModal from "@/components/scripts/TestScriptModal.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import * as monaco from "monaco-editor";
 
+import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
+import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
+import jsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+
+// https://github.com/microsoft/monaco-editor/issues/4045#issuecomment-1723787448
+self.MonacoEnvironment = {
+  getWorker: function (workerId, label) {
+    switch (label) {
+      case "json":
+        return new jsonWorker();
+      case "css":
+      case "scss":
+      case "less":
+        return new cssWorker();
+      case "html":
+      case "handlebars":
+      case "razor":
+        return new htmlWorker();
+      case "typescript":
+      case "javascript":
+        return new jsWorker();
+      default:
+        return new editorWorker();
+    }
+  },
+};
+
 // types
 import type { Script } from "@/types/scripts";
 
@@ -287,8 +316,8 @@ const title = computed(() => {
     return props.readonly
       ? `Viewing ${script.name}`
       : props.clone
-      ? `Copying ${script.name}`
-      : `Editing ${script.name}`;
+        ? `Copying ${script.name}`
+        : `Editing ${script.name}`;
   } else {
     return "Adding new script";
   }
@@ -296,13 +325,21 @@ const title = computed(() => {
 
 // convert highlighter language to match what ace expects
 const lang = computed(() => {
-  if (script.shell === "cmd") return "bat";
-  else if (script.shell === "powershell") return "powershell";
-  else if (script.shell === "python") return "python";
-  else if (script.shell === "shell") return "shell";
-  else if (script.shell === "nushell") return "nushell";
-  else if (script.shell === "deno") return "typescript";
-  else return "";
+  switch (script.shell) {
+    case "cmd":
+      return "bat";
+    case "powershell":
+      return "powershell";
+    case "python":
+      return "python";
+    case "shell":
+    case "nushell":
+      return "shell";
+    case "deno":
+      return "typescript";
+    default:
+      return "";
+  }
 });
 
 async function submit() {
@@ -341,12 +378,7 @@ const scriptEditor = ref<HTMLElement | null>(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
 function loadEditor() {
-  var modelUri = monaco.Uri.parse("model://new"); // a made up unique URI for our model
-  var model = monaco.editor.createModel(
-    script.script_body,
-    lang.value,
-    modelUri,
-  );
+  var model = monaco.editor.createModel(script.script_body, lang.value);
 
   const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
 
