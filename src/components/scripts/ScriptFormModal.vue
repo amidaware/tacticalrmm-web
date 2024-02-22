@@ -300,6 +300,8 @@ const lang = computed(() => {
   else if (script.shell === "powershell") return "powershell";
   else if (script.shell === "python") return "python";
   else if (script.shell === "shell") return "shell";
+  else if (script.shell === "nushell") return "nushell";
+  else if (script.shell === "deno") return "typescript";
   else return "";
 });
 
