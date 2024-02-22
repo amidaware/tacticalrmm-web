@@ -176,6 +176,13 @@
       </q-menu>
     </q-item>
 
+    <q-item clickable v-close-popup @click="shutdown(agent)">
+      <q-item-section side>
+        <q-icon size="xs" name="power" />
+      </q-item-section>
+      <q-item-section>Shutdown</q-item-section>
+    </q-item>
+    
     <q-item clickable v-close-popup @click="showPolicyAdd(agent)">
       <q-item-section side>
         <q-icon size="xs" name="policy" />
@@ -231,6 +238,7 @@ import { fetchURLActions, runURLAction } from "@/api/core";
 import {
   editAgent,
   agentRebootNow,
+  agentShutdown,
   sendAgentPing,
   removeAgent,
   runRemoteBackground,
@@ -437,6 +445,32 @@ export default {
       });
     }
 
+    function shutdown(agent) {
+      $q.dialog({
+        title:
+          'Please type <code style="color:red">yes</code> in the box below to confirm shutdown.',
+        prompt: {
+          model: "",
+          type: "text",
+          isValid: (val) => val === "yes",
+        },
+        cancel: true,
+        ok: { label: "Shutdown", color: "negative" },
+        persistent: true,
+        html: true,
+      }).onOk(async () => {
+        $q.loading.show();
+        try {
+          await agentShutdown(agent.agent_id);
+          notifySuccess(`${agent.hostname} will now be shutdown`);
+          $q.loading.hide();
+        } catch (e) {
+          $q.loading.hide();
+          console.error(e);
+        }
+      });
+    }
+    
     function showPolicyAdd(agent) {
       $q.dialog({
         component: PolicyAdd,
@@ -534,6 +568,7 @@ export default {
       runChecks,
       showRebootLaterModal,
       rebootNow,
+      shutdown,
       showPolicyAdd,
       showAgentRecovery,
       pingAgent,
