@@ -437,6 +437,36 @@
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">
+                    Sync MeshCentral Users/Permissions with TRMM:
+                  </div>
+                  <div class="col-2"></div>
+                  <q-checkbox
+                    dense
+                    v-model="settings.sync_mesh_with_trmm"
+                    class="col-6"
+                  />
+                </q-card-section>
+
+                <q-card-section class="row">
+                  <div class="col-4">Company Name:</div>
+
+                  <div class="col-2"></div>
+                  <q-input
+                    dense
+                    outlined
+                    v-model="settings.mesh_company_name"
+                    class="col-6"
+                  >
+                    <q-tooltip class="text-caption"
+                      >Adding your company name here will append it to the
+                      user's full name that appears when doing a remote control
+                      session, for example: 'John Doe - Amidaware
+                      Inc.'</q-tooltip
+                    ></q-input
+                  >
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">
                     Disable Auto Login for Remote Control and Remote background:
                   </div>
                   <div class="col-2"></div>
