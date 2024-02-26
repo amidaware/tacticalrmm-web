@@ -90,7 +90,7 @@ export default {
         control.value = data.control;
         status.value = data.status;
         useMeta({
-          title: `${data.hostname} - ${data.client} - ${data.site} | Remote Background`,
+          title: `${data.hostname} - ${data.client} - ${data.site} | Take Control`,
         });
       } catch (e) {
         console.error(e);
