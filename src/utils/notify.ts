@@ -1,6 +1,6 @@
 import { Notify } from "quasar";
 
-export function notifySuccess(msg, timeout = 2000) {
+export function notifySuccess(msg: string, timeout = 2000) {
   Notify.create({
     type: "positive",
     message: msg,
@@ -8,7 +8,7 @@ export function notifySuccess(msg, timeout = 2000) {
   });
 }
 
-export function notifyError(msg, timeout = 2000) {
+export function notifyError(msg: string, timeout = 2000) {
   Notify.create({
     type: "negative",
     message: msg,
@@ -16,7 +16,7 @@ export function notifyError(msg, timeout = 2000) {
   });
 }
 
-export function notifyWarning(msg, timeout = 2000) {
+export function notifyWarning(msg: string, timeout = 2000) {
   Notify.create({
     type: "warning",
     message: msg,
@@ -24,7 +24,7 @@ export function notifyWarning(msg, timeout = 2000) {
   });
 }
 
-export function notifyInfo(msg, timeout = 2000) {
+export function notifyInfo(msg: string, timeout = 2000) {
   Notify.create({
     type: "info",
     message: msg,

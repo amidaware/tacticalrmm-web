@@ -5,6 +5,17 @@ import type { AutomatedTask } from "@/types/tasks";
 
 const baseUrl = "/core";
 
+export async function fetchCustomFields(params = {}) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/customfields/`, {
+      params: params,
+    });
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export async function fetchURLActions(params = {}) {
   const { data } = await axios.get(`${baseUrl}/urlaction/`, {
     params: params,
@@ -65,7 +76,6 @@ export async function runServerTask(id: number): Promise<ServerScriptResponse> {
 }
 
 export interface ServerScriptRunRequest {
-  id: number;
   timeout: number;
   env_vars: string[];
   args: string[];
@@ -74,7 +84,7 @@ export interface ServerScriptRunRequest {
 export async function runServerScript(
   id: number,
   payload: ServerScriptRunRequest,
-): Promise<ServerScriptResponse> {
+): Promise<string> {
   const { data } = await axios.post(
     `${baseUrl}/serverscript/${id}/run/`,
     payload,

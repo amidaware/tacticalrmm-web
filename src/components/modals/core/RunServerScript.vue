@@ -10,9 +10,9 @@
       </q-bar>
       <q-card-section>
         <tactical-dropdown
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val: number) => !!val || '*Required']"
           v-model="script"
-          :options="filteredScriptOptions"
+          :options="serverScriptOptions"
           label="Select script"
           outlined
           mapOptions
@@ -97,17 +97,15 @@
   </q-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // composition imports
-import { ref, reactive, computed } from "vue";
+import { ref, reactive } from "vue";
 import { useDialogPluginComponent, openURL } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { runServerScript } from "@/api/core.ts";
 import { envVarsLabel } from "@/constants/constants";
-import {
-  formatScriptSyntax,
-  removeExtraOptionCategories,
-} from "@/utils/format";
+import { formatScriptSyntax } from "@/utils/format";
+import { notifyError } from "@/utils/notify";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -121,15 +119,14 @@ const { dialogRef, onDialogHide } = useDialogPluginComponent();
 // setup dropdowns
 const {
   script,
-  scriptOptions,
+  serverScriptOptions,
   defaultTimeout,
   defaultArgs,
   defaultEnvVars,
   syntax,
   link,
-} = useScriptDropdown(undefined, {
+} = useScriptDropdown({
   onMount: true,
-  filterByPlatform: "linux",
 });
 
 // main run script functionaity
@@ -139,10 +136,14 @@ const state = reactive({
   timeout: defaultTimeout,
 });
 
-const ret = ref(null);
+const ret = ref<string | null>(null);
 const loading = ref(false);
 
 async function runScript() {
+  if (!script.value) {
+    notifyError("A script must be selected");
+    return;
+  }
   ret.value = null;
   loading.value = true;
 
@@ -157,16 +158,4 @@ async function runScript() {
 function openScriptURL() {
   link.value ? openURL(link.value) : null;
 }
-
-const filteredScriptOptions = computed(() => {
-  return removeExtraOptionCategories(
-    scriptOptions.value.filter(
-      (script) =>
-        script.category ||
-        !script.supported_platforms ||
-        script.supported_platforms.length === 0 ||
-        script.supported_platforms.includes("linux"),
-    ),
-  );
-});
 </script>

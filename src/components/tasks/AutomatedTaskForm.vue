@@ -106,7 +106,13 @@
                   class="col-3"
                   label="Select script"
                   v-model="script"
-                  :options="filteredScriptOptions"
+                  :options="
+                    type === 'policy'
+                      ? scriptOptions
+                      : type === 'server'
+                        ? filterByPlatformOptions('linux')
+                        : filterByPlatformOptions(plat)
+                  "
                   filled
                   mapOptions
                   filterable
@@ -659,12 +665,12 @@
                     placeholder="e.g. 6h (6 hours) or 1d (1 day)"
                     lazy-rules
                     :rules="[
-                      (val) =>
+                      (val: string) =>
                         validateTimePeriod(val) ||
                         'Valid values are 1-3 digits followed by (D|d|H|h|M|m|S|s)',
-                      (val) =>
+                      (val: string) =>
                         localTask.task_repetition_interval ? !!val : true, // field is required if repetition interval is set
-                      (val) =>
+                      (val: string) =>
                         convertPeriodToSeconds(val) >=
                           convertPeriodToSeconds(
                             localTask?.task_repetition_interval,
@@ -760,12 +766,7 @@
         />
         <q-btn
           v-if="step < 3"
-          @click="
-            validateStep(
-              step === 1 ? taskGeneralForm : undefined,
-              $refs.stepper,
-            )
-          "
+          @click="validateStep(step === 1 ? taskGeneralForm : null, stepper)"
           color="primary"
           label="Next"
           flat
@@ -787,11 +788,11 @@
 
 <script setup lang="ts">
 // composition imports
-import { ref, watch, onMounted, computed, reactive } from "vue";
+import { ref, watch, onMounted, reactive } from "vue";
 import { QForm, QStepper, useDialogPluginComponent } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
-import { useScriptDropdown } from "@/composables/scripts.ts";
+import { useScriptDropdown } from "@/composables/scripts";
 import { useCheckDropdown } from "@/composables/checks";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { notifySuccess, notifyError } from "@/utils/notify";
@@ -802,7 +803,7 @@ import {
   convertToBitArray,
   convertFromBitArray,
   formatDateInputField,
-  removeExtraOptionCategories,
+  copyObjectWithoutKeys,
 } from "@/utils/format";
 
 // ui imports
@@ -815,6 +816,7 @@ import type {
   AutomatedTaskForDB,
   AutomatedTaskCommandActionShellType,
 } from "@/types/tasks";
+import type { AgentPlatformType } from "@/types/agents";
 
 // static data
 const severityOptions = [
@@ -884,6 +886,17 @@ const taskInstancePolicyOptions = [
   { label: "Stop Existing", value: 3 },
 ];
 
+// emits
+defineEmits([...useDialogPluginComponent.emits]);
+
+// props
+const props = defineProps<{
+  parent?: number | string; // parent policy or agent for task
+  type: "agent" | "policy" | "server";
+  task?: AutomatedTaskForDB; // only for editing
+  plat?: AgentPlatformType; // filters scripts options base on plat
+}>();
+
 // setup quasar dialog
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
@@ -891,39 +904,14 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 const {
   script,
   scriptOptions,
+  filterByPlatformOptions,
   defaultTimeout,
   defaultArgs,
   defaultEnvVars,
   scriptName,
-} = useScriptDropdown(undefined, {
+} = useScriptDropdown({
   onMount: true,
 });
-
-const filteredScriptOptions = computed(() => {
-  if (props.type !== "server") {
-    return scriptOptions.value;
-  } else {
-    return removeExtraOptionCategories(
-      scriptOptions.value.filter(
-        (script) =>
-          script.category ||
-          !script.supported_platforms ||
-          script.supported_platforms.length === 0 ||
-          script.supported_platforms.includes("linux"),
-      ),
-    );
-  }
-});
-
-// emits
-defineEmits([...useDialogPluginComponent.emits]);
-
-// props
-const props = defineProps<{
-  parent?: number; // parent policy or agent for task
-  type: "agent" | "policy" | "server";
-  task?: AutomatedTask; // only for editing
-}>();
 
 // set defaultTimeout to 30
 defaultTimeout.value = 30;
@@ -932,38 +920,38 @@ const { checkOptions, getCheckOptions } = useCheckDropdown();
 const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
 // add task logic
-const localTask = props.task
-  ? reactive(Object.assign({}, props.task))
-  : reactive({
+const localTask: AutomatedTask = props.task
+  ? reactive(Object.assign({}, processTaskDatafromDB(props.task)))
+  : (reactive({
       id: 0,
       policy: props.type === "policy" ? props.parent : undefined,
       agent: props.type === "agent" ? props.parent : undefined,
       server_task: props.type === "server",
       crontab_schedule: "",
       actions: [] as AutomatedTaskAction[],
-      assigned_check: null,
-      custom_field: null,
-      name: null,
-      expire_date: null,
+      assigned_check: undefined,
+      custom_field: undefined,
+      name: "",
+      expire_date: undefined,
       run_time_date: formatDateInputField(Date.now()),
-      run_time_bit_weekdays: [],
+      run_time_bit_weekdays: [] as number[],
       weekly_interval: 1,
       daily_interval: 1,
-      monthly_months_of_year: [],
-      monthly_days_of_month: [],
-      monthly_weeks_of_month: [],
+      monthly_months_of_year: [] as number[],
+      monthly_days_of_month: [] as number[],
+      monthly_weeks_of_month: [] as number[],
       task_instance_policy: 0,
-      task_repetition_interval: null,
-      task_repetition_duration: null,
+      task_repetition_interval: undefined,
+      task_repetition_duration: undefined,
       stop_task_at_duration_end: false,
-      random_task_delay: null,
+      random_task_delay: undefined,
       remove_if_not_scheduled: false,
       run_asap_after_missed: true,
       task_type: "daily",
       alert_severity: "info",
       collector_all_output: false,
       continue_on_error: true,
-    });
+    }) as AutomatedTask);
 
 const actionType = ref("script");
 const command = ref("");
@@ -1078,7 +1066,7 @@ function processTaskDataforDB(taskData: AutomatedTask): AutomatedTaskForDB {
     },
   } as AutomatedTaskForDB;
   // Add Z back to run_time_date and expires_date
-  data.run_time_date += "Z";
+  if (!taskData.server_task) data.run_time_date += "Z";
 
   if (taskData.expire_date) data.expire_date += "Z";
 
@@ -1091,32 +1079,48 @@ function processTaskDataforDB(taskData: AutomatedTask): AutomatedTaskForDB {
 }
 
 // runs when editing a task to convert values to be compatible with quasar
-function processTaskDatafromDB() {
+function processTaskDatafromDB(task: AutomatedTaskForDB) {
+  const convertedTask = copyObjectWithoutKeys(task, [
+    "run_time_bit_weekdays",
+    "monthly_months_of_year",
+    "monthly_days_of_month",
+    "monthly_weeks_of_month",
+  ]) as AutomatedTask;
+
   // converts fields from integers to arrays
-  localTask.run_time_bit_weekdays = localTask.run_time_bit_weekdays
-    ? convertToBitArray(localTask.run_time_bit_weekdays)
+  convertedTask.run_time_bit_weekdays = task.run_time_bit_weekdays
+    ? convertToBitArray(task.run_time_bit_weekdays)
     : [];
-  localTask.monthly_months_of_year = localTask.monthly_months_of_year
-    ? convertToBitArray(localTask.monthly_months_of_year)
+  convertedTask.monthly_months_of_year = task.monthly_months_of_year
+    ? convertToBitArray(task.monthly_months_of_year)
     : [];
-  localTask.monthly_days_of_month = localTask.monthly_days_of_month
-    ? convertToBitArray(localTask.monthly_days_of_month)
+  convertedTask.monthly_days_of_month = task.monthly_days_of_month
+    ? convertToBitArray(task.monthly_days_of_month)
     : [];
-  localTask.monthly_weeks_of_month = localTask.monthly_weeks_of_month
-    ? convertToBitArray(localTask.monthly_weeks_of_month)
+  convertedTask.monthly_weeks_of_month = task.monthly_weeks_of_month
+    ? convertToBitArray(task.monthly_weeks_of_month)
     : [];
 
   // remove milliseconds and Z to work with native date input
-  localTask.run_time_date = formatDateInputField(localTask.run_time_date, true);
+  if (!task.server_task)
+    convertedTask.run_time_date = formatDateInputField(
+      convertedTask.run_time_date,
+      true,
+    );
 
-  if (localTask.expire_date)
-    localTask.expire_date = formatDateInputField(localTask.expire_date, true);
+  if (convertedTask.expire_date)
+    convertedTask.expire_date = formatDateInputField(
+      convertedTask.expire_date,
+      true,
+    );
 
   // set task type if monthlydow is being used
-  if (localTask.task_type === "monthlydow") {
-    localTask.task_type = "monthly";
+  if (task.task_type === "monthlydow") {
+    convertedTask.task_type = "monthly";
     monthlyType.value = "weeks";
   }
+
+  return convertedTask;
 }
 
 async function submit() {
@@ -1133,26 +1137,23 @@ async function submit() {
   loading.value = false;
 }
 
-// format task data to match what quasar expects if editing
-if (props.task) processTaskDatafromDB();
-
 watch(
   () => localTask.task_type,
   () => {
-    localTask.assigned_check = null;
+    localTask.assigned_check = undefined;
     localTask.run_time_bit_weekdays = [];
     localTask.remove_if_not_scheduled = false;
-    localTask.task_repetition_interval = null;
-    localTask.task_repetition_duration = null;
+    localTask.task_repetition_interval = undefined;
+    localTask.task_repetition_duration = undefined;
     localTask.stop_task_at_duration_end = false;
-    localTask.random_task_delay = null;
+    localTask.random_task_delay = undefined;
     localTask.weekly_interval = 1;
     localTask.daily_interval = 1;
     localTask.monthly_months_of_year = [];
     localTask.monthly_days_of_month = [];
     localTask.monthly_weeks_of_month = [];
     localTask.task_instance_policy = 0;
-    localTask.expire_date = null;
+    localTask.expire_date = undefined;
   },
 );
 
@@ -1168,7 +1169,9 @@ const isValidStep1 = ref(true);
 const isValidStep2 = ref(true);
 const isValidStep3 = ref(true);
 
-function validateStep(form: QForm, stepper: QStepper) {
+function validateStep(form: QForm | null, stepper: QStepper | null) {
+  if (!stepper) return;
+
   if (step.value === 2) {
     if (localTask.actions.length > 0) {
       isValidStep2.value = true;
@@ -1180,7 +1183,7 @@ function validateStep(form: QForm, stepper: QStepper) {
 
     // steps 1 or 3
   } else {
-    form.validate().then((result: boolean) => {
+    form?.validate().then((result: boolean) => {
       if (step.value === 1) {
         isValidStep1.value = result;
         if (result) stepper.next();

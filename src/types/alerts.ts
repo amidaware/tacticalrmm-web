@@ -1,4 +1,4 @@
-export type AlertSeverity = "error" | "warning" | "informational";
+export type AlertSeverity = "error" | "warning" | "info";
 export type ActionType = "script" | "server" | "rest";
 export interface AlertTemplate {
   id: number;
@@ -6,11 +6,13 @@ export interface AlertTemplate {
   is_active: boolean;
   action_type: ActionType;
   action?: number;
+  action_rest?: number;
   action_args: string[];
   action_env_vars: string[];
   action_timeout: number;
   resolved_action_type: ActionType;
   resolved_action?: number;
+  resolved_action_rest?: number;
   resolved_action_args: string[];
   resolved_action_env_vars: string[];
   resolved_action_timeout: number;

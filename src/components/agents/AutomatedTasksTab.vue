@@ -441,7 +441,7 @@ export default {
       try {
         const result = await fetchAgentTasks(selectedAgent.value);
         tasks.value = result.filter(
-          (task) => task.sync_status !== "pendingdeletion"
+          (task) => task.sync_status !== "pendingdeletion",
         );
       } catch (e) {
         console.error(e);
@@ -495,7 +495,7 @@ export default {
       try {
         const result = await runTask(
           task.id,
-          task.policy ? { agent_id: selectedAgent.value } : {}
+          task.policy ? { agent_id: selectedAgent.value } : {},
         );
         notifySuccess(result);
       } catch (e) {
@@ -508,7 +508,9 @@ export default {
       $q.dialog({
         component: AutomatedTaskForm,
         componentProps: {
-          parent: { agent: selectedAgent.value },
+          type: "agent",
+          parent: selectedAgent.value,
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();
@@ -522,7 +524,9 @@ export default {
         component: AutomatedTaskForm,
         componentProps: {
           task: task,
-          parent: { agent: selectedAgent.value },
+          type: "agent",
+          parent: selectedAgent.value,
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();

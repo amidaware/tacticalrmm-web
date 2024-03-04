@@ -159,19 +159,46 @@
             <q-card-section>
               <q-option-group
                 v-model="template.action_type"
+                class="q-pb-sm"
                 :options="actionTypeOptions"
-                label="Action Type"
                 dense
+                inline
               />
 
               <tactical-dropdown
+                v-if="template.action_type == 'script'"
                 class="q-mb-sm"
                 label="Failure action"
                 outlined
                 clearable
-                v-model="template.action"
+                v-model="failureScriptDropdown.script"
                 :options="failureScriptDropdown.scriptOptions"
                 mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else-if="template.action_type == 'server'"
+                class="q-mb-sm"
+                label="Failure action"
+                outlined
+                clearable
+                v-model="failureScriptDropdown.script"
+                :options="failureScriptDropdown.serverScriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else
+                class="q-mb-sm"
+                label="Failure action"
+                outlined
+                clearable
+                v-model="template.action_rest"
+                :options="restActionOptions"
+                mapOptions
+                filterable
               />
 
               <q-select
@@ -180,7 +207,7 @@
                 dense
                 label="Failure action arguments (press Enter after typing each argument)"
                 filled
-                v-model="template.action_args"
+                v-model="failureScriptDropdown.defaultArgs"
                 use-input
                 use-chips
                 multiple
@@ -195,7 +222,7 @@
                 dense
                 label="Failure action environment vars (press Enter after typing each key=value pair)"
                 filled
-                v-model="template.action_env_vars"
+                v-model="failureScriptDropdown.defaultEnvVars"
                 use-input
                 use-chips
                 multiple
@@ -210,7 +237,7 @@
                 label="Failure action timeout (seconds)"
                 outlined
                 type="number"
-                v-model.number="template.action_timeout"
+                v-model.number="failureScriptDropdown.defaultTimeout"
                 dense
                 :rules="[
                   (val) => !!val || 'Failure action timeout is required',
@@ -232,20 +259,47 @@
 
             <q-card-section>
               <q-option-group
-                v-model="template.action_type"
+                v-model="template.resolved_action_type"
+                class="q-pb-sm"
                 :options="actionTypeOptions"
-                label="Action Type"
                 dense
+                inline
               />
 
               <tactical-dropdown
+                v-if="template.resolved_action_type === 'script'"
                 class="q-mb-sm"
                 label="Resolved Action"
                 outlined
                 clearable
-                v-model="template.resolved_action"
+                v-model="resolvedScriptDropdown.script"
                 :options="resolvedScriptDropdown.scriptOptions"
                 mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else-if="template.resolved_action_type === 'server'"
+                class="q-mb-sm"
+                label="Resolved Action"
+                outlined
+                clearable
+                v-model="resolvedScriptDropdown.script"
+                :options="resolvedScriptDropdown.serverScriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else
+                class="q-mb-sm"
+                label="Resolved Action"
+                outlined
+                clearable
+                v-model="template.resolved_action_rest"
+                :options="restActionOptions"
+                mapOptions
+                filterable
               />
 
               <q-select
@@ -254,7 +308,7 @@
                 dense
                 label="Resolved action arguments (press Enter after typing each argument)"
                 filled
-                v-model="template.resolved_action_args"
+                v-model="resolvedScriptDropdown.defaultArgs"
                 use-input
                 use-chips
                 multiple
@@ -269,7 +323,7 @@
                 dense
                 label="Resolved action environment vars (press Enter after typing each key=value pair)"
                 filled
-                v-model="template.resolved_action_env_vars"
+                v-model="resolvedScriptDropdown.defaultEnvVars"
                 use-input
                 use-chips
                 multiple
@@ -284,7 +338,7 @@
                 label="Resolved action timeout (seconds)"
                 outlined
                 type="number"
-                v-model.number="template.resolved_action_timeout"
+                v-model.number="resolvedScriptDropdown.defaultTimeout"
                 dense
                 :rules="[
                   (val) => !!val || 'Resolved action timeout is required',
@@ -662,13 +716,13 @@
               v-if="step > 1"
               flat
               color="primary"
-              @click="$refs.stepper.previous()"
+              @click="stepper?.previous()"
               label="Back"
               class="q-mr-xs"
             />
             <q-btn
               v-if="step < 5"
-              @click="$refs.stepper.next()"
+              @click="stepper?.next()"
               color="primary"
               label="Next"
             />
@@ -688,8 +742,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from "vue";
-import { useQuasar, useDialogPluginComponent } from "quasar";
-import { useScriptDropdown } from "@/composables/scripts.ts";
+import { useQuasar, useDialogPluginComponent, type QStepper } from "quasar";
+import { useScriptDropdown } from "@/composables/scripts";
+import { useURLActionDropdown } from "@/composables/core";
 import { notifyError, notifySuccess } from "@/utils/notify";
 import { addAlertTemplate, saveAlertTemplate } from "@/api/alerts";
 import { isValidEmail } from "@/utils/validation";
@@ -714,8 +769,19 @@ const $q = useQuasar();
 
 const step = ref(1);
 
-const failureScriptDropdown = useScriptDropdown({ onMount: true });
-const resolvedScriptDropdown = useScriptDropdown({ onMount: true });
+// setup script dropdowns
+const failureScriptDropdown = reactive(
+  useScriptDropdown({ script: props.alertTemplate?.action, onMount: true }),
+);
+const resolvedScriptDropdown = reactive(
+  useScriptDropdown({
+    script: props.alertTemplate?.resolved_action,
+    onMount: true,
+  }),
+);
+
+// setup custom field dropdown
+const { restActionOptions } = useURLActionDropdown({ onMount: true });
 
 // alert template form logic
 const template: AlertTemplate = props.alertTemplate
@@ -725,15 +791,17 @@ const template: AlertTemplate = props.alertTemplate
       name: "",
       is_active: true,
       action_type: "script",
-      action: failureScriptDropdown.script.value,
-      action_args: failureScriptDropdown.defaultArgs.value,
-      action_env_vars: failureScriptDropdown.defaultEnvVars.value,
-      action_timeout: failureScriptDropdown.defaultTimeout.value,
+      action: failureScriptDropdown.script,
+      action_rest: undefined,
+      action_args: failureScriptDropdown.defaultArgs,
+      action_env_vars: failureScriptDropdown.defaultEnvVars,
+      action_timeout: failureScriptDropdown.defaultTimeout,
       resolved_action_type: "script",
-      resolved_action: resolvedScriptDropdown.script.value,
-      resolved_action_args: resolvedScriptDropdown.defaultArgs.value,
-      resolved_action_env_vars: resolvedScriptDropdown.defaultEnvVars.value,
-      resolved_action_timeout: resolvedScriptDropdown.defaultTimeout.value,
+      resolved_action: resolvedScriptDropdown.script,
+      resolved_action_rest: undefined,
+      resolved_action_args: resolvedScriptDropdown.defaultArgs,
+      resolved_action_env_vars: resolvedScriptDropdown.defaultEnvVars,
+      resolved_action_timeout: resolvedScriptDropdown.defaultTimeout,
       email_recipients: [] as string[],
       email_from: "",
       text_recipients: [] as string[],
@@ -766,6 +834,31 @@ const template: AlertTemplate = props.alertTemplate
       task_script_actions: true,
     });
 
+// reset selected script if action type is changed
+watch(
+  () => template.action_type,
+  () => {
+    failureScriptDropdown.reset();
+    template.action_rest = undefined;
+    template.action = undefined;
+    template.action_args = [];
+    template.action_env_vars = [];
+    template.action_timeout = 30;
+  },
+);
+
+watch(
+  () => template.resolved_action_type,
+  () => {
+    resolvedScriptDropdown.reset();
+    template.resolved_action_rest = undefined;
+    template.resolved_action = undefined;
+    template.resolved_action_args = [];
+    template.resolved_action_env_vars = [];
+    template.resolved_action_timeout = 30;
+  },
+);
+
 const severityOptions = [
   { label: "Error", value: "error" },
   { label: "Warning", value: "warning" },
@@ -778,6 +871,7 @@ const actionTypeOptions = [
   { label: "Rest Action", value: "rest" },
 ];
 
+const stepper = ref<QStepper | null>(null);
 function toggleAddEmail() {
   $q.dialog({
     title: "Add email",
@@ -831,6 +925,17 @@ async function onSubmit() {
 
   loading.value = true;
 
+  // add properties from script dropdown composable before submitting
+  template.action = failureScriptDropdown.script;
+  template.action_args = failureScriptDropdown.defaultArgs;
+  template.action_env_vars = failureScriptDropdown.defaultEnvVars;
+  template.action_timeout = failureScriptDropdown.defaultTimeout;
+  template.resolved_action = resolvedScriptDropdown.script;
+  template.resolved_action_args = resolvedScriptDropdown.defaultArgs;
+  template.resolved_action_env_vars = resolvedScriptDropdown.defaultEnvVars;
+  template.resolved_action_timeout = resolvedScriptDropdown.defaultTimeout;
+
+  console.log(template);
   if (props.alertTemplate) {
     try {
       await saveAlertTemplate(template.id, template);

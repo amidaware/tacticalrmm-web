@@ -6,4 +6,5 @@ export interface Agent {
   hostname: string;
   client: string;
   site: string;
+  plat: AgentPlatformType;
 }

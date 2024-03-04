@@ -8,6 +8,7 @@ import type { Client } from "@/types/clients";
 import type { User } from "@/types/accounts";
 import type { Check } from "@/types/checks";
 import { CustomField, CustomFieldValue } from "@/types/core/customfields";
+import { URLAction } from "@/types/core/urlactions";
 // dropdown options formatting
 export interface SelectOptionCategory {
   category: string;
@@ -15,8 +16,10 @@ export interface SelectOptionCategory {
 
 export interface OptionWithoutCategory {
   label: string;
-  value: unknown;
-  [x: string]: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
 }
 
 export type Option = OptionWithoutCategory | SelectOptionCategory;
@@ -40,10 +43,12 @@ export interface FormatOptionsParams {
   value?: string;
   flat?: boolean;
   allowDuplicates?: boolean;
-  appendToOptionObject?: object;
+  appendToOptionObject?: { [x: string]: never };
+  copyPropertiesList?: string[];
 }
 
-function _formatOptions<T>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function _formatOptions<T extends { [key: string]: any }>(
   data: T[],
   {
     label,
@@ -51,15 +56,25 @@ function _formatOptions<T>(
     flat = false,
     allowDuplicates = true,
     appendToOptionObject = {},
+    copyPropertiesList = [],
   }: FormatOptionsParams,
-) {
+): Option[] | string[] {
   if (!flat)
     // returns array of options in object format [{label: label, value: 1}]
-    return data.map((i) => ({
-      label: i[label],
-      value: i[value],
-      ...appendToOptionObject, // will add properties to the options object
-    }));
+    return data.map((i) => {
+      const option = {
+        label: i[label],
+        value: i[value],
+        ...appendToOptionObject, // will add properties to the options object
+      } as Option;
+
+      copyPropertiesList.forEach((prop) => {
+        if (Object.hasOwn(i, prop)) {
+          option[prop] = i[prop];
+        }
+      });
+      return option;
+    });
   // returns options as an array of strings ["label", "label1"]
   else if (!allowDuplicates) return data.map((i) => i[label]);
   else {
@@ -228,6 +243,14 @@ export function formatCheckOptions(data: Check[], flat = false) {
   return _formatOptions(data, { label: "readable_desc", flat: flat });
 }
 
+export function formatURLActionOptions(data: URLAction[], flat = false) {
+  return _formatOptions(data, {
+    label: "name",
+    flat: flat,
+    copyPropertiesList: ["action_type"],
+  });
+}
+
 export function formatCustomFields(
   fields: CustomField[],
   values: CustomFieldValue[],
@@ -369,7 +392,7 @@ export function convertMemoryToPercent(percent: number, memory: number) {
 export function convertPeriodToSeconds(period: string) {
   if (!validateTimePeriod(period)) {
     console.error("Time Period is invalid");
-    return NaN;
+    return 0;
   }
 
   if (period.toUpperCase().includes("S"))
@@ -384,6 +407,8 @@ export function convertPeriodToSeconds(period: string) {
   else if (period.toUpperCase().includes("D"))
     // remove last letter from string and multiply by 24 and 60 twice to get seconds
     return parseInt(period.slice(0, -1)) * 24 * 60 * 60;
+
+  return 0;
 }
 
 // takes an integer and converts it to an array in binary format. i.e: 13 -> [8, 4, 1]
@@ -422,4 +447,18 @@ export function convertCamelCase(str: string) {
       return index == 0 ? word.toLowerCase() : word.toUpperCase();
     })
     .replace(/\s+/g, "");
+}
+
+export function copyObjectWithoutKeys(
+  objToCopy: object,
+  keysToExclude: string[],
+): object {
+  const copied = Object.entries(objToCopy).reduce((obj, [key, value]) => {
+    if (!keysToExclude.includes(key)) {
+      obj[key] = value;
+    }
+    return obj;
+  }, {});
+
+  return copied;
 }
