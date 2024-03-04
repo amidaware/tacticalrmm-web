@@ -1,10 +1,31 @@
 import { date } from "quasar";
 import { validateTimePeriod } from "@/utils/validation";
 import trmmLogo from "@/assets/trmm_256.png";
-// dropdown options formatting
 
-export function removeExtraOptionCategories(array) {
-  let tmp = [];
+import type { Script } from "@/types/scripts";
+import type { Agent } from "@/types/agents";
+import type { Client } from "@/types/clients";
+import type { User } from "@/types/accounts";
+import type { Check } from "@/types/checks";
+import { CustomField, CustomFieldValue } from "@/types/core/customfields";
+import { URLAction } from "@/types/core/urlactions";
+// dropdown options formatting
+export interface SelectOptionCategory {
+  category: string;
+}
+
+export interface OptionWithoutCategory {
+  label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+}
+
+export type Option = OptionWithoutCategory | SelectOptionCategory;
+
+export function removeExtraOptionCategories(array: Option[]) {
+  const tmp = [];
   // loop through options and if two categories are next to each other remove the top one
   for (let i = 0; i < array.length; i++) {
     if (i === array.length - 1) {
@@ -17,27 +38,47 @@ export function removeExtraOptionCategories(array) {
   return tmp;
 }
 
-function _formatOptions(
-  data,
+export interface FormatOptionsParams {
+  label: string;
+  value?: string;
+  flat?: boolean;
+  allowDuplicates?: boolean;
+  appendToOptionObject?: { [x: string]: never };
+  copyPropertiesList?: string[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function _formatOptions<T extends { [key: string]: any }>(
+  data: T[],
   {
     label,
     value = "id",
     flat = false,
     allowDuplicates = true,
     appendToOptionObject = {},
-  },
-) {
+    copyPropertiesList = [],
+  }: FormatOptionsParams,
+): Option[] | string[] {
   if (!flat)
     // returns array of options in object format [{label: label, value: 1}]
-    return data.map((i) => ({
-      label: i[label],
-      value: i[value],
-      ...appendToOptionObject,
-    }));
+    return data.map((i) => {
+      const option = {
+        label: i[label],
+        value: i[value],
+        ...appendToOptionObject, // will add properties to the options object
+      } as Option;
+
+      copyPropertiesList.forEach((prop) => {
+        if (Object.hasOwn(i, prop)) {
+          option[prop] = i[prop];
+        }
+      });
+      return option;
+    });
   // returns options as an array of strings ["label", "label1"]
   else if (!allowDuplicates) return data.map((i) => i[label]);
   else {
-    const options = [];
+    const options = [] as Option[];
     data.forEach((i) => {
       if (!options.includes(i[label])) options.push(i[label]);
     });
@@ -45,9 +86,9 @@ function _formatOptions(
   }
 }
 
-export function formatScriptOptions(data) {
-  let options = [];
-  let categories = [];
+export function formatScriptOptions(data: Script[]) {
+  const options = [] as Option[];
+  const categories = [] as string[];
   let create_unassigned = false;
   data.forEach((script) => {
     if (!!script.category && !categories.includes(script.category)) {
@@ -61,14 +102,14 @@ export function formatScriptOptions(data) {
 
   categories.sort().forEach((cat) => {
     options.push({ category: cat });
-    let tmp = [];
+    const tmp = [] as Option[];
     data.forEach((script) => {
       if (script.category === cat) {
         tmp.push({
           img_right: script.script_type === "builtin" ? trmmLogo : undefined,
           label: script.name,
           value: script.id,
-          timeout: script.default_timeout,
+          default_timeout: script.default_timeout,
           args: script.args,
           env_vars: script.env_vars,
           filename: script.filename,
@@ -81,7 +122,7 @@ export function formatScriptOptions(data) {
         tmp.push({
           label: script.name,
           value: script.id,
-          timeout: script.default_timeout,
+          default_timeout: script.default_timeout,
           args: script.args,
           env_vars: script.env_vars,
           filename: script.filename,
@@ -100,7 +141,7 @@ export function formatScriptOptions(data) {
 }
 
 export function formatAgentOptions(
-  data,
+  data: Agent[],
   flat = false,
   value_field = "agent_id",
 ) {
@@ -114,14 +155,14 @@ export function formatAgentOptions(
     });
   } else {
     // returns options with categories in object format
-    let options = [];
+    const options = [] as Option[];
     const agents = data.map((agent) => ({
       label: agent.hostname,
       value: agent[value_field],
       cat: `${agent.client} > ${agent.site}`,
     }));
 
-    let categories = [];
+    const categories = [] as string[];
     agents.forEach((option) => {
       if (!categories.includes(option.cat)) {
         categories.push(option.cat);
@@ -130,7 +171,7 @@ export function formatAgentOptions(
 
     categories.sort().forEach((cat) => {
       options.push({ category: cat });
-      let tmp = [];
+      const tmp = [] as Option[];
       agents.forEach((agent) => {
         if (agent.cat === cat) {
           tmp.push(agent);
@@ -145,16 +186,16 @@ export function formatAgentOptions(
   }
 }
 
-export function formatCustomFieldOptions(data, flat = false) {
+export function formatCustomFieldOptions(data: CustomField[], flat = false) {
   if (flat) {
     return _formatOptions(data, { label: "name", flat: true });
   } else {
     const categories = ["Client", "Site", "Agent"];
-    const options = [];
+    const options = [] as Option[];
 
     categories.forEach((cat) => {
       options.push({ category: cat });
-      const tmp = [];
+      const tmp = [] as Option[];
       data.forEach((custom_field) => {
         if (custom_field.model === cat.toLowerCase()) {
           tmp.push({
@@ -173,12 +214,12 @@ export function formatCustomFieldOptions(data, flat = false) {
   }
 }
 
-export function formatClientOptions(data, flat = false) {
+export function formatClientOptions(data: Client[], flat = false) {
   return _formatOptions(data, { label: "name", flat: flat });
 }
 
-export function formatSiteOptions(data, flat = false) {
-  const options = [];
+export function formatSiteOptions(data: Client[], flat = false) {
+  const options = [] as Option[];
 
   data.forEach((client) => {
     options.push({ category: client.name });
@@ -194,18 +235,29 @@ export function formatSiteOptions(data, flat = false) {
   return options;
 }
 
-export function formatUserOptions(data, flat = false) {
+export function formatUserOptions(data: User[], flat = false) {
   return _formatOptions(data, { label: "username", flat: flat });
 }
 
-export function formatCheckOptions(data, flat = false) {
+export function formatCheckOptions(data: Check[], flat = false) {
   return _formatOptions(data, { label: "readable_desc", flat: flat });
 }
 
-export function formatCustomFields(fields, values) {
-  let tempArray = [];
+export function formatURLActionOptions(data: URLAction[], flat = false) {
+  return _formatOptions(data, {
+    label: "name",
+    flat: flat,
+    copyPropertiesList: ["action_type"],
+  });
+}
 
-  for (let field of fields) {
+export function formatCustomFields(
+  fields: CustomField[],
+  values: CustomFieldValue[],
+) {
+  const tempArray = [];
+
+  for (const field of fields) {
     if (field.type === "multiple") {
       tempArray.push({ multiple_value: values[field.name], field: field.id });
     } else if (field.type === "checkbox") {
@@ -217,7 +269,7 @@ export function formatCustomFields(fields, values) {
   return tempArray;
 }
 
-export function formatScriptSyntax(syntax) {
+export function formatScriptSyntax(syntax: string) {
   let temp = syntax;
   temp = temp.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
   temp = temp
@@ -238,18 +290,18 @@ export function formatScriptSyntax(syntax) {
 
 // date formatting
 
-export function getTimeLapse(unixtime) {
+export function getTimeLapse(unixtime: number) {
   if (date.inferDateFormat(unixtime) === "string") {
-    unixtime = date.formatDate(unixtime, "X");
+    unixtime = parseInt(date.formatDate(unixtime, "X"));
   }
-  var previous = unixtime * 1000;
-  var current = new Date();
-  var msPerMinute = 60 * 1000;
-  var msPerHour = msPerMinute * 60;
-  var msPerDay = msPerHour * 24;
-  var msPerMonth = msPerDay * 30;
-  var msPerYear = msPerDay * 365;
-  var elapsed = current - previous;
+  const previous = unixtime * 1000;
+  const current = Date.now();
+  const msPerMinute = 60 * 1000;
+  const msPerHour = msPerMinute * 60;
+  const msPerDay = msPerHour * 24;
+  const msPerMonth = msPerDay * 30;
+  const msPerYear = msPerDay * 365;
+  const elapsed = current - previous;
   if (elapsed < msPerMinute) {
     return Math.round(elapsed / 1000) + " seconds ago";
   } else if (elapsed < msPerHour) {
@@ -265,7 +317,10 @@ export function getTimeLapse(unixtime) {
   }
 }
 
-export function formatDate(dateString, format = "MMM-DD-YYYY HH:mm") {
+export function formatDate(
+  dateString: string | number | Date,
+  format = "MMM-DD-YYYY HH:mm",
+) {
   if (!dateString) return "";
   return date.formatDate(dateString, format);
 }
@@ -285,7 +340,10 @@ export function getNextAgentUpdateTime() {
 }
 
 // converts a date with timezone to local for html native datetime fields -> YYYY-MM-DD HH:mm:ss
-export function formatDateInputField(isoDateString, noTimezone = false) {
+export function formatDateInputField(
+  isoDateString: string | number,
+  noTimezone = false,
+) {
   if (noTimezone) {
     isoDateString = isoDateString.replace("Z", "");
   }
@@ -293,16 +351,16 @@ export function formatDateInputField(isoDateString, noTimezone = false) {
 }
 
 // converts a local date string "YYYY-MM-DDTHH:mm:ss" to an iso date string with the local timezone
-export function formatDateStringwithTimezone(localDateString) {
+export function formatDateStringwithTimezone(localDateString: string) {
   return date.formatDate(localDateString, "YYYY-MM-DDTHH:mm:ssZ");
 }
 // string formatting
 
-export function capitalize(string) {
+export function capitalize(string: string) {
   return string[0].toUpperCase() + string.substring(1);
 }
 
-export function formatTableColumnText(text) {
+export function formatTableColumnText(text: string) {
   let string = "";
   // split at underscore if exists
   const words = text.split("_");
@@ -311,13 +369,13 @@ export function formatTableColumnText(text) {
   return string.trim();
 }
 
-export function truncateText(txt, chars) {
+export function truncateText(txt: string, chars: number) {
   if (!txt) return;
 
   return txt.length >= chars ? txt.substring(0, chars) + "..." : txt;
 }
 
-export function bytes2Human(bytes) {
+export function bytes2Human(bytes: number) {
   if (bytes == 0) return "0B";
   const k = 1024;
   const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -325,16 +383,16 @@ export function bytes2Human(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
-export function convertMemoryToPercent(percent, memory) {
+export function convertMemoryToPercent(percent: number, memory: number) {
   const mb = memory * 1024;
   return Math.ceil((percent * mb) / 100).toLocaleString();
 }
 
 // convert time period(str) to seconds(int) (3h -> 10800) used for comparing time intervals
-export function convertPeriodToSeconds(period) {
+export function convertPeriodToSeconds(period: string) {
   if (!validateTimePeriod(period)) {
     console.error("Time Period is invalid");
-    return NaN;
+    return 0;
   }
 
   if (period.toUpperCase().includes("S"))
@@ -349,13 +407,15 @@ export function convertPeriodToSeconds(period) {
   else if (period.toUpperCase().includes("D"))
     // remove last letter from string and multiply by 24 and 60 twice to get seconds
     return parseInt(period.slice(0, -1)) * 24 * 60 * 60;
+
+  return 0;
 }
 
 // takes an integer and converts it to an array in binary format. i.e: 13 -> [8, 4, 1]
 // Needed to work with multi-select fields in tasks form
-export function convertToBitArray(number) {
-  let bitArray = [];
-  let binary = number.toString(2);
+export function convertToBitArray(number: number) {
+  const bitArray = [];
+  const binary = number.toString(2);
   for (let i = 0; i < binary.length; ++i) {
     if (binary[i] !== "0") {
       // last binary digit
@@ -372,7 +432,7 @@ export function convertToBitArray(number) {
 }
 
 // takes an array of integers and adds them together
-export function convertFromBitArray(array) {
+export function convertFromBitArray(array: number[]) {
   let result = 0;
   for (let i = 0; i < array.length; i++) {
     result += array[i];
@@ -380,11 +440,25 @@ export function convertFromBitArray(array) {
   return result;
 }
 
-export function convertCamelCase(str) {
+export function convertCamelCase(str: string) {
   return str
     .replace(/[^a-zA-Z0-9]+/g, " ")
     .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
       return index == 0 ? word.toLowerCase() : word.toUpperCase();
     })
     .replace(/\s+/g, "");
+}
+
+export function copyObjectWithoutKeys(
+  objToCopy: object,
+  keysToExclude: string[],
+): object {
+  const copied = Object.entries(objToCopy).reduce((obj, [key, value]) => {
+    if (!keysToExclude.includes(key)) {
+      obj[key] = value;
+    }
+    return obj;
+  }, {});
+
+  return copied;
 }

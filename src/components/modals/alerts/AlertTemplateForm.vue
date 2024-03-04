@@ -1,8 +1,8 @@
 <template>
-  <q-dialog ref="dialog" @hide="onHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 90vw; max-width: 90vw">
       <q-bar>
-        {{ title }}
+        {{ alertTemplate ? "Edit Alert Template" : "Add Alert Template" }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -157,45 +157,57 @@
             </div>
 
             <q-card-section>
-              <q-select
+              <q-option-group
+                v-model="template.action_type"
+                class="q-pb-sm"
+                :options="actionTypeOptions"
+                dense
+                inline
+              />
+
+              <tactical-dropdown
+                v-if="template.action_type == 'script'"
                 class="q-mb-sm"
                 label="Failure action"
-                dense
-                options-dense
                 outlined
                 clearable
-                v-model="template.action"
-                :options="scriptOptions"
-                map-options
-                emit-value
-                @update:model-value="setScriptDefaults('failure')"
-              >
-                <template v-slot:option="scope">
-                  <q-item
-                    v-if="!scope.opt.category"
-                    v-bind="scope.itemProps"
-                    class="q-pl-lg"
-                  >
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.label"></q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item-label
-                    v-if="scope.opt.category"
-                    v-bind="scope.itemProps"
-                    header
-                    class="q-pa-sm"
-                    >{{ scope.opt.category }}</q-item-label
-                  >
-                </template>
-              </q-select>
+                v-model="failureScriptDropdown.script"
+                :options="failureScriptDropdown.scriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else-if="template.action_type == 'server'"
+                class="q-mb-sm"
+                label="Failure action"
+                outlined
+                clearable
+                v-model="failureScriptDropdown.script"
+                :options="failureScriptDropdown.serverScriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else
+                class="q-mb-sm"
+                label="Failure action"
+                outlined
+                clearable
+                v-model="template.action_rest"
+                :options="restActionOptions"
+                mapOptions
+                filterable
+              />
 
               <q-select
+                v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
                 label="Failure action arguments (press Enter after typing each argument)"
                 filled
-                v-model="template.action_args"
+                v-model="failureScriptDropdown.defaultArgs"
                 use-input
                 use-chips
                 multiple
@@ -205,11 +217,12 @@
               />
 
               <q-select
+                v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
                 label="Failure action environment vars (press Enter after typing each key=value pair)"
                 filled
-                v-model="template.action_env_vars"
+                v-model="failureScriptDropdown.defaultEnvVars"
                 use-input
                 use-chips
                 multiple
@@ -219,11 +232,12 @@
               />
 
               <q-input
+                v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 label="Failure action timeout (seconds)"
                 outlined
                 type="number"
-                v-model.number="template.action_timeout"
+                v-model.number="failureScriptDropdown.defaultTimeout"
                 dense
                 :rules="[
                   (val) => !!val || 'Failure action timeout is required',
@@ -244,45 +258,57 @@
             </div>
 
             <q-card-section>
-              <q-select
+              <q-option-group
+                v-model="template.resolved_action_type"
+                class="q-pb-sm"
+                :options="actionTypeOptions"
+                dense
+                inline
+              />
+
+              <tactical-dropdown
+                v-if="template.resolved_action_type === 'script'"
                 class="q-mb-sm"
                 label="Resolved Action"
-                dense
-                options-dense
                 outlined
                 clearable
-                v-model="template.resolved_action"
-                :options="scriptOptions"
-                map-options
-                emit-value
-                @update:model-value="setScriptDefaults('resolved')"
-              >
-                <template v-slot:option="scope">
-                  <q-item
-                    v-if="!scope.opt.category"
-                    v-bind="scope.itemProps"
-                    class="q-pl-lg"
-                  >
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.label"></q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item-label
-                    v-if="scope.opt.category"
-                    v-bind="scope.itemProps"
-                    header
-                    class="q-pa-sm"
-                    >{{ scope.opt.category }}</q-item-label
-                  >
-                </template>
-              </q-select>
+                v-model="resolvedScriptDropdown.script"
+                :options="resolvedScriptDropdown.scriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else-if="template.resolved_action_type === 'server'"
+                class="q-mb-sm"
+                label="Resolved Action"
+                outlined
+                clearable
+                v-model="resolvedScriptDropdown.script"
+                :options="resolvedScriptDropdown.serverScriptOptions"
+                mapOptions
+                filterable
+              />
+
+              <tactical-dropdown
+                v-else
+                class="q-mb-sm"
+                label="Resolved Action"
+                outlined
+                clearable
+                v-model="template.resolved_action_rest"
+                :options="restActionOptions"
+                mapOptions
+                filterable
+              />
 
               <q-select
+                v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
                 label="Resolved action arguments (press Enter after typing each argument)"
                 filled
-                v-model="template.resolved_action_args"
+                v-model="resolvedScriptDropdown.defaultArgs"
                 use-input
                 use-chips
                 multiple
@@ -292,11 +318,12 @@
               />
 
               <q-select
+                v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
                 label="Resolved action environment vars (press Enter after typing each key=value pair)"
                 filled
-                v-model="template.resolved_action_env_vars"
+                v-model="resolvedScriptDropdown.defaultEnvVars"
                 use-input
                 use-chips
                 multiple
@@ -306,11 +333,12 @@
               />
 
               <q-input
+                v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 label="Resolved action timeout (seconds)"
                 outlined
                 type="number"
-                v-model.number="template.resolved_action_timeout"
+                v-model.number="resolvedScriptDropdown.defaultTimeout"
                 dense
                 :rules="[
                   (val) => !!val || 'Resolved action timeout is required',
@@ -688,18 +716,23 @@
               v-if="step > 1"
               flat
               color="primary"
-              @click="$refs.stepper.previous()"
+              @click="stepper?.previous()"
               label="Back"
               class="q-mr-xs"
             />
             <q-btn
               v-if="step < 5"
-              @click="$refs.stepper.next()"
+              @click="stepper?.next()"
               color="primary"
               label="Next"
             />
             <q-space />
-            <q-btn @click="onSubmit" color="primary" label="Submit" />
+            <q-btn
+              @click="onSubmit"
+              color="primary"
+              label="Submit"
+              :loading="loading"
+            />
           </q-stepper-navigation>
         </template>
       </q-stepper>
@@ -707,195 +740,220 @@
   </q-dialog>
 </template>
 
-<script>
-import mixins from "@/mixins/mixins";
-import { mapGetters } from "vuex";
+<script setup lang="ts">
+import { ref, reactive, watch } from "vue";
+import { useQuasar, useDialogPluginComponent, type QStepper } from "quasar";
+import { useScriptDropdown } from "@/composables/scripts";
+import { useURLActionDropdown } from "@/composables/core";
+import { notifyError, notifySuccess } from "@/utils/notify";
+import { addAlertTemplate, saveAlertTemplate } from "@/api/alerts";
+import { isValidEmail } from "@/utils/validation";
 
-export default {
-  name: "AlertTemplateForm",
-  emits: ["hide", "ok", "cancel"],
-  mixins: [mixins],
-  props: { alertTemplate: Object },
-  data() {
-    return {
-      step: 1,
-      template: {
-        name: "",
-        is_active: true,
-        action: null,
-        action_args: [],
-        action_env_vars: [],
-        action_timeout: 15,
-        resolved_action: null,
-        resolved_action_args: [],
-        resolved_action_env_vars: [],
-        resolved_action_timeout: 15,
-        email_recipients: [],
-        email_from: "",
-        text_recipients: [],
-        agent_email_on_resolved: false,
-        agent_text_on_resolved: false,
-        agent_always_email: null,
-        agent_always_text: null,
-        agent_always_alert: null,
-        agent_periodic_alert_days: 0,
-        agent_script_actions: true,
-        check_email_alert_severity: [],
-        check_text_alert_severity: [],
-        check_dashboard_alert_severity: [],
-        check_email_on_resolved: false,
-        check_text_on_resolved: false,
-        check_always_email: null,
-        check_always_text: null,
-        check_always_alert: null,
-        check_periodic_alert_days: 0,
-        check_script_actions: true,
-        task_email_alert_severity: [],
-        task_text_alert_severity: [],
-        task_dashboard_alert_severity: [],
-        task_email_on_resolved: false,
-        task_text_on_resolved: false,
-        task_always_email: null,
-        task_always_text: null,
-        task_always_alert: null,
-        task_periodic_alert_days: 0,
-        task_script_actions: true,
-      },
-      scriptOptions: [],
-      severityOptions: [
-        { label: "Error", value: "error" },
-        { label: "Warning", value: "warning" },
-        { label: "Informational", value: "info" },
-      ],
-      thumbStyle: {
-        right: "2px",
-        borderRadius: "5px",
-        backgroundColor: "#027be3",
-        width: "5px",
-        opacity: 0.75,
-      },
-    };
-  },
-  computed: {
-    ...mapGetters(["showCommunityScripts"]),
-    title() {
-      return this.editing ? "Edit Alert Template" : "Add Alert Template";
-    },
-    editing() {
-      return !!this.alertTemplate;
-    },
-  },
-  methods: {
-    setScriptDefaults(type) {
-      if (type === "failure") {
-        const script = this.scriptOptions.find(
-          (i) => i.value === this.template.action
-        );
-        this.template.action_args = script.args;
-        this.template.action_env_vars = script.env_vars;
-      } else if (type === "resolved") {
-        const script = this.scriptOptions.find(
-          (i) => i.value === this.template.resolved_action
-        );
-        this.template.resolved_action_args = script.args;
-        this.template.resolved_action_env_vars = script.env_vars;
-      }
-    },
-    toggleAddEmail() {
-      this.$q
-        .dialog({
-          title: "Add email",
-          prompt: {
-            model: "",
-            isValid: (val) => this.isValidEmail(val),
-            type: "email",
-          },
-          cancel: true,
-          ok: { label: "Add", color: "primary" },
-          persistent: false,
-        })
-        .onOk((data) => {
-          this.template.email_recipients.push(data);
-        });
-    },
-    toggleAddSMSNumber() {
-      this.$q
-        .dialog({
-          title: "Add number",
-          message:
-            "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
-          prompt: {
-            model: "",
-          },
-          html: true,
-          cancel: true,
-          ok: { label: "Add", color: "primary" },
-          persistent: false,
-        })
-        .onOk((data) => {
-          this.template.text_recipients.push(data);
-        });
-    },
-    removeEmail(email) {
-      const removed = this.template.email_recipients.filter((k) => k !== email);
-      this.template.email_recipients = removed;
-    },
-    removeSMSNumber(num) {
-      const removed = this.template.text_recipients.filter((k) => k !== num);
-      this.template.text_recipients = removed;
-    },
-    onSubmit() {
-      if (!this.template.name) {
-        this.notifyError("Name needs to be set");
-        return;
-      }
+// components
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
-      this.$q.loading.show();
+// types
+import type { AlertTemplate, AlertSeverity } from "@/types/alerts";
 
-      if (this.editing) {
-        this.$axios
-          .put(`alerts/templates/${this.template.id}/`, this.template)
-          .then(() => {
-            this.$q.loading.hide();
-            this.onOk();
-            this.notifySuccess("Alert Template edited!");
-          })
-          .catch(() => {
-            this.$q.loading.hide();
-          });
-      } else {
-        this.$axios
-          .post("alerts/templates/", this.template)
-          .then(() => {
-            this.$q.loading.hide();
-            this.onOk();
-            this.notifySuccess("Alert Template was added!");
-          })
-          .catch(() => {
-            this.$q.loading.hide();
-          });
-      }
-    },
-    show() {
-      this.$refs.dialog.show();
-    },
-    hide() {
-      this.$refs.dialog.hide();
-    },
-    onHide() {
-      this.$emit("hide");
-    },
-    onOk() {
-      this.$emit("ok");
-      this.hide();
-    },
+// props
+const props = defineProps<{
+  alertTemplate?: AlertTemplate;
+}>();
+
+// emits
+defineEmits([...useDialogPluginComponent.emits]);
+
+// setup quasar plugins
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const $q = useQuasar();
+
+const step = ref(1);
+
+// setup script dropdowns
+const failureScriptDropdown = reactive(
+  useScriptDropdown({ script: props.alertTemplate?.action, onMount: true }),
+);
+const resolvedScriptDropdown = reactive(
+  useScriptDropdown({
+    script: props.alertTemplate?.resolved_action,
+    onMount: true,
+  }),
+);
+
+// setup custom field dropdown
+const { restActionOptions } = useURLActionDropdown({ onMount: true });
+
+// alert template form logic
+const template: AlertTemplate = props.alertTemplate
+  ? reactive(Object.assign({}, { ...props.alertTemplate }))
+  : reactive({
+      id: 0,
+      name: "",
+      is_active: true,
+      action_type: "script",
+      action: failureScriptDropdown.script,
+      action_rest: undefined,
+      action_args: failureScriptDropdown.defaultArgs,
+      action_env_vars: failureScriptDropdown.defaultEnvVars,
+      action_timeout: failureScriptDropdown.defaultTimeout,
+      resolved_action_type: "script",
+      resolved_action: resolvedScriptDropdown.script,
+      resolved_action_rest: undefined,
+      resolved_action_args: resolvedScriptDropdown.defaultArgs,
+      resolved_action_env_vars: resolvedScriptDropdown.defaultEnvVars,
+      resolved_action_timeout: resolvedScriptDropdown.defaultTimeout,
+      email_recipients: [] as string[],
+      email_from: "",
+      text_recipients: [] as string[],
+      agent_email_on_resolved: false,
+      agent_text_on_resolved: false,
+      agent_always_email: null,
+      agent_always_text: null,
+      agent_always_alert: null,
+      agent_periodic_alert_days: 0,
+      agent_script_actions: true,
+      check_email_alert_severity: [] as AlertSeverity[],
+      check_text_alert_severity: [] as AlertSeverity[],
+      check_dashboard_alert_severity: [] as AlertSeverity[],
+      check_email_on_resolved: false,
+      check_text_on_resolved: false,
+      check_always_email: null,
+      check_always_text: null,
+      check_always_alert: null,
+      check_periodic_alert_days: 0,
+      check_script_actions: true,
+      task_email_alert_severity: [] as AlertSeverity[],
+      task_text_alert_severity: [] as AlertSeverity[],
+      task_dashboard_alert_severity: [] as AlertSeverity[],
+      task_email_on_resolved: false,
+      task_text_on_resolved: false,
+      task_always_email: null,
+      task_always_text: null,
+      task_always_alert: null,
+      task_periodic_alert_days: 0,
+      task_script_actions: true,
+    });
+
+// reset selected script if action type is changed
+watch(
+  () => template.action_type,
+  () => {
+    failureScriptDropdown.reset();
+    template.action_rest = undefined;
+    template.action = undefined;
+    template.action_args = [];
+    template.action_env_vars = [];
+    template.action_timeout = 30;
   },
-  mounted() {
-    this.getScriptOptions(this.showCommunityScripts).then(
-      (options) => (this.scriptOptions = Object.freeze(options))
-    );
-    // Copy alertTemplate prop locally
-    if (this.editing) Object.assign(this.template, this.alertTemplate);
+);
+
+watch(
+  () => template.resolved_action_type,
+  () => {
+    resolvedScriptDropdown.reset();
+    template.resolved_action_rest = undefined;
+    template.resolved_action = undefined;
+    template.resolved_action_args = [];
+    template.resolved_action_env_vars = [];
+    template.resolved_action_timeout = 30;
   },
-};
+);
+
+const severityOptions = [
+  { label: "Error", value: "error" },
+  { label: "Warning", value: "warning" },
+  { label: "Informational", value: "info" },
+];
+
+const actionTypeOptions = [
+  { label: "Script", value: "script" },
+  { label: "Server", value: "server" },
+  { label: "Rest Action", value: "rest" },
+];
+
+const stepper = ref<QStepper | null>(null);
+function toggleAddEmail() {
+  $q.dialog({
+    title: "Add email",
+    prompt: {
+      model: "",
+      isValid: (val) => isValidEmail(val),
+      type: "email",
+    },
+    cancel: true,
+    ok: { label: "Add", color: "primary" },
+    persistent: false,
+  }).onOk((data) => {
+    template.email_recipients.push(data);
+  });
+}
+
+function toggleAddSMSNumber() {
+  $q.dialog({
+    title: "Add number",
+    message:
+      "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+    prompt: {
+      model: "",
+    },
+    html: true,
+    cancel: true,
+    ok: { label: "Add", color: "primary" },
+    persistent: false,
+  }).onOk((data: string) => {
+    template.text_recipients.push(data);
+  });
+}
+
+function removeEmail(email: string) {
+  const removed = template.email_recipients.filter((k) => k !== email);
+  template.email_recipients = removed;
+}
+
+function removeSMSNumber(num: string) {
+  const removed = template.text_recipients.filter((k) => k !== num);
+  template.text_recipients = removed;
+}
+
+const loading = ref(false);
+
+async function onSubmit() {
+  if (!template.name) {
+    notifyError("Name needs to be set");
+    return;
+  }
+
+  loading.value = true;
+
+  // add properties from script dropdown composable before submitting
+  template.action = failureScriptDropdown.script;
+  template.action_args = failureScriptDropdown.defaultArgs;
+  template.action_env_vars = failureScriptDropdown.defaultEnvVars;
+  template.action_timeout = failureScriptDropdown.defaultTimeout;
+  template.resolved_action = resolvedScriptDropdown.script;
+  template.resolved_action_args = resolvedScriptDropdown.defaultArgs;
+  template.resolved_action_env_vars = resolvedScriptDropdown.defaultEnvVars;
+  template.resolved_action_timeout = resolvedScriptDropdown.defaultTimeout;
+
+  console.log(template);
+  if (props.alertTemplate) {
+    try {
+      await saveAlertTemplate(template.id, template);
+      notifySuccess("Alert Template edited!");
+      onDialogOK();
+    } catch {
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    try {
+      await addAlertTemplate(template);
+      notifySuccess("Alert Template edited!");
+      onDialogOK();
+    } catch {
+    } finally {
+      loading.value = false;
+    }
+  }
+}
 </script>
