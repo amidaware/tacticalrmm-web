@@ -182,7 +182,7 @@
       </q-item-section>
       <q-item-section>Shutdown</q-item-section>
     </q-item>
-    
+
     <q-item clickable v-close-popup @click="showPolicyAdd(agent)">
       <q-item-section side>
         <q-icon size="xs" name="policy" />
@@ -199,9 +199,9 @@
       "
     >
       <q-item-section side>
-        <q-icon size="xs" name="integration_instructions" />
+        <q-icon size="xs" name="analytics" />
       </q-item-section>
-      <q-item-section>Integrations</q-item-section>
+      <q-item-section>Reporting</q-item-section>
       <q-item-section side>
         <q-icon name="keyboard_arrow_right" />
       </q-item-section>
@@ -306,7 +306,7 @@ export default {
 
         if (urlActions.value.length === 0) {
           notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
           return;
         }
@@ -372,7 +372,7 @@ export default {
         notifySuccess(
           `Maintenance mode was ${
             agent.maintenance_mode ? "disabled" : "enabled"
-          } on ${agent.hostname}`
+          } on ${agent.hostname}`,
         );
         store.commit("setRefreshSummaryTab", true);
         refreshDashboard();
@@ -470,7 +470,7 @@ export default {
         }
       });
     }
-    
+
     function showPolicyAdd(agent) {
       $q.dialog({
         component: PolicyAdd,
@@ -539,7 +539,7 @@ export default {
           notifySuccess(data);
           refreshDashboard(
             false /* clearTreeSelected */,
-            true /* clearSubTable */
+            true /* clearSubTable */,
           );
         } catch (e) {
           console.error(e);
