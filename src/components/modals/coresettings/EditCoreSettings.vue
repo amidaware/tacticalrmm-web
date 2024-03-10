@@ -441,9 +441,10 @@
                   </div>
                   <div class="col-2"></div>
                   <q-checkbox
-                    dense
-                    v-model="settings.sync_mesh_with_trmm"
-                    class="col-6"
+                  dense
+                  :model-value="settings.sync_mesh_with_trmm"
+                  @update:model-value="confirmSyncChange"
+                  class="col-6"
                   />
                   <q-tooltip class="text-caption"
                    >This can take a long time, once enabled or disabled you can continue 
@@ -713,6 +714,20 @@ export default {
         }));
       });
     },
+    confirmSyncChange(newValue) {
+    this.$q.dialog({
+      title: 'Confirm Action',
+      message: 'Do you want to proceed with this action?',
+      ok: { label: 'Yes', color: 'primary' },
+      cancel: { label: 'No', color: 'negative' }
+    }).onOk(() => {
+      // If the user confirms then update the checkbox
+      this.settings.sync_mesh_with_trmm = newValue;
+    }).onCancel(() => {
+      // Cancel clears the checkbox so no need to do anything
+    });
+  },
+
     showResetPatchPolicy() {
       this.$q.dialog({
         component: ResetPatchPolicy,
