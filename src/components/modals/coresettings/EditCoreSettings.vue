@@ -445,6 +445,10 @@
                     v-model="settings.sync_mesh_with_trmm"
                     class="col-6"
                   />
+                  <q-tooltip class="text-caption"
+                   >This can take a long time, once enabled or disabled you can continue 
+                    to use Tactical RMM but please wait for permissions to fully sync.</q-tooltip
+                  >
                 </q-card-section>
 
                 <q-card-section class="row">
