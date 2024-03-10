@@ -12,7 +12,6 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
   const script = ref(setScript);
   const syntax = ref("");
   const link = ref("");
-  const description = ref("");
   const baseUrl =
     "https://github.com/amidaware/community-scripts/blob/main/scripts/";
 
@@ -55,8 +54,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
     defaultEnvVars,
     syntax,
     link,
-    description,
-
+    
     //methods
     getScriptOptions,
   };
