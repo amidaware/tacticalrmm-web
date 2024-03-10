@@ -716,8 +716,8 @@ export default {
     },
     confirmSyncChange(newValue) {
     this.$q.dialog({
-      title: 'Confirm Action',
-      message: 'Do you want to proceed with this action?',
+      title: 'Confirm MeshCentral User Sync Change',
+      message: 'Are you sure you want to proceed with this?',
       ok: { label: 'Yes', color: 'primary' },
       cancel: { label: 'No', color: 'negative' }
     }).onOk(() => {
