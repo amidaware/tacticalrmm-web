@@ -447,8 +447,8 @@
                   class="col-6"
                   />
                   <q-tooltip class="text-caption"
-                   >This can take a long time, once enabled or disabled you can continue 
-                    to use Tactical RMM but please wait for permissions to fully sync.</q-tooltip
+                  >This can take a long time, please wait for permissions to fully sync. 
+                  You can expect it to take at least 2 minutes per 1,000 devices</q-tooltip
                   >
                 </q-card-section>
 
