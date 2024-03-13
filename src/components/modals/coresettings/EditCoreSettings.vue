@@ -389,7 +389,7 @@
               <q-tab-panel name="meshcentral">
                 <div class="text-subtitle2">MeshCentral Settings</div>
                 <q-separator />
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Username:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -405,7 +405,7 @@
                     ]"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Site:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -415,7 +415,7 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Token:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -425,7 +425,7 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Device Group Name:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -435,8 +435,8 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
-                  <div class="col-4">
+                <q-card-section class="row" v-if="!hosted">
+                  <div class="col-4 flex items-center">
                     Sync MeshCentral Users/Permissions with TRMM:
                   </div>
                   <div class="col-2"></div>
@@ -447,23 +447,32 @@
                   />
                 </q-card-section>
 
-                <q-card-section class="row">
-                  <div class="col-4">Company Name:</div>
+                <q-card-section class="row items-center">
+                  <div class="col-4 flex items-center">
+                    Company Name:
+                    <q-icon
+                      name="ion-information-circle-outline"
+                      size="sm"
+                      class="q-ml-sm cursor-pointer"
+                    >
+                      <q-tooltip class="text-caption">
+                        Adding your company name here will append it to the
+                        user's full name that appears when doing a remote
+                        control session, for example: 'John Doe - Amidaware
+                        Inc.'
+                      </q-tooltip>
+                    </q-icon>
+                  </div>
 
                   <div class="col-2"></div>
+
                   <q-input
                     dense
                     outlined
                     v-model="settings.mesh_company_name"
                     class="col-6"
                   >
-                    <q-tooltip class="text-caption"
-                      >Adding your company name here will append it to the
-                      user's full name that appears when doing a remote control
-                      session, for example: 'John Doe - Amidaware
-                      Inc.'</q-tooltip
-                    ></q-input
-                  >
+                  </q-input>
                 </q-card-section>
               </q-tab-panel>
               <q-tab-panel name="customfields">
@@ -663,6 +672,11 @@ export default {
         { label: "Critical", value: "critical" },
       ],
     };
+  },
+  computed: {
+    hosted() {
+      return this.$store.state.hosted;
+    },
   },
   methods: {
     openURL(url) {
