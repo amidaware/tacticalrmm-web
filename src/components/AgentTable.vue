@@ -170,7 +170,7 @@
                 overdueAlert(
                   'dashboard',
                   props.row,
-                  props.row.overdue_dashboard_alert
+                  props.row.overdue_dashboard_alert,
                 )
               "
               v-model="props.row.overdue_dashboard_alert"
@@ -431,8 +431,8 @@ export default {
             return false;
           else if (availability === "expired") {
             let now = new Date();
-            let lastSeen = date.extractDate(row.last_seen, "MM DD YYYY HH:mm");
-            let diff = date.getDateDiff(now, lastSeen, "days");
+            let last_seen_unix = new Date(row.boot_time * 1000);
+            let diff = date.getDateDiff(now, last_seen_unix, "days");
             if (diff < 30) return false;
           }
         }
