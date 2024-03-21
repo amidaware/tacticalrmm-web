@@ -54,34 +54,24 @@
               />
             </q-card-section>
 
-                <q-card-section class="row items-center">
-                  <div class="col-4 flex items-center">
-                    Company Name:
-                    <q-icon
-                      name="ion-information-circle-outline"
-                      size="sm"
-                      class="q-ml-sm cursor-pointer"
-                    >
-                      <q-tooltip class="text-caption">
-                        Adding your company name here will append it to the
-                        user's full name that appears when doing a remote
-                        control session, for example: 'John Doe - Amidaware
-                        Inc.'
-                      </q-tooltip>
-                    </q-icon>
-                  </div>
+            <q-card-section>
+              <div>
+                Company name:
+                <q-icon
+                  name="ion-information-circle-outline"
+                  size="sm"
+                  class="q-ml-sm cursor-pointer"
+                >
+                  <q-tooltip class="text-caption">
+                    Adding your company name here will append it to the user's
+                    full name that appears when doing a remote control session,
+                    for example: 'John Doe - Amidaware Inc.'
+                  </q-tooltip>
+                </q-icon>
+              </div>
 
-                  <div class="col-2"></div>
-
-                  <q-input
-                    dense
-                    outlined
-                    v-model="companyname"
-                    class="col-6"
-                  >
-                  </q-input>
-                </q-card-section>
-
+              <q-input dense outlined v-model="companyname"> </q-input>
+            </q-card-section>
 
             <q-card-actions align="center">
               <q-btn
