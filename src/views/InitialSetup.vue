@@ -131,7 +131,6 @@ export default {
       this.$axios.get("/core/settings/").then((r) => {
         this.allTimezones = Object.freeze(r.data.all_timezones);
         this.timezone = r.data.default_time_zone;
-        this.companyname = r.data.mesh_company_name;
       });
     },
   },
