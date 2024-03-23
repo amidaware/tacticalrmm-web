@@ -437,7 +437,7 @@
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
                   <div class="col-4 flex items-center">
-                    Sync MeshCentral Perms with TRMM:
+                    Sync Mesh Perms with TRMM:
                     <q-icon
                       right
                       name="ion-information-circle-outline"
