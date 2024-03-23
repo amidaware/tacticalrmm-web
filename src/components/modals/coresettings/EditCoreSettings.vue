@@ -437,23 +437,25 @@
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
                   <div class="col-4 flex items-center">
-                    Control Mesh Permissions from TRMM:
+                    Sync MeshCentral Perms with TRMM:
                     <q-icon
+                      right
                       name="ion-information-circle-outline"
                       size="sm"
-                      class="q-ml-sm cursor-pointer"
+                      class="cursor-pointer"
                     >
                       <q-tooltip class="text-caption">
-                        This can take a long time, please wait for permissions to fully sync. 
-                        You can expect it to take at least 2 minutes per 1,000 devices.
+                        It is recommended to keep this option enabled;
+                        otherwise, all TRMM users will have full permissions in
+                        MeshCentral regardless of their permissions in TRMM.
                       </q-tooltip>
                     </q-icon>
                   </div>
                   <div class="col-2"></div>
                   <q-checkbox
                     dense
-                     :model-value="settings.sync_mesh_with_trmm"
-                     @update:model-value="confirmSyncChange"
+                    :model-value="settings.sync_mesh_with_trmm"
+                    @update:model-value="confirmSyncChange"
                     class="col-6"
                   />
                 </q-card-section>
@@ -724,18 +726,18 @@ export default {
       });
     },
     confirmSyncChange(newValue) {
-      this.$q.dialog({
-        title: 'Confirm MeshCentral User Sync Change',
-        message: 'Are you sure you want to proceed with this?',
-        ok: { label: 'Yes', color: 'primary' },
-        cancel: { label: 'No', color: 'negative' }
-    }).onOk(() => {
-      // If the user confirms then update the checkbox
-      this.settings.sync_mesh_with_trmm = newValue;
-    }).onCancel(() => {
-      // Cancel clears the checkbox so no need to do anything
-    });
-  },
+      this.$q
+        .dialog({
+          title: "Are you sure?",
+          message:
+            "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete.",
+          ok: { label: "Yes", color: "primary" },
+          cancel: { label: "No", color: "negative" },
+        })
+        .onOk(() => {
+          this.settings.sync_mesh_with_trmm = newValue;
+        });
+    },
     showResetPatchPolicy() {
       this.$q.dialog({
         component: ResetPatchPolicy,
