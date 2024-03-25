@@ -86,6 +86,35 @@ import { notifySuccess } from "@/utils/notify";
 // ui imports
 import * as monaco from "monaco-editor";
 
+import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
+import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
+import jsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+
+// https://github.com/microsoft/monaco-editor/issues/4045#issuecomment-1723787448
+self.MonacoEnvironment = {
+  getWorker: function (workerId, label) {
+    switch (label) {
+      case "json":
+        return new jsonWorker();
+      case "css":
+      case "scss":
+      case "less":
+        return new cssWorker();
+      case "html":
+      case "handlebars":
+      case "razor":
+        return new htmlWorker();
+      case "typescript":
+      case "javascript":
+        return new jsWorker();
+      default:
+        return new editorWorker();
+    }
+  },
+};
+
 // types
 import type { ScriptSnippet } from "@/types/scripts";
 
@@ -124,11 +153,21 @@ const title = computed(() => {
 
 // convert highlighter language to match what ace expects
 const lang = computed(() => {
-  if (snippet.shell === "cmd") return "bat";
-  else if (snippet.shell === "powershell") return "powershell";
-  else if (snippet.shell === "python") return "python";
-  else if (snippet.shell === "shell") return "shell";
-  else return "";
+  switch (snippet.shell) {
+    case "cmd":
+      return "bat";
+    case "powershell":
+      return "powershell";
+    case "python":
+      return "python";
+    case "shell":
+    case "nushell":
+      return "shell";
+    case "deno":
+      return "typescript";
+    default:
+      return "";
+  }
 });
 
 async function submit() {
@@ -150,8 +189,7 @@ const snippetEditor = ref<HTMLElement | null>(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
 function loadEditor() {
-  var modelUri = monaco.Uri.parse("model://snippet"); // a made up unique URI for our model
-  var model = monaco.editor.createModel(snippet.code, lang.value, modelUri);
+  var model = monaco.editor.createModel(snippet.code, lang.value);
 
   const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
 

@@ -191,6 +191,11 @@ export async function agentRebootNow(agent_id) {
   return data;
 }
 
+export async function agentShutdown(agent_id) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/shutdown/`);
+  return data;
+}
+
 export async function sendAgentRecoverMesh(agent_id, params = {}) {
   const { data } = await axios.post(
     `${baseUrl}/${agent_id}/meshcentral/recover/`,

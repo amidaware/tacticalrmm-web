@@ -11,11 +11,11 @@ jobs:
     name: Build web
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: "20.11.1"
 
       - run: touch env-config.js
 
@@ -29,6 +29,6 @@ jobs:
         run: tar -czvf trmm-web-${{github.ref_name}}.tar.gz dist/
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: trmm-web-${{github.ref_name}}.tar.gz

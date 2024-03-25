@@ -176,6 +176,13 @@
       </q-menu>
     </q-item>
 
+    <q-item clickable v-close-popup @click="shutdown(agent)">
+      <q-item-section side>
+        <q-icon size="xs" name="power" />
+      </q-item-section>
+      <q-item-section>Shutdown</q-item-section>
+    </q-item>
+
     <q-item clickable v-close-popup @click="showPolicyAdd(agent)">
       <q-item-section side>
         <q-icon size="xs" name="policy" />
@@ -192,9 +199,9 @@
       "
     >
       <q-item-section side>
-        <q-icon size="xs" name="integration_instructions" />
+        <q-icon size="xs" name="analytics" />
       </q-item-section>
-      <q-item-section>Integrations</q-item-section>
+      <q-item-section>Reporting</q-item-section>
       <q-item-section side>
         <q-icon name="keyboard_arrow_right" />
       </q-item-section>
@@ -231,6 +238,7 @@ import { fetchURLActions, runURLAction } from "@/api/core";
 import {
   editAgent,
   agentRebootNow,
+  agentShutdown,
   sendAgentPing,
   removeAgent,
   runRemoteBackground,
@@ -298,7 +306,7 @@ export default {
 
         if (urlActions.value.length === 0) {
           notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
           return;
         }
@@ -364,7 +372,7 @@ export default {
         notifySuccess(
           `Maintenance mode was ${
             agent.maintenance_mode ? "disabled" : "enabled"
-          } on ${agent.hostname}`
+          } on ${agent.hostname}`,
         );
         store.commit("setRefreshSummaryTab", true);
         refreshDashboard();
@@ -429,6 +437,32 @@ export default {
         try {
           await agentRebootNow(agent.agent_id);
           notifySuccess(`${agent.hostname} will now be restarted`);
+          $q.loading.hide();
+        } catch (e) {
+          $q.loading.hide();
+          console.error(e);
+        }
+      });
+    }
+
+    function shutdown(agent) {
+      $q.dialog({
+        title:
+          'Please type <code style="color:red">yes</code> in the box below to confirm shutdown.',
+        prompt: {
+          model: "",
+          type: "text",
+          isValid: (val) => val === "yes",
+        },
+        cancel: true,
+        ok: { label: "Shutdown", color: "negative" },
+        persistent: true,
+        html: true,
+      }).onOk(async () => {
+        $q.loading.show();
+        try {
+          await agentShutdown(agent.agent_id);
+          notifySuccess(`${agent.hostname} will now be shutdown`);
           $q.loading.hide();
         } catch (e) {
           $q.loading.hide();
@@ -505,7 +539,7 @@ export default {
           notifySuccess(data);
           refreshDashboard(
             false /* clearTreeSelected */,
-            true /* clearSubTable */
+            true /* clearSubTable */,
           );
         } catch (e) {
           console.error(e);
@@ -534,6 +568,7 @@ export default {
       runChecks,
       showRebootLaterModal,
       rebootNow,
+      shutdown,
       showPolicyAdd,
       showAgentRecovery,
       pingAgent,

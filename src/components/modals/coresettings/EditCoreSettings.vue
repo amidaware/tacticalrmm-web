@@ -389,7 +389,7 @@
               <q-tab-panel name="meshcentral">
                 <div class="text-subtitle2">MeshCentral Settings</div>
                 <q-separator />
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Username:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -405,7 +405,7 @@
                     ]"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Site:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -415,7 +415,7 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Token:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -425,7 +425,7 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section class="row" v-if="!hosted">
                   <div class="col-4">Mesh Device Group Name:</div>
                   <div class="col-2"></div>
                   <q-input
@@ -435,16 +435,57 @@
                     class="col-6"
                   />
                 </q-card-section>
-                <q-card-section class="row">
-                  <div class="col-4">
-                    Disable Auto Login for Remote Control and Remote background:
+                <q-card-section class="row" v-if="!hosted">
+                  <div class="col-4 flex items-center">
+                    Sync Mesh Perms with TRMM:
+                    <q-icon
+                      right
+                      name="ion-information-circle-outline"
+                      size="sm"
+                      class="cursor-pointer"
+                    >
+                      <q-tooltip class="text-caption">
+                        It is recommended to keep this option enabled;
+                        otherwise, all TRMM users will have full permissions in
+                        MeshCentral regardless of their permissions in TRMM.
+                      </q-tooltip>
+                    </q-icon>
                   </div>
                   <div class="col-2"></div>
                   <q-checkbox
                     dense
-                    v-model="settings.mesh_disable_auto_login"
+                    :model-value="settings.sync_mesh_with_trmm"
+                    @update:model-value="confirmSyncChange"
                     class="col-6"
                   />
+                </q-card-section>
+
+                <q-card-section class="row items-center">
+                  <div class="col-4 flex items-center">
+                    Company Name:
+                    <q-icon
+                      name="ion-information-circle-outline"
+                      size="sm"
+                      class="q-ml-sm cursor-pointer"
+                    >
+                      <q-tooltip class="text-caption">
+                        Adding your company name here will append it to the
+                        user's full name that appears when doing a remote
+                        control session, for example: 'John Doe - Amidaware
+                        Inc.'
+                      </q-tooltip>
+                    </q-icon>
+                  </div>
+
+                  <div class="col-2"></div>
+
+                  <q-input
+                    dense
+                    outlined
+                    v-model="settings.mesh_company_name"
+                    class="col-6"
+                  >
+                  </q-input>
                 </q-card-section>
               </q-tab-panel>
               <q-tab-panel name="customfields">
@@ -645,6 +686,11 @@ export default {
       ],
     };
   },
+  computed: {
+    hosted() {
+      return this.$store.state.hosted;
+    },
+  },
   methods: {
     openURL(url) {
       openURL(url);
@@ -678,6 +724,19 @@ export default {
           value: template.id,
         }));
       });
+    },
+    confirmSyncChange(newValue) {
+      this.$q
+        .dialog({
+          title: "Are you sure?",
+          message:
+            "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete.",
+          ok: { label: "Yes", color: "primary" },
+          cancel: { label: "No", color: "negative" },
+        })
+        .onOk(() => {
+          this.settings.sync_mesh_with_trmm = newValue;
+        });
     },
     showResetPatchPolicy() {
       this.$q.dialog({

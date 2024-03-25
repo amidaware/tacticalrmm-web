@@ -18,7 +18,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
   // specify parameters to filter out community scripts
   async function getScriptOptions(showCommunityScripts = false) {
     scriptOptions.value = Object.freeze(
-      formatScriptOptions(await fetchScripts({ showCommunityScripts }))
+      formatScriptOptions(await fetchScripts({ showCommunityScripts })),
     );
   }
 
@@ -26,7 +26,7 @@ export function useScriptDropdown(setScript = null, { onMount = false } = {}) {
   watch([script, scriptOptions], () => {
     if (script.value && scriptOptions.value.length > 0) {
       const tmpScript = scriptOptions.value.find(
-        (i) => i.value === script.value
+        (i) => i.value === script.value,
       );
       defaultTimeout.value = tmpScript.timeout;
       defaultArgs.value = tmpScript.args;
@@ -65,4 +65,6 @@ export const shellOptions = [
   { label: "Batch", value: "cmd" },
   { label: "Python", value: "python" },
   { label: "Shell", value: "shell" },
+  { label: "Nushell", value: "nushell" },
+  { label: "Deno", value: "deno" },
 ];

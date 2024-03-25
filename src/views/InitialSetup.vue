@@ -53,6 +53,26 @@
                 :options="allTimezones"
               />
             </q-card-section>
+
+            <q-card-section>
+              <div>
+                Company name:
+                <q-icon
+                  name="ion-information-circle-outline"
+                  size="sm"
+                  class="q-ml-sm cursor-pointer"
+                >
+                  <q-tooltip class="text-caption">
+                    Adding your company name here will append it to the user's
+                    full name that appears when doing a remote control session,
+                    for example: 'John Doe - Amidaware Inc.'
+                  </q-tooltip>
+                </q-icon>
+              </div>
+
+              <q-input dense outlined v-model="companyname"> </q-input>
+            </q-card-section>
+
             <q-card-actions align="center">
               <q-btn
                 label="Finish"
@@ -86,6 +106,7 @@ export default {
       allTimezones: [],
       timezone: null,
       arch: "64",
+      companyname: "",
     };
   },
   methods: {
@@ -95,6 +116,7 @@ export default {
         client: this.client,
         site: this.site,
         timezone: this.timezone,
+        companyname: this.companyname,
         initialsetup: true,
       };
       this.$axios

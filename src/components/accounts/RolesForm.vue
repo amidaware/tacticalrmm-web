@@ -107,7 +107,7 @@
               />
               <q-checkbox
                 v-model="localRole.can_reboot_agents"
-                label="Reboot Agents"
+                label="Shutdown / Reboot Agents"
               />
               <q-checkbox
                 v-model="localRole.can_send_wol"
