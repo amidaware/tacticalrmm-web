@@ -61,8 +61,18 @@
                 goarch = GOARCH_AMD64;
               "
             />
-          </div>
+              <q-btn
+             round
+             dense
+             flat
+             size="sm"
+             icon="info"
+            @click="openURL('https://docs.tacticalrmm.com/install_agent/#mac-agent-permissions')"
+            >
+          <q-tooltip>Click to view further actions for Mac OS</q-tooltip>
+         </q-btn>  
         </q-card-section>
+          </div>
         <q-card-section>
           <div class="q-gutter-sm">
             <q-radio
@@ -183,6 +193,7 @@
 </template>
 
 <script>
+import { openURL } from "quasar";
 import mixins from "@/mixins/mixins";
 import AgentDownload from "@/components/modals/agents/AgentDownload.vue";
 import { getBaseUrl } from "@/boot/axios";
@@ -222,6 +233,9 @@ export default {
     };
   },
   methods: {
+    openURL(url) {
+      openURL(url);
+    },
     getClients() {
       this.$q.loading.show();
       this.$axios
