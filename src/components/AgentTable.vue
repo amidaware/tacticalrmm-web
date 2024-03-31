@@ -431,8 +431,8 @@ export default {
             return false;
           else if (availability === "expired") {
             let now = new Date();
-            let last_seen_unix = new Date(row.boot_time * 1000);
-            let diff = date.getDateDiff(now, last_seen_unix, "days");
+            let last_seen = new Date(row.last_seen);
+            let diff = date.getDateDiff(now, last_seen, "days");
             if (diff < 30) return false;
           }
         }
