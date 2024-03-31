@@ -71,8 +71,8 @@
             >
           <q-tooltip>Click to view further actions for Mac OS</q-tooltip>
          </q-btn>  
-        </q-card-section>
           </div>
+        </q-card-section>
         <q-card-section>
           <div class="q-gutter-sm">
             <q-radio
