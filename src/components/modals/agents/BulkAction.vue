@@ -211,7 +211,6 @@
 <script>
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
-import { useStore } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useAgentDropdown } from "@/composables/agents";
@@ -259,12 +258,6 @@ export default {
     mode: !String,
   },
   setup(props) {
-    // setup vuex store
-    const store = useStore();
-    const showCommunityScripts = computed(
-      () => store.state.showCommunityScripts,
-    );
-
     const shellOptions = computed(() => {
       if (state.value.osType === "windows") {
         return [
