@@ -328,12 +328,20 @@ function editServerTask(task: AutomatedTask) {
 
 async function executeServerTask(task: AutomatedTask) {
   try {
-    await runServerTask(task.id);
-    notifySuccess(
-      "Server task sent successfully. Check script output after script execution.",
-    );
-  } catch (e) {
-    notifyError(`Unable to run task: ${e}`);
+    const result = await runServerTask(task.id);
+
+    $q.dialog({
+      component: ScriptOutput,
+      componentProps: {
+        scriptInfo: {
+          stdout: result.output,
+          execution_time: result.execution_time,
+          stderr: "",
+        },
+      },
+    });
+  } catch {
+    notifyError("Unable to run task");
   }
 }
 
