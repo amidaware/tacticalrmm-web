@@ -262,7 +262,7 @@ export default {
     // setup vuex store
     const store = useStore();
     const showCommunityScripts = computed(
-      () => store.state.showCommunityScripts
+      () => store.state.showCommunityScripts,
     );
 
     const shellOptions = computed(() => {
@@ -331,7 +331,7 @@ export default {
         client.value = null;
         site.value = null;
         agents.value = [];
-      }
+      },
     );
 
     watch(
@@ -345,7 +345,7 @@ export default {
         } else {
           state.value.shell = "/bin/bash";
         }
-      }
+      },
     );
 
     async function submit() {
@@ -372,10 +372,10 @@ export default {
       return props.mode === "command"
         ? "Run Bulk Command"
         : props.mode === "script"
-        ? "Run Bulk Script"
-        : props.mode === "patch"
-        ? "Bulk Patch Management"
-        : "";
+          ? "Run Bulk Script"
+          : props.mode === "patch"
+            ? "Bulk Patch Management"
+            : "";
     });
 
     const filteredScriptOptions = computed(() => {
@@ -388,8 +388,8 @@ export default {
             script.category ||
             !script.supported_platforms ||
             script.supported_platforms.length === 0 ||
-            script.supported_platforms.includes(state.value.osType)
-        )
+            script.supported_platforms.includes(state.value.osType),
+        ),
       );
     });
 
@@ -398,7 +398,7 @@ export default {
       getAgentOptions();
       getSiteOptions();
       getClientOptions();
-      if (props.mode === "script") getScriptOptions(showCommunityScripts.value);
+      if (props.mode === "script") getScriptOptions();
     });
 
     return {

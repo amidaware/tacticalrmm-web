@@ -84,7 +84,14 @@
           checked-icon="nights_stay"
           unchecked-icon="wb_sunny"
         />
-
+        <q-btn
+          label=">_"
+          dense
+          flat
+          @click="openTrmmCli"
+          class="q-mr-sm"
+          style="font-size: 16px"
+        />
         <!-- Devices Chip -->
         <q-chip class="cursor-pointer">
           <q-avatar size="md" icon="devices" color="primary" />
@@ -148,7 +155,7 @@
 
         <AlertsIcon />
 
-        <q-btn-dropdown flat no-caps stretch :label="user">
+        <q-btn-dropdown flat no-caps stretch :label="username || ''">
           <q-list>
             <q-item
               clickable
@@ -200,187 +207,105 @@
     </q-page-container>
   </q-layout>
 </template>
-<script>
+<script setup lang="ts">
 // composition imports
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
-import axios from "axios";
-import { getWSUrl } from "@/websocket/channels";
+import { useDashboardStore } from "@/stores/dashboard";
+import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
 import { resetTwoFactor } from "@/api/accounts";
 import { notifySuccess } from "@/utils/notify";
+import axios from "axios";
 
 // ui imports
 import AlertsIcon from "@/components/AlertsIcon.vue";
 import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
 import ResetPass from "@/components/accounts/ResetPass.vue";
+import TRMMCommandPrompt from "@/components/core/TRMMCommandPrompt.vue";
 
-export default {
-  name: "MainLayout",
-  components: { AlertsIcon },
-  setup() {
-    const store = useStore();
-    const $q = useQuasar();
+const store = useStore();
+const $q = useQuasar();
 
-    const darkMode = computed({
-      get: () => {
-        return $q.dark.isActive;
-      },
-      set: (value) => {
-        axios.patch("/accounts/users/ui/", { dark_mode: value });
-        $q.dark.set(value);
-      },
-    });
+const {
+  serverCount,
+  serverOfflineCount,
+  workstationCount,
+  workstationOfflineCount,
+  daysUntilCertExpires,
+} = storeToRefs(useDashboardStore());
 
-    const currentTRMMVersion = computed(() => store.state.currentTRMMVersion);
-    const latestTRMMVersion = computed(() => store.state.latestTRMMVersion);
-    const needRefresh = computed(() => store.state.needrefresh);
-    const user = computed(() => store.state.username);
-    const hosted = computed(() => store.state.hosted);
-    const tokenExpired = computed(() => store.state.tokenExpired);
-    const dash_warning_color = computed(() => store.state.dash_warning_color);
-    const dash_negative_color = computed(() => store.state.dash_negative_color);
+const { username } = storeToRefs(useAuthStore());
 
-    const latestReleaseURL = computed(() => {
-      return latestTRMMVersion.value
-        ? `https://github.com/amidaware/tacticalrmm/releases/tag/v${latestTRMMVersion.value}`
-        : "";
-    });
-
-    function showUserPreferences() {
-      $q.dialog({
-        component: UserPreferences,
-      }).onOk(() => store.dispatch("getDashInfo"));
-    }
-
-    function resetPassword() {
-      $q.dialog({
-        component: ResetPass,
-      });
-    }
-
-    function reset2FA() {
-      $q.dialog({
-        title: "Reset 2FA",
-        message: "Are you sure you would like to reset your 2FA token?",
-        cancel: true,
-        persistent: true,
-      }).onOk(async () => {
-        try {
-          const ret = await resetTwoFactor();
-          notifySuccess(ret, 3000);
-        } catch {}
-      });
-    }
-
-    const serverCount = ref(0);
-    const serverOfflineCount = ref(0);
-    const workstationCount = ref(0);
-    const workstationOfflineCount = ref(0);
-    const daysUntilCertExpires = ref(100);
-
-    const ws = ref(null);
-
-    function setupWS() {
-      // moved computed token inside the function since it is not refreshing
-      // when ws is closed causing ws to connect with expired token
-      const token = computed(() => store.state.token);
-
-      if (!token.value) {
-        console.log(
-          "Access token is null or invalid, not setting up WebSocket",
-        );
-        return;
-      }
-      console.log("Starting websocket");
-      let url = getWSUrl("dashinfo", token.value);
-      ws.value = new WebSocket(url);
-      ws.value.onopen = () => {
-        console.log("Connected to ws");
-      };
-      ws.value.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        serverCount.value = data.total_server_count;
-        serverOfflineCount.value = data.total_server_offline_count;
-        workstationCount.value = data.total_workstation_count;
-        workstationOfflineCount.value = data.total_workstation_offline_count;
-        daysUntilCertExpires.value = data.days_until_cert_expires;
-      };
-      ws.value.onclose = (e) => {
-        try {
-          console.log(`Closed code: ${e.code}`);
-          console.log("Retrying websocket connection...");
-          setTimeout(() => {
-            setupWS();
-          }, 3 * 1000);
-        } catch (e) {
-          console.log("Websocket connection closed");
-        }
-      };
-      ws.value.onerror = () => {
-        console.log("There was an error");
-        ws.value.onclose();
-      };
-    }
-
-    const poll = ref(null);
-    function livePoll() {
-      poll.value = setInterval(
-        () => {
-          store.dispatch("checkVer");
-          store.dispatch("getDashInfo", false);
-        },
-        60 * 4 * 1000,
-      );
-    }
-
-    const updateAvailable = computed(() => {
-      if (
-        latestTRMMVersion.value === "error" ||
-        hosted.value ||
-        currentTRMMVersion.value?.includes("-dev")
-      )
-        return false;
-      return currentTRMMVersion.value !== latestTRMMVersion.value;
-    });
-
-    onMounted(() => {
-      setupWS();
-      store.dispatch("getDashInfo");
-      store.dispatch("checkVer");
-
-      livePoll();
-    });
-
-    onBeforeUnmount(() => {
-      ws.value.close();
-      clearInterval(poll.value);
-    });
-
-    return {
-      // reactive data
-      serverCount,
-      serverOfflineCount,
-      workstationCount,
-      workstationOfflineCount,
-      daysUntilCertExpires,
-      latestReleaseURL,
-      currentTRMMVersion,
-      latestTRMMVersion,
-      user,
-      needRefresh,
-      darkMode,
-      hosted,
-      tokenExpired,
-      dash_warning_color,
-      dash_negative_color,
-
-      // methods
-      showUserPreferences,
-      resetPassword,
-      reset2FA,
-      updateAvailable,
-    };
+const darkMode = computed({
+  get: () => {
+    return $q.dark.isActive;
   },
-};
+  set: (value) => {
+    axios.patch("/accounts/users/ui/", { dark_mode: value });
+    $q.dark.set(value);
+  },
+});
+
+const currentTRMMVersion = computed(() => store.state.currentTRMMVersion);
+const latestTRMMVersion = computed(() => store.state.latestTRMMVersion);
+const needRefresh = computed(() => store.state.needrefresh);
+const hosted = computed(() => store.state.hosted);
+const tokenExpired = computed(() => store.state.tokenExpired);
+const dash_warning_color = computed(() => store.state.dash_warning_color);
+const dash_negative_color = computed(() => store.state.dash_negative_color);
+
+const latestReleaseURL = computed(() => {
+  return latestTRMMVersion.value
+    ? `https://github.com/amidaware/tacticalrmm/releases/tag/v${latestTRMMVersion.value}`
+    : "";
+});
+
+function showUserPreferences() {
+  $q.dialog({
+    component: UserPreferences,
+  }).onOk(() => store.dispatch("getDashInfo"));
+}
+
+function resetPassword() {
+  $q.dialog({
+    component: ResetPass,
+  });
+}
+
+function openTrmmCli() {
+  $q.dialog({
+    component: TRMMCommandPrompt,
+  });
+}
+
+function reset2FA() {
+  $q.dialog({
+    title: "Reset 2FA",
+    message: "Are you sure you would like to reset your 2FA token?",
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      const ret = await resetTwoFactor();
+      notifySuccess(ret, 3000);
+    } catch {}
+  });
+}
+
+const updateAvailable = computed(() => {
+  if (
+    latestTRMMVersion.value === "error" ||
+    hosted.value ||
+    currentTRMMVersion.value?.includes("-dev")
+  )
+    return false;
+  return currentTRMMVersion.value !== latestTRMMVersion.value;
+});
+
+onMounted(() => {
+  store.dispatch("getDashInfo");
+  store.dispatch("checkVer");
+});
 </script>

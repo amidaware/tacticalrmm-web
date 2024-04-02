@@ -261,7 +261,7 @@
           <q-td v-else-if="props.row.task_result.status === 'passing'">
             <q-icon
               style="font-size: 1.3rem"
-              :color="dash_positive_color"
+              :color="dashPositiveColor"
               name="check_circle"
             >
               <q-tooltip>Passing</q-tooltip>
@@ -271,7 +271,7 @@
             <q-icon
               v-if="props.row.alert_severity === 'info'"
               style="font-size: 1.3rem"
-              :color="dash_info_color"
+              :color="dashInfoColor"
               name="info"
             >
               <q-tooltip>Informational</q-tooltip>
@@ -279,7 +279,7 @@
             <q-icon
               v-else-if="props.row.alert_severity === 'warning'"
               style="font-size: 1.3rem"
-              :color="dash_warning_color"
+              :color="dashWarningColor"
               name="warning"
             >
               <q-tooltip>Warning</q-tooltip>
@@ -287,7 +287,7 @@
             <q-icon
               v-else
               style="font-size: 1.3rem"
-              :color="dash_negative_color"
+              :color="dashNegativeColor"
               name="error"
             >
               <q-tooltip>Error</q-tooltip>
@@ -342,7 +342,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -409,174 +409,143 @@ const columns = [
   },
 ];
 
-export default {
-  name: "AutomatedTasksTab",
-  setup() {
-    // setup vuex
-    const store = useStore();
-    const selectedAgent = computed(() => store.state.selectedRow);
-    const tabHeight = computed(() => store.state.tabHeight);
-    const agentPlatform = computed(() => store.state.agentPlatform);
-    const formatDate = computed(() => store.getters.formatDate);
-    const dash_info_color = computed(() => store.state.dash_info_color);
-    const dash_positive_color = computed(() => store.state.dash_positive_color);
-    const dash_negative_color = computed(() => store.state.dash_negative_color);
-    const dash_warning_color = computed(() => store.state.dash_warning_color);
+// setup vuex
+const store = useStore();
+const selectedAgent = computed(() => store.state.selectedRow);
+const tabHeight = computed(() => store.state.tabHeight);
+const agentPlatform = computed(() => store.state.agentPlatform);
+const dashWarningColor = computed(() => store.state.dash_warning_color);
+const dashNegativeColor = computed(() => store.state.dash_negative_color);
+const dashPositiveColor = computed(() => store.state.dash_positive_color);
+const dashInfoColor = computed(() => store.state.dash_info_color);
+const formatDate = computed(() => store.getters.formatDate);
 
-    // setup quasar
-    const $q = useQuasar();
+// setup quasar
+const $q = useQuasar();
 
-    // automated tasks logic
-    const tasks = ref([]);
-    const loading = ref(false);
+// automated tasks logic
+const tasks = ref([]);
+const loading = ref(false);
 
-    const pagination = ref({
-      rowsPerPage: 0,
-      sortBy: "name",
-      descending: false,
-    });
+const pagination = ref({
+  rowsPerPage: 0,
+  sortBy: "name",
+  descending: false,
+});
 
-    async function getTasks() {
-      loading.value = true;
-      try {
-        const result = await fetchAgentTasks(selectedAgent.value);
-        tasks.value = result.filter(
-          (task) => task.sync_status !== "pendingdeletion"
-        );
-      } catch (e) {
-        console.error(e);
-      }
-      loading.value = false;
+async function getTasks() {
+  loading.value = true;
+  try {
+    const result = await fetchAgentTasks(selectedAgent.value);
+    tasks.value = result.filter(
+      (task) => task.sync_status !== "pendingdeletion",
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  loading.value = false;
+}
+
+async function editTask(task, data) {
+  if (task.policy) return;
+
+  loading.value = true;
+  try {
+    const result = await updateTask(task.id, data);
+    notifySuccess(result);
+    getTasks();
+  } catch (e) {
+    console.error(e);
+  }
+
+  loading.value = false;
+}
+
+function deleteTask(task) {
+  if (task.policy) return;
+
+  $q.dialog({
+    title: "Are you sure?",
+    message: `Delete ${task.name} task`,
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    loading.value = true;
+    try {
+      const result = await removeTask(task.id);
+      notifySuccess(result);
+      getTasks();
+    } catch (e) {
+      console.error(e);
     }
+    loading.value = false;
+  });
+}
 
-    async function editTask(task, data) {
-      if (task.policy) return;
+async function runWinTask(task) {
+  if (!task.enabled) {
+    notifyError("Task cannot be run when it's disabled. Enable it first.");
+    return;
+  }
 
-      loading.value = true;
-      try {
-        const result = await updateTask(task.id, data);
-        notifySuccess(result);
-        getTasks();
-      } catch (e) {
-        console.error(e);
-      }
+  loading.value = true;
+  try {
+    const result = await runTask(
+      task.id,
+      task.policy ? { agent_id: selectedAgent.value } : {},
+    );
+    notifySuccess(result);
+  } catch (e) {
+    console.error(e);
+  }
+  loading.value = false;
+}
 
-      loading.value = false;
-    }
+function showAddTask() {
+  $q.dialog({
+    component: AutomatedTaskForm,
+    componentProps: {
+      type: "agent",
+      parent: selectedAgent.value,
+      plat: agentPlatform.value,
+    },
+  }).onOk(() => {
+    getTasks();
+  });
+}
 
-    function deleteTask(task) {
-      if (task.policy) return;
+function showEditTask(task) {
+  if (task.policy) return;
 
-      $q.dialog({
-        title: "Are you sure?",
-        message: `Delete ${task.name} task`,
-        cancel: true,
-        persistent: true,
-      }).onOk(async () => {
-        loading.value = true;
-        try {
-          const result = await removeTask(task.id);
-          notifySuccess(result);
-          getTasks();
-        } catch (e) {
-          console.error(e);
-        }
-        loading.value = false;
-      });
-    }
+  $q.dialog({
+    component: AutomatedTaskForm,
+    componentProps: {
+      task: task,
+      type: "agent",
+      parent: selectedAgent.value,
+      plat: agentPlatform.value,
+    },
+  }).onOk(() => {
+    getTasks();
+  });
+}
 
-    async function runWinTask(task) {
-      if (!task.enabled) {
-        notifyError("Task cannot be run when it's disabled. Enable it first.");
-        return;
-      }
+function showScriptOutput(script) {
+  $q.dialog({
+    component: ScriptOutput,
+    componentProps: {
+      scriptInfo: script.task_result,
+    },
+  });
+}
 
-      loading.value = true;
-      try {
-        const result = await runTask(
-          task.id,
-          task.policy ? { agent_id: selectedAgent.value } : {}
-        );
-        notifySuccess(result);
-      } catch (e) {
-        console.error(e);
-      }
-      loading.value = false;
-    }
+watch(selectedAgent, (newValue) => {
+  if (newValue) {
+    getTasks();
+  }
+});
 
-    function showAddTask() {
-      $q.dialog({
-        component: AutomatedTaskForm,
-        componentProps: {
-          parent: { agent: selectedAgent.value },
-        },
-      }).onOk(() => {
-        getTasks();
-      });
-    }
-
-    function showEditTask(task) {
-      if (task.policy) return;
-
-      $q.dialog({
-        component: AutomatedTaskForm,
-        componentProps: {
-          task: task,
-          parent: { agent: selectedAgent.value },
-        },
-      }).onOk(() => {
-        getTasks();
-      });
-    }
-
-    function showScriptOutput(script) {
-      $q.dialog({
-        component: ScriptOutput,
-        componentProps: {
-          scriptInfo: script.task_result,
-        },
-      });
-    }
-
-    watch(selectedAgent, (newValue) => {
-      if (newValue) {
-        getTasks();
-      }
-    });
-
-    onMounted(() => {
-      if (selectedAgent.value) getTasks();
-    });
-
-    return {
-      // reactive data
-      tasks,
-      loading,
-      pagination,
-      selectedAgent,
-      tabHeight,
-      agentPlatform,
-      dash_info_color,
-      dash_positive_color,
-      dash_warning_color,
-      dash_negative_color,
-
-      // non-reactive data
-      columns,
-
-      // methods
-      formatDate,
-      getTasks,
-      editTask,
-      runWinTask,
-      deleteTask,
-      showAddTask,
-      showEditTask,
-      showScriptOutput,
-
-      // helpers
-      truncateText,
-    };
-  },
-};
+onMounted(() => {
+  if (selectedAgent.value) getTasks();
+});
 </script>

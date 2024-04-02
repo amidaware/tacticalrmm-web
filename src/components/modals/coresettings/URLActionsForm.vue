@@ -1,14 +1,20 @@
 <template>
-  <q-dialog ref="dialog" @hide="onHide">
+  <q-dialog
+    ref="dialogRef"
+    @hide="onDialogHide"
+    @show="loadEditor"
+    @before-hide="cleanupEditors"
+  >
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ title }}
+        {{ props.action ? "Edit URL Action" : "Add URL Action" }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
-      <q-form @submit="submit">
+
+      <div style="max-height: 80vh" class="scroll">
         <!-- name -->
         <q-card-section>
           <q-input
@@ -30,6 +36,16 @@
           />
         </q-card-section>
 
+        <!-- url action type -->
+        <q-card-section>
+          <q-option-group
+            v-model="localAction.action_type"
+            :options="URLActionOptions"
+            color="primary"
+            inline
+          />
+        </q-card-section>
+
         <!-- pattern -->
         <q-card-section>
           <q-input
@@ -41,89 +57,168 @@
           />
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Submit" color="primary" type="submit" />
-        </q-card-actions>
-      </q-form>
+        <q-card-section v-if="localAction.action_type === 'rest'">
+          <q-select
+            v-model="localAction.rest_method"
+            label="Method"
+            :options="URLActionMethods"
+            outlined
+            dense
+            map-options
+            emit-value
+          />
+        </q-card-section>
+
+        <q-card-section v-show="localAction.action_type === 'rest'">
+          <q-toolbar>
+            <q-space />
+            <q-tabs v-model="tab" dense shrink>
+              <q-tab
+                name="body"
+                label="Request Body"
+                :ripple="false"
+                :disable="disableBodyTab"
+              />
+              <q-tab name="headers" label="Request Headers" :ripple="false" />
+            </q-tabs>
+          </q-toolbar>
+          <div ref="editorDiv" :style="{ height: '30vh' }"></div>
+        </q-card-section>
+      </div>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Submit" color="primary" @click="submit" />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
-<script>
-import mixins from "@/mixins/mixins";
+<script setup lang="ts">
+// composition imports
+import { ref, computed, reactive, watch } from "vue";
+import { useDialogPluginComponent, useQuasar, extend } from "quasar";
+import { editURLAction, saveURLAction } from "@/api/core";
+import { notifySuccess } from "@/utils/notify";
+import { URLAction } from "@/types/core/urlactions";
 
-export default {
-  name: "URLActionsForm",
-  emits: ["hide", "ok", "cancel"],
-  mixins: [mixins],
-  props: { action: Object },
-  data() {
-    return {
-      localAction: {
-        name: "",
-        desc: "",
-        pattern: "",
-      },
-    };
+import * as monaco from "monaco-editor";
+
+// define emits
+defineEmits([...useDialogPluginComponent.emits]);
+
+// define props
+const props = defineProps<{ action?: URLAction }>();
+
+// setup quasar
+const $q = useQuasar();
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+
+// static data
+const URLActionOptions = [
+  { value: "web", label: "Web" },
+  { value: "rest", label: "REST" },
+];
+
+const URLActionMethods = [
+  { value: "get", label: "GET" },
+  { value: "post", label: "POST" },
+  { value: "put", label: "PUT" },
+  { value: "delete", label: "DELETE" },
+  { value: "patch", label: "PATCH" },
+];
+
+const localAction: URLAction = props.action
+  ? reactive(extend({}, props.action))
+  : reactive({
+      name: "",
+      desc: "",
+      pattern: "",
+      action_type: "web",
+      rest_body: "{\n    \n}",
+      rest_method: "get",
+      rest_headers: "{\n    \n}",
+    } as URLAction);
+
+const disableBodyTab = computed(() =>
+  ["get", "delete"].includes(localAction.rest_method),
+);
+const tab = ref(disableBodyTab.value ? "headers" : "body");
+
+watch(
+  () => localAction.rest_method,
+  () => {
+    disableBodyTab.value ? (tab.value = "headers") : undefined;
   },
-  computed: {
-    title() {
-      return this.editing ? "Edit URL Action" : "Add URL Action";
-    },
-    editing() {
-      return !!this.action;
-    },
-  },
-  methods: {
-    submit() {
-      this.$q.loading.show();
+);
 
-      let data = {
-        ...this.localAction,
-      };
+async function submit() {
+  $q.loading.show();
 
-      if (this.editing) {
-        this.$axios
-          .put(`/core/urlaction/${data.id}/`, data)
-          .then(() => {
-            this.$q.loading.hide();
-            this.onOk();
-            this.notifySuccess("Url Action was edited!");
-          })
-          .catch(() => {
-            this.$q.loading.hide();
-          });
+  try {
+    props.action
+      ? await editURLAction(localAction.id, localAction)
+      : await saveURLAction(localAction);
+    onDialogOK();
+    notifySuccess("Url Action was edited!");
+  } catch (e) {}
+
+  $q.loading.hide();
+}
+
+const editorDiv = ref<HTMLElement | null>(null);
+let editor: monaco.editor.IStandaloneCodeEditor;
+var modelBodyUri = monaco.Uri.parse("model://body"); // a made up unique URI for our model
+var modelHeadersUri = monaco.Uri.parse("model://headers"); // a made up unique URI for our model
+var modelBody = monaco.editor.createModel(
+  localAction.rest_body,
+  "json",
+  modelBodyUri,
+);
+
+var modelHeaders = monaco.editor.createModel(
+  localAction.rest_headers,
+  "json",
+  modelHeadersUri,
+);
+
+// watch tab change and change model
+watch(tab, (newValue) => {
+  if (newValue === "body") {
+    editor.setModel(modelBody);
+  } else if (newValue === "headers") {
+    editor.setModel(modelHeaders);
+  }
+});
+
+function loadEditor() {
+  const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  editor = monaco.editor.create(editorDiv.value!, {
+    model: modelBody,
+    theme: theme,
+    automaticLayout: true,
+    minimap: { enabled: false },
+    quickSuggestions: false,
+  });
+
+  editor.onDidChangeModelContent(() => {
+    const currentModel = editor.getModel();
+
+    if (currentModel) {
+      if (currentModel?.uri === modelBodyUri) {
+        localAction.rest_body = currentModel.getValue();
       } else {
-        this.$axios
-          .post("/core/urlaction/", data)
-          .then(() => {
-            this.$q.loading.hide();
-            this.onOk();
-            this.notifySuccess("URL Action was added!");
-          })
-          .catch(() => {
-            this.$q.loading.hide();
-          });
+        localAction.rest_headers = currentModel.getValue();
       }
-    },
-    show() {
-      this.$refs.dialog.show();
-    },
-    hide() {
-      this.$refs.dialog.hide();
-    },
-    onHide() {
-      this.$emit("hide");
-    },
-    onOk() {
-      this.$emit("ok");
-      this.hide();
-    },
-  },
-  mounted() {
-    // If pk prop is set that means we are editing
-    if (this.action) Object.assign(this.localAction, this.action);
-  },
-};
+    }
+  });
+}
+
+function cleanupEditors() {
+  modelBody.dispose();
+  modelHeaders.dispose();
+  editor.dispose();
+}
 </script>

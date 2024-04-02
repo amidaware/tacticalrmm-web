@@ -152,7 +152,8 @@ export default {
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
-    } = useScriptDropdown(props.check ? props.check.script : undefined, {
+    } = useScriptDropdown({
+      script: props.check ? props.check.script : undefined,
       onMount: true,
     });
 

@@ -12,6 +12,7 @@
           <q-tab name="urlactions" label="URL Actions" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
+          <q-tab name="tasks" label="Server Tasks" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -603,6 +604,9 @@
                   </q-input>
                 </q-card-section>
               </q-tab-panel> -->
+              <q-tab-panel name="tasks">
+                <ServerTasksTable />
+              </q-tab-panel>
             </q-tab-panels>
           </q-scroll-area>
           <q-card-section class="row items-center">
@@ -647,6 +651,7 @@ import CustomFields from "@/components/modals/coresettings/CustomFields.vue";
 import KeyStoreTable from "@/components/modals/coresettings/KeyStoreTable.vue";
 import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vue";
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
+import ServerTasksTable from "@/components/core/ServerTasksTable.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -656,6 +661,7 @@ export default {
     KeyStoreTable,
     URLActionsTable,
     APIKeysTable,
+    ServerTasksTable,
   },
   mixins: [mixins],
   data() {

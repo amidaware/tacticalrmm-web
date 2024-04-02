@@ -9,7 +9,7 @@
         icon="fas fa-plus"
         text-color="black"
         label="Add URL Action"
-        @click="addAction"
+        @click="addURLAction"
       />
     </div>
     <q-separator />
@@ -17,7 +17,7 @@
       dense
       :rows="actions"
       :columns="columns"
-      v-model:pagination="pagination"
+      :pagination="{ rowsPerPage: 0, sortBy: 'name', descending: true }"
       row-key="id"
       binary-state-sort
       hide-pagination
@@ -30,18 +30,22 @@
         <q-tr
           :props="props"
           class="cursor-pointer"
-          @dblclick="editAction(props.row)"
+          @dblclick="editURLAction(props.row)"
         >
           <!-- context menu -->
           <q-menu context-menu>
             <q-list dense style="min-width: 200px">
-              <q-item clickable v-close-popup @click="editAction(props.row)">
+              <q-item clickable v-close-popup @click="editURLAction(props.row)">
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
                 <q-item-section>Edit</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="deleteAction(props.row)">
+              <q-item
+                clickable
+                v-close-popup
+                @click="deleteURLAction(props.row)"
+              >
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
@@ -63,6 +67,10 @@
           <q-td>
             {{ props.row.desc }}
           </q-td>
+          <!-- action type -->
+          <q-td>
+            {{ props.row.action_type }}
+          </q-td>
           <!-- pattern -->
           <q-td>
             {{ props.row.pattern }}
@@ -73,105 +81,99 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+// composition imports
+import { ref, onMounted } from "vue";
+import { QTableColumn, useQuasar } from "quasar";
+import { fetchURLActions, removeURLAction } from "@/api/core";
+import { notifySuccess } from "@/utils/notify";
+
+// ui imports
 import URLActionsForm from "@/components/modals/coresettings/URLActionsForm.vue";
-import mixins from "@/mixins/mixins";
 
-export default {
-  name: "URLActionTable",
-  mixins: [mixins],
-  data() {
-    return {
-      actions: [],
-      pagination: {
-        rowsPerPage: 0,
-        sortBy: "name",
-        descending: true,
-      },
-      columns: [
-        {
-          name: "name",
-          label: "Name",
-          field: "name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "desc",
-          label: "Description",
-          field: "desc",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "pattern",
-          label: "Pattern",
-          field: "pattern",
-          align: "left",
-          sortable: true,
-        },
-      ],
-    };
-  },
-  methods: {
-    getURLActions() {
-      this.$q.loading.show();
+// types
+import { type URLAction } from "@/types/core/urlactions";
 
-      this.$axios
-        .get("/core/urlaction/")
-        .then((r) => {
-          this.$q.loading.hide();
-          this.actions = r.data;
-        })
-        .catch(() => {
-          this.$q.loading.hide();
-        });
-    },
-    addAction() {
-      this.$q
-        .dialog({
-          component: URLActionsForm,
-        })
-        .onOk(() => {
-          this.getURLActions();
-        });
-    },
-    editAction(action) {
-      this.$q
-        .dialog({
-          component: URLActionsForm,
-          componentProps: {
-            action: action,
-          },
-        })
-        .onOk(() => {
-          this.getURLActions();
-        });
-    },
-    deleteAction(action) {
-      this.$q
-        .dialog({
-          title: `Delete URL Action: ${action.name}?`,
-          cancel: true,
-          ok: { label: "Delete", color: "negative" },
-        })
-        .onOk(() => {
-          this.$q.loading.show();
-          this.$axios
-            .delete(`/core/urlaction/${action.id}/`)
-            .then(() => {
-              this.getURLActions();
-              this.$q.loading.hide();
-              this.notifySuccess(`URL Action: ${action.name} was deleted!`);
-            })
-            .catch(() => {
-              this.$q.loading.hide();
-            });
-        });
-    },
+// setup quasar
+const $q = useQuasar();
+
+const actions = ref([]);
+
+const columns: QTableColumn[] = [
+  {
+    name: "name",
+    label: "Name",
+    field: "name",
+    align: "left",
+    sortable: true,
   },
-  mounted() {
-    this.getURLActions();
+  {
+    name: "action_type",
+    label: "Type",
+    field: "action_type",
+    align: "left",
+    sortable: true,
   },
-};
+  {
+    name: "desc",
+    label: "Description",
+    field: "desc",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "pattern",
+    label: "Pattern",
+    field: "pattern",
+    align: "left",
+    sortable: true,
+  },
+];
+
+async function getURLActions() {
+  $q.loading.show();
+  try {
+    const result = await fetchURLActions();
+    actions.value = result;
+  } catch (e) {
+    console.error(e);
+  }
+
+  $q.loading.hide();
+}
+
+function addURLAction() {
+  $q.dialog({
+    component: URLActionsForm,
+  }).onOk(getURLActions);
+}
+
+function editURLAction(action: URLAction) {
+  $q.dialog({
+    component: URLActionsForm,
+    componentProps: {
+      action: action,
+    },
+  }).onOk(getURLActions);
+}
+function deleteURLAction(action: URLAction) {
+  $q.dialog({
+    title: `Delete URL Action: ${action.name}?`,
+    cancel: true,
+    ok: { label: "Delete", color: "negative" },
+  }).onOk(async () => {
+    $q.loading.show();
+
+    try {
+      await removeURLAction(action.id);
+      await getURLActions();
+      notifySuccess(`URL Action: ${action.name} was deleted!`);
+    } catch (e) {
+      console.error(e);
+    }
+
+    $q.loading.hide();
+  });
+}
+onMounted(getURLActions);
 </script>

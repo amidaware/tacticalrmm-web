@@ -1,5 +1,5 @@
-import { computed, ref } from "vue";
-import { useStore } from "vuex";
+import { ref } from "vue";
+import { useDashboardStore } from "@/stores/dashboard";
 import { fetchAgents } from "@/api/agents";
 import { formatAgentOptions } from "@/utils/format";
 
@@ -13,7 +13,7 @@ export function useAgentDropdown() {
   async function getAgentOptions(flat = false) {
     agentOptions.value = formatAgentOptions(
       await fetchAgents({ detail: false }),
-      flat
+      flat,
     );
   }
 
@@ -29,12 +29,11 @@ export function useAgentDropdown() {
 }
 
 export function cmdPlaceholder(shell) {
-  const store = useStore();
-  const placeholders = computed(() => store.state.run_cmd_placeholder_text);
+  const store = useDashboardStore();
 
-  if (shell === "cmd") return placeholders.value.cmd;
-  else if (shell === "powershell") return placeholders.value.powershell;
-  else return placeholders.value.shell;
+  if (shell === "cmd") return store.runCmdPlaceholders.cmd;
+  else if (shell === "powershell") return store.runCmdPlaceholders.powershell;
+  else return store.runCmdPlaceholders.shell;
 }
 
 export const agentPlatformOptions = [
