@@ -327,10 +327,11 @@ function editServerTask(task: AutomatedTask) {
 }
 
 async function executeServerTask(task: AutomatedTask) {
-  console.log(tasks.value);
   try {
-    const result = await runServerTask(task.id);
-    console.log(result);
+    await runServerTask(task.id);
+    notifySuccess(
+      "Server task sent successfully. Check script output after script execution.",
+    );
   } catch (e) {
     notifyError(`Unable to run task: ${e}`);
   }

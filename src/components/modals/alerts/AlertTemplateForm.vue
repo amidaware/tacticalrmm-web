@@ -935,7 +935,6 @@ async function onSubmit() {
   template.resolved_action_env_vars = resolvedScriptDropdown.defaultEnvVars;
   template.resolved_action_timeout = resolvedScriptDropdown.defaultTimeout;
 
-  console.log(template);
   if (props.alertTemplate) {
     try {
       await saveAlertTemplate(template.id, template);
