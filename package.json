@@ -7,11 +7,7 @@
     "serve": "quasar dev",
     "build": "quasar build",
     "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore",
-    "test:unit:ui": "vitest --ui",
-    "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
-    "test:unit": "vitest",
-    "test:unit:ci": "vitest run"
+    "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
   },
   "dependencies": {
     "@quasar/extras": "1.16.11",
@@ -45,9 +41,6 @@
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-vue": "8.7.1",
     "prettier": "3.2.5",
-    "typescript": "5.4.3",
-    "@vue/test-utils": "^2.4.3",
-    "vitest": "^1.1.0",
-    "@vitest/ui": "^1.1.0"
+    "typescript": "5.4.3"
   }
 }
