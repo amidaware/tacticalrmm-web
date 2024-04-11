@@ -693,7 +693,7 @@ export default {
         this.$q
           .dialog({
             title: "Are you sure?",
-            message: `Delete site: ${node.label}.`,
+            message: `Delete ${node.children ? "client" : "site"}: ${node.label}.`,
             cancel: true,
             ok: { label: "Delete", color: "negative" },
           })
