@@ -7,7 +7,15 @@
   >
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ props.action ? "Edit URL Action" : "Add URL Action" }}
+        {{
+          props.action
+            ? props.type === "web"
+              ? "Edit URL Action"
+              : "Edit Web Hook"
+            : props.type === "web"
+              ? "Add URL Action"
+              : "Add Web Hook"
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -36,16 +44,6 @@
           />
         </q-card-section>
 
-        <!-- url action type -->
-        <q-card-section>
-          <q-option-group
-            v-model="localAction.action_type"
-            :options="URLActionOptions"
-            color="primary"
-            inline
-          />
-        </q-card-section>
-
         <!-- pattern -->
         <q-card-section>
           <q-input
@@ -57,7 +55,7 @@
           />
         </q-card-section>
 
-        <q-card-section v-if="localAction.action_type === 'rest'">
+        <q-card-section v-if="type === 'rest'">
           <q-select
             v-model="localAction.rest_method"
             label="Method"
@@ -69,7 +67,7 @@
           />
         </q-card-section>
 
-        <q-card-section v-show="localAction.action_type === 'rest'">
+        <q-card-section v-show="type === 'rest'">
           <q-toolbar>
             <q-space />
             <q-tabs v-model="tab" dense shrink>
@@ -100,7 +98,7 @@ import { ref, computed, reactive, watch } from "vue";
 import { useDialogPluginComponent, useQuasar, extend } from "quasar";
 import { editURLAction, saveURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
-import { URLAction } from "@/types/core/urlactions";
+import { URLAction, URLActionType } from "@/types/core/urlactions";
 
 import * as monaco from "monaco-editor";
 
@@ -108,18 +106,13 @@ import * as monaco from "monaco-editor";
 defineEmits([...useDialogPluginComponent.emits]);
 
 // define props
-const props = defineProps<{ action?: URLAction }>();
+const props = defineProps<{ type: URLActionType; action?: URLAction }>();
 
 // setup quasar
 const $q = useQuasar();
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 // static data
-const URLActionOptions = [
-  { value: "web", label: "Web" },
-  { value: "rest", label: "REST" },
-];
-
 const URLActionMethods = [
   { value: "get", label: "GET" },
   { value: "post", label: "POST" },
@@ -134,7 +127,7 @@ const localAction: URLAction = props.action
       name: "",
       desc: "",
       pattern: "",
-      action_type: "web",
+      action_type: props.type,
       rest_body: "{\n    \n}",
       rest_method: "get",
       rest_headers: "{\n    \n}",

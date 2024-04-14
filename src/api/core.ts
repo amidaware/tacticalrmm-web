@@ -21,7 +21,7 @@ export async function fetchCustomFields(params = {}) {
   }
 }
 
-export async function fetchURLActions(params = {}) {
+export async function fetchURLActions(params = {}): Promise<URLAction[]> {
   const { data } = await axios.get(`${baseUrl}/urlaction/`, {
     params: params,
   });

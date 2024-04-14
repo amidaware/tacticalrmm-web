@@ -10,6 +10,7 @@
           <q-tab name="customfields" label="Custom Fields" />
           <q-tab name="keystore" label="Key Store" />
           <q-tab name="urlactions" label="URL Actions" />
+          <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="tasks" label="Server Tasks" />
@@ -489,17 +490,28 @@
                   </q-input>
                 </q-card-section>
               </q-tab-panel>
+
+              <!-- custom fields -->
               <q-tab-panel name="customfields">
                 <CustomFields />
               </q-tab-panel>
 
+              <!-- key store -->
               <q-tab-panel name="keystore">
                 <KeyStoreTable />
               </q-tab-panel>
 
+              <!-- url actions -->
               <q-tab-panel name="urlactions">
-                <URLActionsTable />
+                <URLActionsTable type="web" />
               </q-tab-panel>
+
+              <!-- web hooks -->
+              <q-tab-panel name="webhooks">
+                <URLActionsTable type="rest" />
+              </q-tab-panel>
+
+              <!-- retention -->
               <q-tab-panel name="retention">
                 <q-card-section class="row">
                   <div class="col-4">Check History (days):</div>

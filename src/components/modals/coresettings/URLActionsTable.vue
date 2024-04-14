@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">URL Actions</div>
+      <div class="text-subtitle2">
+        {{ props.type === "web" ? "URL Actions" : "Web Hooks" }}
+      </div>
       <q-space />
       <q-btn
         size="sm"
@@ -24,6 +26,7 @@
       virtual-scroll
       :rows-per-page-options="[0]"
       no-data-label="No URL Actions added yet"
+      :loading="loading"
     >
       <!-- body slots -->
       <template v-slot:body="props">
@@ -67,10 +70,6 @@
           <q-td>
             {{ props.row.desc }}
           </q-td>
-          <!-- action type -->
-          <q-td>
-            {{ props.row.action_type }}
-          </q-td>
           <!-- pattern -->
           <q-td>
             {{ props.row.pattern }}
@@ -92,25 +91,23 @@ import { notifySuccess } from "@/utils/notify";
 import URLActionsForm from "@/components/modals/coresettings/URLActionsForm.vue";
 
 // types
-import { type URLAction } from "@/types/core/urlactions";
+import { type URLActionType, type URLAction } from "@/types/core/urlactions";
+
+// define props
+const props = defineProps<{ type: URLActionType }>();
 
 // setup quasar
 const $q = useQuasar();
 
-const actions = ref([]);
+const loading = ref(false);
+
+const actions = ref([] as URLAction[]);
 
 const columns: QTableColumn[] = [
   {
     name: "name",
     label: "Name",
     field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "action_type",
-    label: "Type",
-    field: "action_type",
     align: "left",
     sortable: true,
   },
@@ -134,7 +131,9 @@ async function getURLActions() {
   $q.loading.show();
   try {
     const result = await fetchURLActions();
-    actions.value = result;
+    actions.value = result.filter(
+      (action) => action.action_type === props.type,
+    );
   } catch (e) {
     console.error(e);
   }
@@ -145,6 +144,9 @@ async function getURLActions() {
 function addURLAction() {
   $q.dialog({
     component: URLActionsForm,
+    componentProps: {
+      type: props.type,
+    },
   }).onOk(getURLActions);
 }
 
@@ -152,18 +154,19 @@ function editURLAction(action: URLAction) {
   $q.dialog({
     component: URLActionsForm,
     componentProps: {
+      type: props.type,
       action: action,
     },
   }).onOk(getURLActions);
 }
+
 function deleteURLAction(action: URLAction) {
   $q.dialog({
     title: `Delete URL Action: ${action.name}?`,
     cancel: true,
     ok: { label: "Delete", color: "negative" },
   }).onOk(async () => {
-    $q.loading.show();
-
+    loading.value = true;
     try {
       await removeURLAction(action.id);
       await getURLActions();
@@ -171,8 +174,7 @@ function deleteURLAction(action: URLAction) {
     } catch (e) {
       console.error(e);
     }
-
-    $q.loading.hide();
+    loading.value = false;
   });
 }
 onMounted(getURLActions);
