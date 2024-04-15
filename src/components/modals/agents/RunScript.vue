@@ -39,9 +39,9 @@
       <q-form @submit.prevent="sendScript">
         <q-card-section>
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || '*Required']"
             v-model="state.script"
-            :options="filterByPlatformOptions(agent.plat)"
+            :options="filterByPlatformOptions"
             label="Select script"
             outlined
             mapOptions
@@ -130,7 +130,7 @@
         </q-card-section>
         <q-card-section v-if="state.output === 'collector'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || '*Required']"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
@@ -197,7 +197,7 @@ import { formatScriptSyntax } from "@/utils/format";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // types
-import type { Agent } from "@/types/Agent";
+import type { Agent } from "@/types/agents";
 
 // static data
 const outputOptions = [
@@ -231,6 +231,7 @@ const {
   link,
 } = useScriptDropdown({
   script: props.script,
+  plat: props.agent.plat,
   onMount: true,
 });
 const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
@@ -261,7 +262,7 @@ async function sendScript() {
   loading.value = false;
   if (state.value.output === "forget") {
     onDialogHide();
-    notifySuccess(ret.value);
+    if (ret.value) notifySuccess(ret.value);
   }
 }
 

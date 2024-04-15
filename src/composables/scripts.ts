@@ -15,26 +15,32 @@ export interface ScriptOption extends Script {
 
 export interface useScriptDropdownParams {
   script?: number; // set a selected script on init
+  plat?: AgentPlatformType; // set a platform for filterByPlatform
   onMount?: boolean; // loads script options on mount
 }
 
 // script dropdown
-export function useScriptDropdown(opts: useScriptDropdownParams) {
+export function useScriptDropdown(opts?: useScriptDropdownParams) {
   const scriptOptions = ref([] as ScriptOption[]);
   const defaultTimeout = ref(30);
   const defaultArgs = ref([] as string[]);
   const defaultEnvVars = ref([] as string[]);
-  const script = ref(opts.script);
+  const script = ref(opts?.script);
   const scriptName = ref("");
   const syntax = ref<string | undefined>("");
   const link = ref<string | undefined>("");
+  const plat = ref<AgentPlatformType | undefined>(opts?.plat);
   const baseUrl =
     "https://github.com/amidaware/community-scripts/blob/main/scripts/";
 
   // specify parameters to filter out community scripts
-  async function getScriptOptions(showCommunityScripts = false) {
+  async function getScriptOptions() {
     scriptOptions.value = Object.freeze(
-      formatScriptOptions(await fetchScripts({ showCommunityScripts })),
+      formatScriptOptions(
+        await fetchScripts({
+          showCommunityScripts: showCommunityScripts.value,
+        }),
+      ),
     ) as ScriptOption[];
   }
 
@@ -64,33 +70,34 @@ export function useScriptDropdown(opts: useScriptDropdownParams) {
   const showCommunityScripts = computed(() => store.state.showCommunityScripts);
 
   // filter for only getting server tasks
-  const serverScriptOptions = computed(() =>
-    removeExtraOptionCategories(
-      scriptOptions.value.filter(
-        (script) =>
-          script.category ||
-          !script.supported_platforms ||
-          script.supported_platforms.length === 0 ||
-          script.supported_platforms.includes("linux"),
-      ),
-    ),
+  const serverScriptOptions = computed(
+    () =>
+      removeExtraOptionCategories(
+        scriptOptions.value.filter(
+          (script) =>
+            script.category ||
+            !script.supported_platforms ||
+            script.supported_platforms.length === 0 ||
+            script.supported_platforms.includes("linux"),
+        ),
+      ) as ScriptOption[],
   );
 
-  const filterByPlatformOptions = (plat: AgentPlatformType | undefined) => {
-    if (!plat) {
+  const filterByPlatformOptions = computed(() => {
+    if (!plat.value) {
       return scriptOptions.value;
+    } else {
+      return removeExtraOptionCategories(
+        scriptOptions.value.filter(
+          (script) =>
+            script.category ||
+            !script.supported_platforms ||
+            script.supported_platforms.length === 0 ||
+            script.supported_platforms.includes(plat.value!),
+        ),
+      ) as ScriptOption[];
     }
-
-    return removeExtraOptionCategories(
-      scriptOptions.value.filter(
-        (script) =>
-          script.category ||
-          !script.supported_platforms ||
-          script.supported_platforms.length === 0 ||
-          script.supported_platforms.includes(plat),
-      ),
-    );
-  };
+  });
 
   function reset() {
     defaultTimeout.value = 30;
@@ -101,8 +108,7 @@ export function useScriptDropdown(opts: useScriptDropdownParams) {
     link.value = "";
   }
 
-  if (opts.onMount)
-    onMounted(() => getScriptOptions(showCommunityScripts.value));
+  if (opts?.onMount) onMounted(() => getScriptOptions());
 
   return {
     //data
@@ -113,14 +119,15 @@ export function useScriptDropdown(opts: useScriptDropdownParams) {
     scriptName,
     syntax,
     link,
+    plat,
 
     scriptOptions, // unfiltered options
-    serverScriptOptions, //only scripts that can run on server
+    serverScriptOptions, // only scripts that can run on server
+    filterByPlatformOptions, // use the returned plat to change options
 
     //methods
     getScriptOptions,
-    filterByPlatformOptions,
-    reset,
+    reset, // resets dropdown selection state
   };
 }
 

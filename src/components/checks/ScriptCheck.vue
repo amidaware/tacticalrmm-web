@@ -8,7 +8,7 @@
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
-      <q-card-section v-if="scriptOptions.length === 0">
+      <q-card-section v-if="filterByPlatformOptions.length === 0">
         <p>You need to upload a script first</p>
         <p>Settings -> Script Manager</p>
       </q-card-section>
@@ -19,7 +19,7 @@
             :rules="[(val) => !!val || '*Required']"
             outlined
             v-model="state.script"
-            :options="scriptOptions"
+            :options="filterByPlatformOptions"
             label="Select script"
             mapOptions
             :disable="!!check"
@@ -140,6 +140,7 @@ export default {
   props: {
     check: Object,
     parent: Object, // {agent: agent.agent_id} or {policy: policy.id}
+    plat: String,
   },
   setup(props) {
     // setup quasar dialog
@@ -148,12 +149,13 @@ export default {
     // setup script dropdown
     const {
       script,
-      scriptOptions,
+      filterByPlatformOptions,
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
     } = useScriptDropdown({
       script: props.check ? props.check.script : undefined,
+      plat: props.plat,
       onMount: true,
     });
 
@@ -182,7 +184,7 @@ export default {
 
       // non-reactive data
       failOptions,
-      scriptOptions,
+      filterByPlatformOptions,
       severityOptions,
       envVarsLabel,
 

@@ -41,7 +41,7 @@
                 v-model="collector"
                 class="q-pb-sm"
                 @update:model-value="
-                  localTask.custom_field = null;
+                  localTask.custom_field = undefined;
                   localTask.collector_all_output = false;
                 "
               />
@@ -106,13 +106,7 @@
                   class="col-3"
                   label="Select script"
                   v-model="script"
-                  :options="
-                    type === 'policy'
-                      ? scriptOptions
-                      : type === 'server'
-                        ? filterByPlatformOptions('linux')
-                        : filterByPlatformOptions(plat)
-                  "
+                  :options="filterByPlatformOptions"
                   filled
                   mapOptions
                   filterable
@@ -904,6 +898,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 const {
   script,
   scriptOptions,
+  plat,
   filterByPlatformOptions,
   defaultTimeout,
   defaultArgs,
@@ -912,6 +907,14 @@ const {
 } = useScriptDropdown({
   onMount: true,
 });
+
+// set plat
+plat.value =
+  props.type === "policy"
+    ? undefined // get all scripts
+    : props.type === "server"
+      ? "linux" // get only linux scripts for server
+      : props.plat; // filter scripts based on supported plat
 
 // set defaultTimeout to 30
 defaultTimeout.value = 30;

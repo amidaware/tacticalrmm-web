@@ -83,7 +83,7 @@
           <tactical-dropdown
             :rules="[(val) => !!val || '*Required']"
             v-model="state.script"
-            :options="filteredScriptOptions"
+            :options="filterByPlatformOptions"
             label="Select Script"
             outlined
             mapOptions
@@ -210,7 +210,14 @@
 
 <script>
 // composition imports
-import { ref, computed, watch, onMounted } from "vue";
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  defineComponent,
+} from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useAgentDropdown } from "@/composables/agents";
@@ -218,7 +225,6 @@ import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
-import { removeExtraOptionCategories } from "@/utils/format";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
 // ui imports
@@ -250,7 +256,7 @@ const patchModeOptions = [
   { label: "Install", value: "install" },
 ];
 
-export default {
+export default defineComponent({
   name: "BulkAction",
   components: { TacticalDropdown },
   emits: [...useDialogPluginComponent.emits],
@@ -259,7 +265,7 @@ export default {
   },
   setup(props) {
     const shellOptions = computed(() => {
-      if (state.value.osType === "windows") {
+      if (state.osType === "windows") {
         return [
           { label: "CMD", value: "cmd" },
           { label: "Powershell", value: "powershell" },
@@ -286,7 +292,8 @@ export default {
     // dropdown setup
     const {
       script,
-      scriptOptions,
+      plat,
+      filterByPlatformOptions,
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
@@ -297,7 +304,7 @@ export default {
     const { client, clientOptions, getClientOptions } = useClientDropdown();
 
     // bulk action logic
-    const state = ref({
+    const state = reactive({
       mode: props.mode,
       target: "client",
       monType: "all",
@@ -319,7 +326,7 @@ export default {
     const loading = ref(false);
 
     watch(
-      () => state.value.target,
+      () => state.target,
       () => {
         client.value = null;
         site.value = null;
@@ -327,17 +334,23 @@ export default {
       },
     );
 
+    plat.value = state.osType;
+
     watch(
-      () => state.value.osType,
+      () => state.osType,
       (newValue) => {
-        state.value.custom_shell = null;
-        state.value.run_as_user = false;
+        state.custom_shell = null;
+        state.run_as_user = false;
 
         if (newValue === "windows") {
-          state.value.shell = "cmd";
+          state.shell = "cmd";
         } else {
-          state.value.shell = "/bin/bash";
+          state.shell = "/bin/bash";
         }
+
+        // set plat to filter script options
+        if (newValue === "all") plat.value = undefined;
+        else plat.value = newValue;
       },
     );
 
@@ -345,7 +358,7 @@ export default {
       loading.value = true;
 
       try {
-        const data = await runBulkAction(state.value);
+        const data = await runBulkAction(state);
         notifySuccess(data);
         onDialogHide();
       } catch (e) {}
@@ -355,9 +368,7 @@ export default {
 
     const supportsRunAsUser = () => {
       const modes = ["script", "command"];
-      return (
-        state.value.osType === "windows" && modes.includes(state.value.mode)
-      );
+      return state.osType === "windows" && modes.includes(state.mode);
     };
 
     // set modal title and caption
@@ -369,21 +380,6 @@ export default {
           : props.mode === "patch"
             ? "Bulk Patch Management"
             : "";
-    });
-
-    const filteredScriptOptions = computed(() => {
-      if (props.mode !== "script") return [];
-      if (state.value.osType === "all") return scriptOptions.value;
-
-      return removeExtraOptionCategories(
-        scriptOptions.value.filter(
-          (script) =>
-            script.category ||
-            !script.supported_platforms ||
-            script.supported_platforms.length === 0 ||
-            script.supported_platforms.includes(state.value.osType),
-        ),
-      );
     });
 
     // component lifecycle hooks
@@ -400,7 +396,7 @@ export default {
       agentOptions,
       clientOptions,
       siteOptions,
-      filteredScriptOptions,
+      filterByPlatformOptions,
       loading,
       shellOptions,
       filteredOsTypeOptions,
@@ -426,5 +422,5 @@ export default {
       onDialogHide,
     };
   },
-};
+});
 </script>
