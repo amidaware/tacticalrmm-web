@@ -10,7 +10,7 @@
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add URL Action"
+        :label="`Add ${props.type === 'web' ? 'URL Action' : 'Web Hook'}`"
         @click="addURLAction"
       />
     </div>
@@ -25,7 +25,7 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No URL Actions added yet"
+      :no-data-label="`No ${props.type === 'web' ? 'URL Actions' : 'Web Hooks'} added yet`"
       :loading="loading"
     >
       <!-- body slots -->
