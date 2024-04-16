@@ -868,7 +868,7 @@ const severityOptions = [
 const actionTypeOptions = [
   { label: "Script", value: "script" },
   { label: "Server", value: "server" },
-  { label: "Rest Action", value: "rest" },
+  { label: "Web Hook", value: "rest" },
 ];
 
 const stepper = ref<QStepper | null>(null);
