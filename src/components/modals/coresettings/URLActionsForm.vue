@@ -176,20 +176,29 @@ var modelHeaders = monaco.editor.createModel(
 );
 
 // watch tab change and change model
-watch(tab, (newValue) => {
+watch(tab, (newValue, oldValue) => {
+  if (oldValue === "body") {
+    localAction.rest_body = editor.getValue();
+  } else if (oldValue === "headers") {
+    localAction.rest_headers = editor.getValue();
+  }
+
   if (newValue === "body") {
     editor.setModel(modelBody);
+    editor.setValue(localAction.rest_body);
   } else if (newValue === "headers") {
     editor.setModel(modelHeaders);
+    editor.setValue(localAction.rest_headers);
   }
 });
 
 function loadEditor() {
   const theme = $q.dark.isActive ? "vs-dark" : "vs-light";
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  editor = monaco.editor.create(editorDiv.value!, {
-    model: modelBody,
+  if (!editorDiv.value) return;
+
+  editor = monaco.editor.create(editorDiv.value, {
+    model: tab.value === "body" ? modelBody : modelHeaders,
     theme: theme,
     automaticLayout: true,
     minimap: { enabled: false },
@@ -197,14 +206,10 @@ function loadEditor() {
   });
 
   editor.onDidChangeModelContent(() => {
-    const currentModel = editor.getModel();
-
-    if (currentModel) {
-      if (currentModel?.uri === modelBodyUri) {
-        localAction.rest_body = currentModel.getValue();
-      } else {
-        localAction.rest_headers = currentModel.getValue();
-      }
+    if (tab.value === "body") {
+      localAction.rest_body = editor.getValue();
+    } else if (tab.value === "headers") {
+      localAction.rest_headers = editor.getValue();
     }
   });
 }
