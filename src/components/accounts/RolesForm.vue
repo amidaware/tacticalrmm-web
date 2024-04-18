@@ -179,6 +179,14 @@
                 v-model="localRole.can_manage_customfields"
                 label="Edit Custom Fields"
               />
+              <q-checkbox
+                v-model="localRole.can_run_servercli"
+                label="Run Server CLI"
+              />
+              <q-checkbox
+                v-model="localRole.can_run_servertasks"
+                label="Run Server Scripts/Tasks"
+              />
             </div>
           </q-card-section>
 
@@ -511,6 +519,9 @@ export default {
           can_manage_roles: false,
           can_view_clients: [],
           can_view_sites: [],
+          // serverside scripts and cli
+          can_run_servertasks: false,
+          can_run_servercli: false,
           // reporting perms
           can_view_reports: false,
           can_manage_reports: false,
