@@ -12,13 +12,14 @@
   "dependencies": {
     "@quasar/extras": "1.16.11",
     "@vueuse/core": "10.9.0",
+    "@vueuse/integrations": "^10.9.0",
     "@vueuse/shared": "10.9.0",
     "apexcharts": "3.48.0",
     "axios": "1.6.8",
     "dotenv": "16.4.5",
     "monaco-editor": "0.47.0",
     "pinia": "^2.1.7",
-    "qrcode.vue": "3.4.1",
+    "qrcode": "^1.5.3",
     "quasar": "2.15.2",
     "vue": "3.4.21",
     "vue-router": "4.3.0",
@@ -30,9 +31,9 @@
     "yaml": "2.4.1"
   },
   "devDependencies": {
-    "@quasar/cli": "2.4.0",
     "@intlify/unplugin-vue-i18n": "4.0.0",
     "@quasar/app-vite": "1.8.0",
+    "@quasar/cli": "2.4.0",
     "@types/node": "20.12.2",
     "@typescript-eslint/eslint-plugin": "7.4.0",
     "@typescript-eslint/parser": "7.4.0",

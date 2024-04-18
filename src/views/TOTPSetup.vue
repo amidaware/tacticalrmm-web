@@ -7,20 +7,20 @@
           <q-card-section class="row items-center">
             <div class="text-h6">Setup 2-Factor</div>
           </q-card-section>
-          <q-card-section v-if="qr_url">
+          <q-card-section v-if="qrUrl">
             <p>
               Scan the QR Code with your authenticator app and then click Finish
               to be redirected back to the signin page. If you navigate away
               from this page you 2FA signin will need to be reset!
             </p>
-            <qrcode-vue :value="qr_url" :size="200" level="H" />
+            <img :src="qrCode" alt="QR Code" />
           </q-card-section>
-          <q-card-section v-if="totp_key">
+          <q-card-section v-if="totpKey">
             <p>
               You can also use the below code to configure the authenticator
               manually.
             </p>
-            <p>{{ totp_key }}</p>
+            <p>{{ totpKey }}</p>
           </q-card-section>
           <q-card-actions align="center">
             <q-btn
@@ -28,6 +28,7 @@
               color="primary"
               class="full-width"
               @click="logout"
+              :loading="loading"
             />
           </q-card-actions>
         </q-card>
@@ -37,65 +38,63 @@
   </div>
 </template>
 
-<script>
-import QrcodeVue from "qrcode.vue";
-import mixins from "@/mixins/mixins";
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useQuasar } from "quasar";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
-export default {
-  name: "TOTPSetup",
-  mixins: [mixins],
-  components: { QrcodeVue },
-  data() {
-    return {
-      totp_key: null,
-      qr_url: null,
-      cleared_token: false,
-    };
-  },
-  methods: {
-    getQRCodeData() {
-      this.$q.loading.show();
+import { useQRCode } from "@vueuse/integrations/useQRCode";
 
-      this.$axios
-        .post("/accounts/users/setup_totp/")
-        .then((r) => {
-          this.$q.loading.hide();
+// setup quasar
+const $q = useQuasar();
 
-          if (r.data === "totp token already set") {
-            //don't logout user if totp is already set
-            this.cleared_token = true;
-            this.$router.push({ name: "Login" });
-          } else {
-            this.totp_key = r.data.totp_key;
-            this.qr_url = r.data.qr_url;
-          }
-        })
-        .catch(() => this.$q.loading.hide());
-    },
-    logout() {
-      this.$q.loading.show();
-      this.$store
-        .dispatch("destroyToken")
-        .then(() => {
-          this.cleared_token = true;
-          this.$q.loading.hide();
-          this.$router.push({ name: "Login" });
-        })
-        .catch(() => {
-          this.cleared_token = true;
-          this.$q.loading.hide();
-          this.$router.push({ name: "Login" });
-        });
-    },
-  },
-  mounted() {
-    this.getQRCodeData();
-    this.$q.dark.set(false);
-  },
-  beforeUnmount() {
-    if (!this.cleared_token) {
-      this.logout();
+// setup auth store
+const auth = useAuthStore();
+
+// setup router
+const router = useRouter();
+
+const totpKey = ref("");
+const qrUrl = ref("");
+const clearToken = ref(true);
+const loading = ref(false);
+
+const qrCode = useQRCode(qrUrl);
+
+async function getQRCodeData() {
+  loading.value = true;
+
+  try {
+    const data = await auth.setupTotp();
+
+    if (!data) {
+      //don't logout user if totp is already set
+      clearToken.value = false;
+      router.push({ name: "Login" });
+    } else {
+      totpKey.value = data.totp_key;
+      qrUrl.value = data.qr_url;
     }
-  },
-};
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function logout() {
+  await auth.logout();
+  clearToken.value = false;
+  router.push({ name: "Login" });
+}
+
+onMounted(() => {
+  getQRCodeData();
+  $q.dark.set(false);
+});
+
+onBeforeUnmount(async () => {
+  if (clearToken.value) {
+    await auth.logout();
+  }
+});
 </script>

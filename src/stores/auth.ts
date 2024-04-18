@@ -19,6 +19,11 @@ interface CheckCredentialsResponse {
   totp?: boolean;
 }
 
+interface TOTPSetupResponse {
+  qr_url: string;
+  totp_key: string;
+}
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     username: useStorage("username", null),
@@ -56,6 +61,10 @@ export const useAuthStore = defineStore("auth", {
       }
       this.token = null;
       this.username = null;
+    },
+    async setupTotp(): Promise<TOTPSetupResponse | false> {
+      const { data } = await axios.post("/accounts/users/setup_totp/");
+      return data;
     },
   },
 });
