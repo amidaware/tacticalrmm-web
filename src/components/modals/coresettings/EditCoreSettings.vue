@@ -13,7 +13,7 @@
           <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
-          <q-tab name="tasks" label="Server Tasks" />
+          <!-- <q-tab name="tasks" label="Server Tasks" /> -->
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -616,9 +616,9 @@
                   </q-input>
                 </q-card-section>
               </q-tab-panel> -->
-              <q-tab-panel name="tasks">
+              <!-- <q-tab-panel name="tasks">
                 <ServerTasksTable />
-              </q-tab-panel>
+              </q-tab-panel> -->
             </q-tab-panels>
           </q-scroll-area>
           <q-card-section class="row items-center">
