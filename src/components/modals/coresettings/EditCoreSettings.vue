@@ -663,7 +663,7 @@ import CustomFields from "@/components/modals/coresettings/CustomFields.vue";
 import KeyStoreTable from "@/components/modals/coresettings/KeyStoreTable.vue";
 import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vue";
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
-import ServerTasksTable from "@/components/core/ServerTasksTable.vue";
+// import ServerTasksTable from "@/components/core/ServerTasksTable.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -673,7 +673,7 @@ export default {
     KeyStoreTable,
     URLActionsTable,
     APIKeysTable,
-    ServerTasksTable,
+    // ServerTasksTable,
   },
   mixins: [mixins],
   data() {
