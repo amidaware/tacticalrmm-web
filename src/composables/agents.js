@@ -1,10 +1,10 @@
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { fetchAgents } from "@/api/agents";
 import { formatAgentOptions } from "@/utils/format";
 
 // agent dropdown
-export function useAgentDropdown() {
+export function useAgentDropdown(opts = {}) {
   const agent = ref(null);
   const agents = ref([]);
   const agentOptions = ref([]);
@@ -15,6 +15,10 @@ export function useAgentDropdown() {
       await fetchAgents({ detail: false }),
       flat,
     );
+  }
+
+  if (opts.onMount) {
+    onMounted(getAgentOptions);
   }
 
   return {

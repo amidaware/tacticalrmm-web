@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import type { URLAction, URLActionRunResponse } from "@/types/core/urlactions";
+import type {
+  URLAction,
+  URLActionRunResponse,
+  TestRunURLActionRequest,
+} from "@/types/core/urlactions";
 import type { AutomatedTask } from "@/types/tasks";
 
 const baseUrl = "/core";
@@ -45,6 +49,13 @@ export async function removeURLAction(id: number) {
 
 export async function runURLAction(id: number): Promise<URLActionRunResponse> {
   const { data } = await axios.post(`${baseUrl}/urlaction/${id}/run/`);
+  return data;
+}
+
+export async function runTestURLAction(
+  payload: TestRunURLActionRequest,
+): Promise<URLActionRunResponse> {
+  const { data } = await axios.post(`${baseUrl}/urlaction/run/test/`, payload);
   return data;
 }
 

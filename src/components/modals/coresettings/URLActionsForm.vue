@@ -85,6 +85,14 @@
       </div>
 
       <q-card-actions align="right">
+        <q-btn
+          v-if="type === 'rest'"
+          flat
+          label="Test"
+          color="primary"
+          @click="testWebHook"
+        />
+        <q-space />
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn flat label="Submit" color="primary" @click="submit" />
       </q-card-actions>
@@ -99,6 +107,9 @@ import { useDialogPluginComponent, useQuasar, extend } from "quasar";
 import { editURLAction, saveURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
 import { URLAction, URLActionType } from "@/types/core/urlactions";
+
+// ui imports
+import TestURLAction from "@/components/modals/coresettings/TestURLAction.vue";
 
 import * as monaco from "monaco-editor";
 
@@ -174,6 +185,15 @@ var modelHeaders = monaco.editor.createModel(
   "json",
   modelHeadersUri,
 );
+
+function testWebHook() {
+  $q.dialog({
+    component: TestURLAction,
+    componentProps: {
+      urlAction: localAction,
+    },
+  });
+}
 
 // watch tab change and change model
 watch(tab, (newValue, oldValue) => {
