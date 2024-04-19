@@ -32,7 +32,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useCliWSConnection } from "@/websocket/websocket";
 
-import "xterm/css/xterm.css";
+import "@xterm/xterm/css/xterm.css";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
