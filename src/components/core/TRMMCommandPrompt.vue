@@ -27,8 +27,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import { Terminal } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
+import { Terminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useCliWSConnection } from "@/websocket/websocket";
 
