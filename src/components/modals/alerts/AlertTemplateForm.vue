@@ -172,7 +172,7 @@
                 outlined
                 clearable
                 v-model="template.action"
-                :options="template.action"
+                :options="scriptOptions"
                 mapOptions
                 filterable
               />
@@ -272,7 +272,7 @@
                 label="Resolved Action"
                 outlined
                 clearable
-                v-model="template.action"
+                v-model="template.resolved_action"
                 :options="scriptOptions"
                 mapOptions
                 filterable
