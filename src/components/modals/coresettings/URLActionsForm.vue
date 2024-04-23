@@ -92,7 +92,6 @@
           color="primary"
           @click="testWebHook"
         />
-        <q-space />
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn flat label="Submit" color="primary" @click="submit" />
       </q-card-actions>
