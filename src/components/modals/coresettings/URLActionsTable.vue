@@ -68,11 +68,11 @@
           </q-td>
           <!-- desc -->
           <q-td>
-            {{ props.row.desc }}
+            {{ truncateText(props.row.desc, 20) }}
           </q-td>
           <!-- pattern -->
           <q-td>
-            {{ props.row.pattern }}
+            {{ truncateText(props.row.pattern, 50) }}
           </q-td>
         </q-tr>
       </template>
@@ -86,6 +86,7 @@ import { ref, onMounted } from "vue";
 import { QTableColumn, useQuasar } from "quasar";
 import { fetchURLActions, removeURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
+import { truncateText } from "@/utils/format";
 
 // ui imports
 import URLActionsForm from "@/components/modals/coresettings/URLActionsForm.vue";
