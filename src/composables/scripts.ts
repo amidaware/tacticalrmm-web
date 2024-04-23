@@ -56,7 +56,7 @@ export function useScriptDropdown(opts?: useScriptDropdownParams) {
         defaultArgs.value = tmpScript.args;
         defaultEnvVars.value = tmpScript.env_vars;
         syntax.value = tmpScript.syntax;
-        scriptName.value = tmpScript.name;
+        scriptName.value = tmpScript.label;
         link.value =
           tmpScript.script_type === "builtin"
             ? `${baseUrl}${tmpScript.filename}`

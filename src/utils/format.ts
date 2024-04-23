@@ -115,11 +115,11 @@ export function formatScriptOptions(data: Script[]): Option[] {
     categories.push("Unassigned");
   }
 
-  categories.sort(); // Sort categories alphabetically
+  categories.sort();
 
   const options: Option[] = [];
   categories.forEach((cat) => {
-    options.push({ category: cat, label: cat, value: cat }); // Assuming you want the category itself as an option
+    options.push({ category: cat });
 
     const scripts = categoryMap
       .get(cat)!
@@ -170,7 +170,7 @@ export function formatAgentOptions(
     const categories = [...new Set(agents.map((agent) => agent.cat))].sort();
 
     categories.forEach((cat) => {
-      options.push({ category: cat, label: cat, value: cat });
+      options.push({ category: cat });
       const agentsInCategory = agents.filter((agent) => agent.cat === cat);
       const sortedAgents = agentsInCategory.sort((a, b) =>
         a.label.localeCompare(b.label),
