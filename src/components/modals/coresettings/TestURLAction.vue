@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin" style="width: 70vw">
+    <q-card class="q-dialog-plugin" style="width: 80vw">
       <q-bar>
         Testing {{ urlAction.name }}
         <q-space />
@@ -54,16 +54,22 @@
         />
       </q-card-section>
 
-      <q-card-section style="height: 40vh" class="scroll">
+      <q-card-section style="height: 60vh" class="scroll">
         <div>
           URL:
           <code>{{ return_url }}</code>
         </div>
         <br />
         <div>
+          Body
+          <q-separator />
+          <code>{{ return_request }}</code>
+        </div>
+        <br />
+        <div>
           Response
           <q-separator />
-          <pre>{{ return_result }}</pre>
+          <code>{{ return_result }}</code>
         </div>
       </q-card-section>
 
@@ -101,7 +107,7 @@ const { agent, agentOptions } = useAgentDropdown({ onMount: true });
 const { client, clientOptions } = useClientDropdown(true);
 const { site, siteOptions } = useSiteDropdown(true);
 
-const runAgainst = ref<"agent" | "site" | "client" | "none">("client");
+const runAgainst = ref<"agent" | "site" | "client" | "none">("none");
 
 const runAgainstOptions = [
   { label: "Agent", value: "agent" },
@@ -122,23 +128,23 @@ const state = reactive({
   rest_body: props.urlAction.rest_body,
   rest_headers: props.urlAction.rest_headers,
   rest_method: props.urlAction.rest_method,
-  run_instance_type: runAgainst.value,
-  run_instance_id: runAgainstID.value,
+  run_instance_type: runAgainst,
+  run_instance_id: runAgainstID,
 });
 
-const return_url = ref();
-const return_result = ref();
+const return_url = ref("");
+const return_result = ref("");
+const return_request = ref("");
 
 async function submit() {
   loading.value = true;
 
   try {
-    const { url, result } = await runTestURLAction(state);
+    const { url, result, request } = await runTestURLAction(state);
 
     return_result.value = result;
     return_url.value = url;
-
-    console.log(result);
+    return_request.value = request;
   } catch (e) {
     console.error(e);
   } finally {

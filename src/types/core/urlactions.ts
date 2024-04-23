@@ -16,6 +16,7 @@ export interface URLAction {
 export interface URLActionRunResponse {
   url: string;
   result: string;
+  request: string;
 }
 
 export interface TestRunURLActionRequest {
