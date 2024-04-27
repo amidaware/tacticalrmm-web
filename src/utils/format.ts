@@ -192,7 +192,6 @@ export function formatCustomFieldOptions(
     // For a flat list, simply format the options based on the "name" property
     return _formatOptions(data, { label: "name", flat: true });
   } else {
-    console.log(data);
     // Predefined categories for organizing the custom fields
     const categories = ["Client", "Site", "Agent"];
     const options: Option[] = [];
@@ -200,7 +199,6 @@ export function formatCustomFieldOptions(
     categories.forEach((cat) => {
       // Add a category header as an option
       options.push({ category: cat, label: cat, value: cat });
-      console.log(cat);
 
       // Filter and map the custom fields that match the current category
       const matchingFields = data

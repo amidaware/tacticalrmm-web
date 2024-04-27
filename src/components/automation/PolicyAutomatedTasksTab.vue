@@ -293,8 +293,7 @@ export default {
         .dialog({
           component: AutomatedTaskForm,
           componentProps: {
-            parent: this.selectedPolicy,
-            type: "policy",
+            parent: { policy: this.selectedPolicy },
           },
         })
         .onOk(this.getTasks);
@@ -305,8 +304,7 @@ export default {
           component: AutomatedTaskForm,
           componentProps: {
             task: task,
-            parent: this.selectedPolicy,
-            type: "policy",
+            parent: { policy: this.selectedPolicy },
           },
         })
         .onOk(this.getTasks);
