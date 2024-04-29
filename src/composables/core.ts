@@ -7,12 +7,22 @@ import {
 import type { CustomField } from "@/types/core/customfields";
 import type { URLAction } from "@/types/core/urlactions";
 
+export interface URLActionOption extends URLAction {
+  value: number;
+  label: string;
+}
+
+export interface CustomFieldOption extends CustomField {
+  value: number;
+  label: string;
+}
+
 export interface UseCustomFieldDropdownParams {
   onMount?: boolean;
 }
 
 export function useCustomFieldDropdown(opts: UseCustomFieldDropdownParams) {
-  const customFieldOptions = ref([] as CustomField[]);
+  const customFieldOptions = ref([] as CustomFieldOption[]);
 
   // type can be "client", "site", or "agent"
   async function getCustomFieldOptions(model = null, flat = false) {
@@ -45,7 +55,7 @@ export interface UseURLActionDropdownParams {
 }
 
 export function useURLActionDropdown(opts: UseURLActionDropdownParams) {
-  const urlActionOptions = ref([] as URLAction[]);
+  const urlActionOptions = ref([] as URLActionOption[]);
 
   // type can be "client", "site", or "agent"
   async function getURLActionOptions(flat = false) {
@@ -57,6 +67,10 @@ export function useURLActionDropdown(opts: UseURLActionDropdownParams) {
     );
   }
 
+  const webActionOptions = computed(() =>
+    urlActionOptions.value.filter((action) => action.action_type === "web"),
+  );
+
   const restActionOptions = computed(() =>
     urlActionOptions.value.filter((action) => action.action_type === "rest"),
   );
@@ -66,6 +80,7 @@ export function useURLActionDropdown(opts: UseURLActionDropdownParams) {
   return {
     urlActionOptions,
     restActionOptions,
+    webActionOptions,
 
     //methods
     getURLActionOptions,

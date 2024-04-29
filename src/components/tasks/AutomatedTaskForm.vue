@@ -870,7 +870,7 @@ export default defineComponent({
     // set defaultTimeout to 30
     defaultTimeout.value = 30;
 
-    const { checkOptions, getCheckOptions } = useCheckDropdown(...props.parent);
+    const { checkOptions, getCheckOptions } = useCheckDropdown(props.parent);
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
     // add task logic

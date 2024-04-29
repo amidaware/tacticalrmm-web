@@ -28,7 +28,7 @@
       <q-item-section>Take Control</q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple @click="getURLActions">
+    <q-item clickable v-ripple>
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
       </q-item-section>
@@ -39,7 +39,7 @@
       <q-menu auto-close anchor="top end" self="top start">
         <q-list>
           <q-item
-            v-for="action in urlActions"
+            v-for="action in webActionOptions"
             :key="action.id"
             dense
             clickable
@@ -234,7 +234,7 @@
 import { ref, inject } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
-import { fetchURLActions, runURLAction } from "@/api/core";
+import { runURLAction } from "@/api/core";
 import {
   editAgent,
   agentRebootNow,
@@ -249,6 +249,7 @@ import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
 import { runAgentChecks } from "@/api/checks";
 import { fetchScripts } from "@/api/scripts";
 import { notifySuccess, notifyWarning, notifyError } from "@/utils/notify";
+import { useURLActionDropdown } from "@/composables/core";
 
 // ui imports
 import PendingActions from "@/components/logs/PendingActions.vue";
@@ -277,7 +278,8 @@ export default {
 
     const refreshDashboard = inject("refreshDashboard");
 
-    const urlActions = ref([]);
+    const { webActionOptions } = useURLActionDropdown({ onMount: true });
+
     const favoriteScripts = ref([]);
     const menuLoading = ref(false);
 
@@ -297,21 +299,6 @@ export default {
           agent: agent,
         },
       });
-    }
-
-    async function getURLActions() {
-      menuLoading.value = true;
-      try {
-        urlActions.value = await fetchURLActions();
-
-        if (urlActions.value.length === 0) {
-          notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
-          );
-          return;
-        }
-      } catch (e) {}
-      menuLoading.value = true;
     }
 
     function showSendCommand(agent) {
@@ -549,7 +536,7 @@ export default {
 
     return {
       // reactive data
-      urlActions,
+      webActionOptions,
       favoriteScripts,
 
       // methods
@@ -557,7 +544,6 @@ export default {
       showPendingActionsModal,
       runTakeControl,
       runRemoteBackground,
-      getURLActions,
       runURLAction,
       showSendCommand,
       showRunScript,

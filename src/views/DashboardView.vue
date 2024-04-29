@@ -147,7 +147,7 @@
                         <q-item-section>Assign Alert Template</q-item-section>
                       </q-item>
 
-                      <q-item clickable v-ripple @click="getURLActions">
+                      <q-item clickable v-ripple>
                         <q-item-section side>
                           <q-icon name="open_in_new" />
                         </q-item-section>
@@ -158,7 +158,7 @@
                         <q-menu auto-close anchor="top end" self="top start">
                           <q-list>
                             <q-item
-                              v-for="action in urlActions"
+                              v-for="action in webActionOptions"
                               :key="action.id"
                               dense
                               clickable
@@ -453,6 +453,7 @@ import DeleteClient from "@/components/clients/DeleteClient.vue";
 import InstallAgent from "@/components/modals/agents/InstallAgent.vue";
 import AlertTemplateAdd from "@/components/modals/alerts/AlertTemplateAdd.vue";
 import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
+import { useURLActionDropdown } from "@/composables/core";
 
 import { removeClient, removeSite } from "@/api/clients";
 
@@ -476,6 +477,13 @@ export default {
     };
   },
   mixins: [mixins],
+  setup() {
+    const { webActionOptions } = useURLActionDropdown({ onMount: true });
+
+    return {
+      webActionOptions,
+    };
+  },
   data() {
     return {
       showInstallAgentModal: false,
@@ -488,7 +496,6 @@ export default {
       filterActionsPending: false,
       filterChecksFailing: false,
       filterRebootNeeded: false,
-      urlActions: [],
       columns: [
         {
           name: "smsalert",
@@ -815,17 +822,6 @@ export default {
 
       this.search = filterText;
       this.filterTextLength = filterText.length - 1;
-    },
-    getURLActions() {
-      this.$axios.get("/core/urlaction/").then((r) => {
-        if (r.data.length === 0) {
-          this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
-          );
-          return;
-        }
-        this.urlActions = r.data;
-      });
     },
     runURLAction(id, action, model) {
       const data = {
