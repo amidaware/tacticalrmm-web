@@ -75,7 +75,7 @@ export function useURLActionDropdown(opts: UseURLActionDropdownParams) {
     urlActionOptions.value.filter((action) => action.action_type === "rest"),
   );
 
-  if (opts.onMount) onMounted(getURLActionOptions);
+  if (opts?.onMount) onMounted(getURLActionOptions);
 
   return {
     urlActionOptions,

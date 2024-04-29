@@ -40,15 +40,18 @@
         <q-list>
           <q-item
             v-for="action in webActionOptions"
-            :key="action.id"
+            :key="action.value"
             dense
             clickable
             v-close-popup
             @click="
-              runURLAction({ agent_id: agent.agent_id, action: action.id })
+              runURLAction({ agent_id: agent.agent_id, action: action.value })
             "
           >
-            {{ action.name }}
+            {{ action.label }}
+          </q-item>
+          <q-item v-if="webActionOptions.length === 0" dense>
+            No Web URL Actions Configured
           </q-item>
         </q-list>
       </q-menu>
@@ -281,7 +284,6 @@ export default {
     const { webActionOptions } = useURLActionDropdown({ onMount: true });
 
     const favoriteScripts = ref([]);
-    const menuLoading = ref(false);
 
     function showEditAgent(agent_id) {
       $q.dialog({
@@ -323,7 +325,6 @@ export default {
     async function getFavoriteScripts() {
       favoriteScripts.value = [];
 
-      menuLoading.value = true;
       try {
         const data = await fetchScripts({
           showCommunityScripts: store.state.showCommunityScripts,
