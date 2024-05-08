@@ -28,7 +28,7 @@
       <q-item-section>Take Control</q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple>
+    <q-item clickable v-ripple @click="getURLActions">
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
       </q-item-section>
@@ -39,19 +39,16 @@
       <q-menu auto-close anchor="top end" self="top start">
         <q-list>
           <q-item
-            v-for="action in webActionOptions"
-            :key="action.value"
+            v-for="action in urlActions"
+            :key="action.id"
             dense
             clickable
             v-close-popup
             @click="
-              runURLAction({ agent_id: agent.agent_id, action: action.value })
+              runURLAction({ agent_id: agent.agent_id, action: action.id })
             "
           >
-            {{ action.label }}
-          </q-item>
-          <q-item v-if="webActionOptions.length === 0" dense>
-            No Web URL Actions Configured
+            {{ action.name }}
           </q-item>
         </q-list>
       </q-menu>
@@ -237,7 +234,7 @@
 import { ref, inject } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
-import { runURLAction } from "@/api/core";
+import { fetchURLActions, runURLAction } from "@/api/core";
 import {
   editAgent,
   agentRebootNow,
@@ -252,7 +249,6 @@ import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
 import { runAgentChecks } from "@/api/checks";
 import { fetchScripts } from "@/api/scripts";
 import { notifySuccess, notifyWarning, notifyError } from "@/utils/notify";
-import { useURLActionDropdown } from "@/composables/core";
 
 // ui imports
 import PendingActions from "@/components/logs/PendingActions.vue";
@@ -281,9 +277,9 @@ export default {
 
     const refreshDashboard = inject("refreshDashboard");
 
-    const { webActionOptions } = useURLActionDropdown({ onMount: true });
-
+    const urlActions = ref([]);
     const favoriteScripts = ref([]);
+    const menuLoading = ref(false);
 
     function showEditAgent(agent_id) {
       $q.dialog({
@@ -301,6 +297,23 @@ export default {
           agent: agent,
         },
       });
+    }
+
+    async function getURLActions() {
+      menuLoading.value = true;
+      try {
+        urlActions.value = (await fetchURLActions()).filter(
+          (action) => action.action_type === "web",
+        );
+
+        if (urlActions.value.length === 0) {
+          notifyWarning(
+            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+          );
+          return;
+        }
+      } catch (e) {}
+      menuLoading.value = true;
     }
 
     function showSendCommand(agent) {
@@ -325,6 +338,7 @@ export default {
     async function getFavoriteScripts() {
       favoriteScripts.value = [];
 
+      menuLoading.value = true;
       try {
         const data = await fetchScripts({
           showCommunityScripts: store.state.showCommunityScripts,
@@ -537,7 +551,7 @@ export default {
 
     return {
       // reactive data
-      webActionOptions,
+      urlActions,
       favoriteScripts,
 
       // methods
@@ -545,6 +559,7 @@ export default {
       showPendingActionsModal,
       runTakeControl,
       runRemoteBackground,
+      getURLActions,
       runURLAction,
       showSendCommand,
       showRunScript,

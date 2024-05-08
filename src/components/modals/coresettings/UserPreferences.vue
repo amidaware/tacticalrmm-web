@@ -319,10 +319,12 @@ export default {
           );
           return;
         }
-        this.urlActions = r.data.map((action) => ({
-          label: action.name,
-          value: action.id,
-        }));
+        this.urlActions = r.data
+          .filter((action) => action.action_type === "web")
+          .map((action) => ({
+            label: action.name,
+            value: action.id,
+          }));
       });
     },
     getUserPrefs() {

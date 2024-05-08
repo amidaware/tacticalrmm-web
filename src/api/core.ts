@@ -1,10 +1,11 @@
 import axios from "axios";
+import { openURL } from "quasar";
 
 import type {
   URLAction,
-  URLActionRunResponse,
   TestRunURLActionRequest,
 } from "@/types/core/urlactions";
+
 import type { AutomatedTask } from "@/types/tasks";
 
 const baseUrl = "/core";
@@ -47,14 +48,21 @@ export async function removeURLAction(id: number) {
   return data;
 }
 
-export async function runURLAction(id: number): Promise<URLActionRunResponse> {
-  const { data } = await axios.post(`${baseUrl}/urlaction/${id}/run/`);
-  return data;
+interface RunURLActionRequest {
+  agent_id?: string;
+  client?: number;
+  site?: number;
+  action: number;
+}
+
+export async function runURLAction(payload: RunURLActionRequest) {
+  const { data } = await axios.patch(`${baseUrl}/urlaction/run/`, payload);
+  openURL(data);
 }
 
 export async function runTestURLAction(
   payload: TestRunURLActionRequest,
-): Promise<URLActionRunResponse> {
+): Promise<string> {
   const { data } = await axios.post(`${baseUrl}/urlaction/run/test/`, payload);
   return data;
 }
