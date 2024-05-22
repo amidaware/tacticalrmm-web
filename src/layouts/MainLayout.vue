@@ -84,7 +84,9 @@
           checked-icon="nights_stay"
           unchecked-icon="wb_sunny"
         />
+        <!-- web terminal button -->
         <q-btn
+          v-if="!hosted"
           label=">_"
           dense
           flat
