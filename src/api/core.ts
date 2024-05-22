@@ -66,6 +66,14 @@ export async function runTestURLAction(
   return data;
 }
 
+export async function checkWebTermPerms(): Promise<{
+  message: string;
+  status: number;
+}> {
+  const ret = await axios.post(`${baseUrl}/webtermperms/`);
+  return { message: ret.data, status: ret.status };
+}
+
 export function openWebTerminal(): void {
   const url: string = router.resolve("/webterm").href;
   openURL(url, undefined, {

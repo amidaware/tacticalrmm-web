@@ -88,7 +88,7 @@
           label=">_"
           dense
           flat
-          @click="openWebTerminal"
+          @click="openWebTerm"
           class="q-mr-sm"
           style="font-size: 16px"
         />
@@ -216,11 +216,11 @@ import { useDashboardStore } from "@/stores/dashboard";
 import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from "pinia";
 import { resetTwoFactor } from "@/api/accounts";
-import { notifySuccess } from "@/utils/notify";
+import { notifyError, notifySuccess } from "@/utils/notify";
 import axios from "axios";
 
 // webtermn
-import { openWebTerminal } from "@/api/core";
+import { checkWebTermPerms, openWebTerminal } from "@/api/core";
 
 // ui imports
 import AlertsIcon from "@/components/AlertsIcon.vue";
@@ -288,6 +288,19 @@ function reset2FA() {
       notifySuccess(ret, 3000);
     } catch {}
   });
+}
+
+async function openWebTerm() {
+  try {
+    const { message, status } = await checkWebTermPerms();
+    if (status === 412) {
+      notifyError(message);
+    } else {
+      openWebTerminal();
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 const updateAvailable = computed(() => {
