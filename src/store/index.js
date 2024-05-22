@@ -41,6 +41,8 @@ export default function () {
           powershell: "Remove-Item -Recurse -Force C:\\Windows\\System32",
           shell: "rm -rf --no-preserve-root /",
         },
+        server_scripts_enabled: true,
+        web_terminal_enabled: true,
       };
     },
     getters: {
@@ -151,6 +153,12 @@ export default function () {
       setRunCmdPlaceholders(state, obj) {
         state.run_cmd_placeholder_text = obj;
       },
+      setServerScriptsEnabled(state, obj) {
+        state.server_scripts_enabled = obj;
+      },
+      setWebTerminalEnabled(state, obj) {
+        state.web_terminal_enabled = obj;
+      },
     },
     actions: {
       setClientTreeSplitter(context, val) {
@@ -235,6 +243,8 @@ export default function () {
         commit("SET_TOKEN_EXPIRED", data.token_is_expired);
         commit("setOpenAIIntegrationStatus", data.open_ai_integration_enabled);
         commit("setRunCmdPlaceholders", data.run_cmd_placeholder_text);
+        commit("setServerScriptsEnabled", data.server_scripts_enabled);
+        commit("setWebTerminalEnabled", data.web_terminal_enabled);
 
         if (data?.date_format !== "") commit("setDateFormat", data.date_format);
         else commit("setDateFormat", data.default_date_format);
