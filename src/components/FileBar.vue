@@ -138,10 +138,6 @@
               >
                 <q-item-section>Server Maintenance</q-item-section>
               </q-item>
-              <!-- Run Serverside Script-->
-              <q-item clickable v-close-popup @click="showServerScriptRun">
-                <q-item-section>Run Server Script</q-item-section>
-              </q-item>
               <!-- clear cache -->
               <q-item clickable v-close-popup @click="clearCache">
                 <q-item-section>Clear Cache</q-item-section>
@@ -280,7 +276,6 @@ import DeploymentTable from "@/components/clients/DeploymentTable.vue";
 import ServerMaintenance from "@/components/modals/core/ServerMaintenance.vue";
 import CodeSign from "@/components/modals/coresettings/CodeSign.vue";
 import PermissionsManager from "@/components/accounts/PermissionsManager.vue";
-import RunServerScript from "@/components/modals/core/RunServerScript.vue";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { notifyWarning } from "@/utils/notify";
@@ -450,11 +445,6 @@ export default {
     showReportsManager() {
       this.$q.dialog({
         component: ReportsManager,
-      });
-    },
-    showServerScriptRun() {
-      this.$q.dialog({
-        component: RunServerScript,
       });
     },
   },
