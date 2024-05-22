@@ -1,5 +1,6 @@
 import axios from "axios";
 import { openURL } from "quasar";
+import { router } from "@/router";
 
 import type {
   URLAction,
@@ -63,6 +64,20 @@ export async function runTestURLAction(
 ): Promise<string> {
   const { data } = await axios.post(`${baseUrl}/urlaction/run/test/`, payload);
   return data;
+}
+
+export function openWebTerminal(): void {
+  const url: string = router.resolve("/webterm").href;
+  openURL(url, undefined, {
+    popup: true,
+    scrollbars: false,
+    location: false,
+    status: false,
+    toolbar: false,
+    menubar: false,
+    width: 1280,
+    height: 720,
+  });
 }
 
 // TODO: Build out type for openai payload

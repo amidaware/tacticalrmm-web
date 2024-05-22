@@ -88,7 +88,7 @@
           label=">_"
           dense
           flat
-          @click="openTrmmCli"
+          @click="openWebTerminal"
           class="q-mr-sm"
           style="font-size: 16px"
         />
@@ -219,11 +219,13 @@ import { resetTwoFactor } from "@/api/accounts";
 import { notifySuccess } from "@/utils/notify";
 import axios from "axios";
 
+// webtermn
+import { openWebTerminal } from "@/api/core";
+
 // ui imports
 import AlertsIcon from "@/components/AlertsIcon.vue";
 import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
 import ResetPass from "@/components/accounts/ResetPass.vue";
-import TRMMCommandPrompt from "@/components/core/TRMMCommandPrompt.vue";
 
 const store = useStore();
 const $q = useQuasar();
@@ -271,12 +273,6 @@ function showUserPreferences() {
 function resetPassword() {
   $q.dialog({
     component: ResetPass,
-  });
-}
-
-function openTrmmCli() {
-  $q.dialog({
-    component: TRMMCommandPrompt,
   });
 }
 

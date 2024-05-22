@@ -47,6 +47,14 @@ const routes = [
     },
   },
   {
+    path: "/webterm",
+    name: "WebTerm",
+    component: () => import("@/views/WebTerminal.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
     path: "/remotebackground/:agent_id",
     name: "RemoteBackground",
     component: () => import("@/views/RemoteBackground.vue"),
