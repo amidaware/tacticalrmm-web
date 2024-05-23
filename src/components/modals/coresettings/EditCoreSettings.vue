@@ -43,6 +43,22 @@
                   </q-checkbox>
                 </q-card-section>
                 <q-card-section class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_scripts"
+                    label="Enable server scripts"
+                  >
+                    <q-tooltip>Allow running scripts on TRMM server</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_webterminal"
+                    label="Enable web terminal"
+                  >
+                    <q-tooltip>Enable the web terminal</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section class="row">
                   <div class="col-4">Default agent timezone:</div>
                   <div class="col-2"></div>
                   <q-select
@@ -840,6 +856,7 @@ export default {
               });
           } else {
             this.$emit("close");
+            this.$store.dispatch("getDashInfo", false);
             this.notifySuccess("Settings were edited!");
           }
         })

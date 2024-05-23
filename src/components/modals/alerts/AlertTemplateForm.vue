@@ -150,8 +150,7 @@
               <span style="text-decoration: underline; cursor: help"
                 >Alert Failure Settings
                 <q-tooltip>
-                  The selected script will run when an alert is triggered. This
-                  script will run on any online agent.
+                  The selected action will run when an alert is triggered.
                 </q-tooltip>
               </span>
             </div>
@@ -241,8 +240,6 @@
                 dense
                 :rules="[
                   (val) => !!val || 'Failure action timeout is required',
-                  (val) => val > 0 || 'Timeout must be greater than 0',
-                  (val) => val <= 60 || 'Timeout must be 60 or less',
                 ]"
               />
             </q-card-section>
@@ -251,8 +248,7 @@
               <span style="text-decoration: underline; cursor: help"
                 >Alert Resolved Settings
                 <q-tooltip>
-                  The selected script will run when an alert is resolved. This
-                  script will run on any online agent.
+                  The selected action will run when an alert is resolved.
                 </q-tooltip>
               </span>
             </div>
@@ -342,8 +338,6 @@
                 dense
                 :rules="[
                   (val) => !!val || 'Resolved action timeout is required',
-                  (val) => val > 0 || 'Timeout must be greater than 0',
-                  (val) => val <= 60 || 'Timeout must be 60 or less',
                 ]"
               />
             </q-card-section>
@@ -352,7 +346,7 @@
               <span style="text-decoration: underline; cursor: help"
                 >Run actions only on
                 <q-tooltip>
-                  The selected script will only run on the following types of
+                  The selected action will only run on the following types of
                   alerts
                 </q-tooltip>
               </span>
@@ -741,7 +735,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, nextTick } from "vue";
+import { computed, ref, reactive, watch, nextTick } from "vue";
+import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent, type QStepper } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useURLActionDropdown } from "@/composables/core";
@@ -754,6 +749,13 @@ import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // types
 import type { AlertTemplate, AlertSeverity } from "@/types/alerts";
+
+// store
+const store = useStore();
+const hosted = computed(() => store.state.hosted);
+const server_scripts_enabled = computed(
+  () => store.state.server_scripts_enabled,
+);
 
 // props
 const props = defineProps<{
@@ -908,11 +910,20 @@ const severityOptions = [
   { label: "Informational", value: "info" },
 ];
 
-const actionTypeOptions = [
-  { label: "Script", value: "script" },
-  { label: "Server", value: "server" },
-  { label: "Web Hook", value: "rest" },
+const staticActionTypeOptions = [
+  { label: "Send a Web Hook", value: "rest" },
+  { label: "Run script on Agent", value: "script" },
+  { label: "Run script on TRMM Server", value: "server" },
 ];
+
+const actionTypeOptions = computed(() => {
+  if (hosted.value || !server_scripts_enabled.value) {
+    return staticActionTypeOptions.filter(
+      (option) => option.value !== "server",
+    );
+  }
+  return staticActionTypeOptions;
+});
 
 const stepper = ref<QStepper | null>(null);
 function toggleAddEmail() {

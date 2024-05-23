@@ -13,6 +13,11 @@ export async function testScript(agent_id, payload) {
   return data;
 }
 
+export async function testScriptOnServer(payload) {
+  const { data } = await axios.post("core/serverscript/test/", payload);
+  return data;
+}
+
 export async function saveScript(payload) {
   const { data } = await axios.post(`${baseUrl}/`, payload);
   return data;
@@ -56,7 +61,7 @@ export async function fetchScriptSnippet(id, params = {}) {
 export async function editScriptSnippet(payload) {
   const { data } = await axios.put(
     `${baseUrl}/snippets/${payload.id}/`,
-    payload
+    payload,
   );
   return data;
 }
