@@ -26,8 +26,8 @@ interface TOTPSetupResponse {
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    username: useStorage("username", null),
-    token: useStorage("token", null),
+    username: useStorage("user_name", null),
+    token: useStorage("access_token", null),
   }),
   getters: {
     loggedIn: (state) => {
