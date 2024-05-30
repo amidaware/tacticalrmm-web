@@ -13,10 +13,10 @@ export interface URLAction {
   rest_headers: string;
 }
 
-export interface URLActionRunResponse {
+export interface TestRunURLActionResponse {
   url: string;
   result: string;
-  request: string;
+  body: string;
 }
 
 export interface TestRunURLActionRequest {

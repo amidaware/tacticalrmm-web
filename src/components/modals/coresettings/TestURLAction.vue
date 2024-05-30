@@ -75,7 +75,13 @@
 
       <q-card-actions align="right">
         <q-btn flat label="Close" v-close-popup />
-        <q-btn flat label="Run" color="primary" @click="submit" />
+        <q-btn
+          :loading="loading"
+          flat
+          label="Run"
+          color="primary"
+          @click="submit"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

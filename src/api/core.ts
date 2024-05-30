@@ -5,6 +5,7 @@ import { router } from "@/router";
 import type {
   URLAction,
   TestRunURLActionRequest,
+  TestRunURLActionResponse,
 } from "@/types/core/urlactions";
 
 const baseUrl = "/core";
@@ -61,7 +62,7 @@ export async function runURLAction(payload: RunURLActionRequest) {
 
 export async function runTestURLAction(
   payload: TestRunURLActionRequest,
-): Promise<string> {
+): Promise<TestRunURLActionResponse> {
   const { data } = await axios.post(`${baseUrl}/urlaction/run/test/`, payload);
   return data;
 }
