@@ -140,11 +140,11 @@ async function submit() {
   loading.value = true;
 
   try {
-    const { url, result, request } = await runTestURLAction(state);
+    const { url, result, body } = await runTestURLAction(state);
 
     return_result.value = result;
     return_url.value = url;
-    return_request.value = request;
+    return_request.value = body;
   } catch (e) {
     console.error(e);
   } finally {
