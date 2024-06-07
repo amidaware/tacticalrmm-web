@@ -696,7 +696,7 @@
                 left-label
               />
               <q-toggle
-                v-model="template.check_text_on_resolved"
+                v-model="template.task_text_on_resolved"
                 label="Text"
                 color="green"
                 left-label
