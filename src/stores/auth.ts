@@ -38,7 +38,7 @@ export const useAuthStore = defineStore("auth", {
     async checkCredentials(
       credentials: CheckCredentialsRequest,
     ): Promise<CheckCredentialsResponse> {
-      const { data } = await axios.post("/checkcreds/", credentials);
+      const { data } = await axios.post("/v2/checkcreds/", credentials);
 
       if (!data.totp) {
         this.token = data.token;
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore("auth", {
       return data;
     },
     async login(credentials: LoginRequest) {
-      const { data } = await axios.post("/login/", credentials);
+      const { data } = await axios.post("/v2/login/", credentials);
       this.username = data.username;
       this.token = data.token;
 
