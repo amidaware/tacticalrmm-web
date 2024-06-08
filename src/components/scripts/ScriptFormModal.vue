@@ -382,7 +382,7 @@ async function submit() {
   loading.value = false;
 }
 
-function openTestScriptModal(ctx: String) {
+function openTestScriptModal(ctx: string) {
   $q.dialog({
     component: TestScriptModal,
     componentProps: {
