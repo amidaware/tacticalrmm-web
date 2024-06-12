@@ -2,7 +2,11 @@
   <div>
     <div class="row">
       <div class="text-subtitle2">
-        {{ props.type === "web" ? "URL Actions" : "Web Hooks" }}
+        {{
+          props.type === "web"
+            ? "URL Actions"
+            : "Web Hooks for Alert Failure/Resolved Actions"
+        }}
       </div>
       <q-space />
       <q-btn
