@@ -109,12 +109,17 @@ const prompt = ref(false);
 const showPassword = ref(true);
 
 async function checkCreds() {
-  const { totp } = await auth.checkCredentials(credentials);
+  try {
+    const { totp } = await auth.checkCredentials(credentials);
 
-  if (!totp) {
-    router.push({ name: "TOTPSetup" });
-  } else {
-    prompt.value = true;
+    if (!totp) {
+      router.push({ name: "TOTPSetup" });
+    } else {
+      twofactor.value = "";
+      prompt.value = true;
+    }
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -122,6 +127,8 @@ async function onSubmit() {
   try {
     await auth.login({ ...credentials, twofactor: twofactor.value });
     router.push({ name: "Dashboard" });
+  } catch (err) {
+    console.error(err);
   } finally {
     form.value?.reset();
     formToken.value?.reset();
