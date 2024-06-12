@@ -68,11 +68,11 @@
           </q-menu>
           <!-- name -->
           <q-td>
-            {{ props.row.name }}
+            {{ truncateText(props.row.name, 35) }}
           </q-td>
           <!-- desc -->
           <q-td>
-            {{ truncateText(props.row.desc, 20) }}
+            {{ truncateText(props.row.desc, 40) }}
           </q-td>
           <!-- pattern -->
           <q-td>

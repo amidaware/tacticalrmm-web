@@ -40,6 +40,8 @@
             label="Description"
             outlined
             dense
+            type="textarea"
+            rows="2"
             v-model="localAction.desc"
           />
         </q-card-section>

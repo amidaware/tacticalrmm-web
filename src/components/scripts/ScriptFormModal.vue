@@ -71,6 +71,8 @@
               :readonly="readonly"
               v-model="script.description"
               label="Description"
+              type="textarea"
+              rows="2"
             />
             <q-select
               :readonly="readonly"
