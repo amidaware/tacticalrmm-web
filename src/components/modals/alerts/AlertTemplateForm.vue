@@ -917,12 +917,21 @@ const staticActionTypeOptions = [
 ];
 
 const actionTypeOptions = computed(() => {
-  if (hosted.value || !server_scripts_enabled.value) {
+  // don't show for hosted at all
+  if (hosted.value) {
     return staticActionTypeOptions.filter(
       (option) => option.value !== "server",
     );
   }
-  return staticActionTypeOptions;
+  // disable the server script radio button if feature is disabled globally
+  const modifiedOptions = staticActionTypeOptions.map((option) => {
+    if (!server_scripts_enabled.value && option.value === "server") {
+      return { ...option, disable: true };
+    }
+    return option;
+  });
+
+  return modifiedOptions;
 });
 
 const stepper = ref<QStepper | null>(null);
