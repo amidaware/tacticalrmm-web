@@ -141,7 +141,7 @@ const localAction: URLAction = props.action
       pattern: "",
       action_type: props.type,
       rest_body: "{\n    \n}",
-      rest_method: "get",
+      rest_method: "post",
       rest_headers: "{\n    \n}",
     } as URLAction);
 
