@@ -167,19 +167,20 @@
               <tactical-dropdown
                 v-if="template.action_type == 'script'"
                 class="q-mb-sm"
-                label="Failure action"
+                label="Failure script"
                 outlined
                 clearable
                 v-model="template.action"
                 :options="scriptOptions"
                 mapOptions
                 filterable
+                :rules="[(val) => !!val || '*Required']"
               />
 
               <tactical-dropdown
                 v-else-if="template.action_type == 'server'"
                 class="q-mb-sm"
-                label="Failure action"
+                label="Failure script"
                 outlined
                 clearable
                 v-model="template.action"
@@ -191,7 +192,7 @@
               <tactical-dropdown
                 v-else
                 class="q-mb-sm"
-                label="Failure action"
+                label="Failure Web Hook"
                 outlined
                 clearable
                 v-model="template.action_rest"
@@ -204,7 +205,7 @@
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Failure action arguments (press Enter after typing each argument)"
+                label="Failure script arguments (press Enter after typing each argument)"
                 filled
                 v-model="template.action_args"
                 use-input
@@ -219,7 +220,7 @@
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Failure action environment vars (press Enter after typing each key=value pair)"
+                label="Failure script environment vars (press Enter after typing each key=value pair)"
                 filled
                 v-model="template.action_env_vars"
                 use-input
@@ -233,13 +234,13 @@
               <q-input
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
-                label="Failure action timeout (seconds)"
+                label="Failure script timeout (seconds)"
                 outlined
                 type="number"
                 v-model.number="template.action_timeout"
                 dense
                 :rules="[
-                  (val) => !!val || 'Failure action timeout is required',
+                  (val) => !!val || 'Failure script timeout is required',
                 ]"
               />
             </q-card-section>
@@ -265,7 +266,7 @@
               <tactical-dropdown
                 v-if="template.resolved_action_type === 'script'"
                 class="q-mb-sm"
-                label="Resolved Action"
+                label="Resolved Script"
                 outlined
                 clearable
                 v-model="template.resolved_action"
@@ -277,7 +278,7 @@
               <tactical-dropdown
                 v-else-if="template.resolved_action_type === 'server'"
                 class="q-mb-sm"
-                label="Resolved Action"
+                label="Resolved Script"
                 outlined
                 clearable
                 v-model="template.resolved_action"
@@ -289,7 +290,7 @@
               <tactical-dropdown
                 v-else
                 class="q-mb-sm"
-                label="Resolved Action"
+                label="Resolved Web Hook"
                 outlined
                 clearable
                 v-model="template.resolved_action_rest"
@@ -302,7 +303,7 @@
                 v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Resolved action arguments (press Enter after typing each argument)"
+                label="Resolved script arguments (press Enter after typing each argument)"
                 filled
                 v-model="template.resolved_action_args"
                 use-input
@@ -331,13 +332,13 @@
               <q-input
                 v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
-                label="Resolved action timeout (seconds)"
+                label="Resolved script timeout (seconds)"
                 outlined
                 type="number"
                 v-model.number="template.resolved_action_timeout"
                 dense
                 :rules="[
-                  (val) => !!val || 'Resolved action timeout is required',
+                  (val) => !!val || 'Resolved script timeout is required',
                 ]"
               />
             </q-card-section>
@@ -981,8 +982,45 @@ function removeSMSNumber(num: string) {
 const loading = ref(false);
 
 async function onSubmit() {
+  // TODO rework this ghetto form validation
   if (!template.name) {
     notifyError("Name needs to be set");
+    return;
+  }
+
+  // webhooks
+  if (template.action_type === "rest" && !template.action_rest) {
+    notifyError("A failure web hook must be selected");
+    return;
+  }
+
+  if (
+    template.resolved_action_type === "rest" &&
+    !template.resolved_action_rest
+  ) {
+    notifyError("A resolved web hook must be selected");
+    return;
+  }
+
+  // agent script
+  if (template.action_type === "script" && !template.action) {
+    notifyError("A failure script must be selected");
+    return;
+  }
+
+  if (template.resolved_action_type === "script" && !template.resolved_action) {
+    notifyError("A resolved script must be selected");
+    return;
+  }
+
+  // server script
+  if (template.action_type === "server" && !template.action) {
+    notifyError("A failure script must be selected");
+    return;
+  }
+
+  if (template.resolved_action_type === "server" && !template.resolved_action) {
+    notifyError("A resolved script must be selected");
     return;
   }
 
