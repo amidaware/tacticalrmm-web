@@ -183,10 +183,6 @@
                 v-model="localRole.can_use_webterm"
                 label="Use TRMM Server Web Terminal"
               />
-              <q-checkbox
-                v-model="localRole.can_run_server_scripts"
-                label="Run Scripts on TRMM Server"
-              />
             </div>
           </q-card-section>
 
@@ -335,6 +331,10 @@
               <q-checkbox
                 v-model="localRole.can_manage_scripts"
                 label="Manage Scripts"
+              />
+              <q-checkbox
+                v-model="localRole.can_run_server_scripts"
+                label="Run Scripts on TRMM Server"
               />
             </div>
           </q-card-section>
