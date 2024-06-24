@@ -68,15 +68,15 @@
           </q-menu>
           <!-- name -->
           <q-td>
-            {{ truncateText(props.row.name, 35) }}
+            {{ truncateText(props.row.name, 30) }}
           </q-td>
           <!-- desc -->
           <q-td>
-            {{ truncateText(props.row.desc, 40) }}
+            {{ truncateText(props.row.desc, 20) }}
           </q-td>
           <!-- pattern -->
           <q-td>
-            {{ truncateText(props.row.pattern, 50) }}
+            {{ truncateText(props.row.pattern, 20) }}
           </q-td>
         </q-tr>
       </template>
@@ -125,7 +125,7 @@ const columns: QTableColumn[] = [
   },
   {
     name: "pattern",
-    label: "Pattern",
+    label: "URL Pattern",
     field: "pattern",
     align: "left",
     sortable: true,
