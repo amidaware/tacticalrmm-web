@@ -5,11 +5,19 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "SessionExpired",
-  mounted() {
-    this.$store.dispatch("destroyToken");
-  },
-};
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useDashWSConnection } from "@/websocket/websocket";
+
+// setup store
+const auth = useAuthStore();
+
+// setup websocket
+const { close } = useDashWSConnection();
+
+onMounted(async () => {
+  await auth.logout();
+  close();
+});
 </script>

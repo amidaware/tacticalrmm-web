@@ -10,6 +10,7 @@
           <q-tab name="customfields" label="Custom Fields" />
           <q-tab name="keystore" label="Key Store" />
           <q-tab name="urlactions" label="URL Actions" />
+          <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
@@ -39,6 +40,22 @@
                     label="Enable agent automatic self update"
                   >
                     <q-tooltip> Runs at 35mins past every hour </q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_scripts"
+                    label="Enable server scripts"
+                  >
+                    <q-tooltip>Allow running scripts on TRMM server</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_webterminal"
+                    label="Enable web terminal"
+                  >
+                    <q-tooltip>Enable the web terminal</q-tooltip>
                   </q-checkbox>
                 </q-card-section>
                 <q-card-section class="row">
@@ -488,17 +505,28 @@
                   </q-input>
                 </q-card-section>
               </q-tab-panel>
+
+              <!-- custom fields -->
               <q-tab-panel name="customfields">
                 <CustomFields />
               </q-tab-panel>
 
+              <!-- key store -->
               <q-tab-panel name="keystore">
                 <KeyStoreTable />
               </q-tab-panel>
 
+              <!-- url actions -->
               <q-tab-panel name="urlactions">
-                <URLActionsTable />
+                <URLActionsTable type="web" />
               </q-tab-panel>
+
+              <!-- web hooks -->
+              <q-tab-panel name="webhooks">
+                <URLActionsTable type="rest" />
+              </q-tab-panel>
+
+              <!-- retention -->
               <q-tab-panel name="retention">
                 <q-card-section class="row">
                   <div class="col-4">Check History (days):</div>
@@ -656,6 +684,7 @@ export default {
     KeyStoreTable,
     URLActionsTable,
     APIKeysTable,
+    // ServerTasksTable,
   },
   mixins: [mixins],
   data() {
@@ -827,6 +856,7 @@ export default {
               });
           } else {
             this.$emit("close");
+            this.$store.dispatch("getDashInfo", false);
             this.notifySuccess("Settings were edited!");
           }
         })

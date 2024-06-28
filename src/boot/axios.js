@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 import { Notify } from "quasar";
 
 export const getBaseUrl = () => {
@@ -18,27 +19,22 @@ export function setErrorMessage(data, message) {
   ];
 }
 
-export default function ({ app, router, store }) {
+export default function ({ app, router }) {
   app.config.globalProperties.$axios = axios;
 
   axios.interceptors.request.use(
     function (config) {
+      const auth = useAuthStore();
       config.baseURL = getBaseUrl();
-      const token = store.state.token;
+      const token = auth.token;
       if (token != null) {
         config.headers.Authorization = `Token ${token}`;
       }
-      // config.transformResponse = [
-      //   function (data) {
-      //     console.log(data);
-      //     return data;
-      //   },
-      // ];
       return config;
     },
     function (err) {
       return Promise.reject(err);
-    }
+    },
   );
 
   axios.interceptors.response.use(
@@ -101,6 +97,6 @@ export default function ({ app, router, store }) {
       }
 
       return Promise.reject({ ...error });
-    }
+    },
   );
 }

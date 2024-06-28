@@ -71,6 +71,8 @@
               :readonly="readonly"
               v-model="script.description"
               label="Description"
+              type="textarea"
+              rows="2"
             />
             <q-select
               :readonly="readonly"
@@ -167,7 +169,7 @@
       </div>
       <q-card-actions>
         <tactical-dropdown
-          style="width: 350px"
+          style="width: 450px"
           dense
           :loading="agentLoading"
           filled
@@ -187,7 +189,21 @@
               :disable="
                 !agent || !script.script_body || !script.default_timeout
               "
-              @click="openTestScriptModal"
+              @click="openTestScriptModal('agent')"
+            />
+            <q-btn
+              v-if="!hosted"
+              size="md"
+              color="secondary"
+              dense
+              flat
+              label="Test on Server"
+              :disable="
+                !script.script_body ||
+                !script.default_timeout ||
+                !server_scripts_enabled
+              "
+              @click="openTestScriptModal('server')"
             />
           </template>
         </tactical-dropdown>
@@ -285,6 +301,10 @@ const openAIEnabled = computed(() => store.state.openAIIntegrationEnabled);
 
 // setup agent dropdown
 const { agent, agentOptions, getAgentOptions } = useAgentDropdown();
+const hosted = computed(() => store.state.hosted);
+const server_scripts_enabled = computed(
+  () => store.state.server_scripts_enabled,
+);
 
 // script form logic
 const script: Script = props.script
@@ -364,12 +384,13 @@ async function submit() {
   loading.value = false;
 }
 
-function openTestScriptModal() {
+function openTestScriptModal(ctx: string) {
   $q.dialog({
     component: TestScriptModal,
     componentProps: {
       script: { ...script },
       agent: agent.value,
+      ctx: ctx,
     },
   });
 }

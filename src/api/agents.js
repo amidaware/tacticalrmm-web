@@ -34,7 +34,7 @@ export function openAgentWindow(agent_id) {
 
 export function runRemoteBackground(agent_id, agentPlatform) {
   const url = router.resolve(
-    `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`
+    `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`,
   ).href;
   openURL(url, null, {
     popup: true,
@@ -129,7 +129,7 @@ export async function refreshAgentWMI(agent_id) {
 export async function runScript(agent_id, payload) {
   const { data } = await axios.post(
     `${baseUrl}/${agent_id}/runscript/`,
-    payload
+    payload,
   );
   return data;
 }
@@ -153,7 +153,7 @@ export async function fetchAgentProcesses(agent_id, params = {}) {
 export async function killAgentProcess(agent_id, pid, params = {}) {
   const { data } = await axios.delete(
     `${baseUrl}/${agent_id}/processes/${pid}/`,
-    { params: params }
+    { params: params },
   );
   return data;
 }
@@ -162,7 +162,7 @@ export async function fetchAgentEventLog(agent_id, logType, days, params = {}) {
   try {
     const { data } = await axios.get(
       `${baseUrl}/${agent_id}/eventlog/${logType}/${days}/`,
-      { params: params }
+      { params: params },
     );
     return data;
   } catch (e) {
@@ -199,7 +199,7 @@ export async function agentShutdown(agent_id) {
 export async function sendAgentRecoverMesh(agent_id, params = {}) {
   const { data } = await axios.post(
     `${baseUrl}/${agent_id}/meshcentral/recover/`,
-    { params: params }
+    { params: params },
   );
   return data;
 }

@@ -39,9 +39,9 @@
       <q-form @submit.prevent="sendScript">
         <q-card-section>
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || '*Required']"
             v-model="state.script"
-            :options="filteredScriptOptions"
+            :options="filterByPlatformOptions"
             label="Select script"
             outlined
             mapOptions
@@ -130,7 +130,7 @@
         </q-card-section>
         <q-card-section v-if="state.output === 'collector'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || '*Required']"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
@@ -182,22 +182,22 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup lang="ts">
 // composition imports
-import { ref, watch, computed } from "vue";
+import { ref, watch } from "vue";
 import { useDialogPluginComponent, openURL } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
-import {
-  formatScriptSyntax,
-  removeExtraOptionCategories,
-} from "@/utils/format";
+import { formatScriptSyntax } from "@/utils/format";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+
+// types
+import type { Agent } from "@/types/agents";
 
 // static data
 const outputOptions = [
@@ -208,110 +208,71 @@ const outputOptions = [
   { label: "Save results to Agent Notes", value: "note" },
 ];
 
-export default {
-  name: "RunScript",
-  emits: [...useDialogPluginComponent.emits],
-  components: { TacticalDropdown },
-  props: {
-    agent: !Object,
-    script: Number,
-  },
-  setup(props) {
-    // setup quasar dialog plugin
-    const { dialogRef, onDialogHide } = useDialogPluginComponent();
+// emits
+defineEmits([...useDialogPluginComponent.emits]);
 
-    // setup dropdowns
-    const {
-      script,
-      scriptOptions,
-      defaultTimeout,
-      defaultArgs,
-      defaultEnvVars,
-      syntax,
-      link,
-    } = useScriptDropdown(props.script, {
-      onMount: true,
-      filterByPlatform: props.agent.plat,
-    });
-    const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
+// props
+const props = defineProps<{
+  agent: Agent;
+  script?: number;
+}>();
 
-    // main run script functionaity
-    const state = ref({
-      output: "wait",
-      emails: [],
-      emailMode: "default",
-      custom_field: null,
-      save_all_output: false,
-      script,
-      args: defaultArgs,
-      env_vars: defaultEnvVars,
-      timeout: defaultTimeout,
-      run_as_user: false,
-    });
+// setup quasar dialog plugin
+const { dialogRef, onDialogHide } = useDialogPluginComponent();
 
-    const ret = ref(null);
-    const loading = ref(false);
-    const maximized = ref(false);
+// setup dropdowns
+const {
+  script,
+  filterByPlatformOptions,
+  defaultTimeout,
+  defaultArgs,
+  defaultEnvVars,
+  syntax,
+  link,
+} = useScriptDropdown({
+  script: props.script,
+  plat: props.agent.plat,
+  onMount: true,
+});
+const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
-    async function sendScript() {
-      ret.value = null;
-      loading.value = true;
+// main run script functionaity
+const state = ref({
+  output: "wait",
+  emails: [],
+  emailMode: "default",
+  custom_field: null,
+  save_all_output: false,
+  script,
+  args: defaultArgs,
+  env_vars: defaultEnvVars,
+  timeout: defaultTimeout,
+  run_as_user: false,
+});
 
-      ret.value = await runScript(props.agent.agent_id, state.value);
-      loading.value = false;
-      if (state.value.output === "forget") {
-        onDialogHide();
-        notifySuccess(ret.value);
-      }
-    }
+const ret = ref(null);
+const loading = ref(false);
+const maximized = ref(false);
 
-    function openScriptURL() {
-      link.value ? openURL(link.value) : null;
-    }
+async function sendScript() {
+  ret.value = null;
+  loading.value = true;
 
-    const filteredScriptOptions = computed(() => {
-      return removeExtraOptionCategories(
-        scriptOptions.value.filter(
-          (script) =>
-            script.category ||
-            !script.supported_platforms ||
-            script.supported_platforms.length === 0 ||
-            script.supported_platforms.includes(props.agent.plat)
-        )
-      );
-    });
+  ret.value = await runScript(props.agent.agent_id, state.value);
+  loading.value = false;
+  if (state.value.output === "forget") {
+    onDialogHide();
+    if (ret.value) notifySuccess(ret.value);
+  }
+}
 
-    // watchers
-    watch(
-      [() => state.value.output, () => state.value.emailMode],
-      () => (state.value.emails = [])
-    );
+function openScriptURL() {
+  link.value ? openURL(link.value) : null;
+}
 
-    return {
-      // reactive data
-      state,
-      loading,
-      filteredScriptOptions,
-      link,
-      syntax,
-      ret,
-      maximized,
-      customFieldOptions,
-
-      // non-reactive data
-      outputOptions,
-      runAsUserToolTip,
-      envVarsLabel,
-
-      //methods
-      formatScriptSyntax,
-      sendScript,
-      openScriptURL,
-
-      // quasar dialog plugin
-      dialogRef,
-      onDialogHide,
-    };
-  },
-};
+// watchers
+watch(
+  [() => state.value.output, () => state.value.emailMode],
+  () => (state.value.emails = []),
+);
 </script>

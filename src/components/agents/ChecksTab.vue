@@ -666,6 +666,7 @@ export default {
         componentProps: {
           check: check,
           parent: !check ? { agent: selectedAgent.value } : undefined,
+          plat: type === "script" ? agentPlatform.value : undefined,
         },
       }).onOk(getChecks);
     }

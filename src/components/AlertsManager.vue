@@ -278,7 +278,7 @@ export default {
         },
         {
           name: "resolved_action_name",
-          label: "Resolve Action",
+          label: "Resolved Action",
           field: "resolved_action_name",
           align: "left",
         },
@@ -326,7 +326,7 @@ export default {
               this.refresh();
               this.$q.loading.hide();
               this.notifySuccess(
-                `Alert template ${template.name} was deleted!`
+                `Alert template ${template.name} was deleted!`,
               );
             })
             .catch(() => {

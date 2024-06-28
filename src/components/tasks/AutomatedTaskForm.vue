@@ -755,7 +755,7 @@
 
 <script>
 // composition imports
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
@@ -843,7 +843,7 @@ const taskInstancePolicyOptions = [
   { label: "Stop Existing", value: 3 },
 ];
 
-export default {
+export default defineComponent({
   components: { TacticalDropdown, draggable },
   name: "AddAutomatedTask",
   emits: [...useDialogPluginComponent.emits],
@@ -858,18 +858,19 @@ export default {
     // setup dropdowns
     const {
       script,
+      scriptName,
       scriptOptions,
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
-    } = useScriptDropdown(undefined, {
+    } = useScriptDropdown({
       onMount: true,
     });
 
     // set defaultTimeout to 30
     defaultTimeout.value = 30;
 
-    const { checkOptions, getCheckOptions } = useCheckDropdown();
+    const { checkOptions, getCheckOptions } = useCheckDropdown(props.parent);
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
     // add task logic
@@ -952,9 +953,7 @@ export default {
       if (actionType.value === "script") {
         task.value.actions.push({
           type: "script",
-          name: scriptOptions.value.find(
-            (option) => option.value === script.value,
-          ).label,
+          name: scriptName.value,
           script: script.value,
           timeout: defaultTimeout.value,
           script_args: defaultArgs.value,
@@ -1179,7 +1178,7 @@ export default {
       onDialogHide,
     };
   },
-};
+});
 </script>
 
 <style scoped>

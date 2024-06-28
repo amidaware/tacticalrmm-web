@@ -179,6 +179,10 @@
                 v-model="localRole.can_manage_customfields"
                 label="Edit Custom Fields"
               />
+              <q-checkbox
+                v-model="localRole.can_use_webterm"
+                label="Use TRMM Server Web Terminal"
+              />
             </div>
           </q-card-section>
 
@@ -327,6 +331,10 @@
               <q-checkbox
                 v-model="localRole.can_manage_scripts"
                 label="Manage Scripts"
+              />
+              <q-checkbox
+                v-model="localRole.can_run_server_scripts"
+                label="Run Scripts on TRMM Server"
               />
             </div>
           </q-card-section>
@@ -511,6 +519,9 @@ export default {
           can_manage_roles: false,
           can_view_clients: [],
           can_view_sites: [],
+          // server scripts and web terminal
+          can_run_server_scripts: false,
+          can_use_webterm: false,
           // reporting perms
           can_view_reports: false,
           can_manage_reports: false,
