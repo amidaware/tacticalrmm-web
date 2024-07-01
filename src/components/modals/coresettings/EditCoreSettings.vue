@@ -42,7 +42,7 @@
                     <q-tooltip> Runs at 35mins past every hour </q-tooltip>
                   </q-checkbox>
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_scripts"
                     label="Enable server scripts"
@@ -50,7 +50,7 @@
                     <q-tooltip>Allow running scripts on TRMM server</q-tooltip>
                   </q-checkbox>
                 </q-card-section>
-                <q-card-section class="row">
+                <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_webterminal"
                     label="Enable web terminal"
