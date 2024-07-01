@@ -35,13 +35,13 @@
     "@quasar/app-vite": "1.9.3",
     "@quasar/cli": "2.4.1",
     "@types/node": "20.14.9",
-    "@typescript-eslint/eslint-plugin": "7.14.1",
-    "@typescript-eslint/parser": "7.14.1",
+    "@typescript-eslint/eslint-plugin": "7.15.0",
+    "@typescript-eslint/parser": "7.15.0",
     "autoprefixer": "10.4.19",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-vue": "8.7.1",
     "prettier": "3.2.5",
-    "typescript": "5.5.2"
+    "typescript": "5.5.3"
   }
 }
