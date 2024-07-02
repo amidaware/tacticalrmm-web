@@ -988,42 +988,6 @@ async function onSubmit() {
     return;
   }
 
-  // webhooks
-  if (template.action_type === "rest" && !template.action_rest) {
-    notifyError("A failure web hook must be selected");
-    return;
-  }
-
-  if (
-    template.resolved_action_type === "rest" &&
-    !template.resolved_action_rest
-  ) {
-    notifyError("A resolved web hook must be selected");
-    return;
-  }
-
-  // agent script
-  if (template.action_type === "script" && !template.action) {
-    notifyError("A failure script must be selected");
-    return;
-  }
-
-  if (template.resolved_action_type === "script" && !template.resolved_action) {
-    notifyError("A resolved script must be selected");
-    return;
-  }
-
-  // server script
-  if (template.action_type === "server" && !template.action) {
-    notifyError("A failure script must be selected");
-    return;
-  }
-
-  if (template.resolved_action_type === "server" && !template.resolved_action) {
-    notifyError("A resolved script must be selected");
-    return;
-  }
-
   loading.value = true;
 
   if (props.alertTemplate) {
