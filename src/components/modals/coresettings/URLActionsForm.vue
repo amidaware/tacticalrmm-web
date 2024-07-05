@@ -142,7 +142,7 @@ const localAction: URLAction = props.action
       action_type: props.type,
       rest_body: "{\n    \n}",
       rest_method: "post",
-      rest_headers: "{\n    \n}",
+      rest_headers: `{\n  "Content-Type": "application/json"\n}`,
     } as URLAction);
 
 const disableBodyTab = computed(() =>
