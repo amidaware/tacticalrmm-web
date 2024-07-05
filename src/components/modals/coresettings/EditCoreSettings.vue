@@ -45,10 +45,26 @@
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_scripts"
-                    label="Enable server scripts"
+                    label="Enable server side scripts"
                   >
-                    <q-tooltip>Allow running scripts on TRMM server</q-tooltip>
+                    <q-tooltip
+                      >Allow running scripts on TRMM server for alert
+                      failure/resolve actions</q-tooltip
+                    >
                   </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    round
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
                 </q-card-section>
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
@@ -57,6 +73,19 @@
                   >
                     <q-tooltip>Enable the web terminal</q-tooltip>
                   </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    roundenable_server_webterminal
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">Default agent timezone:</div>
@@ -140,6 +169,24 @@
                     v-model="settings.alert_template"
                     :options="alertTemplateOptions"
                     class="col-6"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4 flex items-center">
+                    Receive notifications on:
+                  </div>
+                  <div class="col-2"></div>
+                  <q-checkbox
+                    dense
+                    v-model="settings.notify_on_info_alerts"
+                    class="col-3"
+                    label="Informational Alerts"
+                  />
+                  <q-checkbox
+                    dense
+                    v-model="settings.notify_on_warning_alerts"
+                    class="col-3"
+                    label="Warning Alerts"
                   />
                 </q-card-section>
                 <q-card-section class="row">
