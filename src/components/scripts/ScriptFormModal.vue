@@ -231,7 +231,7 @@ import { useQuasar, useDialogPluginComponent } from "quasar";
 import { saveScript, editScript, downloadScript } from "@/api/scripts";
 import { useAgentDropdown, agentPlatformOptions } from "@/composables/agents";
 import { generateScript } from "@/api/core";
-import { notifySuccess } from "@/utils/notify";
+import { notifyError, notifySuccess } from "@/utils/notify";
 
 // ui imports
 import TestScriptModal from "@/components/scripts/TestScriptModal.vue";
@@ -325,7 +325,7 @@ const agentLoading = ref(false);
 
 const missingShebang = computed(() => {
   if (script.shell === "shell" || script.shell === "python") {
-    return !script.script_body.includes("#!");
+    return !script.script_body.startsWith("#!");
   } else {
     return false;
   }
@@ -385,6 +385,13 @@ async function submit() {
 }
 
 function openTestScriptModal(ctx: string) {
+  if (ctx === "server" && !script.script_body.startsWith("#!")) {
+    notifyError(
+      "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
+      7000,
+    );
+    return;
+  }
   $q.dialog({
     component: TestScriptModal,
     componentProps: {
