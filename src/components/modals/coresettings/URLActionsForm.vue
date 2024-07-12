@@ -5,7 +5,10 @@
     @show="loadEditor"
     @before-hide="cleanupEditors"
   >
-    <q-card class="q-dialog-plugin" style="width: 60vw">
+    <q-card
+      class="q-dialog-plugin"
+      :style="`width: ${props.type === 'web' ? 50 : 60}vw; max-width: ${props.type === 'web' ? 60 : 70}vw`"
+    >
       <q-bar>
         {{
           props.action
@@ -71,7 +74,6 @@
 
         <q-card-section v-show="type === 'rest'">
           <q-toolbar>
-            <q-space />
             <q-tabs v-model="tab" dense shrink>
               <q-tab
                 name="body"
