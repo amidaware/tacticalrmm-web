@@ -3,10 +3,9 @@ version: '3.7'
 services:
   app-dev:
     container_name: trmm-app-dev
-    image: node:18-alpine
+    image: node:20-alpine
     restart: always
-    command: /bin/sh -c "npm install --cache ~/.npm && npm run serve"
-    user: 1000:1000
+    command: /bin/sh -c "npm install --cache ~/.npm && npm i -g @quasar/cli && npm run serve"
     working_dir: /workspace/web
     volumes:
       - ..:/workspace:cached

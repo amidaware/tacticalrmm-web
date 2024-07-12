@@ -693,7 +693,7 @@ export default {
         this.$q
           .dialog({
             title: "Are you sure?",
-            message: `Delete site: ${node.label}.`,
+            message: `Delete ${node.children ? "client" : "site"}: ${node.label}.`,
             cancel: true,
             ok: { label: "Delete", color: "negative" },
           })
@@ -824,7 +824,9 @@ export default {
           );
           return;
         }
-        this.urlActions = r.data;
+        this.urlActions = r.data.filter(
+          (action) => action.action_type === "web",
+        );
       });
     },
     runURLAction(id, action, model) {

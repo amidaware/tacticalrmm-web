@@ -10,6 +10,7 @@
           <q-tab name="customfields" label="Custom Fields" />
           <q-tab name="keystore" label="Key Store" />
           <q-tab name="urlactions" label="URL Actions" />
+          <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
@@ -40,6 +41,51 @@
                   >
                     <q-tooltip> Runs at 35mins past every hour </q-tooltip>
                   </q-checkbox>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_scripts"
+                    label="Enable server side scripts"
+                  >
+                    <q-tooltip
+                      >Allow running scripts on TRMM server for alert
+                      failure/resolve actions</q-tooltip
+                    >
+                  </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    round
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.enable_server_webterminal"
+                    label="Enable web terminal"
+                  >
+                    <q-tooltip>Enable the web terminal</q-tooltip>
+                  </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    roundenable_server_webterminal
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">Default agent timezone:</div>
@@ -123,6 +169,24 @@
                     v-model="settings.alert_template"
                     :options="alertTemplateOptions"
                     class="col-6"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4 flex items-center">
+                    Receive notifications on:
+                  </div>
+                  <div class="col-2"></div>
+                  <q-checkbox
+                    dense
+                    v-model="settings.notify_on_info_alerts"
+                    class="col-3"
+                    label="Informational Alerts"
+                  />
+                  <q-checkbox
+                    dense
+                    v-model="settings.notify_on_warning_alerts"
+                    class="col-3"
+                    label="Warning Alerts"
                   />
                 </q-card-section>
                 <q-card-section class="row">
@@ -488,17 +552,28 @@
                   </q-input>
                 </q-card-section>
               </q-tab-panel>
+
+              <!-- custom fields -->
               <q-tab-panel name="customfields">
                 <CustomFields />
               </q-tab-panel>
 
+              <!-- key store -->
               <q-tab-panel name="keystore">
                 <KeyStoreTable />
               </q-tab-panel>
 
+              <!-- url actions -->
               <q-tab-panel name="urlactions">
-                <URLActionsTable />
+                <URLActionsTable type="web" />
               </q-tab-panel>
+
+              <!-- web hooks -->
+              <q-tab-panel name="webhooks">
+                <URLActionsTable type="rest" />
+              </q-tab-panel>
+
+              <!-- retention -->
               <q-tab-panel name="retention">
                 <q-card-section class="row">
                   <div class="col-4">Check History (days):</div>
@@ -656,6 +731,7 @@ export default {
     KeyStoreTable,
     URLActionsTable,
     APIKeysTable,
+    // ServerTasksTable,
   },
   mixins: [mixins],
   data() {
@@ -827,6 +903,7 @@ export default {
               });
           } else {
             this.$emit("close");
+            this.$store.dispatch("getDashInfo", false);
             this.notifySuccess("Settings were edited!");
           }
         })

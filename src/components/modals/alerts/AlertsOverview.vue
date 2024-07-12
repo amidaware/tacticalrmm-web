@@ -191,24 +191,6 @@
               }}</q-badge>
             </q-td>
           </template>
-
-          <template v-slot:body-cell-alert_time="props">
-            <q-td :props="props">
-              {{ formatDate(props.value) }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-resolve_on="props">
-            <q-td :props="props">
-              {{ formatDate(props.value) }}
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-snoozed_until="props">
-            <q-td :props="props">
-              {{ formatDate(props.value) }}
-            </q-td>
-          </template>
         </q-table>
       </q-card-section>
     </q-card>
@@ -265,6 +247,7 @@ export default {
           field: "alert_time",
           align: "left",
           sortable: true,
+          format: (a) => this.formatDate(a),
         },
         {
           name: "hostname",
@@ -296,11 +279,12 @@ export default {
           sortable: true,
         },
         {
-          name: "resolve_on",
+          name: "resolved_on",
           label: "Resolved On",
-          field: "resolve_on",
+          field: "resolved_on",
           align: "left",
           sortable: true,
+          format: (a) => this.formatDate(a),
         },
         {
           name: "snoozed_until",
@@ -308,6 +292,7 @@ export default {
           field: "snoozed_until",
           align: "left",
           sortable: true,
+          format: (a) => this.formatDate(a),
         },
         { name: "actions", label: "Actions", align: "left" },
       ],
@@ -328,7 +313,7 @@ export default {
       return this.columns.map((column) => {
         if (column.name === "snoozed_until") {
           if (this.includeSnoozed) return column.name;
-        } else if (column.name === "resolve_on") {
+        } else if (column.name === "resolved_on") {
           if (this.includeResolved) return column.name;
         } else {
           return column.name;
@@ -340,7 +325,7 @@ export default {
     getClients() {
       this.$axios.get("/clients/").then((r) => {
         this.clientsOptions = Object.freeze(
-          r.data.map((client) => ({ label: client.name, value: client.id }))
+          r.data.map((client) => ({ label: client.name, value: client.id })),
         );
       });
     },

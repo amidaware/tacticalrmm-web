@@ -18,12 +18,12 @@
         </div>
         <br />
         <div v-if="ret.stdout">
-          Standard Output
+          <script-output-copy-clip label="Standard Output" :data="ret.stdout" />
           <q-separator />
           <pre>{{ ret.stdout }}</pre>
         </div>
         <div v-if="ret.stderr">
-          Standard Error
+          <script-output-copy-clip label="Standard Error" :data="ret.stderr" />
           <q-separator />
           <pre>{{ ret.stderr }}</pre>
         </div>
@@ -36,15 +36,20 @@
 <script>
 // composition imports
 import { ref, onMounted } from "vue";
-import { testScript } from "@/api/scripts";
+import { testScript, testScriptOnServer } from "@/api/scripts";
 import { useDialogPluginComponent } from "quasar";
+import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
 
 export default {
   name: "TestScriptModal",
+  components: {
+    ScriptOutputCopyClip,
+  },
   emits: [...useDialogPluginComponent.emits],
   props: {
     script: !Object,
     agent: !String,
+    ctx: !String,
   },
   setup(props) {
     // setup quasar dialog plugin
@@ -70,7 +75,11 @@ export default {
         env_vars: props.script.env_vars,
       };
       try {
-        ret.value = await testScript(props.agent, data);
+        if (props.ctx === "server") {
+          ret.value = await testScriptOnServer(data);
+        } else {
+          ret.value = await testScript(props.agent, data);
+        }
       } catch (e) {
         console.error(e);
       }

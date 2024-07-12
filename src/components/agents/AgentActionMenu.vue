@@ -302,7 +302,9 @@ export default {
     async function getURLActions() {
       menuLoading.value = true;
       try {
-        urlActions.value = await fetchURLActions();
+        urlActions.value = (await fetchURLActions()).filter(
+          (action) => action.action_type === "web",
+        );
 
         if (urlActions.value.length === 0) {
           notifyWarning(

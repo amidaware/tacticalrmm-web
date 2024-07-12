@@ -179,6 +179,11 @@
                 v-model="localRole.can_manage_customfields"
                 label="Edit Custom Fields"
               />
+              <q-checkbox
+                v-if="!hosted"
+                v-model="localRole.can_use_webterm"
+                label="Use TRMM Server Web Terminal"
+              />
             </div>
           </q-card-section>
 
@@ -328,6 +333,11 @@
                 v-model="localRole.can_manage_scripts"
                 label="Manage Scripts"
               />
+              <q-checkbox
+                v-if="!hosted"
+                v-model="localRole.can_run_server_scripts"
+                label="Run Scripts on TRMM Server"
+              />
             </div>
           </q-card-section>
 
@@ -409,7 +419,8 @@
 
 <script>
 // composition imports
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 import { saveRole, editRole } from "@/api/accounts";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
@@ -426,6 +437,10 @@ export default {
   setup(props) {
     // quasar setup
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+
+    // store
+    const store = useStore();
+    const hosted = computed(() => store.state.hosted);
 
     // dropdown setup
     const { clientOptions } = useClientDropdown(true);
@@ -511,6 +526,9 @@ export default {
           can_manage_roles: false,
           can_view_clients: [],
           can_view_sites: [],
+          // server scripts and web terminal
+          can_run_server_scripts: false,
+          can_use_webterm: false,
           // reporting perms
           can_view_reports: false,
           can_manage_reports: false,
@@ -550,6 +568,7 @@ export default {
       loading,
       clientOptions,
       siteOptions,
+      hosted,
 
       onSubmit,
 

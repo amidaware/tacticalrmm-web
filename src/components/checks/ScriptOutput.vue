@@ -20,12 +20,18 @@
         </div>
         <br />
         <div v-if="scriptInfo.stdout">
-          Standard Output
+          <script-output-copy-clip
+            label="Standard Output"
+            :data="scriptInfo.stdout"
+          />
           <q-separator />
           <pre>{{ scriptInfo.stdout }}</pre>
         </div>
         <div v-if="scriptInfo.stderr">
-          Standard Error
+          <script-output-copy-clip
+            label="Standard Error"
+            :data="scriptInfo.stderr"
+          />
           <q-separator />
           <pre>{{ scriptInfo.stderr }}</pre>
         </div>
@@ -43,8 +49,13 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 
+import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
+
 export default {
   name: "ScriptOutput",
+  components: {
+    ScriptOutputCopyClip,
+  },
   emits: [...useDialogPluginComponent.emits],
   props: { scriptInfo: !Object },
   setup() {

@@ -441,7 +441,7 @@ export default {
       try {
         const result = await fetchAgentTasks(selectedAgent.value);
         tasks.value = result.filter(
-          (task) => task.sync_status !== "pendingdeletion"
+          (task) => task.sync_status !== "pendingdeletion",
         );
       } catch (e) {
         console.error(e);
@@ -495,7 +495,7 @@ export default {
       try {
         const result = await runTask(
           task.id,
-          task.policy ? { agent_id: selectedAgent.value } : {}
+          task.policy ? { agent_id: selectedAgent.value } : {},
         );
         notifySuccess(result);
       } catch (e) {
