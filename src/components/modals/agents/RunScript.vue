@@ -175,6 +175,8 @@
           class="q-pl-md q-pr-md q-pt-none q-ma-none scroll"
           style="max-height: 50vh"
         >
+          <script-output-copy-clip label="Output" :data="ret" />
+          <q-separator />
           <pre>{{ ret }}</pre>
         </q-card-section>
       </q-form>
@@ -195,6 +197,7 @@ import { formatScriptSyntax } from "@/utils/format";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
 
 // types
 import type { Agent } from "@/types/agents";

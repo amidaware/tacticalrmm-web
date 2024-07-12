@@ -104,6 +104,9 @@
             type="submit"
           />
         </q-card-actions>
+        <q-card-section v-if="ret !== null"
+          ><script-output-copy-clip label="Output" :data="ret" /> <q-separator
+        /></q-card-section>
         <q-card-section
           v-if="ret !== null"
           class="q-pl-md q-pr-md q-pt-none q-ma-none scroll"
@@ -124,8 +127,13 @@ import { sendAgentCommand } from "@/api/agents";
 import { cmdPlaceholder } from "@/composables/agents";
 import { runAsUserToolTip } from "@/constants/constants";
 
+import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
+
 export default {
   name: "SendCommand",
+  components: {
+    ScriptOutputCopyClip,
+  },
   emits: [...useDialogPluginComponent.emits],
   props: {
     agent: !Object,
