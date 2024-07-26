@@ -818,15 +818,14 @@ export default {
     },
     getURLActions() {
       this.$axios.get("/core/urlaction/").then((r) => {
-        if (r.data.length === 0) {
+        this.urlActions = r.data
+          .filter((action) => action.action_type === "web")
+          .sort((a, b) => a.name.localeCompare(b.name));
+        if (this.urlActions.length === 0) {
           this.notifyWarning(
             "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
           );
-          return;
         }
-        this.urlActions = r.data.filter(
-          (action) => action.action_type === "web",
-        );
       });
     },
     runURLAction(id, action, model) {

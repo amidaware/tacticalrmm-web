@@ -302,9 +302,9 @@ export default {
     async function getURLActions() {
       menuLoading.value = true;
       try {
-        urlActions.value = (await fetchURLActions()).filter(
-          (action) => action.action_type === "web",
-        );
+        urlActions.value = (await fetchURLActions())
+          .filter((action) => action.action_type === "web")
+          .sort((a, b) => a.name.localeCompare(b.name));
 
         if (urlActions.value.length === 0) {
           notifyWarning(
@@ -312,8 +312,11 @@ export default {
           );
           return;
         }
-      } catch (e) {}
-      menuLoading.value = true;
+      } catch (e) {
+        console.error(e);
+      } finally {
+        menuLoading.value = false;
+      }
     }
 
     function showSendCommand(agent) {
