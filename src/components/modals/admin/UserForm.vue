@@ -116,7 +116,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState as piniaMapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 import mixins from "@/mixins/mixins";
 
 export default {
@@ -145,7 +146,7 @@ export default {
     title() {
       return this.user ? "Edit User" : "Add User";
     },
-    ...mapState({
+    ...piniaMapState(useAuthStore, {
       logged_in_user: (state) => state.username,
     }),
   },

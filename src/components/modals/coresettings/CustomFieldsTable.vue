@@ -48,6 +48,7 @@
         <!-- name -->
         <q-td>
           {{ props.row.name }}
+          <q-tooltip :delay="600">ID: {{ props.row.id }}</q-tooltip>
         </q-td>
         <!-- type -->
         <q-td>

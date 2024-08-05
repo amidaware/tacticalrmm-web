@@ -539,6 +539,7 @@
               >
                 {{ props.row.name }}
               </q-tooltip>
+              <q-tooltip :delay="600">ID: {{ props.row.id }}</q-tooltip>
             </q-td>
             <!-- args -->
             <q-td key="args" :props="props">

@@ -149,7 +149,9 @@
 <script>
 import mixins from "@/mixins/mixins";
 import { computed } from "vue";
-import { mapState, useStore } from "vuex";
+import { useStore } from "vuex";
+import { mapState as piniaMapState } from "pinia";
+import { useAuthStore } from "@/stores/auth";
 import UserForm from "@/components/modals/admin/UserForm.vue";
 import UserResetPasswordForm from "@/components/modals/admin/UserResetPasswordForm.vue";
 
@@ -316,7 +318,7 @@ export default {
     },
   },
   computed: {
-    ...mapState({
+    ...piniaMapState(useAuthStore, {
       logged_in_user: (state) => state.username,
     }),
   },
