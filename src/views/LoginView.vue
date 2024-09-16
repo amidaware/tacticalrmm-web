@@ -49,7 +49,18 @@
               </div>
             </q-form>
           </q-card-section>
+
+          <q-card-section v-if="ssoProviders.length > 0">
+            <q-list dense v-for="provider in ssoProviders" :key="provider.id">
+              <q-item @click="openSSOProviderRedirect(provider.id)" clickable>
+                <q-item-section>
+                  <q-item-label>{{ provider.name }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
         </q-card>
+
         <!-- 2 factor modal -->
         <q-dialog persistent v-model="prompt">
           <q-card style="min-width: 400px">
@@ -84,10 +95,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import {
+  openSSOProviderRedirect,
+  getSSOConfig,
+  getCurrentSession,
+  type SSOProviderConfig,
+} from "@/ee/sso/api/sso";
 
 // setup quasar
 const $q = useQuasar();
@@ -107,6 +124,7 @@ const credentials = reactive({ username: "", password: "" });
 const twofactor = ref("");
 const prompt = ref(false);
 const showPassword = ref(true);
+const ssoProviders = ref([] as SSOProviderConfig[]);
 
 async function checkCreds() {
   try {
@@ -135,6 +153,13 @@ async function onSubmit() {
     prompt.value = false;
   }
 }
+
+onMounted(async () => {
+  const result = await getSSOConfig();
+  ssoProviders.value = result.data.socialaccount.providers;
+
+  await getCurrentSession();
+});
 </script>
 
 <style>

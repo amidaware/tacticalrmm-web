@@ -22,6 +22,8 @@ export function setErrorMessage(data, message) {
 export default function ({ app, router }) {
   app.config.globalProperties.$axios = axios;
 
+  axios.defaults.withCredentials = true;
+
   axios.interceptors.request.use(
     function (config) {
       const auth = useAuthStore();
@@ -60,7 +62,15 @@ export default function ({ app, router }) {
       }
       // unauthorized
       else if (error.response.status === 401) {
-        router.push({ path: "/expired" });
+        // bypass redirect for auth check endpoint
+        if (
+          error.config.url !== "_allauth/browser/v1/auth/session" ||
+          error.config.url !== "ws/dashinfo" // TODO once auth is working, need to extend it to websockets
+        ) {
+          return Promise.reject({ ...error });
+        } else {
+          router.push({ path: "/expired" });
+        }
       }
       // perms
       else if (error.response.status === 403) {

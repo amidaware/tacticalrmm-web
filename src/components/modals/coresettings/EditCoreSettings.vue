@@ -13,6 +13,7 @@
           <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
+          <q-tab name="sso" label="SSO Integration" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -636,6 +637,11 @@
                 <APIKeysTable />
               </q-tab-panel>
 
+              <!-- sso integration -->
+              <q-tab-panel name="sso">
+                <SSOProvidersTable />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -722,6 +728,7 @@ import CustomFields from "@/components/modals/coresettings/CustomFields.vue";
 import KeyStoreTable from "@/components/modals/coresettings/KeyStoreTable.vue";
 import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vue";
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
+import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -731,6 +738,7 @@ export default {
     KeyStoreTable,
     URLActionsTable,
     APIKeysTable,
+    SSOProvidersTable,
     // ServerTasksTable,
   },
   mixins: [mixins],
