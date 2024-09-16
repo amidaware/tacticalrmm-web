@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
+import { getCurrentSession } from "@/ee/sso/api/sso";
+
 import axios from "axios";
 
 interface CheckCredentialsRequest {
@@ -65,6 +67,11 @@ export const useAuthStore = defineStore("auth", {
     async setupTotp(): Promise<TOTPSetupResponse | false> {
       const { data } = await axios.post("/accounts/users/setup_totp/");
       return data;
+    },
+    async checkSessionAuth() {
+      const result = await getCurrentSession();
+      console.log(result);
+      return result;
     },
   },
 });
