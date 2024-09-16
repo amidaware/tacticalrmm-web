@@ -75,6 +75,11 @@ const routes = [
     name: "SessionExpired",
     component: () => import("@/views/SessionExpired.vue"),
   },
+  {
+    path: "/account/provider/callback",
+    name: "ProviderCallback",
+    component: () => import("@/ee/sso/views/ProviderCallback.vue"),
+  },
   { path: "/:catchAll(.*)", component: () => import("@/views/NotFound.vue") },
 ];
 
