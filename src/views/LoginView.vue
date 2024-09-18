@@ -102,7 +102,6 @@ import { useRouter } from "vue-router";
 import {
   openSSOProviderRedirect,
   getSSOConfig,
-  getCurrentSession,
   type SSOProviderConfig,
 } from "@/ee/sso/api/sso";
 
@@ -157,8 +156,6 @@ async function onSubmit() {
 onMounted(async () => {
   const result = await getSSOConfig();
   ssoProviders.value = result.data.socialaccount.providers;
-
-  await getCurrentSession();
 });
 </script>
 
