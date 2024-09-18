@@ -62,15 +62,7 @@ export default function ({ app, router }) {
       }
       // unauthorized
       else if (error.response.status === 401) {
-        // bypass redirect for auth check endpoint
-        if (
-          error.config.url !== "_allauth/browser/v1/auth/session" ||
-          error.config.url !== "ws/dashinfo" // TODO once auth is working, need to extend it to websockets
-        ) {
-          return Promise.reject({ ...error });
-        } else {
-          router.push({ path: "/expired" });
-        }
+        router.push({ path: "/expired" });
       }
       // perms
       else if (error.response.status === 403) {
