@@ -19,17 +19,10 @@ const router = useRouter();
 const auth = useAuthStore();
 
 if (!error) {
-  auth
-    .checkSessionAuth()
-    .then((r) => {
-      // auth was successful
-      console.log(r);
-      router.push({ name: "Dashboard" });
-    })
-    .catch((e) => {
-      // auth was not successful
-      console.error(e);
-      router.push({ name: "Login" });
-    });
+  if (auth.loggedIn) {
+    router.push({ name: "Dashboard" });
+  } else {
+    router.push({ name: "Login" });
+  }
 }
 </script>

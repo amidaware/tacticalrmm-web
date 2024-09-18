@@ -90,10 +90,10 @@ import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
-import SSOProvidersForm from "@/components/modals/coresettings/SSOProvidersForm.vue";
+import SSOProvidersForm from "@/ee/sso/components/SSOProvidersForm.vue";
 
 // types
-import { type SSOProvider } from "@/types/accounts";
+import { type SSOProvider } from "@/ee/sso/types/sso";
 
 // setup quasar
 const $q = useQuasar();

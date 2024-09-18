@@ -34,10 +34,15 @@ function postForm(url: string, data: FormData) {
   f.submit();
 }
 
+export interface MetaIsAuthenticated {
+  is_authenticated: boolean;
+}
+
 // sso providers
 export interface AllAuthResponse<T> {
   data: T;
   status: number;
+  meta?: MetaIsAuthenticated;
 }
 
 export async function fetchSSOProviders(): Promise<SSOProvider> {
@@ -60,8 +65,14 @@ export async function removeSSOProvider(id: number) {
   return data;
 }
 
-export async function getCurrentSession() {
-  const { data } = await axios.get("_allauth/browser/v1/auth/session");
+export async function getSSOProviderToken() {
+  const { data } = await axios.post(
+    `${baseUrl}/ssoproviders/token/`,
+    {},
+    {
+      headers: { "X-CSRFToken": getCSRFToken() },
+    },
+  );
   return data;
 }
 
@@ -72,12 +83,10 @@ export interface SSOProviderConfig {
   name: string;
 }
 
-export interface SSOConfigResponseProviders {
-  providers: SSOProviderConfig[];
-}
-
 export interface SSOConfigResponse {
-  socialaccount: SSOConfigResponseProviders;
+  socialaccount: {
+    providers: SSOProviderConfig[];
+  };
 }
 
 export async function getSSOConfig(): Promise<
