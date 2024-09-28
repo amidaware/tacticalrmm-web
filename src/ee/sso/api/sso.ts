@@ -34,16 +34,7 @@ function postForm(url: string, data: FormData) {
   f.submit();
 }
 
-export interface MetaIsAuthenticated {
-  is_authenticated: boolean;
-}
-
 // sso providers
-export interface AllAuthResponse<T> {
-  data: T;
-  status: number;
-  meta?: MetaIsAuthenticated;
-}
 
 export async function fetchSSOProviders(): Promise<SSOProvider> {
   const { data } = await axios.get(`${baseUrl}/ssoproviders/`);
@@ -65,6 +56,24 @@ export async function removeSSOProvider(id: number) {
   return data;
 }
 
+export interface SSOSettings {
+  block_local_user_logon: boolean;
+}
+
+export async function fetchSSOSettings(): Promise<SSOSettings> {
+  const { data } = await axios.get(`${baseUrl}/ssoproviders/settings/`);
+  return data;
+}
+
+export async function updateSSOSettings(settings: SSOSettings) {
+  console.log(settings);
+  const { data } = await axios.post(
+    `${baseUrl}/ssoproviders/settings/`,
+    settings,
+  );
+  return data;
+}
+
 export async function getSSOProviderToken() {
   const { data } = await axios.post(
     `${baseUrl}/ssoproviders/token/`,
@@ -74,6 +83,17 @@ export async function getSSOProviderToken() {
     },
   );
   return data;
+}
+
+// allauth
+const allauthBase = "_allauth/browser/v1";
+
+export interface AllAuthResponse<T> {
+  data: T;
+  status: number;
+  meta?: {
+    is_autheticated: boolean;
+  };
 }
 
 export interface SSOProviderConfig {
@@ -92,12 +112,29 @@ export interface SSOConfigResponse {
 export async function getSSOConfig(): Promise<
   AllAuthResponse<SSOConfigResponse>
 > {
-  const { data } = await axios.get("_allauth/browser/v1/config");
+  const { data } = await axios.get(`${allauthBase}/config`);
+  return data;
+}
+
+export interface SSOAccountsResponse {
+  uid: string;
+  display: string;
+  provider: SSOProviderConfig;
+}
+
+export async function disconnectSSOAccount(
+  provider: string,
+  account: string,
+): Promise<AllAuthResponse<SSOAccountsResponse[]>> {
+  const { data } = await axios.delete(`${allauthBase}/account/providers`, {
+    data: { provider, account },
+    headers: { "X-CSRFToken": getCSRFToken() },
+  });
   return data;
 }
 
 export async function openSSOProviderRedirect(id: string) {
-  postForm(`${getBaseUrl()}/_allauth/browser/v1/auth/provider/redirect`, {
+  postForm(`${getBaseUrl()}/${allauthBase}/auth/provider/redirect`, {
     provider: id,
     process: "login",
     callback_url: `${location.origin}/account/provider/callback`,
