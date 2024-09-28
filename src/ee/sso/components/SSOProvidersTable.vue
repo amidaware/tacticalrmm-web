@@ -1,3 +1,9 @@
+<!--
+Copyright (c) 2023-present Amidaware Inc.
+This file is subject to the EE License Agreement.
+For details, see: https://license.tacticalrmm.com/ee
+-->
+
 <template>
   <div>
     <div class="row">
@@ -26,6 +32,23 @@
       no-data-label="No SSO Providers added yet"
       :loading="loading"
     >
+      <template v-slot:top>
+        <q-space />
+        <q-btn
+          @click="
+            changeSSOSettings({
+              block_local_user_logon: !ssoSettings.block_local_user_logon,
+            })
+          "
+          :label="
+            ssoSettings.block_local_user_logon
+              ? 'Allow Local Logon'
+              : 'Block Local Logon'
+          "
+          no-caps
+          color="primary"
+        />
+      </template>
       <!-- body slots -->
       <template v-slot:body="props">
         <q-tr
@@ -86,7 +109,13 @@
 // composition imports
 import { ref, onMounted } from "vue";
 import { QTableColumn, useQuasar } from "quasar";
-import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
+import {
+  fetchSSOProviders,
+  removeSSOProvider,
+  fetchSSOSettings,
+  updateSSOSettings,
+  type SSOSettings,
+} from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
@@ -101,7 +130,7 @@ const $q = useQuasar();
 const loading = ref(false);
 
 const providers = ref([] as SSOProvider[]);
-
+const ssoSettings = ref({} as SSOSettings);
 const columns: QTableColumn[] = [
   {
     name: "name",
@@ -130,6 +159,28 @@ async function getSSOProviders() {
   loading.value = true;
   try {
     providers.value = await fetchSSOProviders();
+  } catch (e) {
+    console.error(e);
+  }
+  loading.value = false;
+}
+
+async function getSSOSettings() {
+  loading.value = true;
+  try {
+    ssoSettings.value = await fetchSSOSettings();
+  } catch (e) {
+    console.error(e);
+  }
+  loading.value = false;
+}
+
+async function changeSSOSettings(data: SSOSettings) {
+  loading.value = true;
+  try {
+    ssoSettings.value = await updateSSOSettings(data);
+    await getSSOSettings();
+    notifySuccess("Settings updated successfully");
   } catch (e) {
     console.error(e);
   }
@@ -168,5 +219,9 @@ function deleteSSOProvider(provider: SSOProvider) {
     loading.value = false;
   });
 }
-onMounted(getSSOProviders);
+
+onMounted(async () => {
+  await getSSOProviders();
+  await getSSOSettings();
+});
 </script>

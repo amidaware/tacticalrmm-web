@@ -739,7 +739,6 @@ export default {
     URLActionsTable,
     APIKeysTable,
     SSOProvidersTable,
-    // ServerTasksTable,
   },
   mixins: [mixins],
   data() {
