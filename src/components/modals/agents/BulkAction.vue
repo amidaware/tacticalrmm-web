@@ -153,6 +153,39 @@
           </q-checkbox>
         </q-card-section>
 
+        <q-card-section v-if="mode === 'script'" class="q-pt-none">
+          <div class="q-gutter-sm">
+            <q-checkbox
+              label="Save results to Custom Field"
+              v-model="collector"
+              @update:model-value="
+                state.custom_field = null;
+                state.collector_all_output = false;
+              "
+            />
+            <q-checkbox
+              v-model="state.save_to_agent_note"
+              label="Save results to Agent Note"
+            />
+          </div>
+        </q-card-section>
+
+        <q-card-section v-if="mode === 'script' && collector">
+          <tactical-dropdown
+            :rules="[(val) => !!val || '*Required']"
+            outlined
+            v-model="state.custom_field"
+            :options="customFieldOptions"
+            label="Select custom field"
+            mapOptions
+            filterable
+          />
+          <q-checkbox
+            v-model="state.collector_all_output"
+            label="Save all output"
+          />
+        </q-card-section>
+
         <q-card-section v-if="mode === 'script' || mode === 'command'">
           <q-input
             v-model.number="state.timeout"
@@ -222,6 +255,7 @@ import { useDialogPluginComponent } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useAgentDropdown } from "@/composables/agents";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
+import { useCustomFieldDropdown } from "@/composables/core";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
@@ -302,6 +336,7 @@ export default defineComponent({
     const { agents, agentOptions, getAgentOptions } = useAgentDropdown();
     const { site, siteOptions, getSiteOptions } = useSiteDropdown();
     const { client, clientOptions, getClientOptions } = useClientDropdown();
+    const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
     // bulk action logic
     const state = reactive({
@@ -312,6 +347,9 @@ export default defineComponent({
       cmd: "",
       shell: "cmd",
       custom_shell: null,
+      custom_field: null,
+      collector_all_output: false,
+      save_to_agent_note: false,
       patchMode: "scan",
       offlineAgents: false,
       client,
@@ -324,6 +362,7 @@ export default defineComponent({
       run_as_user: false,
     });
     const loading = ref(false);
+    const collector = ref(false);
 
     watch(
       () => state.target,
@@ -395,6 +434,8 @@ export default defineComponent({
       state,
       agentOptions,
       clientOptions,
+      collector,
+      customFieldOptions,
       siteOptions,
       filterByPlatformOptions,
       loading,
