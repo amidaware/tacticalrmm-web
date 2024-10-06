@@ -6,6 +6,15 @@
       <q-btn
         size="sm"
         color="grey-5"
+        text-color="black"
+        class="q-mr-sm"
+        :label="isPwd ? 'Show values' : 'Hide values'"
+        :icon="isPwd ? 'visibility_off' : 'visibility'"
+        @click="isPwd = !isPwd"
+      />
+      <q-btn
+        size="sm"
+        color="grey-5"
         icon="fas fa-plus"
         text-color="black"
         label="Add key"
@@ -61,7 +70,7 @@
           </q-td>
           <!-- value -->
           <q-td>
-            {{ props.row.value }}
+            {{ isPwd ? "****" : props.row.value }}
           </q-td>
         </q-tr>
       </template>
@@ -79,6 +88,7 @@ export default {
   data() {
     return {
       keystore: [],
+      isPwd: true,
       pagination: {
         rowsPerPage: 0,
         sortBy: "name",
