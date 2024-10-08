@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
+
 import axios from "axios";
 
 interface CheckCredentialsRequest {
@@ -28,6 +29,7 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     username: useStorage("user_name", null),
     token: useStorage("access_token", null),
+    ssoLoginProvider: useStorage("sso_provider", null),
   }),
   getters: {
     loggedIn: (state) => {
@@ -50,6 +52,7 @@ export const useAuthStore = defineStore("auth", {
       const { data } = await axios.post("/v2/login/", credentials);
       this.username = data.username;
       this.token = data.token;
+      this.ssoLoginProvider = null;
 
       return data;
     },
@@ -61,6 +64,7 @@ export const useAuthStore = defineStore("auth", {
       }
       this.token = null;
       this.username = null;
+      this.ssoLoginProvider = null;
     },
     async setupTotp(): Promise<TOTPSetupResponse | false> {
       const { data } = await axios.post("/accounts/users/setup_totp/");

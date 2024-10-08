@@ -22,6 +22,8 @@ export function setErrorMessage(data, message) {
 export default function ({ app, router }) {
   app.config.globalProperties.$axios = axios;
 
+  axios.defaults.withCredentials = true;
+
   axios.interceptors.request.use(
     function (config) {
       const auth = useAuthStore();

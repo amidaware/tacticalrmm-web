@@ -31,6 +31,34 @@ export async function resetTwoFactor() {
   }
 }
 
+// sessions api
+export async function fetchUserSessions(id) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/users/${id}/sessions/`);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function deleteAllUserSessions(id) {
+  try {
+    const { data } = await axios.delete(`${baseUrl}/users/${id}/sessions/`);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function deleteUserSession(id) {
+  try {
+    const { data } = await axios.delete(`${baseUrl}/sessions/${id}/`);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 // role api function
 export async function fetchRoles(params = {}) {
   try {
