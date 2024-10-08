@@ -12,6 +12,7 @@ export interface SSOProvider {
   client_id: string;
   secret: string;
   server_url: string;
+  role: number | null;
 }
 
 export interface SSOAccount {

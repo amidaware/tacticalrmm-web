@@ -47,6 +47,7 @@ For details, see: https://license.tacticalrmm.com/ee
           "
           no-caps
           color="primary"
+          size="sm"
         />
       </template>
       <!-- body slots -->

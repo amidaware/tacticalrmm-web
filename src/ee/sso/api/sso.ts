@@ -36,7 +36,7 @@ function postForm(url: string, data: FormData) {
 
 // sso providers
 
-export async function fetchSSOProviders(): Promise<SSOProvider> {
+export async function fetchSSOProviders(): Promise<SSOProvider[]> {
   const { data } = await axios.get(`${baseUrl}/ssoproviders/`);
   return data;
 }
@@ -66,7 +66,6 @@ export async function fetchSSOSettings(): Promise<SSOSettings> {
 }
 
 export async function updateSSOSettings(settings: SSOSettings) {
-  console.log(settings);
   const { data } = await axios.post(
     `${baseUrl}/ssoproviders/settings/`,
     settings,
