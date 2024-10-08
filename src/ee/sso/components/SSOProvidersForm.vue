@@ -60,6 +60,19 @@ For details, see: https://license.tacticalrmm.com/ee
         />
       </q-card-section>
 
+      <q-card-section>
+        <tactical-dropdown
+          label="Default Role"
+          :options="roleOptions"
+          outlined
+          dense
+          clearable
+          mapOptions
+          filled
+          v-model="localProvider.role"
+        />
+      </q-card-section>
+
       <q-card-actions align="right">
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn
@@ -80,7 +93,13 @@ import { ref, reactive } from "vue";
 import { useDialogPluginComponent, extend } from "quasar";
 import { editSSOProvider, addSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
-import { SSOProvider } from "@/types/accounts";
+import { useRoleDropdown } from "@/composables/accounts";
+
+// components
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+
+// types
+import type { SSOProvider } from "@/ee/sso/types/sso";
 
 // define emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -92,6 +111,8 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 const loading = ref(false);
 
+const { roleOptions } = useRoleDropdown({ onMount: true });
+
 const localProvider: SSOProvider = props.provider
   ? reactive(extend({}, props.provider))
   : reactive({
@@ -100,6 +121,7 @@ const localProvider: SSOProvider = props.provider
       client_id: "",
       secret: "",
       server_url: "",
+      role: null,
     } as SSOProvider);
 
 async function submit() {
