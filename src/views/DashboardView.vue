@@ -510,6 +510,13 @@ export default {
           align: "left",
         },
         {
+          name: "mon-type",
+          label: "",
+          field: "monitoring_type",
+          sortable: true,
+          align: "left",
+        },
+        {
           name: "checks-status",
           align: "left",
           field: "checks",
@@ -600,6 +607,7 @@ export default {
       visibleColumns: [
         "smsalert",
         "plat",
+        "mon-type",
         "emailalert",
         "dashboardalert",
         "checks-status",
