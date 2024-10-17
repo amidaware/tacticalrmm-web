@@ -89,7 +89,7 @@
             new-value-mode="add"
           />
         </q-card-section>
-        <q-card-section>
+        <q-card-section v-if="!state.run_on_server">
           <q-option-group
             v-model="state.output"
             :options="outputOptions"
@@ -141,8 +141,28 @@
           <q-checkbox v-model="state.save_all_output" label="Save all output" />
         </q-card-section>
         <q-card-section v-if="agent.plat === 'windows'">
-          <q-checkbox v-model="state.run_as_user" label="Run As User">
+          <q-checkbox
+            v-if="!state.run_on_server"
+            v-model="state.run_as_user"
+            label="Run As User"
+          >
             <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          </q-checkbox>
+          <q-checkbox
+            v-if="!hosted"
+            :disable="!server_scripts_enabled"
+            v-model="state.run_on_server"
+            label="Run On Server"
+            @update:model-value="ret = null"
+          >
+            <q-tooltip v-if="!server_scripts_enabled"
+              >Enable server side scripts globally to activate this
+              feature.</q-tooltip
+            >
+            <q-tooltip v-else
+              >Run the script on the Tactical RMM server in the context of this
+              agent.</q-tooltip
+            >
           </q-checkbox>
         </q-card-section>
         <q-card-section>
@@ -175,9 +195,39 @@
           class="q-pl-md q-pr-md q-pt-none q-ma-none scroll"
           style="max-height: 50vh"
         >
-          <script-output-copy-clip label="Output" :data="ret" />
+          <script-output-copy-clip
+            v-if="!state.run_on_server"
+            label="Output"
+            :data="ret"
+          />
           <q-separator />
-          <pre>{{ ret }}</pre>
+          <pre v-if="!state.run_on_server">{{ ret }}</pre>
+          <q-card-section v-if="state.run_on_server" class="scroll">
+            <div>
+              Run Time:
+              <code>{{ ret.execution_time }} seconds</code>
+              <br />Return Code:
+              <code>{{ ret.retcode }}</code>
+              <br />
+            </div>
+            <br />
+            <div v-if="ret.stdout">
+              <script-output-copy-clip
+                label="Standard Output"
+                :data="ret.stdout"
+              />
+              <q-separator />
+              <pre>{{ ret.stdout }}</pre>
+            </div>
+            <div v-if="ret.stderr">
+              <script-output-copy-clip
+                label="Standard Error"
+                :data="ret.stderr"
+              />
+              <q-separator />
+              <pre>{{ ret.stderr }}</pre>
+            </div>
+          </q-card-section>
         </q-card-section>
       </q-form>
     </q-card>
@@ -186,7 +236,8 @@
 
 <script setup lang="ts">
 // composition imports
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
 import { useDialogPluginComponent, openURL } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useCustomFieldDropdown } from "@/composables/core";
@@ -201,6 +252,13 @@ import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue"
 
 // types
 import type { Agent } from "@/types/agents";
+
+// store
+const store = useStore();
+const hosted = computed(() => store.state.hosted);
+const server_scripts_enabled = computed(
+  () => store.state.server_scripts_enabled,
+);
 
 // static data
 const outputOptions = [
@@ -251,6 +309,7 @@ const state = ref({
   env_vars: defaultEnvVars,
   timeout: defaultTimeout,
   run_as_user: false,
+  run_on_server: false,
 });
 
 const ret = ref(null);
