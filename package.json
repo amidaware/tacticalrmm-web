@@ -14,7 +14,7 @@
     "@vueuse/core": "11.1.0",
     "@vueuse/integrations": "11.1.0",
     "@vueuse/shared": "11.1.0",
-    "apexcharts": "3.54.0",
+    "apexcharts": "3.54.1",
     "axios": "1.7.7",
     "dotenv": "16.4.5",
     "monaco-editor": "0.50.0",
