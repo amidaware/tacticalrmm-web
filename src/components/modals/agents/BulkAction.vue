@@ -88,7 +88,24 @@
             outlined
             mapOptions
             filterable
-          />
+          >
+            <template v-slot:after>
+              <q-btn
+                size="sm"
+                round
+                dense
+                flat
+                icon="info"
+                @click="openScriptURL"
+              >
+                <q-tooltip
+                  v-if="syntax"
+                  class="bg-white text-primary text-body1"
+                  v-html="formatScriptSyntax(syntax)"
+                />
+              </q-btn>
+            </template>
+          </tactical-dropdown>
         </q-card-section>
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
@@ -251,13 +268,14 @@ import {
   onMounted,
   defineComponent,
 } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, openURL } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useAgentDropdown } from "@/composables/agents";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { formatScriptSyntax } from "@/utils/format";
 import { cmdPlaceholder } from "@/composables/agents";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
@@ -331,12 +349,18 @@ export default defineComponent({
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
+      syntax,
+      link,
       getScriptOptions,
     } = useScriptDropdown();
     const { agents, agentOptions, getAgentOptions } = useAgentDropdown();
     const { site, siteOptions, getSiteOptions } = useSiteDropdown();
     const { client, clientOptions, getClientOptions } = useClientDropdown();
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
+
+    function openScriptURL() {
+      link.value ? openURL(link.value) : null;
+    }
 
     // bulk action logic
     const state = reactive({
@@ -449,6 +473,7 @@ export default defineComponent({
       patchModeOptions,
       runAsUserToolTip,
       envVarsLabel,
+      syntax,
 
       //computed
       modalTitle,
@@ -457,6 +482,8 @@ export default defineComponent({
       submit,
       cmdPlaceholder,
       supportsRunAsUser,
+      openScriptURL,
+      formatScriptSyntax,
 
       // quasar dialog plugin
       dialogRef,
