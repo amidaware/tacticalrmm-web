@@ -36,8 +36,8 @@ For details, see: https://license.tacticalrmm.com/ee
             <!-- rows -->
             <td>{{ props.row.display }}</td>
             <td>{{ props.row.provider }}</td>
-            <td>{{ props.row.last_login }}</td>
-            <td>{{ props.row.date_joined }}</td>
+            <td>{{ formatDate(props.row.last_login) }}</td>
+            <td>{{ formatDate(props.row.date_joined) }}</td>
             <td>
               <q-btn
                 size="sm"
@@ -60,6 +60,7 @@ import { useDialogPluginComponent, useQuasar, type QTableColumn } from "quasar";
 import { disconnectSSOAccount } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 import { useAuthStore } from "@/stores/auth";
+import { formatDate } from "@/utils/format";
 
 //types
 import type { SSOAccount, SSOUser } from "../types/sso";

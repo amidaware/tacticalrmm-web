@@ -37,8 +37,8 @@
         <template #body="props">
           <q-tr>
             <!-- rows -->
-            <td>{{ props.row.created }}</td>
-            <td>{{ props.row.expiry }}</td>
+            <td>{{ formatDate(props.row.created) }}</td>
+            <td>{{ formatDate(props.row.expiry) }}</td>
             <td>
               <q-btn
                 size="sm"
@@ -59,7 +59,7 @@
 import { onMounted, ref } from "vue";
 import { useDialogPluginComponent, useQuasar, type QTableColumn } from "quasar";
 import { notifySuccess } from "@/utils/notify";
-
+import { formatDate } from "@/utils/format";
 import {
   fetchUserSessions,
   deleteAllUserSessions,
