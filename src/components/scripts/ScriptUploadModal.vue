@@ -42,15 +42,7 @@
         </q-card-section>
 
         <q-card-section>
-          <q-file
-            label="Script Upload"
-            v-model="file"
-            hint="Supported file types: .ps1, .bat, .py, .sh"
-            filled
-            dense
-            counter
-            accept=".ps1, .bat, .py, .sh"
-          >
+          <q-file label="Script Upload" v-model="file" filled dense counter>
             <template v-slot:prepend>
               <q-icon name="attach_file" />
             </template>
