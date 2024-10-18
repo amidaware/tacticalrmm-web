@@ -21,7 +21,6 @@ export function setErrorMessage(data, message) {
 
 export default function ({ app, router }) {
   app.config.globalProperties.$axios = axios;
-
   axios.defaults.withCredentials = true;
 
   axios.interceptors.request.use(
@@ -67,7 +66,11 @@ export default function ({ app, router }) {
       // perms
       else if (error.response.status === 403) {
         // don't notify user if method is GET
-        if (error.config.method === "get" || error.config.method === "patch")
+        if (
+          error.config.method === "get" ||
+          error.config.method === "patch" ||
+          error.config.url === "accounts/ssoproviders/token/"
+        )
           return Promise.reject({ ...error });
         text = error.response.data.detail;
       }

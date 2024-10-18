@@ -33,18 +33,9 @@ For details, see: https://license.tacticalrmm.com/ee
       :loading="loading"
     >
       <template v-slot:top>
-        <q-space />
         <q-btn
-          @click="
-            changeSSOSettings({
-              block_local_user_logon: !ssoSettings.block_local_user_logon,
-            })
-          "
-          :label="
-            ssoSettings.block_local_user_logon
-              ? 'Allow Local Logon'
-              : 'Block Local Logon'
-          "
+          @click="openSSOSettings"
+          label="SSO Settings"
           no-caps
           color="primary"
           size="sm"
@@ -90,15 +81,18 @@ For details, see: https://license.tacticalrmm.com/ee
           </q-menu>
           <!-- name -->
           <q-td>
-            {{ props.row.name }}
+            {{ truncateText(props.row.name, 35) }}
+            <q-tooltip>{{ props.row.name }}</q-tooltip>
           </q-td>
           <!-- server_url -->
           <q-td>
-            {{ props.row.server_url }}
+            {{ truncateText(props.row.server_url, 35) }}
+            <q-tooltip>{{ props.row.server_url }}</q-tooltip>
           </q-td>
           <!-- pattern -->
           <q-td>
-            {{ props.row.client_id }}
+            {{ truncateText(props.row.client_id, 35) }}
+            <q-tooltip>{{ props.row.client_id }}</q-tooltip>
           </q-td>
         </q-tr>
       </template>
@@ -110,20 +104,16 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, onMounted } from "vue";
 import { QTableColumn, useQuasar } from "quasar";
-import {
-  fetchSSOProviders,
-  removeSSOProvider,
-  fetchSSOSettings,
-  updateSSOSettings,
-  type SSOSettings,
-} from "@/ee/sso/api/sso";
+import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
+import { truncateText } from "@/utils/format";
 
 // ui imports
 import SSOProvidersForm from "@/ee/sso/components/SSOProvidersForm.vue";
 
 // types
 import { type SSOProvider } from "@/ee/sso/types/sso";
+import SSOSettings from "@/ee/sso/components/SSOSettings.vue";
 
 // setup quasar
 const $q = useQuasar();
@@ -131,7 +121,7 @@ const $q = useQuasar();
 const loading = ref(false);
 
 const providers = ref([] as SSOProvider[]);
-const ssoSettings = ref({} as SSOSettings);
+
 const columns: QTableColumn[] = [
   {
     name: "name",
@@ -160,28 +150,6 @@ async function getSSOProviders() {
   loading.value = true;
   try {
     providers.value = await fetchSSOProviders();
-  } catch (e) {
-    console.error(e);
-  }
-  loading.value = false;
-}
-
-async function getSSOSettings() {
-  loading.value = true;
-  try {
-    ssoSettings.value = await fetchSSOSettings();
-  } catch (e) {
-    console.error(e);
-  }
-  loading.value = false;
-}
-
-async function changeSSOSettings(data: SSOSettings) {
-  loading.value = true;
-  try {
-    ssoSettings.value = await updateSSOSettings(data);
-    await getSSOSettings();
-    notifySuccess("Settings updated successfully");
   } catch (e) {
     console.error(e);
   }
@@ -221,8 +189,13 @@ function deleteSSOProvider(provider: SSOProvider) {
   });
 }
 
+function openSSOSettings() {
+  $q.dialog({
+    component: SSOSettings,
+  });
+}
+
 onMounted(async () => {
   await getSSOProviders();
-  await getSSOSettings();
 });
 </script>

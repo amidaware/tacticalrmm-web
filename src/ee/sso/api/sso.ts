@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCookie } from "@/ee/sso/utils/cookies";
 import { getBaseUrl } from "@/boot/axios";
 
-import type { SSOProvider } from "@/ee/sso/types/sso";
+import type { SSOProvider, SSOSettings } from "@/ee/sso/types/sso";
 
 const baseUrl = "accounts";
 
@@ -54,10 +54,6 @@ export async function editSSOProvider(id: number, payload: SSOProvider) {
 export async function removeSSOProvider(id: number) {
   const { data } = await axios.delete(`${baseUrl}/ssoproviders/${id}/`);
   return data;
-}
-
-export interface SSOSettings {
-  block_local_user_logon: boolean;
 }
 
 export async function fetchSSOSettings(): Promise<SSOSettings> {
