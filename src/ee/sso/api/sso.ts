@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCookie } from "@/ee/sso/utils/cookies";
 import { getBaseUrl } from "@/boot/axios";
+import { useStorage } from "@vueuse/core";
 
 import type { SSOProvider, SSOSettings } from "@/ee/sso/types/sso";
 
@@ -129,6 +130,8 @@ export async function disconnectSSOAccount(
 }
 
 export async function openSSOProviderRedirect(id: string) {
+  //save provider to local storage
+  useStorage("provider_id", id);
   postForm(`${getBaseUrl()}/${allauthBase}/auth/provider/redirect`, {
     provider: id,
     process: "login",

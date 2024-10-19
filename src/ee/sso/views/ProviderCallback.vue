@@ -18,12 +18,10 @@ import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
 const route = useRoute();
-const error = route.params.error;
+const error = route.query.error;
 
 const router = useRouter();
-
 const auth = useAuthStore();
-
 if (!error) {
   if (auth.loggedIn) {
     router.push({ name: "Dashboard" });
