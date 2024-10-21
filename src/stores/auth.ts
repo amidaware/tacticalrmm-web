@@ -28,12 +28,16 @@ interface TOTPSetupResponse {
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     username: useStorage("user_name", null),
+    name: useStorage("name", null),
     token: useStorage("access_token", null),
     ssoLoginProvider: useStorage("sso_provider", null),
   }),
   getters: {
     loggedIn: (state) => {
       return state.token !== null;
+    },
+    displayName: (state) => {
+      return state.name ? state.name : state.username;
     },
   },
   actions: {
@@ -45,12 +49,14 @@ export const useAuthStore = defineStore("auth", {
       if (!data.totp) {
         this.token = data.token;
         this.username = data.username;
+        this.name = data.name;
       }
       return data;
     },
     async login(credentials: LoginRequest) {
       const { data } = await axios.post("/v2/login/", credentials);
       this.username = data.username;
+      this.name = data.name;
       this.token = data.token;
       this.ssoLoginProvider = null;
 
@@ -64,6 +70,7 @@ export const useAuthStore = defineStore("auth", {
       }
       this.token = null;
       this.username = null;
+      this.name = null;
       this.ssoLoginProvider = null;
     },
     async setupTotp(): Promise<TOTPSetupResponse | false> {
