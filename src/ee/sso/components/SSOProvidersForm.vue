@@ -52,12 +52,22 @@ For details, see: https://license.tacticalrmm.com/ee
       <!-- secret -->
       <q-card-section>
         <q-input
+          v-model="localProvider.secret"
+          filled
+          :type="hideSecret ? 'password' : 'text'"
           label="Secret"
           outlined
           dense
-          v-model="localProvider.secret"
           :rules="[(val) => !!val || '*Required']"
-        />
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="hideSecret ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="hideSecret = !hideSecret"
+            />
+          </template>
+        </q-input>
       </q-card-section>
 
       <q-card-section>
@@ -113,6 +123,7 @@ const loading = ref(false);
 
 const { roleOptions } = useRoleDropdown({ onMount: true });
 
+const hideSecret = ref(true);
 const localProvider: SSOProvider = props.provider
   ? reactive(extend({}, props.provider))
   : reactive({
