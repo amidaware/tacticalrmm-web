@@ -17,70 +17,85 @@
     :loading="loading"
   >
     <template v-slot:top>
-      <q-btn
-        v-if="isPolling"
-        dense
-        flat
-        push
-        @click="stopPoll"
-        icon="stop"
-        label="Stop Live Refresh"
-      />
-      <q-btn
-        v-else
-        dense
-        flat
-        push
-        @click="startPoll"
-        icon="play_arrow"
-        label="Resume Live Refresh"
-      />
-
-      <q-space />
-
-      <div class="q-pa-md q-gutter-sm">
+      <div class="q-gutter-md flex flex-center items-center">
         <q-btn
-          :disable="pollInterval === 1"
+          v-if="isPolling"
           dense
-          @click="pollIntervalChanged('subtract')"
+          flat
           push
-          icon="remove"
-          size="sm"
-          color="grey"
+          @click="stopPoll"
+          icon="stop"
+          label="Stop Live Refresh"
         />
         <q-btn
+          v-else
           dense
+          flat
           push
-          icon="add"
-          size="sm"
-          color="grey"
-          @click="pollIntervalChanged('add')"
+          @click="startPoll"
+          icon="play_arrow"
+          label="Resume Live Refresh"
         />
-      </div>
-      <div class="text-overline">
-        <q-badge
-          align="middle"
-          size="sm"
-          class="text-h6"
-          color="blue"
-          :label="pollInterval"
-        />
-        Refresh interval (seconds)
-      </div>
 
-      <q-space />
-      <q-input v-model="filter" outlined label="Search" dense clearable>
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-      <!-- file download doesn't work so disabling -->
-      <export-table-btn
-        v-show="false"
-        class="q-ml-sm"
-        :columns="columns"
-        :data="processes"
-      />
+        <div class="flex flex-center q-ml-md">
+          <q-icon name="fas fa-microchip" class="q-mr-xs" />
+          <div class="text-caption q-mr-sm">
+            CPU Usage:
+            <span class="text-body1 text-weight-medium"
+              >{{ totalCpuUsage }}%</span
+            >
+          </div>
+
+          <q-icon name="fas fa-memory" class="q-mr-xs" />
+          <div class="text-caption">
+            RAM Usage:
+            <span class="text-body1 text-weight-medium"
+              >{{ bytes2Human(totalRamUsage) }}/{{ total_ram }} GB</span
+            >
+          </div>
+        </div>
+
+        <q-space />
+
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn
+            :disable="pollInterval === 1"
+            dense
+            @click="pollIntervalChanged('subtract')"
+            push
+            icon="remove"
+            size="sm"
+            color="grey"
+          />
+          <q-btn
+            dense
+            push
+            icon="add"
+            size="sm"
+            color="grey"
+            @click="pollIntervalChanged('add')"
+          />
+        </div>
+
+        <div class="text-overline">
+          <q-badge
+            align="middle"
+            size="sm"
+            class="text-h6"
+            color="blue"
+            :label="pollInterval"
+          />
+          Refresh interval (seconds)
+        </div>
+
+        <q-space />
+
+        <q-input v-model="filter" outlined label="Search" dense clearable>
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </div>
     </template>
     <template v-slot:body="props">
       <q-tr :props="props" class="cursor-pointer">
@@ -120,9 +135,6 @@ import {
 } from "@/api/agents";
 import { bytes2Human } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
-
-// ui imports
-import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 
 const columns = [
   {
@@ -164,7 +176,6 @@ const columns = [
 ];
 
 export default {
-  components: { ExportTableBtn },
   name: "ProcessManager",
   props: {
     agent_id: !String,
@@ -175,50 +186,69 @@ export default {
     const poll = ref(null);
     const isPolling = computed(() => !!poll.value);
 
-    async function startPoll() {
-      await getProcesses();
-      if (processes.value.length > 0) {
-        refreshProcesses();
-      }
+    function startPoll() {
+      stopPoll();
+      getProcesses();
+      poll.value = setInterval(() => {
+        getProcesses();
+      }, pollInterval.value * 1000);
     }
 
     function stopPoll() {
-      clearInterval(poll.value);
-      poll.value = null;
+      if (poll.value) {
+        clearInterval(poll.value);
+        poll.value = null;
+      }
     }
 
     function pollIntervalChanged(action) {
-      if (action === "subtract" && pollInterval.value <= 1) {
-        stopPoll();
-        startPoll();
-        return;
-      }
       if (action === "add") {
         pollInterval.value++;
-      } else {
+      } else if (action === "subtract" && pollInterval.value > 1) {
         pollInterval.value--;
       }
-      stopPoll();
-      startPoll();
+      if (isPolling.value) {
+        startPoll();
+      }
     }
 
     // process manager logic
     const processes = ref([]);
     const filter = ref("");
-    const memory = ref(null);
+    const total_ram = ref(0);
 
     const loading = ref(false);
 
+    const totalCpuUsage = computed(() => {
+      if (!Array.isArray(processes.value) || processes.value.length === 0) {
+        return "0.00";
+      }
+
+      const total = processes.value.reduce((acc, proc) => {
+        const cpuPercent = parseFloat(proc.cpu_percent);
+
+        if (isNaN(cpuPercent)) {
+          return acc;
+        }
+
+        return acc + cpuPercent;
+      }, 0);
+
+      return total.toFixed(2);
+    });
+
+    const totalRamUsage = computed(() => {
+      return processes.value.reduce((acc, proc) => acc + proc.membytes, 0);
+    });
+
     async function getProcesses() {
       loading.value = true;
-      processes.value = await fetchAgentProcesses(props.agent_id);
+      try {
+        processes.value = await fetchAgentProcesses(props.agent_id);
+      } catch (error) {
+        console.error(error);
+      }
       loading.value = false;
-    }
-
-    function refreshProcesses() {
-      poll.value = setInterval(() => {
-        getProcesses(props.agent_id);
-      }, pollInterval.value * 1000);
     }
 
     async function killProcess(pid) {
@@ -235,11 +265,8 @@ export default {
 
     // lifecycle hooks
     onMounted(async () => {
-      memory.value = await fetchAgent(props.agent_id).total_ram;
-      await getProcesses();
-      if (processes.value.length > 0) {
-        refreshProcesses();
-      }
+      total_ram.value = (await fetchAgent(props.agent_id)).total_ram;
+      startPoll();
     });
 
     onBeforeUnmount(() => clearInterval(poll.value));
@@ -248,10 +275,12 @@ export default {
       // reactive data
       processes,
       filter,
-      memory,
+      total_ram,
       isPolling,
       pollInterval,
       loading,
+      totalCpuUsage,
+      totalRamUsage,
 
       // non-reactive data
       columns,
