@@ -3,7 +3,7 @@ import { getCookie } from "@/ee/sso/utils/cookies";
 import { getBaseUrl } from "@/boot/axios";
 import { useStorage } from "@vueuse/core";
 
-import type { SSOProvider, SSOSettings } from "@/ee/sso/types/sso";
+import type { SSOAccount, SSOProvider, SSOSettings } from "@/ee/sso/types/sso";
 
 const baseUrl = "accounts";
 
@@ -81,6 +81,16 @@ export async function getSSOProviderToken() {
   return data;
 }
 
+export async function disconnectSSOAccount(
+  provider: string,
+  account: string,
+): Promise<SSOAccount> {
+  const { data } = await axios.delete(`${baseUrl}/ssoproviders/account/`, {
+    data: { provider, account },
+  });
+  return data;
+}
+
 // allauth
 const allauthBase = "_allauth/browser/v1";
 
@@ -108,31 +118,14 @@ export interface SSOConfigResponse {
 export async function getSSOConfig(): Promise<
   AllAuthResponse<SSOConfigResponse>
 > {
-  const { data } = await axios.get(`${allauthBase}/config`);
-  return data;
-}
-
-export interface SSOAccountsResponse {
-  uid: string;
-  display: string;
-  provider: SSOProviderConfig;
-}
-
-export async function disconnectSSOAccount(
-  provider: string,
-  account: string,
-): Promise<AllAuthResponse<SSOAccountsResponse[]>> {
-  const { data } = await axios.delete(`${allauthBase}/account/providers`, {
-    data: { provider, account },
-    headers: { "X-CSRFToken": getCSRFToken() },
-  });
+  const { data } = await axios.get(`${allauthBase}/config/`);
   return data;
 }
 
 export async function openSSOProviderRedirect(id: string) {
   //save provider to local storage
   useStorage("provider_id", id);
-  postForm(`${getBaseUrl()}/${allauthBase}/auth/provider/redirect`, {
+  postForm(`${getBaseUrl()}/${allauthBase}/auth/provider/redirect/`, {
     provider: id,
     process: "login",
     callback_url: `${location.origin}/account/provider/callback`,

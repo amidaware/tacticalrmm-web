@@ -48,6 +48,10 @@
           </q-th>
         </template>
 
+        <template v-slot:header-cell-sso="props">
+          <q-th :props="props" auto-width></q-th>
+        </template>
+
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
@@ -158,6 +162,14 @@
                 :disable="props.row.username === logged_in_user"
               />
             </q-td>
+            <q-td>
+              <q-chip
+                v-if="props.row.social_accounts.length > 0"
+                color="primary"
+                dense
+                >SSO</q-chip
+              >
+            </q-td>
             <q-td>{{ props.row.username }}</q-td>
             <q-td>{{ props.row.first_name }} {{ props.row.last_name }}</q-td>
             <q-td>{{ props.row.email }}</q-td>
@@ -241,6 +253,13 @@ export default {
           label: "Active",
           field: "is_active",
           align: "left",
+        },
+        {
+          name: "sso",
+          label: "",
+          field: "sso",
+          align: "left",
+          sortable: true,
         },
         {
           name: "username",

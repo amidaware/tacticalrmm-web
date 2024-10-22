@@ -74,6 +74,19 @@ For details, see: https://license.tacticalrmm.com/ee
 
               <q-separator></q-separator>
 
+              <q-item
+                clickable
+                v-close-popup
+                @click="getCallbackURL(props.row)"
+              >
+                <q-item-section side>
+                  <q-icon name="description" />
+                </q-item-section>
+                <q-item-section>Copy Callback URL</q-item-section>
+              </q-item>
+
+              <q-separator></q-separator>
+
               <q-item clickable v-close-popup>
                 <q-item-section>Close</q-item-section>
               </q-item>
@@ -103,10 +116,11 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 // composition imports
 import { ref, onMounted } from "vue";
-import { QTableColumn, useQuasar } from "quasar";
+import { QTableColumn, useQuasar, copyToClipboard } from "quasar";
 import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 import { truncateText } from "@/utils/format";
+import { getBaseUrl } from "@/boot/axios";
 
 // ui imports
 import SSOProvidersForm from "@/ee/sso/components/SSOProvidersForm.vue";
@@ -119,7 +133,6 @@ import SSOSettings from "@/ee/sso/components/SSOSettings.vue";
 const $q = useQuasar();
 
 const loading = ref(false);
-
 const providers = ref([] as SSOProvider[]);
 
 const columns: QTableColumn[] = [
@@ -186,6 +199,14 @@ function deleteSSOProvider(provider: SSOProvider) {
       console.error(e);
     }
     loading.value = false;
+  });
+}
+
+function getCallbackURL(provider: SSOProvider) {
+  copyToClipboard(
+    `${getBaseUrl()}/accounts/oidc/${provider.provider_id}/login/callback/`,
+  ).then(() => {
+    notifySuccess("Callback URL copied!");
   });
 }
 
