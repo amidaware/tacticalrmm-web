@@ -370,7 +370,13 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showPingInfo(props.row)"
-              >Last Output</span
+              >{{
+                grep(props.row.check_result.more_info, [
+                  "transmitted",
+                  "received",
+                  "packet loss",
+                ])
+              }}</span
             >
             <span
               v-else-if="
@@ -379,7 +385,7 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showScriptOutput(props.row.check_result)"
-              >Last Output</span
+              >{{ processOutput(props.row.check_result) }}</span
             >
             <span
               v-else-if="
@@ -392,7 +398,9 @@
             >
             <span
               v-else-if="
-                props.row.check_type === 'diskspace' ||
+                ['diskspace', 'cpuload', 'memory'].includes(
+                  props.row.check_type,
+                ) ||
                 (props.row.check_type === 'winsvc' && props.row.check_result.id)
               "
               >{{ props.row.check_result.more_info }}</span
@@ -509,6 +517,40 @@ export default {
       sortBy: "status",
       descending: false,
     });
+
+    // TODO this will break when we add translations
+    function grep(text, stringsToMatch) {
+      try {
+        const lines = text.split("\n");
+        const matched = [];
+
+        for (const line of lines) {
+          if (stringsToMatch.every((str) => line.includes(str))) {
+            matched.push(line);
+          }
+        }
+
+        return matched.length > 0 ? matched.join("\n") : "Last Output";
+      } catch (e) {
+        console.error(e);
+        return "Last Output";
+      }
+    }
+
+    function processOutput(result) {
+      try {
+        if (result.stdout && result.stdout.trim() !== "") {
+          return result.stdout.substring(0, 60);
+        } else if (result.stderr && result.stderr.trim() !== "") {
+          return result.stderr.substring(0, 60);
+        } else {
+          return "Last Output";
+        }
+      } catch (e) {
+        console.error(e);
+        return "Last Output";
+      }
+    }
 
     function getAlertSeverity(check) {
       if (check.check_result.alert_severity) {
@@ -707,6 +749,8 @@ export default {
       getAlertSeverity,
       runChecks,
       resetAllChecks,
+      grep,
+      processOutput,
 
       // dialogs
       showScriptOutput,

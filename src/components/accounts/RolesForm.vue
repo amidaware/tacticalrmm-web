@@ -152,6 +152,14 @@
                 label="Edit Global Settings"
               />
               <q-checkbox
+                v-model="localRole.can_view_global_keystore"
+                label="View Global Key Store"
+              />
+              <q-checkbox
+                v-model="localRole.can_edit_global_keystore"
+                label="Edit Global Key Store"
+              />
+              <q-checkbox
                 v-model="localRole.can_do_server_maint"
                 label="Do Server Maintenance"
               />
@@ -477,6 +485,8 @@ export default {
           // settings perms
           can_view_core_settings: false,
           can_edit_core_settings: false,
+          can_view_global_keystore: false,
+          can_edit_global_keystore: false,
           can_do_server_maint: false,
           can_code_sign: false,
           can_run_urlactions: false,

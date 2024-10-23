@@ -46,6 +46,9 @@
       <template v-slot:header-cell-plat="props">
         <q-th auto-width :props="props"></q-th>
       </template>
+      <template v-slot:header-cell-mon-type="props">
+        <q-th auto-width :props="props"></q-th>
+      </template>
       <template v-slot:header-cell-checks-status="props">
         <q-th :props="props">
           <q-icon name="fas fa-check-double" size="1.2em">
@@ -203,6 +206,20 @@
               color="primary"
             >
               <q-tooltip>macOS</q-tooltip>
+            </q-icon>
+          </q-td>
+
+          <q-td key="mon-type" :props="props">
+            <q-icon
+              v-if="props.row.monitoring_type === 'server'"
+              name="dns"
+              size="sm"
+              color="primary"
+            >
+              <q-tooltip>Server</q-tooltip>
+            </q-icon>
+            <q-icon v-else name="computer" size="sm" color="primary">
+              <q-tooltip>Workstation</q-tooltip>
             </q-icon>
           </q-td>
 

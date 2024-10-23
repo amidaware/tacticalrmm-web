@@ -106,7 +106,7 @@
               <q-item-label header>Servers</q-item-label>
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="fa fa-server" size="sm" color="primary" />
+                  <q-icon name="dns" size="sm" color="primary" />
                 </q-item-section>
 
                 <q-item-section no-wrap>

@@ -27,8 +27,16 @@
             outlined
             dense
             v-model="localKey.value"
+            :type="isPwd ? 'password' : 'text'"
             :rules="[(val) => !!val || '*Required']"
-          />
+            ><template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -50,6 +58,7 @@ export default {
   props: { globalKey: Object },
   data() {
     return {
+      isPwd: true,
       localKey: {
         name: "",
         value: "",

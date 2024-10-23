@@ -88,7 +88,24 @@
             outlined
             mapOptions
             filterable
-          />
+          >
+            <template v-slot:after>
+              <q-btn
+                size="sm"
+                round
+                dense
+                flat
+                icon="info"
+                @click="openScriptURL"
+              >
+                <q-tooltip
+                  v-if="syntax"
+                  class="bg-white text-primary text-body1"
+                  v-html="formatScriptSyntax(syntax)"
+                />
+              </q-btn>
+            </template>
+          </tactical-dropdown>
         </q-card-section>
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
@@ -151,6 +168,39 @@
           <q-checkbox v-model="state.run_as_user" label="Run As User">
             <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
           </q-checkbox>
+        </q-card-section>
+
+        <q-card-section v-if="mode === 'script'" class="q-pt-none">
+          <div class="q-gutter-sm">
+            <q-checkbox
+              label="Save results to Custom Field"
+              v-model="collector"
+              @update:model-value="
+                state.custom_field = null;
+                state.collector_all_output = false;
+              "
+            />
+            <q-checkbox
+              v-model="state.save_to_agent_note"
+              label="Save results to Agent Note"
+            />
+          </div>
+        </q-card-section>
+
+        <q-card-section v-if="mode === 'script' && collector">
+          <tactical-dropdown
+            :rules="[(val) => !!val || '*Required']"
+            outlined
+            v-model="state.custom_field"
+            :options="customFieldOptions"
+            label="Select custom field"
+            mapOptions
+            filterable
+          />
+          <q-checkbox
+            v-model="state.collector_all_output"
+            label="Save all output"
+          />
         </q-card-section>
 
         <q-card-section v-if="mode === 'script' || mode === 'command'">
@@ -218,12 +268,14 @@ import {
   onMounted,
   defineComponent,
 } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, openURL } from "quasar";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useAgentDropdown } from "@/composables/agents";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
+import { useCustomFieldDropdown } from "@/composables/core";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { formatScriptSyntax } from "@/utils/format";
 import { cmdPlaceholder } from "@/composables/agents";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
@@ -297,11 +349,18 @@ export default defineComponent({
       defaultTimeout,
       defaultArgs,
       defaultEnvVars,
+      syntax,
+      link,
       getScriptOptions,
     } = useScriptDropdown();
     const { agents, agentOptions, getAgentOptions } = useAgentDropdown();
     const { site, siteOptions, getSiteOptions } = useSiteDropdown();
     const { client, clientOptions, getClientOptions } = useClientDropdown();
+    const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
+
+    function openScriptURL() {
+      link.value ? openURL(link.value) : null;
+    }
 
     // bulk action logic
     const state = reactive({
@@ -312,6 +371,9 @@ export default defineComponent({
       cmd: "",
       shell: "cmd",
       custom_shell: null,
+      custom_field: null,
+      collector_all_output: false,
+      save_to_agent_note: false,
       patchMode: "scan",
       offlineAgents: false,
       client,
@@ -324,6 +386,7 @@ export default defineComponent({
       run_as_user: false,
     });
     const loading = ref(false);
+    const collector = ref(false);
 
     watch(
       () => state.target,
@@ -395,6 +458,8 @@ export default defineComponent({
       state,
       agentOptions,
       clientOptions,
+      collector,
+      customFieldOptions,
       siteOptions,
       filterByPlatformOptions,
       loading,
@@ -408,6 +473,7 @@ export default defineComponent({
       patchModeOptions,
       runAsUserToolTip,
       envVarsLabel,
+      syntax,
 
       //computed
       modalTitle,
@@ -416,6 +482,8 @@ export default defineComponent({
       submit,
       cmdPlaceholder,
       supportsRunAsUser,
+      openScriptURL,
+      formatScriptSyntax,
 
       // quasar dialog plugin
       dialogRef,

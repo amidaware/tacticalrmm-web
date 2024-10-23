@@ -2,6 +2,15 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card class="q-dialog-plugin" style="min-width: 70vw">
       <q-bar>
+        <q-btn
+          ref="refresh"
+          @click="refresh"
+          class="q-mr-sm"
+          dense
+          flat
+          push
+          icon="refresh"
+        />
         {{ title.slice(0, 27) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
@@ -280,6 +289,13 @@ export default {
           scriptInfo: script,
         },
       });
+    },
+    refresh() {
+      if (this.type === "task") {
+        this.getTaskData();
+      } else {
+        this.getCheckData();
+      }
     },
     show() {
       this.$refs.dialog.show();

@@ -295,7 +295,12 @@
           </q-td>
           <q-td v-else></q-td>
           <!-- name -->
-          <q-td>{{ props.row.name }}</q-td>
+          <q-td
+            >{{ props.row.name
+            }}<q-tooltip v-if="props.row?.win_task_name" :delay="700">{{
+              props.row.win_task_name
+            }}</q-tooltip></q-td
+          >
           <!-- sync status -->
           <q-td v-if="props.row.task_result.sync_status === 'notsynced'"
             >Will sync on next agent checkin</q-td
