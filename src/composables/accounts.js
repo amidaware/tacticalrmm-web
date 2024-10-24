@@ -1,5 +1,5 @@
 import { ref, onMounted } from "vue";
-import { fetchUsers } from "@/api/accounts";
+import { fetchUsers, fetchRoles } from "@/api/accounts";
 import { formatUserOptions } from "@/utils/format";
 
 export function useUserDropdown(onMount = false) {
@@ -42,5 +42,29 @@ export function useUserDropdown(onMount = false) {
     //methods
     getUserOptions,
     getDynamicUserOptions,
+  };
+}
+
+export function useRoleDropdown(opts = {}) {
+  const roleOptions = ref([]);
+  async function getRoleOptions() {
+    const roles = await fetchRoles();
+    console.log(roles);
+    roleOptions.value = roles.map((role) => ({
+      value: role.id,
+      label: role.name,
+    }));
+  }
+
+  if (opts.onMount) {
+    onMounted(getRoleOptions);
+  }
+
+  return {
+    //data
+    roleOptions,
+
+    //methods
+    getRoleOptions,
   };
 }

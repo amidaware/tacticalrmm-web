@@ -157,7 +157,7 @@
 
         <AlertsIcon />
 
-        <q-btn-dropdown flat no-caps stretch :label="username || ''">
+        <q-btn-dropdown flat no-caps stretch :label="displayName || ''">
           <q-list>
             <q-item
               clickable
@@ -240,7 +240,7 @@ const {
   daysUntilCertExpires,
 } = storeToRefs(useDashboardStore());
 
-const { username } = storeToRefs(useAuthStore());
+const { displayName } = storeToRefs(useAuthStore());
 
 const darkMode = computed({
   get: () => {
