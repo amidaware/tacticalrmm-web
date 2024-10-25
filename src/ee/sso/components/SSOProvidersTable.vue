@@ -38,7 +38,7 @@ For details, see: https://license.tacticalrmm.com/ee
           label="SSO Settings"
           no-caps
           color="primary"
-          size="sm"
+          size="md"
         />
       </template>
       <!-- body slots -->
@@ -107,6 +107,15 @@ For details, see: https://license.tacticalrmm.com/ee
             {{ truncateText(props.row.client_id, 35) }}
             <q-tooltip>{{ props.row.client_id }}</q-tooltip>
           </q-td>
+          <q-td>
+            <q-icon
+              size="sm"
+              name="content_copy"
+              @click="getCallbackURL(props.row)"
+            >
+              <q-tooltip>Copy Callback URL to Clipboard</q-tooltip>
+            </q-icon>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -156,6 +165,12 @@ const columns: QTableColumn[] = [
     field: "client_id",
     align: "left",
     sortable: true,
+  },
+  {
+    name: "callback_url",
+    label: "Callback URL",
+    align: "left",
+    sortable: false,
   },
 ];
 
