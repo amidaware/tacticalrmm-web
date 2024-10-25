@@ -49,7 +49,6 @@ export function useRoleDropdown(opts = {}) {
   const roleOptions = ref([]);
   async function getRoleOptions() {
     const roles = await fetchRoles();
-    console.log(roles);
     roleOptions.value = roles.map((role) => ({
       value: role.id,
       label: role.name,
