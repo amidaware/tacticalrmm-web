@@ -50,9 +50,21 @@
             </q-form>
           </q-card-section>
 
-          <q-card-section v-if="ssoProviders.length > 0">
-            <q-list dense v-for="provider in ssoProviders" :key="provider.id">
-              <q-item @click="openSSOProviderRedirect(provider.id)" clickable>
+          <q-card-section v-if="ssoProviders?.length > 0">
+            <div class="text-h6 text-center q-mb-md">Log in with SSO</div>
+            <q-separator />
+
+            <q-list dense bordered class="q-pa-sm">
+              <q-item
+                v-for="provider in ssoProviders"
+                :key="provider.id"
+                @click="openSSOProviderRedirect(provider.id)"
+                clickable
+                class="q-pa-xs hover-bg"
+              >
+                <q-item-section avatar>
+                  <q-icon name="vpn_key" size="sm" class="text-primary" />
+                </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ provider.name }}</q-item-label>
                 </q-item-section>
@@ -154,8 +166,12 @@ async function onSubmit() {
 }
 
 onMounted(async () => {
-  const result = await getSSOConfig();
-  ssoProviders.value = result.data.socialaccount.providers;
+  try {
+    const result = await getSSOConfig();
+    ssoProviders.value = result.data.socialaccount.providers;
+  } catch (e) {
+    console.error(e);
+  }
 });
 </script>
 
