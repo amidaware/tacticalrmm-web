@@ -19,6 +19,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-input
           :readonly="!!props.provider"
+          :disable="!!props.provider"
           label="Name"
           outlined
           dense
@@ -80,6 +81,7 @@ For details, see: https://license.tacticalrmm.com/ee
           mapOptions
           filled
           v-model="localProvider.role"
+          hint="The role to assign the user on first sign-in"
         />
       </q-card-section>
 
