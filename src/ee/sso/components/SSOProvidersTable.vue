@@ -125,6 +125,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 // composition imports
 import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 import { QTableColumn, useQuasar, copyToClipboard } from "quasar";
 import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
@@ -140,6 +141,9 @@ import SSOSettings from "@/ee/sso/components/SSOSettings.vue";
 
 // setup quasar
 const $q = useQuasar();
+
+// setup vuew store
+const store = useStore();
 
 const loading = ref(false);
 const providers = ref([] as SSOProvider[]);
@@ -228,6 +232,8 @@ function getCallbackURL(provider: SSOProvider) {
 function openSSOSettings() {
   $q.dialog({
     component: SSOSettings,
+  }).onOk((ssoSettings: SSOSettings) => {
+    store.commit("setBlockLocalUserLogon", ssoSettings.block_local_user_logon);
   });
 }
 

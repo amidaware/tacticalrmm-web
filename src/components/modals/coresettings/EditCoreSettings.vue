@@ -691,7 +691,8 @@
               v-show="
                 tab !== 'customfields' &&
                 tab !== 'keystore' &&
-                tab !== 'urlactions'
+                tab !== 'urlactions' &&
+                tab !== 'sso'
               "
               label="Save"
               color="primary"
@@ -772,6 +773,13 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+  },
+  watch: {
+    tab(newTab, oldTab) {
+      if (oldTab === "sso") {
+        this.getCoreSettings();
+      }
     },
   },
   methods: {

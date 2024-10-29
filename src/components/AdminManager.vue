@@ -187,10 +187,9 @@
 
 <script>
 import mixins from "@/mixins/mixins";
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
-import { fetchCoreSettings } from "@/api/core";
 
 import { mapState as piniaMapState } from "pinia";
 import { useAuthStore } from "@/stores/auth";
@@ -206,10 +205,11 @@ export default {
     // setup vuex
     const store = useStore();
     const formatDate = computed(() => store.getters.formatDate);
+    const localLogonDisabled = computed(
+      () => store.state.block_local_user_logon,
+    );
 
     const $q = useQuasar();
-
-    const localLogonDisabled = ref(false);
 
     function showSSOAccounts(user) {
       $q.dialog({
@@ -220,12 +220,6 @@ export default {
       });
     }
 
-    async function getCoreSettings() {
-      const result = await fetchCoreSettings();
-
-      localLogonDisabled.value = result.block_local_user_logon;
-    }
-
     async function showSessions(user) {
       $q.dialog({
         component: UserSessionsTable,
@@ -234,8 +228,6 @@ export default {
         },
       });
     }
-
-    onMounted(getCoreSettings);
 
     return {
       localLogonDisabled,

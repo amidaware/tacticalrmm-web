@@ -66,15 +66,6 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 const ssoSettings = ref({} as SSOSettings);
 const loading = ref(false);
 
-// watcher to disable block local login if sso is disabled
-watch(
-  () => ssoSettings.value.sso_enabled,
-  (newValue) => {
-    if (newValue) {
-      ssoSettings.value.block_local_user_logon = false;
-    }
-  },
-);
 async function getSSOSettings() {
   loading.value = true;
   try {
@@ -88,10 +79,9 @@ async function getSSOSettings() {
 async function submit() {
   loading.value = true;
   try {
-    ssoSettings.value = await updateSSOSettings(ssoSettings.value);
-    await getSSOSettings();
+    await updateSSOSettings(ssoSettings.value);
     notifySuccess("Settings updated successfully");
-    onDialogOK();
+    onDialogOK(ssoSettings.value);
   } catch (e) {
     console.error(e);
   }
@@ -100,5 +90,14 @@ async function submit() {
 
 onMounted(async () => {
   await getSSOSettings();
+  // watcher to disable block local login if sso is disabled
+  watch(
+    () => ssoSettings.value.sso_enabled,
+    (newValue) => {
+      if (newValue) {
+        ssoSettings.value.block_local_user_logon = false;
+      }
+    },
+  );
 });
 </script>
