@@ -94,7 +94,7 @@ onMounted(async () => {
   watch(
     () => ssoSettings.value.sso_enabled,
     (newValue) => {
-      if (newValue) {
+      if (!newValue) {
         ssoSettings.value.block_local_user_logon = false;
       }
     },
