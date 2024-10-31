@@ -27,7 +27,7 @@ export interface SSOUser extends User {
   social_accounts: SSOAccount[];
 }
 
-export interface SSOSettings {
+export interface SSOSettingsType {
   sso_enabled: boolean;
   block_local_user_logon: boolean;
 }

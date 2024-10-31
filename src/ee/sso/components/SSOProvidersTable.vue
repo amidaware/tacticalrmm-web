@@ -136,7 +136,7 @@ import { getBaseUrl } from "@/boot/axios";
 import SSOProvidersForm from "@/ee/sso/components/SSOProvidersForm.vue";
 
 // types
-import { type SSOProvider } from "@/ee/sso/types/sso";
+import { type SSOProvider, SSOSettingsType } from "@/ee/sso/types/sso";
 import SSOSettings from "@/ee/sso/components/SSOSettings.vue";
 
 // setup quasar
@@ -232,7 +232,7 @@ function getCallbackURL(provider: SSOProvider) {
 function openSSOSettings() {
   $q.dialog({
     component: SSOSettings,
-  }).onOk((ssoSettings: SSOSettings) => {
+  }).onOk((ssoSettings: SSOSettingsType) => {
     store.commit("setBlockLocalUserLogon", ssoSettings.block_local_user_logon);
   });
 }

@@ -56,14 +56,14 @@ import { notifySuccess } from "@/utils/notify";
 import { fetchSSOSettings, updateSSOSettings } from "@/ee/sso/api/sso";
 
 // types
-import { SSOSettings } from "../types/sso";
+import { SSOSettingsType } from "../types/sso";
 
 // define emits
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
-const ssoSettings = ref({} as SSOSettings);
+const ssoSettings = ref({} as SSOSettingsType);
 const loading = ref(false);
 
 async function getSSOSettings() {

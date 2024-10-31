@@ -9,7 +9,11 @@ import { getCookie } from "@/ee/sso/utils/cookies";
 import { getBaseUrl } from "@/boot/axios";
 import { useStorage } from "@vueuse/core";
 
-import type { SSOAccount, SSOProvider, SSOSettings } from "@/ee/sso/types/sso";
+import type {
+  SSOAccount,
+  SSOProvider,
+  SSOSettingsType,
+} from "@/ee/sso/types/sso";
 
 const baseUrl = "accounts";
 
@@ -63,12 +67,12 @@ export async function removeSSOProvider(id: number) {
   return data;
 }
 
-export async function fetchSSOSettings(): Promise<SSOSettings> {
+export async function fetchSSOSettings(): Promise<SSOSettingsType> {
   const { data } = await axios.get(`${baseUrl}/ssoproviders/settings/`);
   return data;
 }
 
-export async function updateSSOSettings(settings: SSOSettings) {
+export async function updateSSOSettings(settings: SSOSettingsType) {
   const { data } = await axios.post(
     `${baseUrl}/ssoproviders/settings/`,
     settings,
