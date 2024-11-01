@@ -169,7 +169,7 @@
                 <q-item-label>Preferences</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item clickable v-if="!block_local_user_logon">
+            <q-item clickable>
               <q-item-section>Account</q-item-section>
               <q-item-section side>
                 <q-icon name="keyboard_arrow_right" />
@@ -259,9 +259,6 @@ const hosted = computed(() => store.state.hosted);
 const tokenExpired = computed(() => store.state.tokenExpired);
 const dash_warning_color = computed(() => store.state.dash_warning_color);
 const dash_negative_color = computed(() => store.state.dash_negative_color);
-const block_local_user_logon = computed(
-  () => store.state.block_local_user_logon,
-);
 
 const latestReleaseURL = computed(() => {
   return latestTRMMVersion.value
