@@ -63,7 +63,11 @@
                 class="q-pa-xs hover-bg"
               >
                 <q-item-section avatar>
-                  <q-icon name="vpn_key" size="sm" class="text-primary" />
+                  <q-icon
+                    :name="provider.icon ?? 'mdi-key'"
+                    size="sm"
+                    class="text-primary"
+                  />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ provider.name }}</q-item-label>
