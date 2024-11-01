@@ -98,7 +98,7 @@
                   v-close-popup
                   @click="ResetPassword(props.row)"
                   id="context-reset"
-                  :disable="localLogonDisabled"
+                  :disable="props.row.social_accounts.length !== 0"
                 >
                   <q-item-section side>
                     <q-icon name="autorenew" />
@@ -111,7 +111,7 @@
                   v-close-popup
                   @click="reset2FA(props.row)"
                   id="context-reset"
-                  :disable="localLogonDisabled"
+                  :disable="props.row.social_accounts.length !== 0"
                 >
                   <q-item-section side>
                     <q-icon name="autorenew" />
@@ -205,9 +205,6 @@ export default {
     // setup vuex
     const store = useStore();
     const formatDate = computed(() => store.getters.formatDate);
-    const localLogonDisabled = computed(
-      () => store.state.block_local_user_logon,
-    );
 
     const $q = useQuasar();
 
@@ -230,7 +227,6 @@ export default {
     }
 
     return {
-      localLogonDisabled,
       formatDate,
       showSSOAccounts,
       showSessions,
