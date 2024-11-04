@@ -6,9 +6,9 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin" style="width: 50">
+    <q-card class="q-dialog-plugin" style="width: 35vw; max-width: 35vw">
       <q-bar>
-        {{ props.provider ? "Edit SSO Provider" : "Add SSO Provider" }}
+        {{ props.provider ? "Edit OIDC Provider" : "Add OIDC Provider" }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
@@ -20,22 +20,29 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-input
           :readonly="!!props.provider"
           :disable="!!props.provider"
-          label="Name"
+          label="Provider Name"
           outlined
           dense
           v-model="localProvider.name"
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[
+            (val) => !!val || '*Required',
+            (val) =>
+              /^[a-zA-Z0-9_-]+$/.test(val) ||
+              'Only letters, numbers, hyphens, and underscores are allowed',
+          ]"
+          hint="A unique identifier for the SSO provider. Avoid spaces and special characters, as this will be part of the callback URL."
         />
       </q-card-section>
 
       <!-- url -->
       <q-card-section>
         <q-input
-          label="Server URL"
+          label="Issuer URL"
           outlined
           dense
           v-model="localProvider.server_url"
           :rules="[(val) => !!val || '*Required']"
+          hint="The OpenID Connect Issuer URL provided by the SSO provider. This is typically the base URL where the provider hosts their OIDC configuration."
         />
       </q-card-section>
 
@@ -73,7 +80,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
       <q-card-section>
         <tactical-dropdown
-          label="Default Role"
+          label="Default User Role"
           :options="roleOptions"
           outlined
           dense
@@ -81,7 +88,7 @@ For details, see: https://license.tacticalrmm.com/ee
           mapOptions
           filled
           v-model="localProvider.role"
-          hint="The role to assign the user on first sign-in"
+          hint="The role assigned to users upon first sign-in through this provider."
         />
       </q-card-section>
 

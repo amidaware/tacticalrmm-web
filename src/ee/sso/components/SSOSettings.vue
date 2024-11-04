@@ -28,10 +28,16 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Block Local Logon"
+          label="Block Local User Login"
           v-model="ssoSettings.block_local_user_logon"
           :disable="!ssoSettings.sso_enabled"
-        />
+          hint="When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts."
+        >
+          <q-tooltip class="text-caption"
+            >When enabled, only users with SSO accounts can log in, with the
+            exception of local superuser accounts.</q-tooltip
+          >
+        </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -52,7 +58,7 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, watch, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import { notifySuccess } from "@/utils/notify";
+import { notifySuccess, notifyWarning } from "@/utils/notify";
 import { fetchSSOSettings, updateSSOSettings } from "@/ee/sso/api/sso";
 
 // types
@@ -83,6 +89,9 @@ async function submit() {
     notifySuccess("Settings updated successfully");
     onDialogOK(ssoSettings.value);
   } catch (e) {
+    if (e.status === 423) {
+      notifyWarning(e.response.data, 7000);
+    }
     console.error(e);
   }
   loading.value = false;

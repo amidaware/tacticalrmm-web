@@ -14,9 +14,14 @@ For details, see: https://license.tacticalrmm.com/ee
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add SSO Provider"
+        label="Add OIDC Provider"
         @click="addSSOProvider"
-      />
+        :disable="!ssoSettings.sso_enabled"
+      >
+        <q-tooltip v-if="!ssoSettings.sso_enabled" class="text-caption"
+          >Enable SSO in the settings to allow adding a provider.</q-tooltip
+        >
+      </q-btn>
     </div>
     <q-separator />
     <q-table
@@ -29,7 +34,7 @@ For details, see: https://license.tacticalrmm.com/ee
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No SSO Providers added yet"
+      no-data-label="No OIDC Providers added yet"
       :loading="loading"
     >
       <template v-slot:top>
@@ -127,7 +132,11 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { QTableColumn, useQuasar, copyToClipboard } from "quasar";
-import { fetchSSOProviders, removeSSOProvider } from "@/ee/sso/api/sso";
+import {
+  fetchSSOProviders,
+  removeSSOProvider,
+  fetchSSOSettings,
+} from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 import { truncateText } from "@/utils/format";
 import { getBaseUrl } from "@/boot/axios";
@@ -147,6 +156,7 @@ const store = useStore();
 
 const loading = ref(false);
 const providers = ref([] as SSOProvider[]);
+const ssoSettings = ref({} as SSOSettingsType);
 
 const columns: QTableColumn[] = [
   {
@@ -177,6 +187,14 @@ const columns: QTableColumn[] = [
     sortable: false,
   },
 ];
+
+async function getSSOSettings() {
+  try {
+    ssoSettings.value = await fetchSSOSettings();
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 async function getSSOProviders() {
   loading.value = true;
@@ -232,12 +250,17 @@ function getCallbackURL(provider: SSOProvider) {
 function openSSOSettings() {
   $q.dialog({
     component: SSOSettings,
-  }).onOk((ssoSettings: SSOSettingsType) => {
-    store.commit("setBlockLocalUserLogon", ssoSettings.block_local_user_logon);
+  }).onOk((updatedSSOSettings: SSOSettingsType) => {
+    store.commit(
+      "setBlockLocalUserLogon",
+      updatedSSOSettings.block_local_user_logon,
+    );
+    ssoSettings.value = { ...updatedSSOSettings };
   });
 }
 
 onMounted(async () => {
+  await getSSOSettings();
   await getSSOProviders();
 });
 </script>
