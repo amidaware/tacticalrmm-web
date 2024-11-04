@@ -75,7 +75,11 @@ export default function ({ app, router }) {
         text = error.response.data.detail;
       }
       // catch all for other 400 error messages
-      else if (error.response.status >= 400 && error.response.status < 500) {
+      else if (
+        error.response.status >= 400 &&
+        error.response.status < 500 &&
+        error.response.status !== 423
+      ) {
         if (error.config.responseType === "blob") {
           text = (await error.response.data.text()).replace(/^"|"$/g, "");
         } else if (error.response.data.non_field_errors) {
@@ -90,7 +94,7 @@ export default function ({ app, router }) {
         }
       }
 
-      if (text || error.response) {
+      if ((text || error.response) && error.response.status !== 423) {
         Notify.create({
           color: "negative",
           message: text ? text : "",
