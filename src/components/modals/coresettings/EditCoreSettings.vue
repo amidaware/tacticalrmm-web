@@ -13,7 +13,7 @@
           <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
-          <q-tab name="sso" label="Single Sign-On" />
+          <q-tab name="sso" label="Single Sign-On (SSO)" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
