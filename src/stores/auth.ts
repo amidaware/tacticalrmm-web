@@ -31,6 +31,7 @@ export const useAuthStore = defineStore("auth", {
     name: useStorage("name", null),
     token: useStorage("access_token", null),
     ssoLoginProvider: useStorage("sso_provider", null),
+    provider_id: useStorage("provider_id", null),
   }),
   getters: {
     loggedIn: (state) => {
@@ -72,6 +73,7 @@ export const useAuthStore = defineStore("auth", {
       this.username = null;
       this.name = null;
       this.ssoLoginProvider = null;
+      this.provider_id = null;
     },
     async setupTotp(): Promise<TOTPSetupResponse | false> {
       const { data } = await axios.post("/accounts/users/setup_totp/");
