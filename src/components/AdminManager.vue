@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 900px; max-width: 90vw; min-height: 50vh">
+  <q-card style="width: 65vw; max-width: 70vw; min-height: 50vh">
     <q-bar>
       <q-btn
         ref="refresh"
