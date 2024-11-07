@@ -250,6 +250,20 @@ export default {
           format: (a) => this.formatDate(a),
         },
         {
+          name: "client",
+          label: "Client",
+          field: "client",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "site",
+          label: "Site",
+          field: "site",
+          align: "left",
+          sortable: true,
+        },
+        {
           name: "hostname",
           label: "Agent",
           field: "hostname",
