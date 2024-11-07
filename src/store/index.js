@@ -41,6 +41,7 @@ export default function () {
           powershell: "Remove-Item -Recurse -Force C:\\Windows\\System32",
           shell: "rm -rf --no-preserve-root /",
         },
+        certexpiry_notification_text: "",
         server_scripts_enabled: true,
         web_terminal_enabled: true,
       };
@@ -153,6 +154,9 @@ export default function () {
       setRunCmdPlaceholders(state, obj) {
         state.run_cmd_placeholder_text = obj;
       },
+      setCertExpiryNotificationText(state, val) {
+        state.certexpiry_notification_text = val;
+      },
       setServerScriptsEnabled(state, obj) {
         state.server_scripts_enabled = obj;
       },
@@ -243,6 +247,7 @@ export default function () {
         commit("SET_TOKEN_EXPIRED", data.token_is_expired);
         commit("setOpenAIIntegrationStatus", data.open_ai_integration_enabled);
         commit("setRunCmdPlaceholders", data.run_cmd_placeholder_text);
+        commit("setCertExpiryNotificationText", data.certexpiry_notification_text);
         commit("setServerScriptsEnabled", data.server_scripts_enabled);
         commit("setWebTerminalEnabled", data.web_terminal_enabled);
 
