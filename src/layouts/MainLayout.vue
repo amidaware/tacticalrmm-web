@@ -259,7 +259,7 @@ const hosted = computed(() => store.state.hosted);
 const tokenExpired = computed(() => store.state.tokenExpired);
 const dash_warning_color = computed(() => store.state.dash_warning_color);
 const dash_negative_color = computed(() => store.state.dash_negative_color);
-const certExpiryNotificationText = computed(() => store.state.certexpiry_notification_text)
+const certExpiryNotificationText = computed(() => store.state.certexpiry_notification_text);
 
 const latestReleaseURL = computed(() => {
   return latestTRMMVersion.value
