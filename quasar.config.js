@@ -79,6 +79,8 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       distDir: "dist/",
 
+      /* eslint-disable quotes */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       extendViteConf(viteConf, { isServer, isClient }) {
         viteConf.build = mergeConfig(viteConf.build, {
           chunkSizeWarningLimit: 1600,
@@ -91,6 +93,7 @@ module.exports = configure(function (/* ctx */) {
           },
         });
       },
+      /* eslint-enable quotes */
       // viteVuePluginOptions: {},
       // vitePlugins: []
     },
