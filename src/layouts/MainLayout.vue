@@ -211,7 +211,7 @@
 </template>
 <script setup lang="ts">
 // composition imports
-import { computed, onMounted } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
 import { useDashboardStore } from "@/stores/dashboard";
@@ -315,8 +315,25 @@ const updateAvailable = computed(() => {
   return currentTRMMVersion.value !== latestTRMMVersion.value;
 });
 
+const poll = ref(null);
+
+function livePoll() {
+  poll.value = setInterval(
+    () => {
+      store.dispatch("checkVer");
+      store.dispatch("getDashInfo", false);
+    },
+    60 * 4 * 1000,
+  );
+}
+
 onMounted(() => {
   store.dispatch("getDashInfo");
   store.dispatch("checkVer");
+  livePoll();
+});
+
+onBeforeUnmount(() => {
+  clearInterval(poll.value);
 });
 </script>
