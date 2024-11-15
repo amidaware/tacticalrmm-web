@@ -92,7 +92,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section>Copy Callback URL</q-item-section>
               </q-item>
 
-              <!-- javascript origin url (used by google oath) -->
+              <!-- javascript origin url (used by google oauth) -->
               <q-item
                 clickable
                 v-close-popup
