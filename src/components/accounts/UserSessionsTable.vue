@@ -111,6 +111,7 @@ const loading = ref(false);
 function removeSession(token: AuthToken) {
   $q.dialog({
     title: `Disconnect session for ${token.user}?`,
+    message: "This user will be signed out immediately.",
     cancel: true,
     ok: { label: "Delete", color: "negative" },
   }).onOk(async () => {

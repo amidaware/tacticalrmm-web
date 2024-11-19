@@ -102,7 +102,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-icon name="description" />
                 </q-item-section>
                 <q-item-section
-                  >Copy Allowed JavaScript Origin to Clipboard</q-item-section
+                  >Copy Authorized JavaScript origin</q-item-section
                 >
               </q-item>
 

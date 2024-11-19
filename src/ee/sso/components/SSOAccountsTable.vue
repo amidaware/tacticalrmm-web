@@ -120,7 +120,6 @@ const loading = ref(false);
 function removeSSOAccount(account: SSOAccount) {
   $q.dialog({
     title: `Disconnect social account: ${account.display}?`,
-    message: "If you are signed in with this account you will be logged off",
     cancel: true,
     ok: { label: "Delete", color: "negative" },
   }).onOk(async () => {
