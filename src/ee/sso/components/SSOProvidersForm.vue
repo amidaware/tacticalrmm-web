@@ -5,7 +5,7 @@ For details, see: https://license.tacticalrmm.com/ee
 -->
 
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog persistent ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 35vw; max-width: 35vw">
       <q-bar>
         {{ props.provider ? "Edit OIDC Provider" : "Add OIDC Provider" }}
