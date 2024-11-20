@@ -140,9 +140,9 @@
           />
           <q-checkbox v-model="state.save_all_output" label="Save all output" />
         </q-card-section>
-        <q-card-section v-if="agent.plat === 'windows'">
+        <q-card-section>
           <q-checkbox
-            v-if="!state.run_on_server"
+            v-if="agent.plat === 'windows' && !state.run_on_server"
             v-model="state.run_as_user"
             label="Run As User"
           >
