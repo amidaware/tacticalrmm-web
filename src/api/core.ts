@@ -8,7 +8,14 @@ import type {
   TestRunURLActionResponse,
 } from "@/types/core/urlactions";
 
+import type { CoreSetting } from "@/types/core/settings";
+
 const baseUrl = "/core";
+
+export async function fetchCoreSettings(params = {}): Promise<CoreSetting> {
+  const { data } = await axios.get("/core/settings/", { params: params });
+  return data;
+}
 
 export async function fetchDashboardInfo(params = {}) {
   const { data } = await axios.get(`${baseUrl}/dashinfo/`, { params: params });

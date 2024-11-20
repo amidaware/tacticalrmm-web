@@ -8,6 +8,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
+const { mergeConfig } = require("vite");
 const { configure } = require("quasar/wrappers");
 const path = require("path");
 require("dotenv").config();
@@ -78,9 +79,22 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       distDir: "dist/",
 
-      // extendViteConf (viteConf) {},
+      /* eslint-disable quotes */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      extendViteConf(viteConf, { isServer, isClient }) {
+        viteConf.build = mergeConfig(viteConf.build, {
+          chunkSizeWarningLimit: 1600,
+          rollupOptions: {
+            output: {
+              entryFileNames: `[hash].js`,
+              chunkFileNames: `[hash].js`,
+              assetFileNames: `[hash].[ext]`,
+            },
+          },
+        });
+      },
+      /* eslint-enable quotes */
       // viteVuePluginOptions: {},
-
       // vitePlugins: []
     },
 
