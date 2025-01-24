@@ -1,3 +1,5 @@
+import { nestedRoutes } from "@/core/patching/routes";
+
 const routes = [
   {
     path: "/",
@@ -20,6 +22,7 @@ const routes = [
           requireAuth: true,
         },
       },
+      ...nestedRoutes,
     ],
   },
   {

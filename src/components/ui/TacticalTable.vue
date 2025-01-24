@@ -1,5 +1,6 @@
 <template>
   <q-table
+    ref="tacticalTable"
     :columns="localColumns"
     :visible-columns="visibleColumns"
     :table-class="{
@@ -10,10 +11,92 @@
       'sticky-header-right-column': columnSelect,
       'tbl-sticky': !columnSelect,
     }"
+    :filterMethod="filterHeader ? filterMethod : undefined"
+    :filter="filterHeader ? filterTerms : undefined"
+    v-table-resizable="resizableColumns"
     v-bind="$attrs"
   >
-    <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope || {}" />
+    <template v-for="(_, slotName) in $slots" v-slot:[slotName]="slotProps">
+      <slot :name="slotName" v-bind="slotProps ?? {}" />
+    </template>
+
+    <template v-if="filterHeader" v-slot:top-row="props">
+      <q-tr :props="props">
+        <q-td v-if="$attrs.selection"></q-td>
+        <q-td v-for="col in props.cols" :key="col.name" class="filter-inputs">
+          <!-- select box -->
+          <q-select
+            v-if="col.filterType === 'select' || col.filterType === 'boolean'"
+            outlined
+            dense
+            v-model.trim="filter[col.name]"
+            hide-bottom-space
+            options-dense
+            multiple
+            clearable
+            @clear="filter[col.name] = []"
+            :display-value="getSelectDisplayValue(filter[col.name])"
+            :options="
+              col.filterType === 'select' ? col.filterOptions : ['Yes', 'No']
+            "
+          >
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps" dense>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    :model-value="selected"
+                    @update:model-value="toggleOption(opt)"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label v-html="opt" />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+
+          <!-- text field -->
+          <q-input
+            v-else-if="col.filterType === 'text'"
+            outlined
+            dense
+            v-model.trim="filter[col.name]"
+            hide-bottom-space
+            clearable
+            @clear="filter[col.name] = ''"
+            class="filter-inputs"
+          />
+
+          <!-- date range selector -->
+          <q-input
+            v-else-if="col.filterType === 'date'"
+            :model-value="getDateDisplayValue(filter[col.name])"
+            outlined
+            dense
+            clearable
+            @clear="filter[col.name] = ''"
+            @focus="
+              filter[col.name] === undefined
+                ? (filter[col.name] = '')
+                : undefined
+            "
+          >
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date v-model="filter[col.name]" range />
+            </q-popup-proxy>
+          </q-input>
+
+          <!-- don't add filter input for column select-->
+          <div v-else></div>
+        </q-td>
+      </q-tr>
     </template>
 
     <template v-slot:header-cell-columnSelect="props">
@@ -40,16 +123,22 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { type QTableColumn } from "quasar";
+import { ref, reactive, computed, useTemplateRef } from "vue";
+import { watchArray } from "@vueuse/shared";
+import { QTable, type QTableColumn } from "quasar";
+import { vTableResizable } from "@/core/dashboard/ui/directives/TableResizable";
+
 const props = withDefaults(
   defineProps<{
     columns: QTableColumn[];
     columnSelect?: boolean;
     excludeColumns?: string[];
+    filterHeader?: boolean;
+    resizableColumns?: boolean;
   }>(),
-  { columnSelect: false, excludeColumns: () => ["columnSelect"] }
+  { columnSelect: false, excludeColumns: () => ["columnSelect"] },
 );
+
 // save a non-reactive copy of columns to modify
 const localColumns: QTableColumn[] = Object.assign([], props.columns);
 if (props.columnSelect)
@@ -62,8 +151,119 @@ const visibleColumns = ref(localColumns.map((column) => column.name));
 const columnOptions = ref(
   localColumns
     .filter((column) => !props.excludeColumns.includes(column.name))
-    .map((column) => ({ label: column.label, value: column.name }))
+    .map((column) => ({ label: column.label, value: column.name })),
 );
+
+// filter types
+const tacticalTable = useTemplateRef<QTable>("tacticalTable");
+
+type Filter = string | string[] | { to: string; from: string };
+type FilterTerm = {
+  column: string;
+  values: string[] | { to: string; from: string }[];
+};
+
+// filter type guards
+function isStringArrayFilter(value: Filter): value is string[] {
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "string")
+  );
+}
+
+function isDateFilter(value: Filter): value is { to: string; from: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "from" in value &&
+    "to" in value &&
+    typeof value.from === "string" &&
+    typeof value.to === "string"
+  );
+}
+
+// filter input display functions
+function getSelectDisplayValue(filterValue: Filter): string {
+  if (isStringArrayFilter(filterValue) && filterValue.length > 0) {
+    return `${filterValue.length} Selected`;
+  }
+  return "";
+}
+
+function getDateDisplayValue(filterValue: Filter): string {
+  if (isDateFilter(filterValue))
+    return `${filterValue.from} - ${filterValue.to}`;
+  else return "";
+}
+const filter = reactive<{
+  [key: string]: Filter;
+}>({});
+
+const filterTerms = computed((): FilterTerm[] => {
+  return getFilterTerms(filter);
+});
+
+const getFilterTerms = (filter: { [key: string]: Filter }): FilterTerm[] => {
+  return Object.entries(filter).map(([column, value]) => {
+    // Ensure the value is always an array for consistent processing
+    const values = Array.isArray(value) ? value : [value];
+    return { column, values } as FilterTerm;
+  });
+};
+
+const filterMethod = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rows: Record<string, any>[],
+  terms: FilterTerm[],
+) => {
+  // If no filter terms are provided, return all rows
+  if (terms.length === 0) {
+    return rows;
+  }
+
+  tacticalTable.value?.clearSelection();
+
+  for (const term of terms) {
+    // Skip filtering if the term's values array is empty
+    if (term.values.length === 0) {
+      continue;
+    }
+
+    rows = rows.filter((row) => {
+      return term.values.some((value) => {
+        if (typeof value === "object" && "from" in value && "to" in value) {
+          // Handle date range filtering
+          const fromDate = value.from ? new Date(value.from) : null;
+          const toDate = value.to ? new Date(value.to) : null;
+          const rowDate = new Date(row[term.column]);
+
+          // Exclude invalid dates
+          if (isNaN(rowDate.getTime())) return false;
+          if (fromDate && rowDate < fromDate) return false;
+          if (toDate && rowDate > toDate) return false;
+
+          return true;
+        } else if (typeof row[term.column] == "boolean") {
+          const boolValue = value.toLowerCase() === "yes" ? "true" : "false";
+          return ("" + row[term.column]).includes(boolValue);
+        } else if (typeof value === "string") {
+          // Handle case-insensitive matching for string values
+          return ("" + row[term.column])
+            .toLowerCase()
+            .includes(value.toLowerCase());
+        }
+
+        return false; // Skip unexpected value types
+      });
+    });
+  }
+
+  return rows;
+};
+
+// watch visible columns and clear filter if column is hidden
+watchArray(visibleColumns, (_, __, ___, removed) => {
+  filter[removed[0]] = "";
+});
 </script>
 
 <style lang="sass">
@@ -89,19 +289,26 @@ const columnOptions = ref(
     top: 48px
     /* highest z-index */
     z-index: 3
-  thead tr:last-child th
+  thead tr:first-child th
     top: 0
     z-index: 1
   tr:last-child th:last-child
     /* highest z-index */
     z-index: 3
-  td:last-child
-    z-index: 1
-  td:last-child, th:last-child
+  th:last-child
     position: sticky
     right: 0
   /* prevent scrolling behind sticky top row on focus */
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
+
+td.filter-inputs
+  .q-field--dense .q-field__control, .q-field--dense .q-field__marginal
+    height: 30px
+  .q-field--auto-height.q-field--dense .q-field__control, .q-field--auto-height.q-field--dense .q-field__native
+    min-height: 30px
+  .q-field__control
+    padding-right: 5px
+    padding-left: 10px
 </style>

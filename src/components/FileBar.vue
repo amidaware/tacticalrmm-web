@@ -90,6 +90,13 @@
               <q-item clickable v-close-popup @click="showAdminManager = true">
                 <q-item-section>User Administration</q-item-section>
               </q-item>
+              <q-item
+                clickable
+                v-close-popup
+                :to="{ name: 'patching-overview' }"
+              >
+                <q-item-section>Patching Overview</q-item-section>
+              </q-item>
               <!-- core settings -->
               <q-item
                 clickable
