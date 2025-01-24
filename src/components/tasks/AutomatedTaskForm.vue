@@ -158,7 +158,7 @@
                   v-model="command"
                   dense
                   filled
-                  class="col-7"
+                  class="col-5"
                 />
                 <q-input
                   v-if="actionType === 'cmd'"
@@ -171,12 +171,14 @@
                 />
                 <q-option-group
                   v-if="actionType === 'cmd'"
-                  class="col-2 q-pl-sm"
+                  class="col-4 q-pl-sm"
                   inline
                   v-model="shell"
                   :options="[
-                    { label: 'Batch', value: 'cmd' },
+                    { label: 'CMD', value: 'cmd' },
                     { label: 'Powershell', value: 'powershell' },
+                    { label: 'Bash', value: '/bin/bash' },
+                    { label: 'Custom', value: 'custom' },
                   ]"
                 />
                 <q-btn
@@ -186,10 +188,20 @@
                   flat
                   dense
                   icon="add"
+                  label="Add"
                   color="primary"
                 />
               </div>
             </q-form>
+            <div v-if="shell === 'custom'" class="col-5">
+              <q-input
+                v-model="custom_shell"
+                outlined
+                label="Custom shell"
+                stack-label
+                placeholder="/usr/bin/python3"
+              />
+            </div>
             <div class="text-subtitle2 q-pa-sm">
               Actions:
               <q-checkbox
@@ -305,6 +317,7 @@
 
                 <!-- expires on input -->
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   type="datetime-local"
                   dense
@@ -333,7 +346,10 @@
               </q-card-section>
 
               <!-- daily options -->
-              <q-card-section v-if="state.task_type === 'daily'" class="row">
+              <q-card-section
+                v-if="!isPosix && state.task_type === 'daily'"
+                class="row"
+              >
                 <!-- daily interval -->
                 <q-input
                   :rules="[
@@ -360,6 +376,7 @@
               <q-card-section v-if="state.task_type === 'weekly'" class="row">
                 <!-- weekly interval -->
                 <q-input
+                  v-if="!isPosix"
                   :rules="[
                     (val) => !!val || '*Required',
                     (val) =>
@@ -602,8 +619,11 @@
                 "
                 class="row"
               >
-                <div class="col-12 text-h6">Advanced Settings</div>
+                <div v-if="!isPosix" class="col-12 text-h6">
+                  Advanced Settings (Windows only)
+                </div>
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
                   label="Repeat task every"
@@ -620,6 +640,7 @@
                 />
 
                 <q-input
+                  v-if="!isPosix"
                   :disable="!state.task_repetition_interval"
                   class="col-6 q-pa-sm"
                   dense
@@ -643,6 +664,7 @@
                 />
 
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="!state.task_repetition_interval"
                   class="col-6 q-pa-sm"
                   dense
@@ -652,6 +674,7 @@
                 <div class="col-6"></div>
 
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
                   label="Random task delay"
@@ -668,6 +691,7 @@
                 />
                 <div class="col-6"></div>
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="!state.expire_date"
                   class="col-6 q-pa-sm"
                   dense
@@ -678,6 +702,7 @@
                 </q-checkbox>
                 <div class="col-6"></div>
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="state.task_type === 'runonce'"
                   class="col-6 q-pa-sm"
                   dense
@@ -688,6 +713,7 @@
                 <div class="col-6"></div>
 
                 <tactical-dropdown
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   label="Task instance policy"
                   :options="taskInstancePolicyOptions"
@@ -755,7 +781,7 @@
 
 <script>
 // composition imports
-import { ref, watch, onMounted, defineComponent } from "vue";
+import { computed, ref, watch, onMounted, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
@@ -850,6 +876,7 @@ export default defineComponent({
   props: {
     parent: Object, // parent policy or agent for task
     task: Object, // only for editing
+    plat: String,
   },
   setup(props) {
     // setup quasar dialog
@@ -872,6 +899,10 @@ export default defineComponent({
 
     const { checkOptions, getCheckOptions } = useCheckDropdown(props.parent);
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
+
+    const isPosix = computed(() => {
+      return !!props.plat && props.plat !== "windows";
+    });
 
     // add task logic
     const task = props.task
@@ -906,6 +937,7 @@ export default defineComponent({
     const actionType = ref("script");
     const command = ref("");
     const shell = ref("cmd");
+    const custom_shell = ref("");
     const monthlyType = ref("days");
     const collector = ref(false);
     const loading = ref(false);
@@ -960,10 +992,16 @@ export default defineComponent({
           env_vars: defaultEnvVars.value,
         });
       } else if (actionType.value === "cmd") {
+        let tempShell = shell.value;
+        if (shell.value === "custom" && !!custom_shell.value) {
+          tempShell = custom_shell.value;
+        } else {
+          tempShell = shell.value;
+        }
         task.value.actions.push({
           type: "cmd",
           command: command.value,
-          shell: shell.value,
+          shell: tempShell,
           timeout: defaultTimeout.value,
         });
       }
@@ -1138,6 +1176,7 @@ export default defineComponent({
       actionType,
       command,
       shell,
+      custom_shell,
       allMonthsCheckbox,
       allMonthDaysCheckbox,
       allWeekDaysCheckbox,
@@ -1151,6 +1190,7 @@ export default defineComponent({
       scriptOptions,
       checkOptions,
       customFieldOptions,
+      isPosix,
 
       // non-reactive data
       validateTimePeriod,
