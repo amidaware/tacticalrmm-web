@@ -159,7 +159,12 @@ async function checkCreds() {
 async function onSubmit() {
   try {
     await auth.login({ ...credentials, twofactor: twofactor.value });
-    router.push({ name: "Dashboard" });
+    if (auth.next) {
+      router.push(auth.next);
+      auth.next = null;
+    } else {
+      router.push({ name: "Dashboard" });
+    }
   } catch (err) {
     console.error(err);
   } finally {
