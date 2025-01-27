@@ -32,6 +32,7 @@ export const useAuthStore = defineStore("auth", {
     token: useStorage("access_token", null),
     ssoLoginProvider: useStorage("sso_provider", null),
     provider_id: useStorage("provider_id", null),
+    next: useStorage("next", null),
   }),
   getters: {
     loggedIn: (state) => {
