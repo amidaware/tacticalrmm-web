@@ -1,6 +1,6 @@
 <template>
   <tactical-table
-    :rows="policies"
+    :rows="patchPolicies"
     :columns="columns"
     row-key="id"
     binary-state-sort
@@ -34,7 +34,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="selected.length > 0 && deletePolicy(selected[0].id)"
+              @click="selected.length > 0 && deletePatchPolicy(selected[0].id)"
             >
               <q-item-section>
                 <q-item-label>Delete</q-item-label>
@@ -149,7 +149,7 @@ const columns = [
   },
 ];
 
-const { getPolicies, policies, deletePolicy, isLoading } = usePatchPolicyShared;
+const { getPatchPolicies, patchPolicies, deletePatchPolicy, isLoading } = usePatchPolicyShared;
 
 const selected = ref<PatchPolicy[]>([]);
 
@@ -168,5 +168,5 @@ function openEditPolicyForm(policy: PatchPolicy) {
   });
 }
 
-onMounted(getPolicies);
+onMounted(getPatchPolicies);
 </script>

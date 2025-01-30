@@ -54,11 +54,11 @@
 
 <script lang="ts" setup>
 // composable imports
-import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
+import { useClientDropdown, useSiteDropdown } from "@/core/clients/composables";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
-const { client, clientOptions } = useClientDropdown(true);
-const { site, siteOptions } = useSiteDropdown(true);
+const { client, clientOptions } = useClientDropdown();
+const { site, siteOptions } = useSiteDropdown();
 </script>
