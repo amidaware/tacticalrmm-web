@@ -183,11 +183,11 @@
       <q-item-section>Shutdown</q-item-section>
     </q-item>
 
-    <q-item clickable v-close-popup @click="showPolicyAdd(agent)">
+    <q-item clickable v-close-popup @click="openPolicyAssignment(agent)">
       <q-item-section side>
         <q-icon size="xs" name="policy" />
       </q-item-section>
-      <q-item-section>Assign Automation Policy</q-item-section>
+      <q-item-section>Policy Assignments</q-item-section>
     </q-item>
 
     <q-item
@@ -253,12 +253,12 @@ import { notifySuccess, notifyWarning, notifyError } from "@/utils/notify";
 // ui imports
 import PendingActions from "@/components/logs/PendingActions.vue";
 import AgentRecovery from "@/components/modals/agents/AgentRecovery.vue";
-import PolicyAdd from "@/components/automation/modals/PolicyAdd.vue";
 import RebootLater from "@/components/modals/agents/RebootLater.vue";
 import EditAgent from "@/components/modals/agents/EditAgent.vue";
 import SendCommand from "@/components/modals/agents/SendCommand.vue";
 import RunScript from "@/components/modals/agents/RunScript.vue";
 import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
+import PolicyAssignments from "@/core/dashboard/components/PolicyAssignments.vue";
 
 export default {
   name: "AgentActionMenu",
@@ -476,12 +476,11 @@ export default {
       });
     }
 
-    function showPolicyAdd(agent) {
+    function openPolicyAssignment(agent) {
       $q.dialog({
-        component: PolicyAdd,
+        component: PolicyAssignments,
         componentProps: {
-          type: "agent",
-          object: agent,
+          entity: agent,
         },
       }).onOk(refreshDashboard);
     }
@@ -574,10 +573,10 @@ export default {
       showRebootLaterModal,
       rebootNow,
       shutdown,
-      showPolicyAdd,
       showAgentRecovery,
       pingAgent,
       wakeUp,
+      openPolicyAssignment,
     };
   },
 };

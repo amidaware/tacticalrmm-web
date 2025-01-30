@@ -276,12 +276,12 @@ const policyTestData = [
 ] as PatchPolicy[];
 
 export function usePatchPolicy() {
-  const policies = ref<PatchPolicy[]>([]);
+  const patchPolicies = ref<PatchPolicy[]>([]);
 
   const isLoading = ref(false);
   const isError = ref(false);
 
-  function getPolicies() {
+  function getPatchPolicies() {
     isLoading.value = true;
     isError.value = false;
 
@@ -289,82 +289,81 @@ export function usePatchPolicy() {
       axios
         .get(`${baseUrl}/`)
         .then(({ data }) => {
-          policies.value = data;
+          patchPolicies.value = data;
         })
         .catch(() => (isError.value = true))
         .finally(() => (isLoading.value = false));
     } else {
       useTimeoutFn(() => {
-        policies.value = policyTestData;
+        patchPolicies.value = policyTestData;
         isLoading.value = false;
       }, 500);
     }
   }
 
-  function addPolicy(newPolicy: PatchPolicy) {
+  function addPatchPolicy(patchPolicy: PatchPolicy) {
     isLoading.value = true;
     isError.value = false;
 
     if (!testMode) {
       axios
-        .post(`${baseUrl}/`, newPolicy)
+        .post(`${baseUrl}/`, patchPolicy)
         .then(({ data }: { data: PatchPolicy }) => {
-          policies.value.push(data);
-          notifySuccess(`Policy "${data.name}" successfully added.`);
+          patchPolicies.value.push(data);
+          notifySuccess("Patch policy was added successfully.");
         })
         .catch(() => (isError.value = true))
         .finally(() => (isLoading.value = false));
     } else {
       useTimeoutFn(() => {
         const newId =
-          policies.value.length > 0
-            ? Math.max(...policies.value.map((p) => p.id)) + 1
+          patchPolicies.value.length > 0
+            ? Math.max(...patchPolicies.value.map((p) => p.id)) + 1
             : 1;
-        const policyWithId = { ...newPolicy, id: newId };
-        policies.value.push(policyWithId);
+        const policyWithId = { ...patchPolicy, id: newId };
+        patchPolicies.value.push(policyWithId);
         isLoading.value = false;
-        notifySuccess(
-          `Policy "${newPolicy.name}" successfully added (test mode).`,
-        );
+        notifySuccess("Patch policy was added successfully (test mode).");
       }, 1000);
     }
   }
 
-  function editPolicy(updatedPolicy: PatchPolicy) {
+  function editPatchPolicy(patchPolicy: Partial<PatchPolicy>) {
     isLoading.value = true;
     isError.value = false;
 
     if (!testMode) {
       axios
-        .put(`${baseUrl}/${updatedPolicy.id}/`, updatedPolicy)
+        .put(`${baseUrl}/${patchPolicy.id}/`, patchPolicy)
         .then(({ data }: { data: PatchPolicy }) => {
-          const index = policies.value.findIndex(
+          const index = patchPolicies.value.findIndex(
             (policy) => policy.id === data.id,
           );
           if (index !== -1) {
-            policies.value[index] = data;
+            patchPolicies.value[index] = data;
           }
-          notifySuccess(`Policy "${data.name}" successfully updated.`);
+          notifySuccess("Patch policy was modified successfully.");
         })
         .catch(() => (isError.value = true))
         .finally(() => (isLoading.value = false));
     } else {
       useTimeoutFn(() => {
-        const index = policies.value.findIndex(
-          (policy) => policy.id === updatedPolicy.id,
+        const index = patchPolicies.value.findIndex(
+          (policy) => policy.id === patchPolicy.id,
         );
         if (index !== -1) {
-          policies.value[index] = updatedPolicy;
+          patchPolicies.value[index] = {
+            ...patchPolicies.value[index],
+            ...patchPolicy,
+          };
         }
         isLoading.value = false;
-        notifySuccess(
-          `Policy "${updatedPolicy.name}" successfully updated (test mode).`,
-        );
+        notifySuccess("Patch policy was modified successfully (test mode).");
       }, 1000);
     }
   }
 
-  function deletePolicy(policyId: number) {
+  function deletePatchPolicy(policyId: number) {
     isLoading.value = true;
     isError.value = false;
 
@@ -372,7 +371,7 @@ export function usePatchPolicy() {
       axios
         .delete(`${baseUrl}/${policyId}/`)
         .then(() => {
-          policies.value = policies.value.filter(
+          patchPolicies.value = patchPolicies.value.filter(
             (policy) => policy.id !== policyId,
           );
           notifySuccess("Policy successfully deleted.");
@@ -381,7 +380,7 @@ export function usePatchPolicy() {
         .finally(() => (isLoading.value = false));
     } else {
       useTimeoutFn(() => {
-        policies.value = policies.value.filter(
+        patchPolicies.value = patchPolicies.value.filter(
           (policy) => policy.id !== policyId,
         );
         isLoading.value = false;
@@ -391,13 +390,13 @@ export function usePatchPolicy() {
   }
 
   return {
-    policies,
+    patchPolicies,
     isLoading,
     isError,
-    getPolicies,
-    addPolicy,
-    editPolicy,
-    deletePolicy,
+    getPatchPolicies,
+    addPatchPolicy,
+    editPatchPolicy,
+    deletePatchPolicy,
   };
 }
 

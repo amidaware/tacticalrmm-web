@@ -2,45 +2,46 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        Edit policies assigned to {{ type }}
+        Edit assignments on {{ type }}
         <q-space />
-        <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
-        </q-btn>
+        <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
-      <q-form @submit="submit">
-        <div class="h6-text">Polcies</div>
-        <q-card-section v-if="policyOptions.length > 0">
+      <div class="q-pa-sm">
+        <div class="text-h6">Automation Polcies</div>
+        <q-card-section>
           <tactical-dropdown
             v-if="type === 'client' || type === 'site'"
             class="q-mb-md"
-            v-model="formData.selectedServerPolicy"
+            v-model="formData.serverPolicy"
             :options="policyOptions"
             label="Server Policy"
             outlined
             clearable
             mapOptions
             filterable
+            dense
           />
           <tactical-dropdown
             v-if="type === 'client' || type === 'site'"
-            v-model="formData.selectedWorkstationPolicy"
+            v-model="formData.workstationPolicy"
             :options="policyOptions"
             label="Workstation Policy"
             outlined
             clearable
             mapOptions
             filterable
+            dense
           />
           <tactical-dropdown
             v-if="type === 'agent'"
-            v-model="formData.selectedAgentPolicy"
+            v-model="formData.agentPolicy"
             :options="policyOptions"
             label="Policy"
             outlined
             clearable
             mapOptions
             filterable
+            dense
           />
 
           <q-checkbox
@@ -53,205 +54,164 @@
           </q-checkbox>
         </q-card-section>
 
-        <!-- No policies configured-->
-        <q-card-section v-else>
-          No Automation Policies have been setup. Go to Settings > Automation
-          Manager
-        </q-card-section>
-
         <!-- Alert Template-->
+        <div class="text-h6" v-if="!isAgent()">Alert Template</div>
         <q-card-section v-if="!isAgent()">
           <tactical-dropdown
-            v-if="type === 'agent'"
-            v-model="formData.alert_template"
+            v-model="formData.alertTemplate"
             :options="alertTemplateOptions"
             label="Alert Template"
             outlined
             clearable
             mapOptions
             filterable
+            dense
           />
         </q-card-section>
 
         <!-- Patch Policy -->
+        <div class="text-h6">Patch Policy</div>
         <q-card-section>
           <tactical-dropdown
-            v-model="formData.patch_policy"
+            v-model="formData.patchPolicy"
             :options="patchPolicyOptions"
             label="Patch Policy"
             outlined
             clearable
             mapOptions
             filterable
+            dense
           />
         </q-card-section>
+      </div>
 
-        <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
-          <q-btn
-            :loading="loading"
-            dense
-            flat
-            label="Submit"
-            color="primary"
-            type="submit"
-          />
-        </q-card-actions>
-      </q-form>
+      <q-card-actions align="right">
+        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn
+          :loading="loading"
+          dense
+          flat
+          label="Save"
+          color="primary"
+          @click="submit"
+        />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script lang="ts" setup>
-import {computed, reactive, ref, watch, onMounted} from "vue"
+import { computed, reactive, ref, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
-import axios from "axios";
-import { notifySuccess } from "@/utils/notify";
-import { Policy } from "@/types/automation";
+import { useAlertTemplateDropdown } from "@/core/alerts/composables";
+import { usePolicyDropdown } from "@/core/automation/composables";
+import { usePatchPolicyDropdown } from "@/core/patching/composables";
+import { useClientShared, useSiteShared } from "@/core/clients/api";
+import { useAgentShared } from "@/core/agents/api";
 
+// ui
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 defineEmits([...useDialogPluginComponent.emits]);
 
 interface EntityWithAssignments {
-  agent_id?: number
+  agent_id?: string;
   id?: number;
   client?: number;
   server_policy?: number;
   workstation_policy?: number;
   policy?: number;
   alert_template: number;
-  patch_policy: number
-  blockInheritance: boolean
+  patch_policy: number;
+  block_policy_inheritance: boolean;
 }
 
 function isAgent() {
-  return props.entity.agent_id !== undefined
+  return props.entity.agent_id !== undefined;
 }
 
 function isSite() {
-  return props.entity.id !== undefined && props.entity.client !== undefined
+  return props.entity.id !== undefined && props.entity.client !== undefined;
 }
 
 function isClient() {
-  return props.entity.id !== undefined && props.entity.client === undefined
+  return props.entity.id !== undefined && props.entity.client === undefined;
 }
 
 const type = computed(() => {
-  if (isAgent()) return "agent"
-  else if (isClient()) return "client"
-  else if (isSite()) return "site"
-  else return ""
-})
+  if (isAgent()) return "agent";
+  else if (isClient()) return "client";
+  else if (isSite()) return "site";
+  else return "";
+});
 
 // props
-const props =
-  defineProps<{
-    entity: EntityWithAssignments;
-  }>()
+const props = defineProps<{
+  entity: EntityWithAssignments;
+}>();
+
+// setup dropdowns
+const { alertTemplateOptions } = useAlertTemplateDropdown();
+const { policyOptions } = usePolicyDropdown();
+const { patchPolicyOptions } = usePatchPolicyDropdown();
 
 const formData = reactive({
-  selectedWorkstationPolicy: props.entity.workstation_policy,
-  selectedServerPolicy: props.entity.server_policy,
-  selectedAgentPolicy: props.entity.policy,
-  blockInheritance: props.entity.blockInheritance,
-  patch_policy: props.entity.patch_policy,
-  alert_template: props.entity.alert_template
-})
+  workstationPolicy: props.entity.workstation_policy,
+  serverPolicy: props.entity.server_policy,
+  agentPolicy: props.entity.policy,
+  blockInheritance: props.entity.block_policy_inheritance,
+  patchPolicy: props.entity.patch_policy,
+  alertTemplate: props.entity.alert_template,
+});
 
-const changed = ref(false)
+const changed = ref(false);
 
 watch(formData, () => {
-  changed.value = true
-})
+  changed.value = true;
+});
 
-const loading = ref(false)
+const loading = ref(false);
 
 function submit() {
-
   if (!changed.value) {
-    onDialogHide()
+    onDialogHide();
   }
 
-  loading.value = true
+  loading.value = true;
 
-  let data = {};
-  let url = "";
-  if (isClient()) {
-    url = `/clients/${props.entity.id}/`;
-    data = {
-      client: {
-        server_policy: formData.selectedServerPolicy,
-        workstation_policy: formData.selectedWorkstationPolicy,
-        block_policy_inheritance: formData.blockInheritance,
-        alert_template: formData.alert_template,
-        patch_policy: formData.patch_policy
-      },
-    };
-  } else if (isSite()) {
-    url = `/clients/sites/${props.entity.id}/`;
-    data = {
-      site: {
-        server_policy: formData.selectedServerPolicy,
-        workstation_policy: formData.selectedWorkstationPolicy,
-        block_policy_inheritance: formData.blockInheritance,
-        alert_template: formData.alert_template,
-        patch_policy: formData.patch_policy
-      },
-    };
-  } else if (isAgent()) {
-    url = `/agents/${props.entity.agent_id}/`;
-    data = {
-      policy: formData.selectedAgentPolicy,
+  if (isClient() && props.entity.id) {
+    const { editClient } = useClientShared;
+    editClient(props.entity.id, {
+      server_policy: formData.serverPolicy,
+      workstation_policy: formData.workstationPolicy,
       block_policy_inheritance: formData.blockInheritance,
-      patch_policy: formData.patch_policy
-    };
-  }
-
-  axios
-    .put(url, data)
-    .then(() => {
-      loading.value = false
-      onDialogOK()
-      notifySuccess("Policies Updated Successfully!");
-    })
-    .catch(() => {
-      loading.value = false
+      alert_template: formData.alertTemplate,
+      patch_policy: formData.patchPolicy,
     });
-}
+  } else if (isSite() && props.entity.id) {
+    const { editSite } = useSiteShared;
 
-const policyOptions = ref([]);
+    editSite(props.entity.id, {
+      server_policy: formData.serverPolicy,
+      workstation_policy: formData.workstationPolicy,
+      block_policy_inheritance: formData.blockInheritance,
+      alert_template: formData.alertTemplate,
+      patch_policy: formData.patchPolicy,
+    });
+  } else if (isAgent() && props.entity.agent_id) {
+    const { editAgent } = useAgentShared;
 
-function getPolicies() {
-    axios
-      .get("/automation/policies/")
-      .then((r) => {
-        policyOptions.value = r.data.map((policy: Policy) => ({
-          label: policy.name,
-          value: policy.id,
-        }));
-      })
-      .catch(() => {
-
-      });
+    editAgent(props.entity.agent_id, {
+      policy: formData.agentPolicy,
+      block_policy_inheritance: formData.blockInheritance,
+      patch_policy: formData.patchPolicy,
+    });
   }
 
-const alertTemplateOptions = ref([])
+  // TODO: Error Handling
 
-function getAlertTemplates() {
-
+  onDialogOK();
 }
-
-const patchPolicyOptions = ref([])
-
-function getPatchPolicies() {
-
-}
-
-onMounted(() => {
-  getPolicies()
-  getAlertTemplates()
-  getPatchPolicies()
-})
+</script>
