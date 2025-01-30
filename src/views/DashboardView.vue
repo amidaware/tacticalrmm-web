@@ -126,25 +126,12 @@
                       <q-item
                         clickable
                         v-close-popup
-                        @click="showPolicyAdd(props.node)"
+                        @click="openPolicyAssignments(props.node)"
                       >
                         <q-item-section side>
                           <q-icon name="policy" />
                         </q-item-section>
-                        <q-item-section
-                          >Assign Automation Policy</q-item-section
-                        >
-                      </q-item>
-
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="showAlertTemplateAdd(props.node)"
-                      >
-                        <q-item-section side>
-                          <q-icon name="error" />
-                        </q-item-section>
-                        <q-item-section>Assign Alert Template</q-item-section>
+                        <q-item-section>Policy Assignments</q-item-section>
                       </q-item>
 
                       <q-item clickable v-ripple @click="getURLActions">
@@ -440,23 +427,23 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import mixins from "@/mixins/mixins";
 import { openURL } from "quasar";
 import { mapState } from "vuex";
 import FileBar from "@/components/FileBar.vue";
 import AgentTable from "@/components/AgentTable.vue";
 import SubTableTabs from "@/components/SubTableTabs.vue";
-import PolicyAdd from "@/components/automation/modals/PolicyAdd.vue";
 import ClientsForm from "@/components/clients/ClientsForm.vue";
 import SitesForm from "@/components/clients/SitesForm.vue";
 import DeleteClient from "@/components/clients/DeleteClient.vue";
 import InstallAgent from "@/components/modals/agents/InstallAgent.vue";
-import AlertTemplateAdd from "@/components/modals/alerts/AlertTemplateAdd.vue";
 import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
+import PolicyAssignments from "@/core/dashboard/components/PolicyAssignments.vue";
 
 import { removeClient, removeSite } from "@/api/clients";
 
-export default {
+export default defineComponent({
   name: "DashboardView",
   components: {
     FileBar,
@@ -645,17 +632,6 @@ export default {
       if (this.clearSearchWhenSwitching) this.clearFilter();
       this.$store.dispatch("refreshDashboard", true);
     },
-    showPolicyAdd(node) {
-      this.$q
-        .dialog({
-          component: PolicyAdd,
-          componentProps: {
-            type: node.children ? "client" : "site",
-            object: node.children ? node.client : node.site,
-          },
-        })
-        .onOk(() => this.$store.dispatch("loadTree"));
-    },
     showAddSiteModal(node) {
       this.$q
         .dialog({
@@ -728,13 +704,12 @@ export default {
       this.showInstallAgentModal = false;
       this.sitePk = null;
     },
-    showAlertTemplateAdd(node) {
+    openPolicyAssignments(node) {
       this.$q
         .dialog({
-          component: AlertTemplateAdd,
+          component: PolicyAssignments,
           componentProps: {
-            type: node.children ? "client" : "site",
-            object: node.children ? node.client : node.site,
+            entity: node.children ? node.client : node.site,
           },
         })
         .onOk(() => this.$store.dispatch("refreshDashboard"));
@@ -902,7 +877,7 @@ export default {
     // set initial value for agent table and agent tabs
     this.$store.commit("SET_SPLITTER", this.innerModel);
   },
-};
+});
 </script>
 
 <style>
