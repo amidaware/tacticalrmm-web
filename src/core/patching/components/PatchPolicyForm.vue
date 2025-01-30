@@ -1,11 +1,11 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <q-card-section>
-        <div class="text-h6">
-          {{ isEditMode ? "Edit Policy" : "Add Policy" }}
-        </div>
-      </q-card-section>
+      <q-bar>
+        {{ isEditMode ? "Edit Patch Policy" : "Add Patch Policy" }}
+        <q-space />
+        <q-btn dense flat icon="close" v-close-popup />
+      </q-bar>
 
       <q-card-section>
         <!-- Name -->
@@ -154,7 +154,7 @@ const props = defineProps<{
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
-const { addPolicy, editPolicy, isLoading } = usePatchPolicyShared;
+const { addPatchPolicy, editPatchPolicy, isLoading } = usePatchPolicyShared;
 
 const scheduleFrequencyOptions = ["daily", "weekly", "monthly"];
 const policy: PatchPolicy = props.policy
@@ -185,9 +185,9 @@ const isEditMode = computed(() => !!props.policy);
 // TODO: Add error handling when testing with real backend
 function submit() {
   if (isEditMode.value) {
-    editPolicy(policy);
+    editPatchPolicy(policy);
   } else {
-    addPolicy(policy);
+    addPatchPolicy(policy);
   }
   onDialogOK(policy);
 }

@@ -1,6 +1,12 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin">
+      <q-bar>
+        Apply patches to policies
+        <q-space />
+        <q-btn dense flat icon="close" v-close-popup />
+      </q-bar>
+
       <q-card-section>
         <div class="text-subtitle1">Selected Patches:</div>
         <div v-for="patch in patches" class="text-subtitle2" :key="patch.id">
@@ -65,7 +71,7 @@ defineProps<{
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
-const { policies, getPolicies, isLoading } = usePatchPolicyShared;
+const { patchPolicies, getPatchPolicies, isLoading } = usePatchPolicyShared;
 
 const action = ref<"approve" | "not_approved" | "uninstall">("approve");
 const selectedPolicies = ref<number[]>([]);
@@ -77,7 +83,7 @@ const actionOptions = [
 ];
 
 const policyOptions = computed(() =>
-  policies.value.map((policy) => ({
+  patchPolicies.value.map((policy) => ({
     label: policy.name,
     value: policy.id,
   })),
@@ -93,5 +99,5 @@ function submit() {
   onDialogOK();
 }
 
-onMounted(getPolicies);
+onMounted(getPatchPolicies);
 </script>
