@@ -35,6 +35,16 @@
               />
             </q-card-section>
             <q-card-section>
+              Supported Platforms
+              <q-option-group
+                :rules="[(val) => val.length > 0 || '*Required']"
+                v-model="state.supported_platforms"
+                :options="plat_options"
+                type="checkbox"
+                inline
+              />
+            </q-card-section>
+            <q-card-section>
               <q-checkbox
                 dense
                 label="Collector Task"
@@ -869,6 +879,12 @@ const taskInstancePolicyOptions = [
   { label: "Stop Existing", value: 3 },
 ];
 
+const plat_options = [
+  { label: "Windows", value: "windows" },
+  { label: "Linux", value: "linux" },
+  { label: "macOS", value: "darwin" },
+];
+
 export default defineComponent({
   components: { TacticalDropdown, draggable },
   name: "AddAutomatedTask",
@@ -932,6 +948,7 @@ export default defineComponent({
           alert_severity: "info",
           collector_all_output: false,
           continue_on_error: true,
+          supported_platforms: ["windows"],
         });
 
     const actionType = ref("script");
@@ -1203,6 +1220,7 @@ export default defineComponent({
       taskTypeOptions,
       taskInstancePolicyOptions,
       envVarsLabel,
+      plat_options,
 
       // methods
       submit,
