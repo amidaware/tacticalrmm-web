@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
-    <q-card class="q-dialog-plugin">
+    <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 800px">
       <q-bar>
         Apply patches to policies
         <q-space />

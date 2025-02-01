@@ -2,6 +2,7 @@ import { ref, onMounted, computed } from "vue";
 import { useClientShared } from "./api";
 
 import type { Client, Site } from "./types";
+import type { Option } from "@/core/dashboard/types";
 
 export function useClientDropdown() {
   const { clients, getClients } = useClientShared;
@@ -39,14 +40,6 @@ export function useSiteDropdown() {
     siteOptions,
   };
 }
-
-type Option =
-  | {
-      label: string;
-      value: number;
-      cat: string;
-    }
-  | { category: string };
 
 function _formatSiteOptions(data: Client[]) {
   const options = [] as Option[];

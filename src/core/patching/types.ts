@@ -93,9 +93,12 @@ export interface PatchPolicy {
   created_by?: string;
   created_at?: string;
   updated_at?: string;
-  patches_approved: Patch[];
-  patches_not_approved: Patch[];
-  patches_uninstall: Patch[];
+  patches_approved: number[];
+  patches_not_approved: number[];
+  patches_uninstall: number[];
+  excluded_clients: number[];
+  excluded_sites: number[];
+  excluded_agents: number[];
 }
 
 export interface PatchSchedule {

@@ -10,6 +10,7 @@ export interface Agent {
   goarch?: GoArch;
   hostname: string;
   agent_id: string;
+  client_name: string;
   last_seen?: Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   services?: any;
@@ -38,6 +39,7 @@ export interface Agent {
   maintenance_mode: boolean;
   block_policy_inheritance: boolean;
   alert_template?: number;
+  site_name: string;
   site: number;
   policy?: number;
   patch_policy: number;
