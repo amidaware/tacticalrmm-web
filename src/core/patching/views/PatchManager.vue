@@ -57,7 +57,7 @@
 import { useClientDropdown, useSiteDropdown } from "@/core/clients/composables";
 
 // ui imports
-import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import TacticalDropdown from "@/core/dashboard/ui/components/TacticalDropdown.vue";
 
 const { client, clientOptions } = useClientDropdown();
 const { site, siteOptions } = useSiteDropdown();

@@ -247,31 +247,65 @@ export const usePatchShared = usePatch();
 const policyTestData = [
   {
     id: 1,
-    name: "Critical Updates",
-    description: "Apply critical updates daily at 2 AM.",
-    schedule: { frequency: "daily", time: "02:00" },
+    name: "Monthly Security Updates",
+    description: "Policy to apply monthly security updates.",
+    schedule: {
+      frequency: "monthly",
+      time: "02:00",
+      day_of_month: 15,
+    },
     include_critical_updates: true,
     include_security_updates: true,
     include_optional_updates: false,
     include_preview_updates: false,
     max_deferral_days: 7,
     auto_reboot: true,
-    created_by: "admin1",
-    created_at: "2024-12-01T12:00:00Z",
+    notifications: {
+      enabled: true,
+      notify_on_failure: true,
+      notify_on_success: false,
+      recipients: ["admin@example.com", "security@example.com"],
+    },
+    created_by: "admin",
+    created_at: "2023-01-01T00:00:00Z",
+    updated_at: "2023-01-02T00:00:00Z",
+    patches_approved: [101, 102],
+    patches_not_approved: [201],
+    patches_uninstall: [301],
+    excluded_clients: [1001, 1002],
+    excluded_sites: [2001],
+    excluded_agents: [3001],
   },
   {
     id: 2,
-    name: "Monthly Optional Updates",
-    description: "Optional updates for all platforms, monthly.",
-    schedule: { frequency: "monthly", time: "01:00", day_of_month: 15 },
-    include_critical_updates: false,
+    name: "Weekly Maintenance",
+    description: "Weekly patch maintenance policy.",
+    schedule: {
+      frequency: "weekly",
+      time: "03:30",
+      day_of_week: "Sunday",
+    },
+    include_critical_updates: true,
     include_security_updates: false,
     include_optional_updates: true,
     include_preview_updates: true,
-    max_deferral_days: 14,
+    max_deferral_days: 5,
     auto_reboot: false,
-    created_by: "admin2",
-    created_at: "2024-12-05T14:00:00Z",
+    notifications: {
+      enabled: false,
+      notify_on_failure: false,
+      notify_on_success: false,
+      recipients: [],
+    },
+    created_by: "maintenance",
+    created_at: "2023-02-01T00:00:00Z",
+    updated_at: "2023-02-02T00:00:00Z",
+    patches_approved: [110, 111],
+    patches_not_approved: [210, 211],
+    patches_uninstall: [310],
+    excluded_clients: [],
+    excluded_sites: [],
+    excluded_agents: [],
   },
 ] as PatchPolicy[];
 
@@ -328,13 +362,13 @@ export function usePatchPolicy() {
     }
   }
 
-  function editPatchPolicy(patchPolicy: Partial<PatchPolicy>) {
+  function editPatchPolicy(id: number, patchPolicy: Partial<PatchPolicy>) {
     isLoading.value = true;
     isError.value = false;
 
     if (!testMode) {
       axios
-        .put(`${baseUrl}/${patchPolicy.id}/`, patchPolicy)
+        .put(`${baseUrl}/${id}/`, patchPolicy)
         .then(({ data }: { data: PatchPolicy }) => {
           const index = patchPolicies.value.findIndex(
             (policy) => policy.id === data.id,
@@ -363,16 +397,16 @@ export function usePatchPolicy() {
     }
   }
 
-  function deletePatchPolicy(policyId: number) {
+  function deletePatchPolicy(id: number) {
     isLoading.value = true;
     isError.value = false;
 
     if (!testMode) {
       axios
-        .delete(`${baseUrl}/${policyId}/`)
+        .delete(`${baseUrl}/${id}/`)
         .then(() => {
           patchPolicies.value = patchPolicies.value.filter(
-            (policy) => policy.id !== policyId,
+            (policy) => policy.id !== id,
           );
           notifySuccess("Policy successfully deleted.");
         })
@@ -381,7 +415,7 @@ export function usePatchPolicy() {
     } else {
       useTimeoutFn(() => {
         patchPolicies.value = patchPolicies.value.filter(
-          (policy) => policy.id !== policyId,
+          (policy) => policy.id !== id,
         );
         isLoading.value = false;
         notifySuccess("Policy successfully deleted (test mode).");

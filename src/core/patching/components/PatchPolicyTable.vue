@@ -44,6 +44,27 @@
         </q-btn-dropdown>
       </div>
     </template>
+
+    <!-- <template v-slot:body-cell-exclusions="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.requires_reboot" name="check" />
+      </q-td>
+    </template> -->
+
+    <template v-slot:body-cell-exclusions="props">
+      <q-td :props="props">
+        <div>
+          <q-btn
+            :label="`${props.row.excluded_agents.length + props.row.excluded_clients.length + props.row.excluded_sites.length} Exclusions`"
+            outline
+            rounded
+            no-caps
+            size="sm"
+            @click="openPolicyExclusions(props.row)"
+          />
+        </div>
+      </q-td>
+    </template>
   </tactical-table>
 </template>
 
@@ -58,6 +79,7 @@ import PatchPolicyForm from "./PatchPolicyForm.vue";
 
 // types
 import { PatchPolicy, PatchSchedule } from "../types";
+import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
 
 const columns = [
   {
@@ -88,14 +110,13 @@ const columns = [
         : val.frequency === "weekly"
           ? `Weekly on ${val.day_of_week} at ${val.time}`
           : `Monthly on ${val.day_of_month} at ${val.time}`,
-    filterType: "text",
   },
   {
     name: "include_critical_updates",
     label: "Critical Updates",
     align: "center",
     field: "include_critical_updates",
-    sortable: false,
+    sortable: true,
     filterType: "boolean",
   },
   {
@@ -103,7 +124,7 @@ const columns = [
     label: "Security Updates",
     align: "center",
     field: "include_security_updates",
-    sortable: false,
+    sortable: true,
     filterType: "boolean",
   },
   {
@@ -111,7 +132,7 @@ const columns = [
     label: "Optional Updates",
     align: "center",
     field: "include_optional_updates",
-    sortable: false,
+    sortable: true,
     filterType: "boolean",
   },
   {
@@ -119,7 +140,7 @@ const columns = [
     label: "Preview Updates",
     align: "center",
     field: "include_preview_updates",
-    sortable: false,
+    sortable: true,
     filterType: "boolean",
   },
   {
@@ -127,7 +148,7 @@ const columns = [
     label: "Auto Reboot",
     align: "center",
     field: "auto_reboot",
-    sortable: false,
+    sortable: true,
     filterType: "boolean",
   },
   {
@@ -147,9 +168,17 @@ const columns = [
     format: (val: string) => (val ? new Date(val).toLocaleDateString() : ""),
     filterType: "date",
   },
+  {
+    name: "exclusions",
+    label: "Exclusions",
+    align: "center",
+    field: "exclusions",
+    sortable: false,
+  },
 ];
 
-const { getPatchPolicies, patchPolicies, deletePatchPolicy, isLoading } = usePatchPolicyShared;
+const { getPatchPolicies, patchPolicies, deletePatchPolicy, isLoading } =
+  usePatchPolicyShared;
 
 const selected = ref<PatchPolicy[]>([]);
 
@@ -161,10 +190,17 @@ function openAddPolicyForm() {
   });
 }
 
-function openEditPolicyForm(policy: PatchPolicy) {
+function openEditPolicyForm(patchPolicy: PatchPolicy) {
   $q.dialog({
     component: PatchPolicyForm,
-    componentProps: { policy },
+    componentProps: { patchPolicy },
+  });
+}
+
+function openPolicyExclusions(patchPolicy: PatchPolicy) {
+  $q.dialog({
+    component: PatchPolicyExclusionsForm,
+    componentProps: { patchPolicy },
   });
 }
 

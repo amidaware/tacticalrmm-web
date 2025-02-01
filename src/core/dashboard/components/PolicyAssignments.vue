@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin" style="width: 60vw">
+    <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
         Edit assignments on {{ type }}
         <q-space />
@@ -8,7 +8,7 @@
       </q-bar>
       <div class="q-pa-sm">
         <div class="text-h6">Automation Polcies</div>
-        <q-card-section>
+        <q-card-section class="q-pt-md">
           <tactical-dropdown
             v-if="type === 'client' || type === 'site'"
             class="q-mb-md"
@@ -19,6 +19,7 @@
             clearable
             mapOptions
             filterable
+            options-dense
             dense
           />
           <tactical-dropdown
@@ -30,6 +31,7 @@
             clearable
             mapOptions
             filterable
+            options-dense
             dense
           />
           <tactical-dropdown
@@ -41,12 +43,14 @@
             clearable
             mapOptions
             filterable
+            options-dense
             dense
           />
 
           <q-checkbox
             label="Block policy inheritance"
             v-model="formData.blockInheritance"
+            class="q-pt-md"
           >
             <q-tooltip
               >This {{ type }} will not inherit from higher policies</q-tooltip
@@ -56,7 +60,7 @@
 
         <!-- Alert Template-->
         <div class="text-h6" v-if="!isAgent()">Alert Template</div>
-        <q-card-section v-if="!isAgent()">
+        <q-card-section v-if="!isAgent()" class="q-pt-md">
           <tactical-dropdown
             v-model="formData.alertTemplate"
             :options="alertTemplateOptions"
@@ -65,13 +69,14 @@
             clearable
             mapOptions
             filterable
+            options-dense
             dense
           />
         </q-card-section>
 
         <!-- Patch Policy -->
         <div class="text-h6">Patch Policy</div>
-        <q-card-section>
+        <q-card-section class="q-pt-md">
           <tactical-dropdown
             v-model="formData.patchPolicy"
             :options="patchPolicyOptions"
@@ -80,6 +85,7 @@
             clearable
             mapOptions
             filterable
+            options-dense
             dense
           />
         </q-card-section>
@@ -89,6 +95,7 @@
         <q-btn dense flat label="Cancel" v-close-popup />
         <q-btn
           :loading="loading"
+          :disable="!changed"
           dense
           flat
           label="Save"
@@ -110,7 +117,7 @@ import { useClientShared, useSiteShared } from "@/core/clients/api";
 import { useAgentShared } from "@/core/agents/api";
 
 // ui
-import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import TacticalDropdown from "../ui/components/TacticalDropdown.vue";
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
