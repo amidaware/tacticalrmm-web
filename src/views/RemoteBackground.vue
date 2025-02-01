@@ -34,6 +34,7 @@
     <q-tab-panels v-model="tab">
       <q-tab-panel name="terminal" class="q-pa-none">
         <iframe
+          allow="clipboard-read; clipboard-write"
           :src="terminal"
           :style="{
             height: `${$q.screen.height - 30}px`,
@@ -66,6 +67,7 @@
       </q-tab-panel>
       <q-tab-panel name="filebrowser" class="q-pa-none">
         <iframe
+          allow="clipboard-read; clipboard-write"
           :src="file"
           :style="{
             height: `${$q.screen.height - 30}px`,
