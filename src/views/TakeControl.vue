@@ -23,12 +23,15 @@
       />
       <q-space />
     </q-bar>
-
-    <q-video
-      v-show="control"
-      :src="control"
-      :style="{ height: `${$q.screen.height - 26}px` }"
-    ></q-video>
+    <div class="q-video" :style="{ height: `${$q.screen.height - 26}px` }">
+      <iframe
+        v-show="control"
+        :src="control"
+        allow="clipboard-read; clipboard-write"
+        allowfullscreen
+        frameborder="0"
+      ></iframe>
+    </div>
   </div>
 </template>
 
