@@ -13,7 +13,6 @@ export type PatchClassificationType =
   | "critical"
   | "security"
   | "feature"
-  | "recommended"
   | "hardware"
   | "package";
 
@@ -21,7 +20,6 @@ export enum PatchClassification {
   Critical = "critical",
   Security = "security",
   Feature = "feature",
-  Recommended = "recommended",
   Hardware = "hardware",
   Package = "package",
 }
@@ -82,14 +80,16 @@ export interface PatchPolicy {
   id: number;
   name: string;
   description?: string;
-  schedule: PatchSchedule;
+  scan_schedule: PatchSchedule;
+  install_schedule: PatchSchedule;
   include_critical_updates: boolean;
   include_security_updates: boolean;
-  include_optional_updates?: boolean;
-  include_preview_updates?: boolean;
+  include_optional_updates: boolean;
+  include_preview_updates: boolean;
+  include_hardware_updates: boolean;
   max_deferral_days?: number;
   auto_reboot: boolean;
-  notifications?: PolicyNotification;
+  notifications: PolicyNotification;
   created_by?: string;
   created_at?: string;
   updated_at?: string;
@@ -109,7 +109,6 @@ export interface PatchSchedule {
 }
 
 export interface PolicyNotification {
-  enabled: boolean;
   notify_on_failure: boolean;
   notify_on_success: boolean;
   recipients: string[];

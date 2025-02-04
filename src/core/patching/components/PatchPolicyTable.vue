@@ -45,11 +45,41 @@
       </div>
     </template>
 
-    <!-- <template v-slot:body-cell-exclusions="props">
+    <template v-slot:body-cell-include_critical_updates="props">
       <q-td :props="props" auto-width>
-        <q-icon v-if="props.row.requires_reboot" name="check" />
+        <q-icon v-if="props.row.include_critical_updates" name="check" />
       </q-td>
-    </template> -->
+    </template>
+
+    <template v-slot:body-cell-include_security_updates="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.include_security_updates" name="check" />
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-include_optional_updates="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.include_optional_updates" name="check" />
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-include_preview_updates="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.include_preview_updates" name="check" />
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-include_hardware_updates="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.include_hardware_updates" name="check" />
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-auto_reboot="props">
+      <q-td :props="props" auto-width>
+        <q-icon v-if="props.row.auto_reboot" name="check" />
+      </q-td>
+    </template>
 
     <template v-slot:body-cell-exclusions="props">
       <q-td :props="props">
@@ -140,6 +170,14 @@ const columns = [
     label: "Preview Updates",
     align: "center",
     field: "include_preview_updates",
+    sortable: true,
+    filterType: "boolean",
+  },
+  {
+    name: "include_hardware_updates",
+    label: "Hardware Updates",
+    align: "center",
+    field: "include_hardware_updates",
     sortable: true,
     filterType: "boolean",
   },
