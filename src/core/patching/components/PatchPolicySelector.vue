@@ -2,18 +2,18 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 800px">
       <q-bar>
-        Apply patches to policies
+        Apply patches to patch policies
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
 
       <div class="row">
         <div class="col-6">
-          <div class="text-subtitle1">Selected Patches:</div>
+          <div class="text-subtitle1 q-ma-sm">Selected Patches:</div>
           <q-scroll-area style="height: 200px">
             <div
               v-for="patch in patches"
-              class="text-subtitle2 q-ml-sm"
+              class="text-subtitle2 q-ml-md"
               :key="patch.id"
             >
               {{ patch.name }}
