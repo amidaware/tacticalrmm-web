@@ -24,7 +24,6 @@
         v-bind="scope.itemProps"
         class="q-pl-lg"
         :key="mapOptions ? scope.opt.value : scope.opt"
-        dense
       >
         <q-item-section side v-if="multiple">
           <q-checkbox
@@ -32,6 +31,7 @@
             @update:model-value="
               scope.toggleOption(mapOptions ? scope.opt.value : scope.opt)
             "
+            dense
           />
         </q-item-section>
         <q-item-section>
