@@ -249,7 +249,12 @@ const policyTestData = [
     id: 1,
     name: "Monthly Security Updates",
     description: "Policy to apply monthly security updates.",
-    schedule: {
+    scan_schedule: {
+      frequency: "monthly",
+      time: "02:00",
+      day_of_month: 15,
+    },
+    install_schedule: {
       frequency: "monthly",
       time: "02:00",
       day_of_month: 15,
@@ -258,10 +263,10 @@ const policyTestData = [
     include_security_updates: true,
     include_optional_updates: false,
     include_preview_updates: false,
+    include_hardware_updates: true,
     max_deferral_days: 7,
     auto_reboot: true,
     notifications: {
-      enabled: true,
       notify_on_failure: true,
       notify_on_success: false,
       recipients: ["admin@example.com", "security@example.com"],
@@ -269,10 +274,10 @@ const policyTestData = [
     created_by: "admin",
     created_at: "2023-01-01T00:00:00Z",
     updated_at: "2023-01-02T00:00:00Z",
-    patches_approved: [101, 102],
-    patches_not_approved: [201],
-    patches_uninstall: [301],
-    excluded_clients: [1001, 1002],
+    patches_approved: [101, 102, 105, 109, 100],
+    patches_not_approved: [101, 102, 105, 109, 100],
+    patches_uninstall: [101, 102, 105, 109, 100],
+    excluded_clients: [1001, 1002, 1005, 1008, 1009, 1111, 1225, 15412, 125],
     excluded_sites: [2001],
     excluded_agents: [3001],
   },
@@ -280,7 +285,12 @@ const policyTestData = [
     id: 2,
     name: "Weekly Maintenance",
     description: "Weekly patch maintenance policy.",
-    schedule: {
+    scan_schedule: {
+      frequency: "weekly",
+      time: "03:30",
+      day_of_week: "Sunday",
+    },
+    install_schedule: {
       frequency: "weekly",
       time: "03:30",
       day_of_week: "Sunday",
@@ -289,10 +299,10 @@ const policyTestData = [
     include_security_updates: false,
     include_optional_updates: true,
     include_preview_updates: true,
+    include_hardware_updates: false,
     max_deferral_days: 5,
     auto_reboot: false,
     notifications: {
-      enabled: false,
       notify_on_failure: false,
       notify_on_success: false,
       recipients: [],
