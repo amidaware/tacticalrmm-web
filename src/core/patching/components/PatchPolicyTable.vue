@@ -129,10 +129,23 @@ const columns = [
     filterType: "text",
   },
   {
-    name: "schedule",
-    label: "Schedule",
+    name: "scan_schedule",
+    label: "Scan Schedule",
     align: "left",
-    field: "schedule",
+    field: "scan_schedule",
+    sortable: false,
+    format: (val: PatchSchedule) =>
+      val.frequency === "daily"
+        ? "Daily at " + val.time
+        : val.frequency === "weekly"
+          ? `Weekly on ${val.day_of_week} at ${val.time}`
+          : `Monthly on ${val.day_of_month} at ${val.time}`,
+  },
+  {
+    name: "install_schedule",
+    label: "Install Schedule",
+    align: "left",
+    field: "install_schedule",
     sortable: false,
     format: (val: PatchSchedule) =>
       val.frequency === "daily"
