@@ -143,6 +143,7 @@
                 ]"
                 filled
                 dense
+                hide-bottom-space
               />
               <q-input
                 v-if="patchPolicy.install_schedule.frequency === 'weekly'"
@@ -232,6 +233,23 @@
               </q-list>
             </div>
           </div>
+          <div class="col-12col-md-6" v-if="isEditMode">
+            <div class="text-subtitle1 q-mt-md">Actions</div>
+            <div class="q-gutter-sm">
+              <q-btn
+                label="Edit Exclusions"
+                no-caps
+                color="secondary"
+                @click="openPatchPolicyExclusionsForm"
+              />
+              <q-btn
+                label="Edit Applied Patches"
+                no-caps
+                color="secondary"
+                @click="openPatchPolicyPatchForm"
+              />
+            </div>
+          </div>
         </div>
       </q-card-section>
       <q-card-actions align="right">
@@ -249,11 +267,16 @@
 
 <script lang="ts" setup>
 import { reactive, computed, ref } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, useQuasar, extend } from "quasar";
 import { usePatchPolicyShared } from "../api";
 import { PatchPolicy } from "../types";
 
+// ui imports
+import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
+import PatchPolicyPatchForm from "./PatchPolicyPatchForm.vue";
+
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const $q = useQuasar();
 
 const { addPatchPolicy, editPatchPolicy, isLoading } = usePatchPolicyShared;
 
@@ -263,7 +286,7 @@ const props = defineProps<{
 
 const patchPolicy = reactive<PatchPolicy>(
   props.patchPolicy
-    ? { ...props.patchPolicy }
+    ? extend(true, {}, props.patchPolicy)
     : {
         id: 0,
         name: "",
@@ -316,5 +339,23 @@ function submit() {
 
   // TODO: Error handling
   onDialogOK();
+}
+
+function openPatchPolicyExclusionsForm() {
+  $q.dialog({
+    component: PatchPolicyExclusionsForm,
+    componentProps: {
+      patchPolicy,
+    },
+  });
+}
+
+function openPatchPolicyPatchForm() {
+  $q.dialog({
+    component: PatchPolicyPatchForm,
+    componentProps: {
+      patchPolicy,
+    },
+  });
 }
 </script>
