@@ -134,6 +134,38 @@
                         <q-item-section>Policy Assignments</q-item-section>
                       </q-item>
 
+                      <!-- patch management -->
+                      <q-item clickable>
+                        <q-item-section side>
+                          <q-icon name="system_update" />
+                        </q-item-section>
+                        <q-item-section>Patch Management</q-item-section>
+                        <q-item-section side>
+                          <q-icon name="keyboard_arrow_right" />
+                        </q-item-section>
+
+                        <q-menu auto-close anchor="top right" self="top left">
+                          <q-list dense style="min-width: 100px">
+                            <q-item
+                              clickable
+                              v-ripple
+                              @click="runPatchApproval(props.node)"
+                            >
+                              <q-item-section>Approve Patches</q-item-section>
+                            </q-item>
+                            <q-item
+                              clickable
+                              v-ripple
+                              @click="runPatchApprovalInstall(props.node)"
+                            >
+                              <q-item-section
+                                >Approve Patches and Install</q-item-section
+                              >
+                            </q-item>
+                          </q-list>
+                        </q-menu>
+                      </q-item>
+
                       <q-item clickable v-ripple @click="getURLActions">
                         <q-item-section side>
                           <q-icon name="open_in_new" />
@@ -819,6 +851,16 @@ export default defineComponent({
       this.$axios.patch("/core/urlaction/run/", data).then((r) => {
         openURL(r.data);
       });
+    },
+    runPatchApproval(item) {
+      // TODO: Actually do something here
+      this.notifySuccess(`Approve patches task has been run on ${item.name}`);
+    },
+    runPatchApprovalInstall(item) {
+      // TODO: Actually do something here
+      this.notifySuccess(
+        `Approve and Install task has been run on ${item.name}`,
+      );
     },
   },
   computed: {
