@@ -22,7 +22,6 @@ export function useAgentDropdown() {
 }
 
 export function _formatAgentOptions(data: Agent[]): Option[] {
-  console.log(data);
   const agents = data.map(({ hostname, agent_id, client_name, site_name }) => ({
     label: hostname,
     value: agent_id,
@@ -31,7 +30,10 @@ export function _formatAgentOptions(data: Agent[]): Option[] {
 
   agents.sort((a, b) => a.label.localeCompare(b.label));
 
-  const categoryMap = new Map<string, { label: string; value: string }[]>();
+  const categoryMap = new Map<
+    string,
+    { label: string; value: string; cat: string }[]
+  >();
 
   for (const agent of agents) {
     if (!categoryMap.has(agent.cat)) {
@@ -39,7 +41,7 @@ export function _formatAgentOptions(data: Agent[]): Option[] {
     }
     categoryMap
       .get(agent.cat)!
-      .push({ label: agent.label, value: agent.value });
+      .push({ label: agent.label, value: agent.value, cat: agent.cat });
   }
 
   return Array.from(categoryMap.entries())

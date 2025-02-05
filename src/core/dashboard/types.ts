@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Option =
-  | { label: string; value: number | string; cat?: string; img_right?: string }
+  | { label: string; value: number | string; cat: string; img_right?: string }
   | { category: string };
 
 export function isLabeledOption(option: Option): option is {
   label: string;
   value: number | string;
-  cat?: string;
+  cat: string;
   img_right?: string;
 } {
   return (
