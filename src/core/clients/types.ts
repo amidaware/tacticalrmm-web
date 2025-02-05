@@ -17,6 +17,7 @@ export interface Site {
   id: number;
   name: string;
   client: number;
+  client_name: string;
   block_policy_inheritance: boolean;
   failing_checks: {
     error: boolean;

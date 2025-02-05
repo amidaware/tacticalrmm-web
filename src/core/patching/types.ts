@@ -99,6 +99,9 @@ export interface PatchPolicy {
   excluded_clients: number[];
   excluded_sites: number[];
   excluded_agents: number[];
+  applied_clients: number[];
+  applied_sites: number[];
+  applied_agents: number[];
 }
 
 export interface PatchSchedule {
