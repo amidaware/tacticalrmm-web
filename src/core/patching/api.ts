@@ -280,6 +280,9 @@ const policyTestData = [
     excluded_clients: [1001, 1002, 1005, 1008, 1009, 1111, 1225, 15412, 125],
     excluded_sites: [2001],
     excluded_agents: [3001],
+    applied_clients: [1, 45, 45, 33, 56, 7],
+    applied_sites: [1, 4, 5, 7, 8, 9, 65, 4],
+    applied_agents: [1, 3, 4, 5, 6],
   },
   {
     id: 2,
@@ -316,6 +319,9 @@ const policyTestData = [
     excluded_clients: [],
     excluded_sites: [],
     excluded_agents: [],
+    applied_clients: [],
+    applied_sites: [],
+    applied_agents: [],
   },
 ] as PatchPolicy[];
 

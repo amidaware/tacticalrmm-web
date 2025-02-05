@@ -95,6 +95,21 @@
         </div>
       </q-td>
     </template>
+
+    <template v-slot:body-cell-applied_to="props">
+      <q-td :props="props">
+        <div>
+          <q-btn
+            :label="`Applied to ${props.row.applied_agents.length + props.row.applied_clients.length + props.row.applied_sites.length}`"
+            outline
+            rounded
+            no-caps
+            size="sm"
+            @click="openPolicyApplied(props.row)"
+          />
+        </div>
+      </q-td>
+    </template>
   </tactical-table>
 </template>
 
@@ -106,10 +121,11 @@ import { usePatchPolicyShared } from "../api";
 // ui
 import TacticalTable from "@/components/ui/TacticalTable.vue";
 import PatchPolicyForm from "./PatchPolicyForm.vue";
+import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
+import PatchPolicyApplied from "./PatchPolicyApplied.vue";
 
 // types
 import { PatchPolicy, PatchSchedule } from "../types";
-import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
 
 const columns = [
   {
@@ -220,6 +236,13 @@ const columns = [
     filterType: "date",
   },
   {
+    name: "applied_to",
+    label: "Applied To",
+    align: "center",
+    field: "applied_to",
+    sortable: false,
+  },
+  {
     name: "exclusions",
     label: "Exclusions",
     align: "center",
@@ -251,6 +274,13 @@ function openEditPolicyForm(patchPolicy: PatchPolicy) {
 function openPolicyExclusions(patchPolicy: PatchPolicy) {
   $q.dialog({
     component: PatchPolicyExclusionsForm,
+    componentProps: { patchPolicy },
+  });
+}
+
+function openPolicyApplied(patchPolicy: PatchPolicy) {
+  $q.dialog({
+    component: PatchPolicyApplied,
     componentProps: { patchPolicy },
   });
 }
