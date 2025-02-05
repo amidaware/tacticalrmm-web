@@ -123,8 +123,9 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref, reactive, computed, useTemplateRef } from "vue";
+import { ref, reactive, computed, watch, useTemplateRef, onMounted } from "vue";
 import { watchArray } from "@vueuse/shared";
+import { useStorage } from "@vueuse/core";
 import { QTable, type QTableColumn } from "quasar";
 import { vTableResizable } from "@/core/dashboard/ui/directives/TableResizable";
 
@@ -135,6 +136,7 @@ const props = withDefaults(
     excludeColumns?: string[];
     filterHeader?: boolean;
     resizableColumns?: boolean;
+    storageKey?: string;
   }>(),
   { columnSelect: false, excludeColumns: () => ["columnSelect"] },
 );
@@ -204,7 +206,7 @@ const filterTerms = computed((): FilterTerm[] => {
 
 const getFilterTerms = (filter: { [key: string]: Filter }): FilterTerm[] => {
   return Object.entries(filter).map(([column, value]) => {
-    // Ensure the value is always an array for consistent processing
+    // ensure the value is always an array for consistent processing
     const values = Array.isArray(value) ? value : [value];
     return { column, values } as FilterTerm;
   });
@@ -215,7 +217,7 @@ const filterMethod = (
   rows: Record<string, any>[],
   terms: FilterTerm[],
 ) => {
-  // If no filter terms are provided, return all rows
+  // if no filter terms are provided, return all rows
   if (terms.length === 0) {
     return rows;
   }
@@ -223,7 +225,7 @@ const filterMethod = (
   tacticalTable.value?.clearSelection();
 
   for (const term of terms) {
-    // Skip filtering if the term's values array is empty
+    // skip filtering if the term's values array is empty
     if (term.values.length === 0) {
       continue;
     }
@@ -231,12 +233,12 @@ const filterMethod = (
     rows = rows.filter((row) => {
       return term.values.some((value) => {
         if (typeof value === "object" && "from" in value && "to" in value) {
-          // Handle date range filtering
+          // handle date range filtering
           const fromDate = value.from ? new Date(value.from) : null;
           const toDate = value.to ? new Date(value.to) : null;
           const rowDate = new Date(row[term.column]);
 
-          // Exclude invalid dates
+          // exclude invalid dates
           if (isNaN(rowDate.getTime())) return false;
           if (fromDate && rowDate < fromDate) return false;
           if (toDate && rowDate > toDate) return false;
@@ -252,7 +254,7 @@ const filterMethod = (
             .includes(value.toLowerCase());
         }
 
-        return false; // Skip unexpected value types
+        return false;
       });
     });
   }
@@ -262,8 +264,27 @@ const filterMethod = (
 
 // watch visible columns and clear filter if column is hidden
 watchArray(visibleColumns, (_, __, ___, removed) => {
-  filter[removed[0]] = "";
+  delete filter[removed[0]];
 });
+
+// save visible columns to local storage
+if (props.storageKey) {
+  const storedVisibleColumns = useStorage<string[]>(props.storageKey, []);
+
+  onMounted(() => {
+    if (storedVisibleColumns.value.length > 0) {
+      // only assign valid column names
+      visibleColumns.value = storedVisibleColumns.value.filter((name: string) =>
+        localColumns.some((col) => col.name === name),
+      );
+    }
+  });
+
+  // watch for changes and save to local storage
+  watch(visibleColumns, (newValue) => {
+    storedVisibleColumns.value = newValue;
+  });
+}
 </script>
 
 <style lang="sass">

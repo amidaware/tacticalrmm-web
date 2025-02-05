@@ -11,6 +11,7 @@
     :loading="isLoading"
     selection="multiple"
     v-model:selected="selected"
+    storage-key="patching-device-table"
   >
     <template v-slot:top>
       <div class="q-gutter-sm">
