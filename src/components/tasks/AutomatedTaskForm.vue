@@ -34,11 +34,10 @@
                 hide-bottom-space
               />
             </q-card-section>
-            <q-card-section>
+            <q-card-section v-show="!isAgentTask">
               Supported Platforms
               <q-option-group
-                :rules="[(val) => val.length > 0 || '*Required']"
-                v-model="state.supported_platforms"
+                v-model="state.task_supported_platforms"
                 :options="plat_options"
                 type="checkbox"
                 inline
@@ -916,8 +915,8 @@ export default defineComponent({
     const { checkOptions, getCheckOptions } = useCheckDropdown(props.parent);
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
 
-    const isPosix = computed(() => {
-      return !!props.plat && props.plat !== "windows";
+    const isAgentTask = computed(() => {
+      return !!props.plat;
     });
 
     // add task logic
@@ -948,8 +947,35 @@ export default defineComponent({
           alert_severity: "info",
           collector_all_output: false,
           continue_on_error: true,
-          supported_platforms: ["windows"],
+          task_supported_platforms: [],
         });
+
+    const isPosix = computed(() => {
+      return (
+        (!!props.plat && props.plat !== "windows") ||
+        task.value.task_supported_platforms?.includes("linux") ||
+        task.value.task_supported_platforms?.includes("darwin")
+      );
+    });
+
+    const task_supported_platforms = computed(() => {
+      // if editing, keep value from api
+      if (props.task) {
+        return props.task.task_supported_platforms;
+      }
+      // default for new tasks (policy tasks only)
+      if (!props.plat || !isPosix.value) {
+        return ["windows"];
+      } else if (props.plat === "linux") {
+        return ["linux"];
+      } else if (props.plat === "darwin") {
+        return ["darwin"];
+      }
+      return [];
+    });
+
+    // set the default, have to do it this way to avoid circular dependency issue
+    task.value.task_supported_platforms = task_supported_platforms.value;
 
     const actionType = ref("script");
     const command = ref("");
@@ -1156,6 +1182,14 @@ export default defineComponent({
     const isValidStep3 = ref(true);
 
     function validateStep(form, stepper) {
+      if (
+        step.value === 1 &&
+        task.value.task_supported_platforms.length === 0
+      ) {
+        notifyError("There must be at least one supported platform");
+        return;
+      }
+
       if (step.value === 2) {
         if (task.value.actions.length > 0) {
           isValidStep2.value = true;
@@ -1208,6 +1242,7 @@ export default defineComponent({
       checkOptions,
       customFieldOptions,
       isPosix,
+      isAgentTask,
 
       // non-reactive data
       validateTimePeriod,
