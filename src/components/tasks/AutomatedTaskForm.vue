@@ -316,11 +316,19 @@
                   class="col-6 q-pa-sm"
                   type="datetime-local"
                   dense
-                  label="Start time"
+                  :label="
+                    isPosix && state.task_type !== 'runonce'
+                      ? 'Run at'
+                      : 'Start time'
+                  "
                   stack-label
                   filled
                   v-model="state.run_time_date"
-                  hint="Agent timezone will be used"
+                  :hint="
+                    isPosix && state.task_type !== 'runonce'
+                      ? 'Agent timezone will be used. On Linux and macOS, the selected date is ignored—only the hour and minute are used.'
+                      : 'Agent timezone will be used'
+                  "
                   :rules="[(val) => !!val || '*Required']"
                 />
 
