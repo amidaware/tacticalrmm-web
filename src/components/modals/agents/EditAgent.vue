@@ -63,7 +63,9 @@
                   <q-card-section class="row">
                     <div class="col-2">Timezone:</div>
                     <div class="col-2"></div>
-                    <q-select
+                    <tactical-dropdown
+                      filterable
+                      clearable
                       outlined
                       dense
                       options-dense

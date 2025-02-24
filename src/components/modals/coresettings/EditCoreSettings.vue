@@ -91,7 +91,9 @@
                 <q-card-section class="row">
                   <div class="col-4">Default agent timezone:</div>
                   <div class="col-2"></div>
-                  <q-select
+                  <tactical-dropdown
+                    filterable
+                    clearable
                     outlined
                     dense
                     options-dense
@@ -730,6 +732,7 @@ import KeyStoreTable from "@/components/modals/coresettings/KeyStoreTable.vue";
 import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vue";
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -740,6 +743,7 @@ export default {
     URLActionsTable,
     APIKeysTable,
     SSOProvidersTable,
+    TacticalDropdown,
   },
   mixins: [mixins],
   data() {
@@ -882,6 +886,10 @@ export default {
       this.settings.sms_alert_recipients = removed;
     },
     editSettings() {
+      if (!this.settings.default_time_zone) {
+        this.notifyError("Please select a default agent timezone");
+        return;
+      }
       this.$q.loading.show();
       delete this.settings.all_timezones;
       this.$axios
