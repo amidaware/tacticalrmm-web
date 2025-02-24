@@ -63,7 +63,9 @@
                   <q-card-section class="row">
                     <div class="col-2">Timezone:</div>
                     <div class="col-2"></div>
-                    <q-select
+                    <tactical-dropdown
+                      filterable
+                      clearable
                       outlined
                       dense
                       options-dense
@@ -275,7 +277,7 @@
                         <q-item-label overline>Run Time Frequency</q-item-label>
                         <q-item-label>{{
                           capitalize(
-                            agent.effective_patch_policy.run_time_frequency
+                            agent.effective_patch_policy.run_time_frequency,
                           )
                         }}</q-item-label>
                       </q-item-section>
@@ -289,7 +291,7 @@
                           <b>week days:</b>
                           {{
                             weekDaystoString(
-                              agent.effective_patch_policy.run_time_days
+                              agent.effective_patch_policy.run_time_days,
                             )
                           }}
                           <b>at hour:</b>
@@ -323,7 +325,7 @@
                           "inherit"
                             ? capitalize(
                                 agent.effective_patch_policy
-                                  .reboot_after_install
+                                  .reboot_after_install,
                               )
                             : "Do Nothing"
                         }}</q-item-label>
@@ -439,7 +441,7 @@ export default {
 
         for (let field of this.customFields) {
           const value = r.data.custom_fields.find(
-            (value) => value.field === field.id
+            (value) => value.field === field.id,
           );
 
           if (field.type === "multiple") {
@@ -460,7 +462,7 @@ export default {
         r.data.forEach((client) => {
           this.siteOptions.push({ category: client.name });
           client.sites.forEach((site) =>
-            this.siteOptions.push({ label: site.name, value: site.id })
+            this.siteOptions.push({ label: site.name, value: site.id }),
           );
         });
       });
@@ -524,7 +526,7 @@ export default {
           ...this.agent,
           custom_fields: this.formatCustomFields(
             this.customFields,
-            this.custom_fields
+            this.custom_fields,
           ),
         })
         .then(() => {

@@ -45,7 +45,9 @@
             </q-card-section>
             <q-card-section>
               <div>Default timezone for agents:</div>
-              <q-select
+              <tactical-dropdown
+                filterable
+                clearable
                 dense
                 options-dense
                 outlined
@@ -91,9 +93,11 @@
 
 <script>
 import mixins from "@/mixins/mixins";
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 export default {
   name: "InitialSetup",
+  components: { TacticalDropdown },
   mixins: [mixins],
   data() {
     return {
@@ -111,6 +115,10 @@ export default {
   },
   methods: {
     finish() {
+      if (!this.timezone) {
+        this.notifyError("Please select a default agent timezone");
+        return;
+      }
       this.$q.loading.show();
       const data = {
         client: this.client,

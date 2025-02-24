@@ -1,8 +1,5 @@
 <template>
   <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
-  <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
-  </div>
   <div v-else>
     <q-table
       dense
@@ -514,6 +511,7 @@ export default {
         component: AutomatedTaskForm,
         componentProps: {
           parent: { agent: selectedAgent.value },
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();
@@ -528,6 +526,7 @@ export default {
         componentProps: {
           task: task,
           parent: { agent: selectedAgent.value },
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();

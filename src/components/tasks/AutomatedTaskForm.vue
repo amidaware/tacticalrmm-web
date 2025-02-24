@@ -34,6 +34,15 @@
                 hide-bottom-space
               />
             </q-card-section>
+            <q-card-section v-show="!isAgentTask">
+              Supported Platforms
+              <q-option-group
+                v-model="state.task_supported_platforms"
+                :options="plat_options"
+                type="checkbox"
+                inline
+              />
+            </q-card-section>
             <q-card-section>
               <q-checkbox
                 dense
@@ -158,7 +167,7 @@
                   v-model="command"
                   dense
                   filled
-                  class="col-7"
+                  class="col-5"
                 />
                 <q-input
                   v-if="actionType === 'cmd'"
@@ -171,12 +180,14 @@
                 />
                 <q-option-group
                   v-if="actionType === 'cmd'"
-                  class="col-2 q-pl-sm"
+                  class="col-4 q-pl-sm"
                   inline
                   v-model="shell"
                   :options="[
-                    { label: 'Batch', value: 'cmd' },
+                    { label: 'CMD', value: 'cmd' },
                     { label: 'Powershell', value: 'powershell' },
+                    { label: 'Bash', value: '/bin/bash' },
+                    { label: 'Custom', value: 'custom' },
                   ]"
                 />
                 <q-btn
@@ -186,10 +197,20 @@
                   flat
                   dense
                   icon="add"
+                  label="Add"
                   color="primary"
                 />
               </div>
             </q-form>
+            <div v-if="shell === 'custom'" class="col-5">
+              <q-input
+                v-model="custom_shell"
+                outlined
+                label="Custom shell"
+                stack-label
+                placeholder="/usr/bin/python3"
+              />
+            </div>
             <div class="text-subtitle2 q-pa-sm">
               Actions:
               <q-checkbox
@@ -295,16 +316,25 @@
                   class="col-6 q-pa-sm"
                   type="datetime-local"
                   dense
-                  label="Start time"
+                  :label="
+                    isPosix && state.task_type !== 'runonce'
+                      ? 'Run at'
+                      : 'Start time'
+                  "
                   stack-label
                   filled
                   v-model="state.run_time_date"
-                  hint="Agent timezone will be used"
+                  :hint="
+                    isPosix && state.task_type !== 'runonce'
+                      ? 'Agent timezone will be used. On Linux and macOS, the selected date is ignored—only the hour and minute are used.'
+                      : 'Agent timezone will be used'
+                  "
                   :rules="[(val) => !!val || '*Required']"
                 />
 
                 <!-- expires on input -->
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   type="datetime-local"
                   dense
@@ -333,7 +363,10 @@
               </q-card-section>
 
               <!-- daily options -->
-              <q-card-section v-if="state.task_type === 'daily'" class="row">
+              <q-card-section
+                v-if="!isPosix && state.task_type === 'daily'"
+                class="row"
+              >
                 <!-- daily interval -->
                 <q-input
                   :rules="[
@@ -360,6 +393,7 @@
               <q-card-section v-if="state.task_type === 'weekly'" class="row">
                 <!-- weekly interval -->
                 <q-input
+                  v-if="!isPosix"
                   :rules="[
                     (val) => !!val || '*Required',
                     (val) =>
@@ -602,8 +636,11 @@
                 "
                 class="row"
               >
-                <div class="col-12 text-h6">Advanced Settings</div>
+                <div v-if="!isPosix" class="col-12 text-h6">
+                  Advanced Settings (Windows only)
+                </div>
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
                   label="Repeat task every"
@@ -620,6 +657,7 @@
                 />
 
                 <q-input
+                  v-if="!isPosix"
                   :disable="!state.task_repetition_interval"
                   class="col-6 q-pa-sm"
                   dense
@@ -643,6 +681,7 @@
                 />
 
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="!state.task_repetition_interval"
                   class="col-6 q-pa-sm"
                   dense
@@ -652,6 +691,7 @@
                 <div class="col-6"></div>
 
                 <q-input
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
                   label="Random task delay"
@@ -668,6 +708,7 @@
                 />
                 <div class="col-6"></div>
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="!state.expire_date"
                   class="col-6 q-pa-sm"
                   dense
@@ -678,6 +719,7 @@
                 </q-checkbox>
                 <div class="col-6"></div>
                 <q-checkbox
+                  v-if="!isPosix"
                   :disable="state.task_type === 'runonce'"
                   class="col-6 q-pa-sm"
                   dense
@@ -688,6 +730,7 @@
                 <div class="col-6"></div>
 
                 <tactical-dropdown
+                  v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   label="Task instance policy"
                   :options="taskInstancePolicyOptions"
@@ -755,7 +798,7 @@
 
 <script>
 // composition imports
-import { ref, watch, onMounted, defineComponent } from "vue";
+import { computed, ref, watch, onMounted, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
@@ -843,6 +886,12 @@ const taskInstancePolicyOptions = [
   { label: "Stop Existing", value: 3 },
 ];
 
+const plat_options = [
+  { label: "Windows", value: "windows" },
+  { label: "Linux", value: "linux" },
+  { label: "macOS", value: "darwin" },
+];
+
 export default defineComponent({
   components: { TacticalDropdown, draggable },
   name: "AddAutomatedTask",
@@ -850,6 +899,7 @@ export default defineComponent({
   props: {
     parent: Object, // parent policy or agent for task
     task: Object, // only for editing
+    plat: String,
   },
   setup(props) {
     // setup quasar dialog
@@ -872,6 +922,10 @@ export default defineComponent({
 
     const { checkOptions, getCheckOptions } = useCheckDropdown(props.parent);
     const { customFieldOptions } = useCustomFieldDropdown({ onMount: true });
+
+    const isAgentTask = computed(() => {
+      return !!props.plat;
+    });
 
     // add task logic
     const task = props.task
@@ -901,11 +955,40 @@ export default defineComponent({
           alert_severity: "info",
           collector_all_output: false,
           continue_on_error: true,
+          task_supported_platforms: [],
         });
+
+    const isPosix = computed(() => {
+      return (
+        (!!props.plat && props.plat !== "windows") ||
+        task.value.task_supported_platforms?.includes("linux") ||
+        task.value.task_supported_platforms?.includes("darwin")
+      );
+    });
+
+    const task_supported_platforms = computed(() => {
+      // if editing, keep value from api
+      if (props.task) {
+        return props.task.task_supported_platforms;
+      }
+      // default for new tasks (policy tasks only)
+      if (!props.plat || !isPosix.value) {
+        return ["windows"];
+      } else if (props.plat === "linux") {
+        return ["linux"];
+      } else if (props.plat === "darwin") {
+        return ["darwin"];
+      }
+      return [];
+    });
+
+    // set the default, have to do it this way to avoid circular dependency issue
+    task.value.task_supported_platforms = task_supported_platforms.value;
 
     const actionType = ref("script");
     const command = ref("");
     const shell = ref("cmd");
+    const custom_shell = ref("");
     const monthlyType = ref("days");
     const collector = ref(false);
     const loading = ref(false);
@@ -960,10 +1043,16 @@ export default defineComponent({
           env_vars: defaultEnvVars.value,
         });
       } else if (actionType.value === "cmd") {
+        let tempShell = shell.value;
+        if (shell.value === "custom" && !!custom_shell.value) {
+          tempShell = custom_shell.value;
+        } else {
+          tempShell = shell.value;
+        }
         task.value.actions.push({
           type: "cmd",
           command: command.value,
-          shell: shell.value,
+          shell: tempShell,
           timeout: defaultTimeout.value,
         });
       }
@@ -1101,6 +1190,14 @@ export default defineComponent({
     const isValidStep3 = ref(true);
 
     function validateStep(form, stepper) {
+      if (
+        step.value === 1 &&
+        task.value.task_supported_platforms.length === 0
+      ) {
+        notifyError("There must be at least one supported platform");
+        return;
+      }
+
       if (step.value === 2) {
         if (task.value.actions.length > 0) {
           isValidStep2.value = true;
@@ -1138,6 +1235,7 @@ export default defineComponent({
       actionType,
       command,
       shell,
+      custom_shell,
       allMonthsCheckbox,
       allMonthDaysCheckbox,
       allWeekDaysCheckbox,
@@ -1151,6 +1249,8 @@ export default defineComponent({
       scriptOptions,
       checkOptions,
       customFieldOptions,
+      isPosix,
+      isAgentTask,
 
       // non-reactive data
       validateTimePeriod,
@@ -1163,6 +1263,7 @@ export default defineComponent({
       taskTypeOptions,
       taskInstancePolicyOptions,
       envVarsLabel,
+      plat_options,
 
       // methods
       submit,
