@@ -329,7 +329,12 @@
             formatDate(props.row.task_result.last_run)
           }}</q-td>
           <q-td v-else>Has not run yet</q-td>
-          <q-td>{{ props.row.schedule }}</q-td>
+          <q-td
+            >{{ truncateText(props.row.schedule, 70) }}
+            <q-tooltip v-if="props.row.schedule.length > 70">{{
+              props.row.schedule
+            }}</q-tooltip>
+          </q-td>
           <q-td>
             <span v-if="props.row.check_name">
               {{ truncateText(props.row.check_name, 40) }}
