@@ -1,8 +1,5 @@
 <template>
   <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
-  <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
-  </div>
   <div v-else>
     <q-table
       dense
@@ -332,7 +329,12 @@
             formatDate(props.row.task_result.last_run)
           }}</q-td>
           <q-td v-else>Has not run yet</q-td>
-          <q-td>{{ props.row.schedule }}</q-td>
+          <q-td
+            >{{ truncateText(props.row.schedule, 70) }}
+            <q-tooltip v-if="props.row.schedule.length > 70">{{
+              props.row.schedule
+            }}</q-tooltip>
+          </q-td>
           <q-td>
             <span v-if="props.row.check_name">
               {{ truncateText(props.row.check_name, 40) }}
@@ -514,6 +516,7 @@ export default {
         component: AutomatedTaskForm,
         componentProps: {
           parent: { agent: selectedAgent.value },
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();
@@ -528,6 +531,7 @@ export default {
         componentProps: {
           task: task,
           parent: { agent: selectedAgent.value },
+          plat: agentPlatform.value,
         },
       }).onOk(() => {
         getTasks();

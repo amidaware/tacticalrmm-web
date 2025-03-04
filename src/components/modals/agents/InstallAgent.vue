@@ -143,7 +143,7 @@
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
-              label="ARM 32 bit (Rasp Pi)"
+              label="ARM 32 bit"
               v-show="agentOS === 'linux'"
             />
           </div>

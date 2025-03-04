@@ -182,7 +182,7 @@
                 v-close-popup
                 @click="
                   notifyWarning(
-                    'Reporting feature requires a valid code signing token. Please check the docs for more info.',
+                    'Reporting feature requires a Tier 2 or higher sponsorship. Please check the docs for more info.',
                     10000,
                   )
                 "
