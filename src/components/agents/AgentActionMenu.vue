@@ -452,8 +452,7 @@ export default {
 
     function shutdown(agent) {
       $q.dialog({
-        title:
-          'Please type <code style="color:red">yes</code> in the box below to confirm shutdown.',
+        title: `Please type <code style="color:red">yes</code> in the box below to confirm shutdown of <span style="color:red">${agent.hostname}</span>.`,
         prompt: {
           model: "",
           type: "text",
@@ -527,8 +526,7 @@ export default {
 
     function deleteAgent(agent) {
       $q.dialog({
-        title:
-          'Please type <code style="color:red">yes</code> in the box below to confirm deletion.',
+        title: `Please type <code style="color:red">yes</code> in the box below to confirm deletion of <span style="color:red">${agent.hostname}</span>.`,
         prompt: {
           model: "",
           type: "text",
