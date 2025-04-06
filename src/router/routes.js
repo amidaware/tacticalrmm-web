@@ -47,6 +47,14 @@ const routes = [
     },
   },
   {
+    path: "/webvnc/:agent_id/:port",
+    name: "VNC",
+    component: () => import("@/views/WebVNC.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
     path: "/webterm",
     name: "WebTerm",
     component: () => import("@/views/WebTerminal.vue"),

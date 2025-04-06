@@ -21,6 +21,15 @@
         <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">
           <code>{{ info.data.cmd }}</code>
         </q-field>
+        <q-btn
+          size="md"
+          flat
+          round
+          icon="content_copy"
+          label="Copy to clipboard"
+          @click="copyValueToClip(info.data.cmd)"
+        >
+        </q-btn>
       </p>
       <q-expansion-item
         switch-toggle-side
@@ -102,10 +111,23 @@
 
 <script>
 import mixins from "@/mixins/mixins";
+import { notifySuccess } from "@/utils/notify";
+import { copyToClipboard } from "quasar";
 
 export default {
   name: "AgentDownload",
   mixins: [mixins],
   props: ["info"],
+  setup() {
+    function copyValueToClip(val) {
+      copyToClipboard(val).then(() => {
+        notifySuccess("Copied to clipboard");
+      });
+    }
+
+    return {
+      copyValueToClip,
+    };
+  },
 };
 </script>
