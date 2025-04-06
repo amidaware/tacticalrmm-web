@@ -18,6 +18,20 @@ export function runTakeControl(agent_id) {
   });
 }
 
+export function runWebVNC(agent_id, port) {
+  const url = router.resolve(`/webvnc/${agent_id}/${port}`).href;
+  openURL(url, null, {
+    popup: true,
+    scrollbars: false,
+    location: false,
+    status: false,
+    toolbar: false,
+    menubar: false,
+    width: 1600,
+    height: 900,
+  });
+}
+
 export function openAgentWindow(agent_id) {
   const url = router.resolve(`/agents/${agent_id}`).href;
   openURL(url, null, {
@@ -175,6 +189,15 @@ export async function fetchAgentMeshCentralURLs(agent_id, params = {}) {
     const { data } = await axios.get(`${baseUrl}/${agent_id}/meshcentral/`, {
       params: params,
     });
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function fetchAgentWebVNCUrl(agent_id, port) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/${agent_id}/${port}/webvnc/`);
     return data;
   } catch (e) {
     console.error(e);

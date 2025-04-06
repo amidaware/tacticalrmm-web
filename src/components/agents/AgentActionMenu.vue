@@ -28,6 +28,20 @@
       <q-item-section>Take Control</q-item-section>
     </q-item>
 
+    <!-- vnc -->
+    <q-item
+      clickable
+      v-ripple
+      v-close-popup
+      @click="launchWebVNC(agent.agent_id)"
+    >
+      <q-item-section side>
+        <q-icon size="xs" name="screen_share" />
+      </q-item-section>
+
+      <q-item-section>VNC</q-item-section>
+    </q-item>
+
     <q-item clickable v-ripple @click="getURLActions">
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
@@ -98,7 +112,7 @@
       @click="runRemoteBackground(agent.agent_id, agent.plat)"
     >
       <q-item-section side>
-        <q-icon size="xs" name="fas fa-cogs" />
+        <q-icon size="xs" name="terminal" />
       </q-item-section>
       <q-item-section>Remote Background</q-item-section>
     </q-item>
@@ -243,6 +257,7 @@ import {
   removeAgent,
   runRemoteBackground,
   runTakeControl,
+  runWebVNC,
   wakeUpWOL,
 } from "@/api/agents";
 import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
@@ -431,6 +446,22 @@ export default {
       }).onOk(refreshDashboard);
     }
 
+    function launchWebVNC(agent_id) {
+      $q.dialog({
+        title: "VNC Server Port",
+        message: "Enter the VNC server port:",
+        prompt: {
+          model: "5900",
+          type: "text",
+        },
+        cancel: true,
+        ok: { label: "Launch", color: "primary" },
+        persistent: true,
+      }).onOk((port) => {
+        runWebVNC(agent_id, port);
+      });
+    }
+
     function rebootNow(agent) {
       $q.dialog({
         title: "Are you sure?",
@@ -576,6 +607,7 @@ export default {
       showAgentRecovery,
       pingAgent,
       wakeUp,
+      launchWebVNC,
     };
   },
 };
