@@ -498,17 +498,24 @@ export default {
         return;
       }
 
-      loading.value = true;
-      try {
-        const result = await runTask(
-          task.id,
-          task.policy ? { agent_id: selectedAgent.value } : {},
-        );
-        notifySuccess(result);
-      } catch (e) {
-        console.error(e);
-      }
-      loading.value = false;
+      $q.dialog({
+        title: "Are you sure?",
+        message: `Run ${task.name} task`,
+        cancel: true,
+        persistent: true,
+      }).onOk(async () => {
+        loading.value = true;
+        try {
+          const result = await runTask(
+            task.id,
+            task.policy ? { agent_id: selectedAgent.value } : {},
+          );
+          notifySuccess(result);
+        } catch (e) {
+          console.error(e);
+        }
+        loading.value = false;
+      });
     }
 
     function showAddTask() {
