@@ -19,8 +19,8 @@ export default function (/* { store } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === "history"
-    ? createWebHistory
-    : createWebHashHistory;
+      ? createWebHistory
+      : createWebHashHistory;
 
   const Router = new createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -35,6 +35,7 @@ export default function (/* { store } */) {
 
     if (to.meta.requireAuth) {
       if (!auth.loggedIn) {
+        auth.next = to.fullPath;
         next({
           name: "Login",
         });
