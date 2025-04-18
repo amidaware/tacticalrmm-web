@@ -14,7 +14,7 @@
         Download the agent then run the following command from an elevated
         command prompt on the device you want to add.
       </p>
-      <p v-else-if="info.plat === 'darwin'" class="text-subtitle1">
+      <p v-else-if="info.plat === 'darwin' || info.plat === 'linux'" class="text-subtitle1">
         Run the following command from a terminal
       </p>
       <p>
@@ -32,6 +32,7 @@
         </q-btn>
       </p>
       <q-expansion-item
+        v-if="info.plat === 'darwin' || info.plat === 'windows'"
         switch-toggle-side
         header-class="text-primary"
         expand-separator
