@@ -27,8 +27,9 @@ if (!error) {
     if (auth.next) {
       router.push(auth.next);
       auth.next = null;
+    } else {
+      router.push({ name: "Dashboard" });
     }
-    router.push({ name: "Dashboard" });
   } else {
     router.push({ name: "Login" });
   }
