@@ -275,6 +275,8 @@ import SendCommand from "@/components/modals/agents/SendCommand.vue";
 import RunScript from "@/components/modals/agents/RunScript.vue";
 import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
 
+import DOMPurify from "dompurify";
+
 export default {
   name: "AgentActionMenu",
   components: {
@@ -482,8 +484,9 @@ export default {
     }
 
     function shutdown(agent) {
+      const clean = DOMPurify.sanitize(agent.hostname);
       $q.dialog({
-        title: `Please type <code style="color:red">yes</code> in the box below to confirm shutdown of <span style="color:red">${agent.hostname}</span>.`,
+        title: `Please type <code style="color:red">yes</code> in the box below to confirm shutdown of <span style="color:red">${clean}</span>.`,
         prompt: {
           model: "",
           type: "text",
@@ -556,8 +559,9 @@ export default {
     }
 
     function deleteAgent(agent) {
+      const clean = DOMPurify.sanitize(agent.hostname);
       $q.dialog({
-        title: `Please type <code style="color:red">yes</code> in the box below to confirm deletion of <span style="color:red">${agent.hostname}</span>.`,
+        title: `Please type <code style="color:red">yes</code> in the box below to confirm deletion of <span style="color:red">${clean}</span>.`,
         prompt: {
           model: "",
           type: "text",

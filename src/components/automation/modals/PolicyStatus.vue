@@ -160,6 +160,7 @@ import { computed } from "vue";
 import { useStore, mapState } from "vuex";
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import EventLogCheckOutput from "@/components/checks/EventLogCheckOutput.vue";
+import PreDialog from "@/components/ui/PreDialog.vue";
 
 export default {
   name: "PolicyStatus",
@@ -268,10 +269,12 @@ export default {
     },
     pingInfo(check) {
       this.$q.dialog({
-        title: check.readable_desc,
-        style: "width: 50vw; max-width: 60vw",
-        message: `<pre>${check.more_info}</pre>`,
-        html: true,
+        component: PreDialog,
+        componentProps: {
+          title: check.readable_desc,
+          dialogStyle: "width: 50vw; max-width: 60vw",
+          message: check.more_info,
+        },
       });
     },
     showEventInfo(data) {

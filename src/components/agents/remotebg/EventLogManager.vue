@@ -105,6 +105,7 @@ import { truncateText } from "@/utils/format";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
+import PreDialog from "@/components/ui/PreDialog.vue";
 
 // static data
 const columns = [
@@ -170,16 +171,18 @@ export default {
       events.value = await fetchAgentEventLog(
         props.agent_id,
         logType.value,
-        days.value
+        days.value,
       );
       loading.value = false;
     }
 
     function showEventMessage(message) {
       $q.dialog({
-        message: `<pre>${message}</pre>`,
-        html: true,
-        fullWidth: true,
+        component: PreDialog,
+        componentProps: {
+          dialogStyle: "width: 85vw; max-width: 90vw",
+          message: message,
+        },
       });
     }
 

@@ -101,8 +101,8 @@
                 <q-tooltip
                   v-if="syntax"
                   class="bg-white text-primary text-body1"
-                  v-html="formatScriptSyntax(syntax)"
-                />
+                  >{{ syntax }}</q-tooltip
+                >
               </q-btn>
             </template>
           </tactical-dropdown>
@@ -275,7 +275,6 @@ import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
-import { formatScriptSyntax } from "@/utils/format";
 import { cmdPlaceholder } from "@/composables/agents";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
@@ -483,7 +482,6 @@ export default defineComponent({
       cmdPlaceholder,
       supportsRunAsUser,
       openScriptURL,
-      formatScriptSyntax,
 
       // quasar dialog plugin
       dialogRef,

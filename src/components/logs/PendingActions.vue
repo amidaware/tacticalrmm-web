@@ -132,6 +132,7 @@ import {
 } from "@/api/logs";
 import { getNextAgentUpdateTime } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
+import PreDialog from "@/components/ui/PreDialog.vue";
 
 // static data
 const columns = [
@@ -212,11 +213,12 @@ export default {
 
     function showOutput(details) {
       $q.dialog({
-        title: "Pending Action Output Details",
-        style: "width: 75vw; max-width: 85vw; max-height: 65vh;",
-        class: "scroll",
-        message: `<pre>${details}</pre>`,
-        html: true,
+        component: PreDialog,
+        componentProps: {
+          title: "Pending Action Output Details",
+          dialogStyle: "width: 75vw; max-width: 85vw; max-height: 65vh;",
+          message: details,
+        },
       });
     }
 
