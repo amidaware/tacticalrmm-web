@@ -1,3 +1,5 @@
+import { useAuthStore } from "@/stores/auth";
+
 const routes = [
   {
     path: "/",
@@ -82,6 +84,10 @@ const routes = [
     path: "/expired",
     name: "SessionExpired",
     component: () => import("@/views/SessionExpired.vue"),
+    beforeEnter: (_, from) => {
+      const auth = useAuthStore();
+      auth.next = from.fullPath;
+    },
   },
   { path: "/:catchAll(.*)", component: () => import("@/views/NotFound.vue") },
 ];
