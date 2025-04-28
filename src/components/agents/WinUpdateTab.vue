@@ -202,6 +202,7 @@ import { truncateText } from "@/utils/format";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
+import WinUpdateDialog from "@/components/ui/WinUpdateDialog.vue";
 
 // static data
 const columns = [
@@ -317,21 +318,15 @@ export default {
     }
 
     function showUpdateDetails(update) {
-      const color = $q.dark.isActive ? "white" : "";
-      let support_urls = "";
-      update.more_info_urls.forEach((u) => {
-        support_urls += `<a style='color: ${color}' href='${u}' target='_blank'>${u}</a><br/>`;
-      });
-      let cats = update.categories.join(", ");
       $q.dialog({
-        title: update.title,
-        message:
-          `<b>Categories:</b> ${cats}<br/><br/>` +
-          "<b>Description</b><br/>" +
-          update.description.split(". ").join(".<br />") +
-          `<br/><br/><b>Support Urls</b><br/>${support_urls}`,
-        html: true,
-        fullWidth: true,
+        component: WinUpdateDialog,
+        componentProps: {
+          title: update.title,
+          dialogStyle: { width: "80vw", maxWidth: "85vw" },
+          categories: update.categories,
+          description: update.description,
+          supportUrls: update.more_info_urls,
+        },
       });
     }
 

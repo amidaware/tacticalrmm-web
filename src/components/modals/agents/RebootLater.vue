@@ -65,14 +65,12 @@ export default {
       try {
         const ret = await scheduleAgentReboot(
           props.agent.agent_id,
-          state.value
+          state.value,
         );
         $q.dialog({
           title: "Reboot pending",
           style: "width: 40vw",
-          message: `A reboot has been scheduled for <strong>${ret.time}</strong> on ${props.agent.hostname}.
-            <br />It can be cancelled from the Pending Actions menu until the scheduled time.`,
-          html: true,
+          message: `A reboot has been scheduled for ${ret.time} on ${props.agent.hostname}. It can be cancelled from the Pending Actions menu until the scheduled time.`,
         }).onDismiss(onDialogOK);
       } catch (e) {
         console.error(e);

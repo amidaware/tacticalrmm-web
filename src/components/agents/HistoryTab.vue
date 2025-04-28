@@ -74,6 +74,7 @@ import { fetchAgentHistory } from "@/api/agents";
 // ui imports
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
+import PreDialog from "@/components/ui/PreDialog.vue";
 
 // static data
 const columns = [
@@ -173,10 +174,12 @@ export default {
 
     function showCommandOutput(title, output) {
       $q.dialog({
-        title: title,
-        style: "width: 70vw; max-width: 80vw",
-        message: `<pre>${output}</pre>`,
-        html: true,
+        component: PreDialog,
+        componentProps: {
+          title: title,
+          dialogStyle: "width: 70vw; max-width: 80vw",
+          message: output,
+        },
       });
     }
 

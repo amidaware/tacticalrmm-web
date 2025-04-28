@@ -451,6 +451,7 @@ import ScriptCheck from "@/components/checks/ScriptCheck.vue";
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import EventLogCheckOutput from "@/components/checks/EventLogCheckOutput.vue";
 import CheckGraph from "@/components/graphs/CheckGraph.vue";
+import PreDialog from "@/components/ui/PreDialog.vue";
 
 // static data
 const columns = [
@@ -682,10 +683,12 @@ export default {
 
     function showPingInfo(check) {
       $q.dialog({
-        title: check.readable_desc,
-        style: "width: 50vw; max-width: 60vw",
-        message: `<pre>${check.check_result.more_info}</pre>`,
-        html: true,
+        component: PreDialog,
+        componentProps: {
+          title: check.readable_desc,
+          dialogStyle: "width: 50vw; max-width: 60vw",
+          message: check.check_result.more_info,
+        },
       });
     }
 

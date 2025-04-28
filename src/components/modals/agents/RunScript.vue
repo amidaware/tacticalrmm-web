@@ -59,8 +59,8 @@
                 <q-tooltip
                   v-if="syntax"
                   class="bg-white text-primary text-body1"
-                  v-html="formatScriptSyntax(syntax)"
-                />
+                  >{{ syntax }}</q-tooltip
+                >
               </q-btn>
             </template>
           </tactical-dropdown>
@@ -244,7 +244,6 @@ import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
-import { formatScriptSyntax } from "@/utils/format";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";

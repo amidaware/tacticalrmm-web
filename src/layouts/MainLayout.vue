@@ -21,12 +21,19 @@
       >
         <q-icon size="xl" name="warning" />
         <span
-          ><br />Your code signing token is no longer valid.<br /><br />
-          If you have downgraded or cancelled your sponsorship, please delete
-          your token from the Code Signing modal and refresh to get rid of this
-          banner.<br /><br />
-          For any issues or to renew your sponsorship please open a ticket at
-          support.amidaware.com<br /><br
+          ><br />Your license is currently inactive, usually due to a payment
+          issue.<br /><br />To restore access, please update your payment
+          method.<br /><br />
+          If you’ve intentionally cancelled your sponsorship, you can remove
+          your license key to stop seeing this message.<br /><br />
+          If you need help, please contact our support team at
+          <a
+            href="https://support.amidaware.com"
+            target="_blank"
+            rel="noopener"
+            class="text-primary"
+            >https://support.amidaware.com</a
+          ><br /><br
         /></span>
         <q-btn
           color="dark"

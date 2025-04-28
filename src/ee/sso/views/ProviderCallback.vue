@@ -24,7 +24,12 @@ const router = useRouter();
 const auth = useAuthStore();
 if (!error) {
   if (auth.loggedIn) {
-    router.push({ name: "Dashboard" });
+    if (auth.next) {
+      router.push(auth.next);
+      auth.next = null;
+    } else {
+      router.push({ name: "Dashboard" });
+    }
   } else {
     router.push({ name: "Login" });
   }

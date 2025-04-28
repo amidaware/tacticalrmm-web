@@ -326,15 +326,26 @@ export default {
         return;
       }
 
-      this.$q.loading.show();
-      this.$axios
-        .post(`/automation/tasks/${task.id}/run/`)
-        .then(() => {
-          this.$q.loading.hide();
-          this.notifySuccess("The task was initated on all affected agents");
+      this.$q
+        .dialog({
+          title: "Are you sure?",
+          message: `Run ${task.name} task`,
+          cancel: true,
+          persistent: true,
         })
-        .catch(() => {
-          this.$q.loading.hide();
+        .onOk(() => {
+          this.$q.loading.show();
+          this.$axios
+            .post(`/automation/tasks/${task.id}/run/`)
+            .then(() => {
+              this.$q.loading.hide();
+              this.notifySuccess(
+                "The task was initiated on all affected agents",
+              );
+            })
+            .catch(() => {
+              this.$q.loading.hide();
+            });
         });
     },
     deleteTask(task) {

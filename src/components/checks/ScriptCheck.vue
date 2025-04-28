@@ -79,6 +79,19 @@
           />
         </q-card-section>
         <q-card-section>
+          <tactical-dropdown
+            label="Success return codes (press Enter after typing each code)"
+            filled
+            v-model="state.success_return_codes"
+            use-input
+            multiple
+            hide-dropdown-icon
+            input-debounce="0"
+            new-value-mode="add-unique"
+            @new-value="validateRetcode"
+          />
+        </q-card-section>
+        <q-card-section>
           <q-input
             outlined
             dense
@@ -173,6 +186,7 @@ export default {
           fails_b4_alert: 1,
           info_return_codes: [],
           warning_return_codes: [],
+          success_return_codes: [],
           run_interval: 0,
         },
       });
