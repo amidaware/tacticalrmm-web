@@ -61,6 +61,20 @@
         </q-input>
         <export-table-btn :data="software" :columns="columns" />
       </template>
+
+      <template v-slot:body-cell-uninstall="props">
+        <td>
+          <q-btn
+            :disable="!props.row.uninstall"
+            label="Uninstall"
+            color="primary"
+            dense
+            class="q-ma-sm"
+            size="sm"
+            @click="openUninstallSoftware(props.row)"
+          />
+        </td>
+      </template>
     </q-table>
   </div>
 </template>
@@ -70,11 +84,16 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
-import { fetchAgentSoftware, refreshAgentSoftware } from "@/api/software";
+import {
+  fetchAgentSoftware,
+  refreshAgentSoftware,
+  uninstallAgentSoftware,
+} from "@/api/software";
 
 // ui imports
 import InstallSoftware from "@/components/software/InstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
+import { notifySuccess } from "@/utils/notify";
 
 // static data
 const columns = [
@@ -114,6 +133,13 @@ const columns = [
     align: "left",
     label: "Version",
     field: "version",
+    sortable: false,
+  },
+  {
+    name: "uninstall",
+    align: "left",
+    label: "",
+    field: "uninstall",
     sortable: false,
   },
 ];
@@ -165,6 +191,33 @@ export default {
       });
     }
 
+    function openUninstallSoftware(software) {
+      $q.dialog({
+        title: `Uninstalling ${software.name}`,
+        message: "Modify the uninstall string as needed to run silently",
+        prompt: {
+          model: software.uninstall,
+        },
+        color: "primary",
+        cancel: true,
+        ok: "Uninstall",
+        persistent: true,
+      }).onOk(async (uninstall) => {
+        console.log(uninstall);
+
+        try {
+          loading.value = true;
+          await uninstallAgentSoftware(selectedAgent.value, {
+            name: software.name,
+            command: uninstall,
+          });
+          notifySuccess("Uninstall command was sent successfully");
+        } finally {
+          loading.value = false;
+        }
+      });
+    }
+
     watch(selectedAgent, (newValue) => {
       if (newValue) {
         getSoftware();
@@ -191,6 +244,7 @@ export default {
       // methods
       refreshSoftware,
       showInstallSoftwareModal,
+      openUninstallSoftware,
     };
   },
 };
