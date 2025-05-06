@@ -8,12 +8,13 @@
       </q-btn>
     </q-bar>
     <q-separator />
-    <q-banner class="bg-info">
+    <q-banner class="bg-primary">
       <template v-slot:avatar>
         <q-icon name="info" />
       </template>
-      Agents will automatically self update at 35 min past the hour, every hour.
-      Use this tool to manually trigger an agent update cycle.
+      If agent auto update is enabled in Global Settings, agents will
+      automatically self update at 35 min past the hour, every hour. Use this
+      tool to manually trigger an agent update cycle.
     </q-banner>
     <q-card-section>
       Select Version
