@@ -462,7 +462,11 @@ export default {
         r.data.forEach((client) => {
           this.siteOptions.push({ category: client.name });
           client.sites.forEach((site) =>
-            this.siteOptions.push({ label: site.name, value: site.id }),
+            this.siteOptions.push({
+              label: site.name,
+              value: site.id,
+              cat: client.name,
+            }),
           );
         });
       });

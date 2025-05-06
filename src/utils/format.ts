@@ -176,7 +176,7 @@ export function formatAgentOptions(
         a.label.localeCompare(b.label),
       );
       options.push(
-        ...sortedAgents.map(({ label, value }) => ({ label, value })),
+        ...sortedAgents.map(({ label, value, cat }) => ({ label, value, cat })),
       );
     });
 
@@ -206,6 +206,7 @@ export function formatCustomFieldOptions(
         .map((custom_field) => ({
           label: custom_field.name,
           value: custom_field.id,
+          cat: cat,
         }));
 
       // Sort the filtered custom fields by their labels and add them to the options
