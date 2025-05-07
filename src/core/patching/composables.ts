@@ -1,12 +1,10 @@
 import { ref, onMounted, computed } from "vue";
-import { usePatchPolicyShared } from "./api";
-
-import type { PatchPolicy } from "./types";
+import { usePatchPolicyShared, usePatchScheduleShared } from "./api";
 
 export function usePatchPolicyDropdown() {
   const { patchPolicies, getPatchPolicies } = usePatchPolicyShared;
 
-  const patchPolicy = ref<PatchPolicy | undefined>();
+  const patchPolicy = ref<number | undefined>();
 
   const patchPolicyOptions = computed(() => {
     return patchPolicies.value.map((policy) => ({
@@ -20,5 +18,22 @@ export function usePatchPolicyDropdown() {
   return {
     patchPolicy,
     patchPolicyOptions,
+  };
+}
+
+export function usePatchScheduleDropdown() {
+  const { patchSchedules, getPatchSchedules } = usePatchScheduleShared;
+
+  const patchScheduleOptions = computed(() => {
+    return patchSchedules.value.map((schedule) => ({
+      label: schedule.name,
+      value: schedule.id,
+    }));
+  });
+
+  onMounted(getPatchSchedules);
+
+  return {
+    patchScheduleOptions,
   };
 }

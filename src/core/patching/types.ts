@@ -80,13 +80,19 @@ export interface PatchPolicy {
   id: number;
   name: string;
   description?: string;
-  scan_schedule: PatchSchedule;
-  install_schedule: PatchSchedule;
+  scan_schedule?: number;
+  install_schedule?: number;
+  reboot_schedule?: number;
   include_critical_updates: boolean;
   include_security_updates: boolean;
   include_optional_updates: boolean;
   include_preview_updates: boolean;
   include_hardware_updates: boolean;
+  critical_schedule?: number;
+  security_schedule?: number;
+  optional_schedule?: number;
+  preview_schedule?: number;
+  hardware_schedule?: number;
   max_deferral_days?: number;
   auto_reboot: boolean;
   notifications: PolicyNotification;
@@ -105,10 +111,26 @@ export interface PatchPolicy {
 }
 
 export interface PatchSchedule {
-  frequency: "daily" | "weekly" | "monthly";
-  time: string;
-  day_of_week?: string;
-  day_of_month?: number;
+  id: number;
+  name: string;
+  run_time_date: string;
+  run_time_bit_weekdays: number[];
+  monthly_months_of_year: number[];
+  monthly_days_of_month: number[];
+  monthly_weeks_of_month: number[];
+  task_type: "weekly" | "monthly";
+  monthly_type: "days" | "weeks";
+}
+
+export interface PatchScheduleAPI {
+  id: number;
+  name: string;
+  run_time_date: string;
+  run_time_bit_weekdays: number;
+  monthly_months_of_year: number;
+  monthly_days_of_month: number;
+  monthly_weeks_of_month: number;
+  task_type: "weekly" | "monthly" | "monthlydow";
 }
 
 export interface PolicyNotification {

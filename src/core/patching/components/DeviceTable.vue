@@ -8,36 +8,44 @@
     :rows-per-page-options="[0]"
     column-select
     filter-header
+    view-table-key="device-table"
     :loading="isLoading"
     selection="multiple"
     v-model:selected="selected"
     storage-key="patching-device-table"
   >
-    <template v-slot:top>
+    <template v-slot:top-buttons>
       <div class="q-gutter-sm">
-        <q-btn
-          label="Patch Scan"
-          outline
+        <q-btn-dropdown
+          label="Actions"
           no-caps
+          flat
           :disable="selected.length === 0"
-        />
-        <q-btn
-          label="Patch Install"
-          outline
-          no-caps
-          :disable="selected.length !== 1"
-        />
-        <q-btn
-          label="Patch Uninstall"
-          outline
-          no-caps
-          :disable="selected.length !== 1"
-        />
+        >
+          <q-list>
+            <q-item clickable v-close-popup :disable="selected.length === 0">
+              <q-item-section>
+                <q-item-label>Patch Scan</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup :disable="selected.length === 0">
+              <q-item-section>
+                <q-item-label>Patch Install</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup :disable="selected.length === 0">
+              <q-item-section>
+                <q-item-label>Patch Uninstall</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
 
         <q-btn
           label="Assign to Patch Policy"
-          outline
           no-caps
+          flat
           :disable="selected.length === 0"
         />
       </div>
@@ -92,7 +100,7 @@ import { onMounted, ref } from "vue";
 import { capitalize } from "@/utils/format";
 
 // ui
-import TacticalTable from "@/components/ui/TacticalTable.vue";
+import TacticalTable from "../../dashboard/ui/components/TacticalTable.vue";
 
 // types
 import { patchPlatformArray, Patch } from "../types";
@@ -374,6 +382,7 @@ const agentPatchData: AgentPatchTable[] = [
 const selected = ref<Patch[]>([]);
 const agents = ref([] as AgentPatchTable[]);
 const isLoading = ref(false);
+
 onMounted(() => {
   isLoading.value = true;
   useTimeoutFn(() => {

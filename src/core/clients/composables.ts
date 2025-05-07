@@ -1,13 +1,13 @@
 import { ref, onMounted, computed } from "vue";
 import { useClientShared } from "./api";
 
-import type { Client, Site } from "./types";
+import type { Client } from "./types";
 import type { Option } from "@/core/dashboard/types";
 
 export function useClientDropdown() {
   const { clients, getClients } = useClientShared;
 
-  const client = ref<Client | undefined>();
+  const client = ref<number | undefined>();
 
   const clientOptions = computed(() => {
     return clients.value.map((client) => ({
@@ -27,7 +27,7 @@ export function useClientDropdown() {
 export function useSiteDropdown() {
   const { clients, getClients } = useClientShared;
 
-  const site = ref<Site | undefined>();
+  const site = ref<number | undefined>();
 
   const siteOptions = computed(() => {
     return _formatSiteOptions(clients.value);

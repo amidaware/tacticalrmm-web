@@ -15,10 +15,11 @@
   >
     <template v-slot:top>
       <div class="q-gutter-sm">
-        <q-btn label="Add Policy" no-caps @click="openAddPolicyForm" />
+        <q-btn label="Add Policy" flat no-caps @click="openAddPolicyForm" />
         <q-btn-dropdown
           label="Manage Policy"
           no-caps
+          flat
           :disable="selected.length === 0"
         >
           <q-list>
@@ -43,6 +44,12 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
+        <q-btn
+          label="Patch Schedules"
+          no-caps
+          flat
+          @click="openPatchSchedulesTable"
+        />
       </div>
     </template>
 
@@ -124,9 +131,9 @@ import TacticalTable from "@/components/ui/TacticalTable.vue";
 import PatchPolicyForm from "./PatchPolicyForm.vue";
 import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
 import PatchPolicyApplied from "./PatchPolicyApplied.vue";
-
+import PatchScheduleTable from "./PatchScheduleTable.vue";
 // types
-import { PatchPolicy, PatchSchedule } from "../types";
+import { PatchPolicy /*, PatchSchedule*/ } from "../types";
 
 const columns = [
   {
@@ -145,32 +152,32 @@ const columns = [
     sortable: false,
     filterType: "text",
   },
-  {
-    name: "scan_schedule",
-    label: "Scan Schedule",
-    align: "left",
-    field: "scan_schedule",
-    sortable: false,
-    format: (val: PatchSchedule) =>
-      val.frequency === "daily"
-        ? "Daily at " + val.time
-        : val.frequency === "weekly"
-          ? `Weekly on ${val.day_of_week} at ${val.time}`
-          : `Monthly on ${val.day_of_month} at ${val.time}`,
-  },
-  {
-    name: "install_schedule",
-    label: "Install Schedule",
-    align: "left",
-    field: "install_schedule",
-    sortable: false,
-    format: (val: PatchSchedule) =>
-      val.frequency === "daily"
-        ? "Daily at " + val.time
-        : val.frequency === "weekly"
-          ? `Weekly on ${val.day_of_week} at ${val.time}`
-          : `Monthly on ${val.day_of_month} at ${val.time}`,
-  },
+  // {
+  //   name: "scan_schedule",
+  //   label: "Scan Schedule",
+  //   align: "left",
+  //   field: "scan_schedule",
+  //   sortable: false,
+  //   format: (val: PatchSchedule) =>
+  //     val.frequency === "daily"
+  //       ? "Daily at " + val.time
+  //       : val.frequency === "weekly"
+  //         ? `Weekly on ${val.day_of_week} at ${val.time}`
+  //         : `Monthly on ${val.day_of_month} at ${val.time}`,
+  // },
+  // {
+  //   name: "install_schedule",
+  //   label: "Install Schedule",
+  //   align: "left",
+  //   field: "install_schedule",
+  //   sortable: false,
+  //   format: (val: PatchSchedule) =>
+  //     val.frequency === "daily"
+  //       ? "Daily at " + val.time
+  //       : val.frequency === "weekly"
+  //         ? `Weekly on ${val.day_of_week} at ${val.time}`
+  //         : `Monthly on ${val.day_of_month} at ${val.time}`,
+  // },
   {
     name: "include_critical_updates",
     label: "Critical Updates",
@@ -283,6 +290,12 @@ function openPolicyApplied(patchPolicy: PatchPolicy) {
   $q.dialog({
     component: PatchPolicyApplied,
     componentProps: { patchPolicy },
+  });
+}
+
+function openPatchSchedulesTable() {
+  $q.dialog({
+    component: PatchScheduleTable,
   });
 }
 

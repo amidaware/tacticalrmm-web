@@ -1,9 +1,17 @@
 import { ref } from "vue";
 import { useTimeoutFn } from "@vueuse/shared";
+import { convertFromBitArray, convertToBitArray } from "@/utils/format";
+
 import axios from "axios";
 
 import { notifySuccess } from "@/utils/notify";
-import type { Patch, PatchStatusType, PatchPolicy } from "./types";
+import type {
+  Patch,
+  PatchStatusType,
+  PatchPolicy,
+  PatchSchedule,
+  PatchScheduleAPI,
+} from "./types";
 
 const baseUrl = "/patching";
 
@@ -249,16 +257,8 @@ const policyTestData = [
     id: 1,
     name: "Monthly Security Updates",
     description: "Policy to apply monthly security updates.",
-    scan_schedule: {
-      frequency: "monthly",
-      time: "02:00",
-      day_of_month: 15,
-    },
-    install_schedule: {
-      frequency: "monthly",
-      time: "02:00",
-      day_of_month: 15,
-    },
+    scan_schedule: undefined,
+    install_schedule: undefined,
     include_critical_updates: true,
     include_security_updates: true,
     include_optional_updates: false,
@@ -288,16 +288,8 @@ const policyTestData = [
     id: 2,
     name: "Weekly Maintenance",
     description: "Weekly patch maintenance policy.",
-    scan_schedule: {
-      frequency: "weekly",
-      time: "03:30",
-      day_of_week: "Sunday",
-    },
-    install_schedule: {
-      frequency: "weekly",
-      time: "03:30",
-      day_of_week: "Sunday",
-    },
+    scan_schedule: undefined,
+    install_schedule: undefined,
     include_critical_updates: true,
     include_security_updates: false,
     include_optional_updates: true,
@@ -451,3 +443,232 @@ export function usePatchPolicy() {
 }
 
 export const usePatchPolicyShared = usePatchPolicy();
+
+function processScheduleForAPI(schedule: PatchSchedule) {
+  const data = {
+    ...schedule,
+
+    run_time_bit_weekdays:
+      schedule.run_time_bit_weekdays.length > 0
+        ? convertFromBitArray(schedule.run_time_bit_weekdays)
+        : undefined,
+
+    monthly_months_of_year:
+      schedule.monthly_months_of_year.length > 0
+        ? convertFromBitArray(schedule.monthly_months_of_year)
+        : undefined,
+
+    monthly_days_of_month:
+      schedule.monthly_days_of_month.length > 0
+        ? convertFromBitArray(schedule.monthly_days_of_month)
+        : undefined,
+
+    monthly_weeks_of_month:
+      schedule.monthly_weeks_of_month.length > 0
+        ? convertFromBitArray(schedule.monthly_weeks_of_month)
+        : undefined,
+  } as PatchScheduleAPI;
+
+  // change task type if monthly day of week is set
+  if (schedule.task_type === "monthly" && schedule.monthly_type === "weeks") {
+    data.task_type = "monthlydow";
+  }
+
+  return data;
+}
+
+const testSchedules: PatchSchedule[] = [
+  {
+    id: 1,
+    name: "Daily Patch",
+    run_time_date: "02:00",
+    run_time_bit_weekdays: [4, 5],
+    monthly_months_of_year: [],
+    monthly_days_of_month: [],
+    monthly_weeks_of_month: [],
+    task_type: "weekly",
+    monthly_type: "days",
+  },
+  {
+    id: 2,
+    name: "Weekly Patch",
+    run_time_date: "03:00",
+    run_time_bit_weekdays: [1, 3, 5], // Monday, Wednesday, Friday
+    monthly_months_of_year: [],
+    monthly_days_of_month: [],
+    monthly_weeks_of_month: [],
+    task_type: "weekly",
+    monthly_type: "weeks",
+  },
+  {
+    id: 3,
+    name: "Monthly Patch (Days)",
+    run_time_date: "01:00",
+    run_time_bit_weekdays: [],
+    monthly_months_of_year: [1, 4, 7, 10], // Jan, Apr, Jul, Oct
+    monthly_days_of_month: [1, 15, 28],
+    monthly_weeks_of_month: [],
+    task_type: "monthly",
+    monthly_type: "days",
+  },
+  {
+    id: 4,
+    name: "Monthly Patch (Weeks)",
+    run_time_date: "04:00",
+    run_time_bit_weekdays: [],
+    monthly_months_of_year: [2, 5, 8, 11], // Feb, May, Aug, Nov
+    monthly_days_of_month: [],
+    monthly_weeks_of_month: [1, 3], // First and third week
+    task_type: "monthly",
+    monthly_type: "weeks",
+  },
+];
+
+export function usePatchSchedule() {
+  const patchSchedules = ref<PatchSchedule[]>([]);
+
+  const isLoading = ref(false);
+  const isError = ref(false);
+
+  function getPatchSchedules() {
+    isLoading.value = true;
+    isError.value = false;
+
+    if (!testMode) {
+      axios
+        .get(`${baseUrl}/`)
+        .then(({ data }) => {
+          data.map((schedule: PatchScheduleAPI) => {
+            const convertedData = {
+              ...schedule,
+              run_time_bit_weekdays: schedule.run_time_bit_weekdays
+                ? convertToBitArray(schedule.run_time_bit_weekdays)
+                : [],
+
+              monthly_months_of_year: schedule.monthly_months_of_year
+                ? convertToBitArray(schedule.monthly_months_of_year)
+                : [],
+
+              monthly_days_of_month: schedule.monthly_days_of_month
+                ? convertToBitArray(schedule.monthly_days_of_month)
+                : [],
+
+              monthly_weeks_of_month: schedule.monthly_weeks_of_month
+                ? convertToBitArray(schedule.monthly_weeks_of_month)
+                : [],
+            } as PatchSchedule;
+
+            // set task type if monthlydow is being used
+            if (schedule.task_type === "monthlydow") {
+              convertedData.task_type = "monthly";
+              convertedData.monthly_type = "weeks";
+            }
+          });
+
+          patchSchedules.value = data;
+        })
+        .catch(() => (isError.value = true))
+        .finally(() => (isLoading.value = false));
+    } else {
+      useTimeoutFn(() => {
+        patchSchedules.value = testSchedules;
+        isLoading.value = false;
+      }, 500);
+    }
+  }
+
+  function addPatchSchedule(patchSchedule: PatchSchedule) {
+    isLoading.value = true;
+    isError.value = false;
+
+    if (!testMode) {
+      axios
+        .post(`${baseUrl}/`, processScheduleForAPI(patchSchedule))
+        .then(({ data }: { data: PatchSchedule }) => {
+          patchSchedules.value.push(data);
+          notifySuccess("Patch schedule was added successfully.");
+        })
+        .catch(() => (isError.value = true))
+        .finally(() => (isLoading.value = false));
+    } else {
+      useTimeoutFn(() => {
+        patchSchedules.value.push(patchSchedule);
+        isLoading.value = false;
+        notifySuccess("Patch schedule was added successfully (test mode).");
+      }, 1000);
+    }
+  }
+
+  function editPatchSchedule(id: number, patchSchedule: PatchSchedule) {
+    isLoading.value = true;
+    isError.value = false;
+
+    if (!testMode) {
+      axios
+        .put(`${baseUrl}/${id}/`, processScheduleForAPI(patchSchedule))
+        .then(({ data }: { data: PatchSchedule }) => {
+          const index = patchSchedules.value.findIndex(
+            (schedule) => schedule.id === data.id,
+          );
+          if (index !== -1) {
+            patchSchedules.value[index] = data;
+          }
+          notifySuccess("Patch schedule was modified successfully.");
+        })
+        .catch(() => (isError.value = true))
+        .finally(() => (isLoading.value = false));
+    } else {
+      useTimeoutFn(() => {
+        const index = patchSchedules.value.findIndex(
+          (schedule) => schedule.id === patchSchedule.id,
+        );
+        if (index !== -1) {
+          patchSchedules.value[index] = {
+            ...patchSchedules.value[index],
+            ...patchSchedule,
+          };
+        }
+        isLoading.value = false;
+        notifySuccess("Patch schedule was modified successfully (test mode).");
+      }, 1000);
+    }
+  }
+
+  function deletePatchSchedule(id: number) {
+    isLoading.value = true;
+    isError.value = false;
+
+    if (!testMode) {
+      axios
+        .delete(`${baseUrl}/${id}/`)
+        .then(() => {
+          patchSchedules.value = patchSchedules.value.filter(
+            (schedule) => schedule.id !== id,
+          );
+          notifySuccess("Patch schedule successfully deleted.");
+        })
+        .catch(() => (isError.value = true))
+        .finally(() => (isLoading.value = false));
+    } else {
+      useTimeoutFn(() => {
+        patchSchedules.value = patchSchedules.value.filter(
+          (schedule) => schedule.id !== id,
+        );
+        isLoading.value = false;
+        notifySuccess("Patch schedule successfully deleted (test mode).");
+      }, 1000);
+    }
+  }
+
+  return {
+    patchSchedules,
+    isLoading,
+    isError,
+    getPatchSchedules,
+    addPatchSchedule,
+    editPatchSchedule,
+    deletePatchSchedule,
+  };
+}
+
+export const usePatchScheduleShared = usePatchSchedule();

@@ -74,102 +74,48 @@
             </div>
           </div>
           <div class="col-12 col-md-6">
-            <div class="text-subtitle1">Scan Schedule</div>
-            <div class="q-gutter-md">
+            <div class="text-subtitle1">Schedules</div>
+            <div class="q-col-gutter-md">
               <q-select
-                v-model="patchPolicy.scan_schedule.frequency"
-                label="Frequency"
-                :options="scheduleFrequencyOptions"
+                v-model="patchPolicy.scan_schedule"
+                :options="patchScheduleOptions"
+                label="Scan Schedule"
                 emit-value
+                map-options
                 filled
                 dense
+                clearable
               />
-              <q-input
-                v-model="patchPolicy.scan_schedule.time"
-                label="Time (HH:MM)"
-                :rules="[
-                  (val) =>
-                    /^[0-2]\\d:[0-5]\\d$/.test(val) ||
-                    'Invalid time format (HH:MM)',
-                ]"
-                hide-bottom-space
+
+              <q-select
+                v-model="patchPolicy.install_schedule"
+                :options="patchScheduleOptions"
+                label="Install Schedule"
+                emit-value
+                map-options
                 filled
                 dense
+                clearable
               />
-              <q-input
-                v-if="patchPolicy.scan_schedule.frequency === 'weekly'"
-                v-model="patchPolicy.scan_schedule.day_of_week"
-                label="Day of Week"
-                :rules="[
-                  (val) =>
-                    !!val || 'Day of week is required for weekly schedules',
-                ]"
-                hide-bottom-space
+
+              <q-select
+                v-model="patchPolicy.reboot_schedule"
+                :options="patchScheduleOptions"
+                label="Reboot Schedule"
+                emit-value
+                map-options
                 filled
                 dense
-              />
-              <q-input
-                v-else-if="patchPolicy.scan_schedule.frequency === 'monthly'"
-                v-model="patchPolicy.scan_schedule.day_of_month"
-                label="Day of Month"
-                type="number"
-                :rules="[
-                  (val) =>
-                    (val > 0 && val <= 31) ||
-                    'Day of month must be between 1 and 31',
-                ]"
-                hide-bottom-space
-                filled
-                dense
+                clearable
               />
             </div>
-            <div class="text-subtitle1 q-mt-md">Install Schedule</div>
-            <div class="q-gutter-md">
-              <q-select
-                v-model="patchPolicy.install_schedule.frequency"
-                label="Frequency"
-                :options="scheduleFrequencyOptions"
-                emit-value
-                filled
-                dense
-              />
-              <q-input
-                v-model="patchPolicy.install_schedule.time"
-                label="Time (HH:MM)"
-                :rules="[
-                  (val) =>
-                    /^[0-2]\\d:[0-5]\\d$/.test(val) ||
-                    'Invalid time format (HH:MM)',
-                ]"
-                filled
-                dense
-                hide-bottom-space
-              />
-              <q-input
-                v-if="patchPolicy.install_schedule.frequency === 'weekly'"
-                v-model="patchPolicy.install_schedule.day_of_week"
-                label="Day of Week"
-                :rules="[
-                  (val) =>
-                    !!val || 'Day of week is required for weekly schedules',
-                ]"
-                filled
-                dense
-              />
-              <q-input
-                v-else-if="patchPolicy.install_schedule.frequency === 'monthly'"
-                v-model="patchPolicy.install_schedule.day_of_month"
-                label="Day of Month"
-                type="number"
-                :rules="[
-                  (val) =>
-                    (val > 0 && val <= 31) ||
-                    'Day of month must be between 1 and 31',
-                ]"
-                filled
-                dense
-              />
-            </div>
+            <q-btn
+              class="q-mt-md"
+              label="Patch Classification Schedules"
+              no-caps
+              color="secondary"
+              @click="openPatchClassificationScheduleForm"
+            />
           </div>
         </div>
 
@@ -233,7 +179,7 @@
               </q-list>
             </div>
           </div>
-          <div class="col-12col-md-6" v-if="isEditMode">
+          <div class="col-12 col-md-6" v-if="isEditMode">
             <div class="text-subtitle1 q-mt-md">Actions</div>
             <div class="q-gutter-sm">
               <q-btn
@@ -269,16 +215,19 @@
 import { reactive, computed, ref } from "vue";
 import { useDialogPluginComponent, useQuasar, extend } from "quasar";
 import { usePatchPolicyShared } from "../api";
+import { usePatchScheduleDropdown } from "../composables";
 import { PatchPolicy } from "../types";
 
 // ui imports
 import PatchPolicyExclusionsForm from "./PatchPolicyExclusionsForm.vue";
 import PatchPolicyPatchForm from "./PatchPolicyPatchForm.vue";
+import PatchClassificationScheduleForm from "./PatchClassificationScheduleForm.vue";
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 const $q = useQuasar();
 
 const { addPatchPolicy, editPatchPolicy, isLoading } = usePatchPolicyShared;
+const { patchScheduleOptions } = usePatchScheduleDropdown();
 
 const props = defineProps<{
   patchPolicy?: PatchPolicy;
@@ -291,18 +240,8 @@ const patchPolicy = reactive<PatchPolicy>(
         id: 0,
         name: "",
         description: "",
-        scan_schedule: {
-          frequency: "daily",
-          time: "",
-          day_of_week: "",
-          day_of_month: undefined,
-        },
-        install_schedule: {
-          frequency: "daily",
-          time: "",
-          day_of_week: "",
-          day_of_month: undefined,
-        },
+        scan_schedule: undefined,
+        install_schedule: undefined,
         include_critical_updates: false,
         include_security_updates: false,
         include_optional_updates: false,
@@ -321,10 +260,11 @@ const patchPolicy = reactive<PatchPolicy>(
         excluded_clients: [],
         excluded_sites: [],
         excluded_agents: [],
+        applied_agents: [],
+        applied_clients: [],
+        applied_sites: [],
       },
 );
-
-const scheduleFrequencyOptions = ["daily", "weekly", "monthly"];
 
 const isEditMode = computed(() => !!props.patchPolicy);
 const recipientsInput = ref("");
@@ -353,6 +293,15 @@ function openPatchPolicyExclusionsForm() {
 function openPatchPolicyPatchForm() {
   $q.dialog({
     component: PatchPolicyPatchForm,
+    componentProps: {
+      patchPolicy,
+    },
+  });
+}
+
+function openPatchClassificationScheduleForm() {
+  $q.dialog({
+    component: PatchClassificationScheduleForm,
     componentProps: {
       patchPolicy,
     },

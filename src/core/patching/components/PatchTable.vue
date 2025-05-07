@@ -8,14 +8,17 @@
     :rows-per-page-options="[0]"
     column-select
     filter-header
+    view-table-key="patch-table"
+    :exclude-columns="patchPolicySelected ? [] : ['status']"
     :loading="isLoading"
     selection="multiple"
     v-model:selected="selected"
     storage-key="patching-patch-table"
   >
-    <template v-slot:top>
+    <template v-slot:top-buttons>
       <div class="q-gutter-sm">
         <q-btn-dropdown
+          v-if="patchPolicySelected"
           label="Change Status"
           no-caps
           :disable="selected.length === 0"
@@ -105,13 +108,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { usePatchShared } from "../api";
 import { capitalize } from "@/utils/format";
 
 // ui
-import TacticalTable from "@/components/ui/TacticalTable.vue";
+import TacticalTable from "../../dashboard/ui/components/TacticalTable.vue";
 
 // types
 import {
@@ -241,6 +245,10 @@ const { patches, getPatches, updatePatchStatus, isLoading } = usePatchShared;
 const selected = ref<Patch[]>([]);
 
 const $q = useQuasar();
+
+const route = useRoute();
+
+const patchPolicySelected = computed(() => !!route.query.patchPolicy);
 
 function openPatchPolicySelector(patches: Patch[]) {
   $q.dialog({

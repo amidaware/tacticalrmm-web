@@ -65,7 +65,6 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-//import { removeExtraOptionCategories } from "@/core/dashboard/utils";
 import { isLabeledOption, Option } from "@/core/dashboard/types";
 
 // Define component props with types.
