@@ -65,7 +65,6 @@
                     <div class="col-2"></div>
                     <tactical-dropdown
                       filterable
-                      clearable
                       outlined
                       dense
                       options-dense
