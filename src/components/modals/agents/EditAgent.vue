@@ -65,7 +65,6 @@
                     <div class="col-2"></div>
                     <tactical-dropdown
                       filterable
-                      clearable
                       outlined
                       dense
                       options-dense
@@ -462,7 +461,11 @@ export default {
         r.data.forEach((client) => {
           this.siteOptions.push({ category: client.name });
           client.sites.forEach((site) =>
-            this.siteOptions.push({ label: site.name, value: site.id }),
+            this.siteOptions.push({
+              label: site.name,
+              value: site.id,
+              cat: client.name,
+            }),
           );
         });
       });
