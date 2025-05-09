@@ -11,7 +11,7 @@
     :use-chips="multiple"
     :use-input="filterable"
     @[filterEvent]="filterFn"
-    :hide-selected="focused || filtered"
+    :hide-selected="!multiple && (focused || filtered)"
     @popup-show="focused = true"
     @popup-hide="focused = false"
     @input-value="
