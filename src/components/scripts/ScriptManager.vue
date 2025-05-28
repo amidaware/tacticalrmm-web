@@ -322,6 +322,7 @@
         virtual-scroll
         :rows-per-page-options="[0]"
         column-select
+        :storage-key="storageKey"
       >
         <template v-slot:header-cell-favorite="props">
           <q-th :props="props" auto-width>
@@ -576,24 +577,24 @@
 
 <script>
 // composition imports
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent, exportFile } from "quasar";
+import { useStorage } from "@vueuse/core";
 import {
   fetchScripts,
   editScript,
   downloadScript,
   removeScript,
 } from "@/api/scripts";
-import { capitalize } from "@/utils/format";
-import { truncateText } from "@/utils/format";
+import { capitalize, truncateText } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
 import ScriptUploadModal from "@/components/scripts/ScriptUploadModal.vue";
 import ScriptFormModal from "@/components/scripts/ScriptFormModal.vue";
 import ScriptSnippets from "@/components/scripts/ScriptSnippets.vue";
-import TacticalTable from "@/components/ui/TacticalTable.vue";
+import TacticalTable from "@/core/dashboard/ui/TacticalTable.vue";
 
 import trmmLogo from "@/assets/trmm_256.png";
 
@@ -754,9 +755,10 @@ export default {
     }
 
     // table and tree view setup
+    const storageKey = "scriptmanager_";
     const search = ref("");
-    const tableView = ref(true);
-    const expanded = ref([]);
+    const tableView = useStorage(`${storageKey}tableView`, true);
+    const expanded = useStorage(`${storageKey}expanded`, []);
     const loading = ref(false);
 
     const visibleScripts = computed(() => {
@@ -849,10 +851,6 @@ export default {
       }
     });
 
-    watch(tableView, () => {
-      expanded.value = [];
-    });
-
     // dialog open functions
     function viewCodeModal(script) {
       $q.dialog({
@@ -938,6 +936,7 @@ export default {
 
       // non-reactive data
       columns,
+      storageKey,
 
       // api methods
       getScripts,
