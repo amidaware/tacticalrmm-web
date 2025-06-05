@@ -54,9 +54,6 @@ For details, see: https://license.tacticalrmm.com/ee
                 clickable
                 @click="openNewReportTemplateForm('markdown')"
               >
-                <q-item-section avatar>
-                  <q-icon name="fa-brands fa-markdown" />
-                </q-item-section>
                 <q-item-section>
                   <q-item-label>Markdown Template</q-item-label>
                 </q-item-section>
@@ -67,9 +64,6 @@ For details, see: https://license.tacticalrmm.com/ee
                 clickable
                 @click="openNewReportTemplateForm('html')"
               >
-                <q-item-section avatar>
-                  <q-icon name="fa-brands fa-html5" />
-                </q-item-section>
                 <q-item-section>
                   <q-item-label>HTML Template</q-item-label>
                 </q-item-section>
@@ -80,9 +74,6 @@ For details, see: https://license.tacticalrmm.com/ee
                 clickable
                 @click="openNewReportTemplateForm('plaintext')"
               >
-                <q-item-section avatar>
-                  <q-icon name="fa-solid fa-file-csv" />
-                </q-item-section>
                 <q-item-section>
                   <q-item-label>Plain Text Template</q-item-label>
                 </q-item-section>
@@ -91,9 +82,6 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-separator />
 
               <q-item clickable v-close-popup @click="importReportTemplate">
-                <q-item-section avatar>
-                  <q-icon name="fa-solid fa-file-import" />
-                </q-item-section>
                 <q-item-section>
                   <q-item-label>Import Report Template</q-item-label>
                 </q-item-section>
@@ -103,7 +91,6 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             label="Base Templates"
-            icon="fa-regular fa-file-code"
             no-caps
             dense
             flat
@@ -112,7 +99,6 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             label="Report Assets"
-            icon="fa-regular fa-folder-closed"
             no-caps
             dense
             flat
@@ -121,16 +107,30 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             label="Data Queries"
-            icon="fa-solid fa-database"
             no-caps
             dense
             flat
             @click="openDataQueries"
           />
           <q-btn
+            @click="openReportSchedules"
+            class="q-ml-sm"
+            label="Report Schedules"
+            no-caps
+            dense
+            flat
+          />
+          <q-btn
+            @click="openReportHistory"
+            class="q-ml-sm"
+            label="Report Run History"
+            no-caps
+            dense
+            flat
+          />
+          <q-btn
             class="q-ml-sm"
             label="Shared Templates"
-            icon="fa-solid fa-share"
             no-caps
             dense
             flat
@@ -318,6 +318,8 @@ import ReportHTMLTemplateTable from "./ReportHTMLTemplateTable.vue";
 import ReportDataQueryTable from "./ReportDataQueryTable.vue";
 import ReportTemplateImport from "./ReportTemplateImport.vue";
 import SharedTemplatesImport from "./SharedTemplatesImport.vue";
+import ReportScheduleTable from "./ReportScheduleTable.vue";
+import ReportHistoryTable from "./ReportHistoryTable.vue";
 
 // type imports
 import type { ReportTemplate } from "../types/reporting";
@@ -400,6 +402,18 @@ function openDataQueries() {
 function openHTMLTemplates() {
   $q.dialog({
     component: ReportHTMLTemplateTable,
+  });
+}
+
+function openReportSchedules() {
+  $q.dialog({
+    component: ReportScheduleTable,
+  });
+}
+
+function openReportHistory() {
+  $q.dialog({
+    component: ReportHistoryTable,
   });
 }
 

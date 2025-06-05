@@ -21,6 +21,7 @@ For details, see: https://license.tacticalrmm.com/ee
         'min-width': '100%',
         'background-color': 'white',
       }"
+      id="report-iframe"
     ></iframe>
   </div>
 </template>

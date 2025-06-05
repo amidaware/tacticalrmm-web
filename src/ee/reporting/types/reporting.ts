@@ -71,3 +71,26 @@ export interface SharedTemplate {
   name: string;
   url: string;
 }
+
+export interface ReportSchedule {
+  id: number;
+  name: string;
+  enabled: boolean;
+  report_template?: number;
+  report_template_name?: string;
+  format: ReportFormat;
+  schedule?: number;
+  email_recipients: string[];
+  no_email: boolean;
+  last_run?: string;
+}
+
+export interface ReportHistory {
+  id: number;
+  run_by: string;
+  report_template: number;
+  report_template_name: string;
+  report_template_type: ReportTemplateType;
+  error_data?: string;
+  date_created: string;
+}
