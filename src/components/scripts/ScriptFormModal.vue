@@ -207,7 +207,7 @@
             >
               <q-tooltip anchor="top middle" self="bottom middle" transition-show="fade" transition-hide="fade">
                 <div>
-                  <strong>Runs on Tactical's Linux Server.</strong><br>
+                  <strong>Runs on Tactical RMM local Linux Server.</strong><br>
                   Only available interpreters or frameworks will be used.<br>
                   <em>Example:</em> PowerShell scripts require PowerShell to be installed on the system.
                 </div>
