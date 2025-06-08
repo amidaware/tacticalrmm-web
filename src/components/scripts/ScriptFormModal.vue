@@ -169,7 +169,7 @@
       </div>
       <q-card-actions>
         <tactical-dropdown
-          style="width: 450px"
+          style="width: 550px"
           dense
           :loading="agentLoading"
           filled
