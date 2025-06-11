@@ -93,7 +93,6 @@
                   <div class="col-2"></div>
                   <tactical-dropdown
                     filterable
-                    clearable
                     outlined
                     dense
                     options-dense
@@ -886,10 +885,6 @@ export default {
       this.settings.sms_alert_recipients = removed;
     },
     editSettings() {
-      if (!this.settings.default_time_zone) {
-        this.notifyError("Please select a default agent timezone");
-        return;
-      }
       this.$q.loading.show();
       delete this.settings.all_timezones;
       this.$axios
