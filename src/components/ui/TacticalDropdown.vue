@@ -11,6 +11,16 @@
     :use-chips="multiple"
     :use-input="filterable"
     @[filterEvent]="filterFn"
+    :hide-selected="!multiple && (focused || filtered)"
+    @popup-show="focused = true"
+    @popup-hide="focused = false"
+    @input-value="
+      (value) => (value === '' ? (filtered = false) : (filtered = true))
+    "
+    @blur="
+      filtered = false;
+      focused = false;
+    "
     v-bind="$attrs"
   >
     <template v-for="(_, slot) in $slots" v-slot:[slot]="scope">
@@ -80,10 +90,7 @@ export default {
 
     function filterFn(val, update) {
       update(() => {
-        if (val === "") {
-          filtered.value = false;
-        } else {
-          filtered.value = true;
+        if (val !== "") {
           const needle = val.toLowerCase();
 
           if (!props.mapOptions)
@@ -104,11 +111,14 @@ export default {
       return props.filterable ? "filter" : null;
     });
 
+    const focused = ref(false);
+
     return {
       filtered,
       filteredOptions,
       filterFn,
       filterEvent,
+      focused,
     };
   },
 };
