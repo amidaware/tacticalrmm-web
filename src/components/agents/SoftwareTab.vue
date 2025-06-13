@@ -65,11 +65,10 @@
       <template v-slot:body-cell-uninstall="props">
         <td>
           <q-btn
-            :disable="!props.row.uninstall"
+            v-if="props.row.uninstall"
             label="Uninstall"
             color="primary"
             dense
-            class="q-ma-sm"
             size="sm"
             @click="openUninstallSoftware(props.row)"
           />
@@ -171,7 +170,7 @@ export default {
 
     async function getSoftware() {
       loading.value = true;
-      software.value = await fetchAgentSoftware(selectedAgent.value);
+      software.value = (await fetchAgentSoftware(selectedAgent.value)) || [];
       loading.value = false;
     }
 
@@ -194,10 +193,15 @@ export default {
     function openUninstallSoftware(software) {
       $q.dialog({
         title: `Uninstalling ${software.name}`,
-        message: "Modify the uninstall string as needed to run silently",
+        message: "Modify the uninstall string as needed",
         prompt: {
-          model: software.uninstall,
+          model:
+            software.uninstall +
+            (software.uninstall.toLowerCase().includes("msiexec")
+              ? " /qn /norestart"
+              : ""),
         },
+        style: "width: 50vw; max-width: 50vw",
         color: "primary",
         cancel: true,
         ok: "Uninstall",
@@ -209,9 +213,11 @@ export default {
           loading.value = true;
           await uninstallAgentSoftware(selectedAgent.value, {
             name: software.name,
-            command: uninstall,
+            command: uninstall, // use user supplied value, not the one from db. to prevent db injection attack
           });
           notifySuccess("Uninstall command was sent successfully");
+        } catch (e) {
+          console.error(e);
         } finally {
           loading.value = false;
         }
