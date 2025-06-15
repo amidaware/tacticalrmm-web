@@ -9,9 +9,6 @@ export type ReportTemplateType = "markdown" | "html" | "plaintext";
 export type ReportFormat = "pdf" | "html" | "plaintext";
 
 export interface ReportDependencies {
-  client?: number;
-  site?: number;
-  agent?: string;
   [x: string]: string | number;
 }
 
@@ -83,6 +80,7 @@ export interface ReportSchedule {
   email_recipients: string[];
   no_email: boolean;
   last_run?: string;
+  dependencies: ReportDependencies;
 }
 
 export interface ReportHistory {

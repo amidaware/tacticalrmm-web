@@ -79,10 +79,15 @@
                   clickable
                   @click="openEditSchedule(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="edit" />
-                  </q-item-section>
                   <q-item-section>Edit</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-close-popup
+                  clickable
+                  @click="openCloneSchedule(props.row)"
+                >
+                  <q-item-section>Clone</q-item-section>
                 </q-item>
 
                 <q-item
@@ -90,9 +95,6 @@
                   clickable
                   @click="deleteSchedule(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="delete" />
-                  </q-item-section>
                   <q-item-section>Delete</q-item-section>
                 </q-item>
 
@@ -103,14 +105,16 @@
               </q-list>
             </q-menu>
 
-            <td>{{ props.row.name }}</td>
-            <td>{{ props.row.enabled }}</td>
-            <td>{{ props.row.report_template_name }}</td>
-            <td>{{ props.row.format }}</td>
-            <td>{{ props.row.schedule_name }}</td>
-            <td>{{ props.row.email_recipients }}</td>
-            <td>{{ props.row.no_email }}</td>
-            <td>{{ props.row.last_run }}</td>
+            <td key="name">{{ props.row.name }}</td>
+            <td key="enabled">{{ props.row.enabled }}</td>
+            <td key="report_template_name">
+              {{ props.row.report_template_name }}
+            </td>
+            <td key="format">{{ props.row.format }}</td>
+            <td key="schedule_name">{{ props.row.schedule_name }}</td>
+            <td key="email_recipients">{{ props.row.email_recipients }}</td>
+            <td key="no_email">{{ props.row.no_email }}</td>
+            <td key="last_run">{{ props.row.last_run }}</td>
           </q-tr>
         </template>
       </q-table>
@@ -212,6 +216,15 @@ function openEditSchedule(schedule: ReportSchedule) {
   $q.dialog({
     component: ReportScheduleForm,
     componentProps: { schedule },
+  });
+}
+
+function openCloneSchedule(schedule: ReportSchedule) {
+  $q.dialog({
+    component: ReportScheduleForm,
+    componentProps: {
+      schedule: { ...schedule, name: `${schedule.name} Copy` },
+    },
   });
 }
 

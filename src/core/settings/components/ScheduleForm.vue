@@ -30,7 +30,6 @@
         />
       </q-card-section>
 
-      <!-- task start/expire time fields -->
       <q-card-section>
         <!-- start time input -->
         <q-input
@@ -279,6 +278,7 @@ import type { Schedule } from "../types";
 
 // static data
 const taskTypeOptions = [
+  { label: "Daily", value: "daily" },
   { label: "Weekly", value: "weekly" },
   { label: "Monthly", value: "monthly" },
 ];
@@ -347,7 +347,7 @@ const schedule = reactive<Schedule>(
         monthly_months_of_year: [] as number[],
         monthly_days_of_month: [] as number[],
         monthly_weeks_of_month: [] as number[],
-        schedule_type: "weekly",
+        schedule_type: "daily",
         monthly_type: "days",
       },
 );

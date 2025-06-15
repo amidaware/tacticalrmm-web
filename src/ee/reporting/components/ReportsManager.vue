@@ -166,9 +166,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditReportTemplateForm(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="edit" />
-                  </q-item-section>
                   <q-item-section>Edit</q-item-section>
                 </q-item>
 
@@ -177,9 +174,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="cloneTemplate(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="content_copy" />
-                  </q-item-section>
                   <q-item-section>Clone</q-item-section>
                 </q-item>
 
@@ -192,9 +186,6 @@ For details, see: https://license.tacticalrmm.com/ee
                     openReport(props.row.id, 'pdf', props.row.depends_on, {})
                   "
                 >
-                  <q-item-section side>
-                    <q-icon name="mdi-file-pdf-box" />
-                  </q-item-section>
                   <q-item-section>Open PDF Report</q-item-section>
                 </q-item>
 
@@ -210,13 +201,6 @@ For details, see: https://license.tacticalrmm.com/ee
                     )
                   "
                 >
-                  <q-item-section side>
-                    <q-icon
-                      :name="
-                        props.row.type !== 'plaintext' ? 'code' : 'description'
-                      "
-                    />
-                  </q-item-section>
                   <q-item-section
                     >Open
                     {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
@@ -231,9 +215,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="downloadReport(props.row, 'pdf', {})"
                 >
-                  <q-item-section side>
-                    <q-icon name="mdi-download" />
-                  </q-item-section>
                   <q-item-section>Download PDF Report</q-item-section>
                 </q-item>
 
@@ -248,9 +229,6 @@ For details, see: https://license.tacticalrmm.com/ee
                     )
                   "
                 >
-                  <q-item-section side>
-                    <q-icon name="mdi-download" />
-                  </q-item-section>
                   <q-item-section
                     >Download
                     {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
@@ -263,11 +241,18 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  @click="scheduleReport(props.row)"
+                >
+                  <q-item-section>Schedule Report</q-item-section>
+                </q-item>
+
+                <q-separator />
+
+                <q-item
+                  v-close-popup
+                  clickable
                   @click="exportReport(props.row.id)"
                 >
-                  <q-item-section side>
-                    <q-icon name="mdi-export" />
-                  </q-item-section>
                   <q-item-section>Export</q-item-section>
                 </q-item>
 
@@ -278,9 +263,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteTemplate(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="delete" />
-                  </q-item-section>
                   <q-item-section>Delete</q-item-section>
                 </q-item>
 
@@ -320,6 +302,7 @@ import ReportTemplateImport from "./ReportTemplateImport.vue";
 import SharedTemplatesImport from "./SharedTemplatesImport.vue";
 import ReportScheduleTable from "./ReportScheduleTable.vue";
 import ReportHistoryTable from "./ReportHistoryTable.vue";
+import ReportScheduleForm from "./ReportScheduleForm.vue";
 
 // type imports
 import type { ReportTemplate } from "../types/reporting";
@@ -414,6 +397,15 @@ function openReportSchedules() {
 function openReportHistory() {
   $q.dialog({
     component: ReportHistoryTable,
+  });
+}
+
+function scheduleReport(template: ReportTemplate) {
+  $q.dialog({
+    component: ReportScheduleForm,
+    componentProps: {
+      template,
+    },
   });
 }
 

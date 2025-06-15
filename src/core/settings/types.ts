@@ -6,6 +6,6 @@ export interface Schedule {
   monthly_months_of_year: number[];
   monthly_days_of_month: number[];
   monthly_weeks_of_month: number[];
-  schedule_type: "weekly" | "monthly";
+  schedule_type: "daily" | "weekly" | "monthly";
   monthly_type: "days" | "weeks";
 }
