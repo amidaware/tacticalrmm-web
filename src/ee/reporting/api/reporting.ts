@@ -642,6 +642,25 @@ export function useReportingSchedules() {
       });
   }
 
+  function runReportSchedule(id: number) {
+    isLoading.value = true;
+    isError.value = false;
+
+    axios
+      .post(`${baseUrl}/schedules/${id}/run/`)
+      .then(() => {
+        notifySuccess(
+          "Report Schedule was run. Check the Report History for the status.",
+        );
+      })
+      .catch(() => {
+        isError.value = true;
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  }
+
   return {
     reportSchedules,
     isLoading,
@@ -650,6 +669,7 @@ export function useReportingSchedules() {
     addReportSchedule,
     editReportSchedule,
     deleteReportSchedule,
+    runReportSchedule,
   };
 }
 

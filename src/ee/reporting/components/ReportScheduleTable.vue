@@ -74,6 +74,12 @@
             <!-- Context Menu -->
             <q-menu context-menu>
               <q-list dense style="min-width: 200px">
+                <q-item v-close-popup clickable @click="runSchedule(props.row)">
+                  <q-item-section>Run Scheduled Report</q-item-section>
+                </q-item>
+
+                <q-separator />
+
                 <q-item
                   v-close-popup
                   clickable
@@ -201,8 +207,13 @@ defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide } = useDialogPluginComponent();
 const $q = useQuasar();
 
-const { reportSchedules, isLoading, getReportSchedules, deleteReportSchedule } =
-  useSharedReportSchedules;
+const {
+  reportSchedules,
+  isLoading,
+  getReportSchedules,
+  runReportSchedule,
+  deleteReportSchedule,
+} = useSharedReportSchedules;
 
 const search = ref("");
 
@@ -226,6 +237,10 @@ function openCloneSchedule(schedule: ReportSchedule) {
       schedule: { ...schedule, name: `${schedule.name} Copy` },
     },
   });
+}
+
+function runSchedule(schedule: ReportSchedule) {
+  runReportSchedule(schedule.id);
 }
 
 function deleteSchedule(schedule: ReportSchedule) {

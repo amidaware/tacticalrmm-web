@@ -79,9 +79,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditHTMLTemplate(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="edit" />
-                  </q-item-section>
                   <q-item-section>Edit</q-item-section>
                 </q-item>
 
@@ -90,9 +87,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="cloneHTMLTemplate(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="content_copy" />
-                  </q-item-section>
                   <q-item-section>Clone</q-item-section>
                 </q-item>
 
@@ -101,9 +95,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteHTMLTemplate(props.row)"
                 >
-                  <q-item-section side>
-                    <q-icon name="delete" />
-                  </q-item-section>
                   <q-item-section>Delete</q-item-section>
                 </q-item>
 
