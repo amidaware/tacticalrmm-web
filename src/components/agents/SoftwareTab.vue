@@ -207,8 +207,6 @@ export default {
         ok: "Uninstall",
         persistent: true,
       }).onOk(async (uninstall) => {
-        console.log(uninstall);
-
         try {
           loading.value = true;
           await uninstallAgentSoftware(selectedAgent.value, {
