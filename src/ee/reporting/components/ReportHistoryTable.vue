@@ -61,6 +61,10 @@ For details, see: https://license.tacticalrmm.com/ee
           </q-input>
         </template>
 
+        <template #header-cell-error_data>
+          <q-th auto-width></q-th>
+        </template>
+
         <template #body="props">
           <q-tr :props="props">
             <q-menu context-menu>
@@ -174,9 +178,19 @@ For details, see: https://license.tacticalrmm.com/ee
               </q-list>
             </q-menu>
 
-            <td>{{ props.row.report_template_name }}</td>
-            <td>{{ props.row.report_template_type }}</td>
-            <td>{{ formatDate(props.row.date_created) }}</td>
+            <q-td>{{ props.row.report_template_name }}</q-td>
+            <q-td>
+              <q-icon
+                v-if="props.row.error_data"
+                class="cursor-pointer"
+                name="warning"
+                color="negative"
+                size="sm"
+                @click="openErrorMessage(props.row.error_data)"
+              ></q-icon>
+            </q-td>
+            <q-td>{{ props.row.report_template_type }}</q-td>
+            <q-td>{{ formatDate(props.row.date_created) }}</q-td>
           </q-tr>
         </template>
       </q-table>
@@ -196,6 +210,13 @@ const columns: QTableColumn[] = [
     name: "report_template_name",
     label: "Template",
     field: "report_template_name",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "error_data",
+    label: "",
+    field: "error_data",
     align: "left",
     sortable: true,
   },
@@ -245,5 +266,11 @@ function deleteHistory(entry: ReportHistory) {
   });
 }
 
+function openErrorMessage(msg: string) {
+  $q.dialog({
+    message: msg,
+    color: "primary",
+  });
+}
 onMounted(getReportHistory);
 </script>
