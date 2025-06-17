@@ -111,16 +111,9 @@
               </q-list>
             </q-menu>
 
-            <td key="name">{{ props.row.name }}</td>
-            <td key="enabled">{{ props.row.enabled }}</td>
-            <td key="report_template_name">
-              {{ props.row.report_template_name }}
-            </td>
-            <td key="format">{{ props.row.format }}</td>
-            <td key="schedule_name">{{ props.row.schedule_name }}</td>
-            <td key="email_recipients">{{ props.row.email_recipients }}</td>
-            <td key="no_email">{{ props.row.no_email }}</td>
-            <td key="last_run">{{ props.row.last_run }}</td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.value }}
+            </q-td>
           </q-tr>
         </template>
       </q-table>
@@ -131,7 +124,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
-import { formatDate } from "@/utils/format";
+import { formatDate, capitalize } from "@/utils/format";
 import { useSharedReportSchedules } from "../api/reporting";
 import ReportScheduleForm from "./ReportScheduleForm.vue";
 import type { ReportSchedule } from "../types/reporting";
@@ -150,7 +143,7 @@ const columns: QTableColumn[] = [
     field: "enabled",
     align: "left",
     sortable: true,
-    format: (row: ReportSchedule) => (row.enabled ? "Yes" : "No"),
+    format: (val: boolean) => (val ? "Yes" : "No"),
   },
   {
     name: "report_template_name",
@@ -165,7 +158,7 @@ const columns: QTableColumn[] = [
     field: "format",
     align: "left",
     sortable: true,
-    format: (row: ReportSchedule) => row.format.toUpperCase(),
+    format: (val: string) => capitalize(val),
   },
   {
     name: "schedule_name",
@@ -180,15 +173,15 @@ const columns: QTableColumn[] = [
     field: "email_recipients",
     align: "left",
     sortable: false,
-    format: (row: ReportSchedule) => row.email_recipients.join(", "),
+    format: (val: string[]) => val.join(", "),
   },
   {
     name: "no_email",
-    label: "Don't Email",
+    label: "Send Email",
     field: "no_email",
     align: "center",
     sortable: true,
-    format: (row: ReportSchedule) => (row.no_email ? "Yes" : "No"),
+    format: (val: boolean) => (!val ? "Yes" : "No"),
   },
   {
     name: "last_run",
@@ -196,8 +189,7 @@ const columns: QTableColumn[] = [
     field: "last_run",
     align: "center",
     sortable: true,
-    format: (row: ReportSchedule) =>
-      row.last_run ? formatDate(row.last_run) : "Never",
+    format: (val: string) => (val ? formatDate(val) : "Never"),
   },
 ];
 
@@ -235,6 +227,7 @@ function openCloneSchedule(schedule: ReportSchedule) {
     component: ReportScheduleForm,
     componentProps: {
       schedule: { ...schedule, name: `${schedule.name} Copy` },
+      clone: true,
     },
   });
 }
@@ -245,9 +238,10 @@ function runSchedule(schedule: ReportSchedule) {
 
 function deleteSchedule(schedule: ReportSchedule) {
   $q.dialog({
-    title: `Delete Schedule: ${schedule.id}?`,
+    title: `Delete Schedule ${schedule.name}?`,
     message: "This action cannot be undone.",
     cancel: true,
+    color: "primary",
     ok: { label: "Delete", color: "negative" },
   }).onOk(() => {
     deleteReportSchedule(schedule.id);

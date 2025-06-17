@@ -61,7 +61,7 @@ For details, see: https://license.tacticalrmm.com/ee
           </q-input>
         </template>
 
-        <template #header-cell-error_data>
+        <template #header-cell-report_template_name>
           <q-th auto-width></q-th>
         </template>
 
@@ -178,19 +178,22 @@ For details, see: https://license.tacticalrmm.com/ee
               </q-list>
             </q-menu>
 
-            <q-td>{{ props.row.report_template_name }}</q-td>
-            <q-td>
-              <q-icon
-                v-if="props.row.error_data"
-                class="cursor-pointer"
-                name="warning"
-                color="negative"
-                size="sm"
-                @click="openErrorMessage(props.row.error_data)"
-              ></q-icon>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <template v-if="col.name === 'error_data'">
+                <q-icon
+                  v-if="props.row.error_data"
+                  class="cursor-pointer"
+                  name="warning"
+                  color="negative"
+                  size="sm"
+                  @click="openErrorMessage(props.row.error_data)"
+                ></q-icon>
+              </template>
+
+              <template v-else>
+                {{ col.value }}
+              </template>
             </q-td>
-            <q-td>{{ props.row.report_template_type }}</q-td>
-            <q-td>{{ formatDate(props.row.date_created) }}</q-td>
           </q-tr>
         </template>
       </q-table>
@@ -201,7 +204,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
-import { formatDate } from "@/utils/format";
+import { formatDate, capitalize } from "@/utils/format";
 import { useSharedReportHistory } from "../api/reporting";
 import type { ReportHistory } from "../types/reporting";
 
@@ -226,6 +229,7 @@ const columns: QTableColumn[] = [
     field: "report_template_type",
     align: "left",
     sortable: true,
+    format: (val: string) => capitalize(val),
   },
   {
     name: "date_created",
@@ -233,6 +237,7 @@ const columns: QTableColumn[] = [
     field: "date_created",
     align: "left",
     sortable: true,
+    format: (val: string) => formatDate(val),
   },
 ];
 
@@ -256,7 +261,7 @@ const search = ref("");
 // Confirm and delete
 function deleteHistory(entry: ReportHistory) {
   $q.dialog({
-    title: `Delete History ID: ${entry.id}?`,
+    title: `Delete History for ${entry.report_template_name}?`,
     message: "This will remove the history entry permanently.",
     color: "primary",
     cancel: true,

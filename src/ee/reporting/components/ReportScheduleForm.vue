@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        {{ localSchedule.id ? "Edit" : "Add" }} Report Schedule
+        {{ !clone && localSchedule ? "Edit" : "Add" }} Report Schedule
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -32,13 +32,16 @@
           filled
           map-options
           emit-value
+          options-dense
           :rules="[(val: number) => !!val || '*Required']"
         >
           <template #after v-if="hasDependencies">
             <q-btn
-              size="sm"
-              :icon="dependenciesNeeded ? 'warning' : undefined"
-              :color="dependenciesNeeded ? 'warning' : 'primary'"
+              flat
+              dense
+              no-caps
+              :icon="!areDependenciesMet ? 'warning' : undefined"
+              :color="!areDependenciesMet ? 'warning' : 'primary'"
               label="Dependencies"
               @click="openDependenciesForm"
             />
@@ -63,16 +66,30 @@
           label="Schedule"
           map-options
           emit-value
+          options-dense
           dense
           filled
           :rules="[(val) => !!val || '*Required']"
-        />
+        >
+          <template #after>
+            <q-btn
+              @click="openCoreScheduleForm"
+              color="primary"
+              flat
+              no-caps
+              dense
+              >Create new Schedule</q-btn
+            >
+          </template>
+        </q-select>
 
         <div class="row">
           <div class="col-9">Email recipients</div>
           <div class="col-3">
             <q-btn
-              size="sm"
+              no-caps
+              dense
+              flat
               icon="fas fa-plus"
               color="primary"
               label="Add email"
@@ -101,7 +118,10 @@
             </q-list>
             <q-list v-else>
               <q-item-section>
-                <q-item-label>No recipients</q-item-label>
+                <q-item-label
+                  >No recipients. Will use recipients in global
+                  settings.</q-item-label
+                >
               </q-item-section>
             </q-list>
           </div>
@@ -110,6 +130,7 @@
         <q-checkbox
           v-model="localSchedule.no_email"
           label="Do not send any emails"
+          class="q-pt-md"
           dense
         />
       </q-card-section>
@@ -131,7 +152,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, unref, reactive, computed } from "vue";
-import { useQuasar, useDialogPluginComponent } from "quasar";
+import { useQuasar, useDialogPluginComponent, extend } from "quasar";
 import { until } from "@vueuse/shared";
 import {
   useSharedReportSchedules,
@@ -141,6 +162,7 @@ import { useReportTemplateDropdown } from "../composables";
 import { useScheduleDropdown } from "@/core/settings/composables";
 import { isValidEmail } from "@/utils/validation";
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
+import ScheduleForm from "@/core/settings/components/ScheduleForm.vue";
 
 import type {
   ReportSchedule,
@@ -152,7 +174,7 @@ import { notifyWarning } from "@/utils/notify";
 
 const props = defineProps<{
   schedule?: ReportSchedule;
-  template?: ReportTemplate;
+  clone?: boolean;
 }>();
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -175,12 +197,12 @@ const formatOptions: { label: string; value: ReportFormat }[] = [
 
 const localSchedule = reactive<ReportSchedule>(
   props.schedule
-    ? { ...props.schedule }
+    ? extend(true, {}, props.schedule)
     : {
         id: 0,
-        name: `${props.template?.name} Schedule` || "",
+        name: "",
         enabled: true,
-        report_template: props.template?.id || undefined,
+        report_template: undefined,
         format: "html",
         schedule: undefined,
         email_recipients: [],
@@ -191,18 +213,23 @@ const localSchedule = reactive<ReportSchedule>(
 
 const selectedTemplate = ref<ReportTemplate | null>(null);
 
-const dependenciesNeeded = ref(false);
+const areDependenciesMet = computed(() => {
+  const required = selectedTemplate.value?.depends_on;
+
+  if (!required || required.length === 0) {
+    return true;
+  }
+
+  return required.every((key) => localSchedule.dependencies[key] != null);
+});
 
 // set selected template if editing the form
-if (props.schedule) {
-  const template = reportTemplates.value.find((t) => t.id === localSchedule.id);
+if (props.schedule && props.schedule.report_template) {
+  const template = reportTemplates.value.find(
+    (t) => t.id === props.schedule?.report_template,
+  );
   if (template?.depends_on && template.depends_on.length > 0) {
     selectedTemplate.value = template;
-
-    // check if dependencies are needed
-    template.depends_on?.forEach((d) => {
-      if (!localSchedule.dependencies[d]) dependenciesNeeded.value = true;
-    });
   }
 }
 
@@ -221,22 +248,11 @@ watch(
 
     if (newValue) {
       const template = reportTemplates.value.find((t) => t.id === newValue);
-      if (template?.depends_on && template.depends_on.length > 0)
+      if (template?.depends_on && template.depends_on.length > 0) {
         selectedTemplate.value = template;
+      }
     }
   },
-);
-
-watch(
-  () => localSchedule.dependencies,
-  (newValue) => {
-    if (selectedTemplate.value)
-      selectedTemplate.value?.depends_on?.forEach((d) => {
-        if (!newValue[d]) dependenciesNeeded.value = true;
-      });
-    dependenciesNeeded.value = false;
-  },
-  { deep: true },
 );
 
 function openDependenciesForm() {
@@ -248,6 +264,12 @@ function openDependenciesForm() {
     },
   }).onOk((data: ReportDependencies) => {
     localSchedule.dependencies = unref(data);
+  });
+}
+
+function openCoreScheduleForm() {
+  $q.dialog({
+    component: ScheduleForm,
   });
 }
 
@@ -274,11 +296,12 @@ function removeEmail(email: string) {
 
 async function submit() {
   // make sure dependencies are set
-  if (dependenciesNeeded.value) {
-    notifyWarning("Dependencies need to be set");
+  if (!areDependenciesMet.value) {
+    notifyWarning("All required dependencies must be set before saving.");
+    return;
   }
 
-  if (props.schedule) {
+  if (!props.clone && props.schedule) {
     editReportSchedule(props.schedule.id, localSchedule);
   } else {
     addReportSchedule(localSchedule);
