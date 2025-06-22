@@ -7,262 +7,277 @@
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
 
-      <q-card-section>
-        <!-- start time input -->
-        <q-input
-          v-model="schedule.name"
-          class="q-pa-sm"
-          dense
-          label="Name"
-          filled
-          :rules="[(val) => !!val || '*Required']"
-        />
-      </q-card-section>
+      <q-form @submit.prevent="submit">
+        <q-card-section>
+          <!-- start time input -->
+          <q-input
+            v-model="localSchedule.name"
+            class="q-pa-sm"
+            dense
+            label="Name"
+            filled
+            :rules="[(val) => !!val || '*Required']"
+          />
+        </q-card-section>
 
-      <q-card-section>
-        <q-option-group
-          v-model="schedule.schedule_type"
-          class="q-pa-sm"
-          label="Task run type"
-          :options="taskTypeOptions"
-          dense
-          inline
-        />
-      </q-card-section>
+        <q-card-section>
+          <q-option-group
+            v-model="localSchedule.schedule_type"
+            class="q-pa-sm"
+            label="Task run type"
+            :options="taskTypeOptions"
+            dense
+            inline
+          />
+        </q-card-section>
 
-      <q-card-section>
-        <!-- start time input -->
-        <q-input
-          class="q-pa-sm"
-          type="time"
-          dense
-          label="Hour:Minute"
-          stack-label
-          filled
-          v-model="schedule.run_time"
-          hint="Agent or global timezone will be used."
-          :rules="[(val) => !!val || '*Required']"
-        />
-      </q-card-section>
+        <q-card-section>
+          <!-- start time input -->
+          <q-input
+            class="q-pa-sm"
+            type="time"
+            dense
+            label="Hour:Minute"
+            stack-label
+            filled
+            v-model="localSchedule.run_time"
+            hint="Agent or global timezone will be used."
+            :rules="[(val) => !!val || '*Required']"
+          />
+        </q-card-section>
 
-      <!-- weekly options -->
-      <q-card-section v-if="schedule.schedule_type === 'weekly'">
-        <!-- day of week input -->
-        Run on Days:
-        <q-option-group
-          :rules="[(val: number[]) => val.length > 0 || '*Required']"
-          inline
-          dense
-          :options="dayOfWeekOptions"
-          type="checkbox"
-          v-model="schedule.run_time_weekdays"
-        />
-      </q-card-section>
+        <!-- weekly options -->
+        <q-card-section v-if="localSchedule.schedule_type === 'weekly'">
+          <!-- day of week input -->
+          Run on Days:
+          <span v-if="dayOfWeekValidationError" class="text-negative"
+            >*Required</span
+          >
+          <q-option-group
+            inline
+            dense
+            :options="dayOfWeekOptions"
+            type="checkbox"
+            v-model="localSchedule.run_time_weekdays"
+          />
+        </q-card-section>
 
-      <!-- monthly options -->
-      <q-card-section v-if="schedule.schedule_type === 'monthly'" class="row">
-        <!-- type of monthly schedule -->
-        <q-option-group
-          class="col-12 q-pa-sm"
-          v-model="schedule.monthly_type"
-          inline
-          :options="[
-            { label: 'On Days', value: 'days' },
-            { label: 'On Weeks', value: 'weeks' },
-          ]"
-        />
-
-        <!-- month select input -->
-        <q-select
-          :rules="[(val) => val.length > 0 || '*Required']"
-          class="col-4 q-pa-sm"
-          filled
-          dense
-          options-dense
-          v-model="schedule.monthly_months_of_year"
-          :options="monthOptions"
-          label="Run on Months"
-          multiple
-          emit-value
-          map-options
+        <!-- monthly options -->
+        <q-card-section
+          v-if="localSchedule.schedule_type === 'monthly'"
+          class="row"
         >
-          <template v-slot:before-options>
-            <q-item>
-              <q-item-section>
-                <q-item-label>All months</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  v-model="allMonthsCheckbox"
-                  @update:model-value="toggleMonths"
-                />
-              </q-item-section>
-            </q-item>
-          </template>
+          <!-- type of monthly schedule -->
+          <q-option-group
+            class="col-12 q-pa-sm"
+            v-model="localSchedule.monthly_type"
+            inline
+            :options="[
+              { label: 'On Days', value: 'days' },
+              { label: 'On Weeks', value: 'weeks' },
+            ]"
+          />
 
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
-              <q-item-section>
-                <q-item-label v-html="opt.label" />
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  :model-value="selected"
-                  @update:model-value="
-                    toggleOption(opt);
-                    allMonthsCheckbox = false;
-                  "
-                />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+          <!-- month select input -->
+          <q-select
+            :rules="[(val) => val.length > 0 || '*Required']"
+            class="col-4 q-pa-sm"
+            filled
+            dense
+            options-dense
+            v-model="localSchedule.monthly_months_of_year"
+            :options="monthOptions"
+            label="Run on Months"
+            multiple
+            emit-value
+            map-options
+          >
+            <template v-slot:before-options>
+              <q-item>
+                <q-item-section>
+                  <q-item-label>All months</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    v-model="allMonthsCheckbox"
+                    @update:model-value="toggleMonths"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
 
-        <!-- days of month select input -->
-        <q-select
-          v-if="schedule.monthly_type === 'days'"
-          :rules="[(val) => val.length > 0 || '*Required']"
-          class="col-4 q-pa-sm"
-          filled
-          dense
-          options-dense
-          v-model="schedule.monthly_days_of_month"
-          :options="dayOfMonthOptions"
-          label="Run on Days"
-          multiple
-          emit-value
-          map-options
-        >
-          <template v-slot:before-options>
-            <q-item>
-              <q-item-section>
-                <q-item-label>All days</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  v-model="allMonthDaysCheckbox"
-                  @update:model-value="toggleMonthDays"
-                />
-              </q-item-section>
-            </q-item>
-          </template>
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps">
+                <q-item-section>
+                  <q-item-label v-html="opt.label" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    :model-value="selected"
+                    @update:model-value="
+                      toggleOption(opt);
+                      allMonthsCheckbox = false;
+                    "
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
 
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
-              <q-item-section>
-                <q-item-label v-html="opt.label" />
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  :model-value="selected"
-                  @update:model-value="
-                    toggleOption(opt);
-                    allMonthDaysCheckbox = false;
-                  "
-                />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+          <!-- days of month select input -->
+          <q-select
+            v-if="localSchedule.monthly_type === 'days'"
+            :rules="[(val) => val.length > 0 || '*Required']"
+            class="col-4 q-pa-sm"
+            filled
+            dense
+            options-dense
+            v-model="localSchedule.monthly_days_of_month"
+            :options="dayOfMonthOptions"
+            label="Run on Days"
+            multiple
+            emit-value
+            map-options
+          >
+            <template v-slot:before-options>
+              <q-item>
+                <q-item-section>
+                  <q-item-label>All days</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    v-model="allMonthDaysCheckbox"
+                    @update:model-value="toggleMonthDays"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
 
-        <div v-if="schedule.monthly_type === 'days'" class="col-4"></div>
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps">
+                <q-item-section>
+                  <q-item-label v-html="opt.label" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    :model-value="selected"
+                    @update:model-value="
+                      toggleOption(opt);
+                      allMonthDaysCheckbox = false;
+                    "
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
 
-        <!-- week of month select input -->
-        <q-select
-          v-if="schedule.monthly_type === 'weeks'"
-          :rules="[(val) => val.length > 0 || '*Required']"
-          class="col-4 q-pa-sm"
-          filled
-          dense
-          options-dense
-          v-model="schedule.monthly_weeks_of_month"
-          :options="weekOptions"
-          label="Run on weeks"
-          multiple
-          emit-value
-          map-options
-        >
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
-              <q-item-section>
-                <q-item-label v-html="opt.label" />
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  :model-value="selected"
-                  @update:model-value="toggleOption(opt)"
-                />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+          <div v-if="localSchedule.monthly_type === 'days'" class="col-4"></div>
 
-        <!-- day of week select input -->
-        <q-select
-          v-if="schedule.monthly_type === 'weeks'"
-          :rules="[(val) => val.length > 0 || '*Required']"
-          class="col-4 q-pa-sm"
-          filled
-          dense
-          options-dense
-          v-model="schedule.run_time_weekdays"
-          :options="dayOfWeekOptions"
-          label="Run on days"
-          multiple
-          emit-value
-          map-options
-        >
-          <template v-slot:before-options>
-            <q-item>
-              <q-item-section>
-                <q-item-label>All days</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  v-model="allWeekDaysCheckbox"
-                  @update:model-value="toggleWeekDays"
-                />
-              </q-item-section>
-            </q-item>
-          </template>
+          <!-- week of month select input -->
+          <q-select
+            v-if="localSchedule.monthly_type === 'weeks'"
+            :rules="[(val) => val.length > 0 || '*Required']"
+            class="col-4 q-pa-sm"
+            filled
+            dense
+            options-dense
+            v-model="localSchedule.monthly_weeks_of_month"
+            :options="weekOptions"
+            label="Run on weeks"
+            multiple
+            emit-value
+            map-options
+          >
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps">
+                <q-item-section>
+                  <q-item-label v-html="opt.label" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    :model-value="selected"
+                    @update:model-value="toggleOption(opt)"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
 
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
-              <q-item-section>
-                <q-item-label v-html="opt.label" />
-              </q-item-section>
-              <q-item-section side>
-                <q-checkbox
-                  dense
-                  :model-value="selected"
-                  @update:model-value="
-                    toggleOption(opt);
-                    allWeekDaysCheckbox = false;
-                  "
-                />
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </q-card-section>
+          <!-- day of week select input -->
+          <q-select
+            v-if="localSchedule.monthly_type === 'weeks'"
+            :rules="[(val) => val.length > 0 || '*Required']"
+            class="col-4 q-pa-sm"
+            filled
+            dense
+            options-dense
+            v-model="localSchedule.run_time_weekdays"
+            :options="dayOfWeekOptions"
+            label="Run on days"
+            multiple
+            emit-value
+            map-options
+          >
+            <template v-slot:before-options>
+              <q-item>
+                <q-item-section>
+                  <q-item-label>All days</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    v-model="allWeekDaysCheckbox"
+                    @update:model-value="toggleWeekDays"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
 
-      <q-card-actions align="right">
-        <q-btn dense flat label="Cancel" v-close-popup />
-        <q-btn
-          :loading="isLoading"
-          dense
-          flat
-          label="Save"
-          color="primary"
-          @click="submit"
-        />
-      </q-card-actions>
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps">
+                <q-item-section>
+                  <q-item-label v-html="opt.label" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-checkbox
+                    dense
+                    :model-value="selected"
+                    @update:model-value="
+                      toggleOption(opt);
+                      allWeekDaysCheckbox = false;
+                    "
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn
+            :loading="isLoading"
+            dense
+            flat
+            label="Save"
+            color="primary"
+            type="submit"
+          />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -336,7 +351,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 const { addSchedule, editSchedule, isLoading, isError } = useScheduleShared;
 
-const schedule = reactive<Schedule>(
+const localSchedule = reactive<Schedule>(
   props.schedule
     ? Object.assign({}, props.schedule)
     : {
@@ -355,29 +370,45 @@ const schedule = reactive<Schedule>(
 // if all months is selected or cleared it will either clear the monthly_months_of_year array or add all options to it.
 const allMonthsCheckbox = ref(false);
 function toggleMonths() {
-  schedule.monthly_months_of_year = allMonthsCheckbox.value
+  localSchedule.monthly_months_of_year = allMonthsCheckbox.value
     ? monthOptions.map((month) => month.value)
     : [];
 }
 
 const allMonthDaysCheckbox = ref(false);
 function toggleMonthDays() {
-  schedule.monthly_days_of_month = allMonthDaysCheckbox.value
+  localSchedule.monthly_days_of_month = allMonthDaysCheckbox.value
     ? dayOfMonthOptions.map((day) => day.value)
     : [];
 }
 
 const allWeekDaysCheckbox = ref(false);
 function toggleWeekDays() {
-  schedule.run_time_weekdays = allWeekDaysCheckbox.value
+  localSchedule.run_time_weekdays = allWeekDaysCheckbox.value
     ? dayOfWeekOptions.map((day) => day.value)
     : [];
 }
 
+const dayOfWeekValidationError = ref(false);
+watch(
+  () => localSchedule.run_time_weekdays,
+  () => {
+    dayOfWeekValidationError.value = false;
+  },
+);
 async function submit() {
+  // manually validate option-group since it doesn't have builtin rules
+  if (
+    localSchedule.schedule_type == "weekly" &&
+    localSchedule.run_time_weekdays.length === 0
+  ) {
+    dayOfWeekValidationError.value = true;
+    return;
+  }
+
   props.schedule
-    ? editSchedule(props.schedule.id, schedule)
-    : addSchedule(schedule);
+    ? editSchedule(props.schedule.id, localSchedule)
+    : addSchedule(localSchedule);
 
   await until(isLoading).not.toBeTruthy();
   if (isError.value) return;
@@ -386,12 +417,12 @@ async function submit() {
 }
 
 watch(
-  () => schedule.schedule_type,
+  () => localSchedule.schedule_type,
   () => {
-    schedule.run_time_weekdays = [];
-    schedule.monthly_months_of_year = [];
-    schedule.monthly_days_of_month = [];
-    schedule.monthly_weeks_of_month = [];
+    localSchedule.run_time_weekdays = [];
+    localSchedule.monthly_months_of_year = [];
+    localSchedule.monthly_days_of_month = [];
+    localSchedule.monthly_weeks_of_month = [];
   },
 );
 </script>

@@ -276,9 +276,13 @@ For details, see: https://license.tacticalrmm.com/ee
 
             <!-- rows -->
             <td>{{ props.row.name }}</td>
-            <td>{{ props.row.type }}</td>
+            <td>{{ capitalize(props.row.type) }}</td>
             <td>
-              {{ props.row.depends_on.length > 0 ? props.row.depends_on : "" }}
+              {{
+                props.row.depends_on.length > 0
+                  ? props.row.depends_on.join(", ")
+                  : ""
+              }}
             </td>
           </q-tr>
         </template>
@@ -292,6 +296,7 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
+import { capitalize } from "@/utils/format";
 
 // ui imports
 import ReportTemplateForm from "./ReportTemplateForm.vue";
@@ -404,7 +409,7 @@ function scheduleReport(template: ReportTemplate) {
   $q.dialog({
     component: ReportScheduleForm,
     componentProps: {
-      template,
+      reportTemplate: template.id,
     },
   });
 }

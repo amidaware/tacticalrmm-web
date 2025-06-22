@@ -1,151 +1,158 @@
+<!--
+Copyright (c) 2023-present Amidaware Inc.
+This file is subject to the EE License Agreement.
+For details, see: https://license.tacticalrmm.com/ee
+-->
+
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        {{ !clone && localSchedule ? "Edit" : "Add" }} Report Schedule
+        {{ schedule && !clone ? "Edit" : "Add" }} Report Schedule
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
 
-      <q-card-section class="q-pa-md">
-        <q-input
-          v-model="localSchedule.name"
-          label="Name"
-          dense
-          filled
-          :rules="[(val: string) => !!val || '*Required']"
-        />
+      <q-form @submit.prevent="submit">
+        <q-card-section class="q-pa-md">
+          <q-input
+            v-model="localSchedule.name"
+            label="Name"
+            dense
+            filled
+            :rules="[(val: string) => !!val || '*Required']"
+          />
 
-        <q-toggle
-          v-model="localSchedule.enabled"
-          label="Enabled"
-          dense
-          dense-toggle
-          class="q-mb-sm"
-        />
+          <q-toggle
+            v-model="localSchedule.enabled"
+            label="Enabled"
+            dense
+            dense-toggle
+            class="q-mb-sm"
+          />
 
-        <q-select
-          v-model="localSchedule.report_template"
-          :options="reportTemplateOptions"
-          label="Report Template"
-          dense
-          filled
-          map-options
-          emit-value
-          options-dense
-          :rules="[(val: number) => !!val || '*Required']"
-        >
-          <template #after v-if="hasDependencies">
-            <q-btn
-              flat
-              dense
-              no-caps
-              :icon="!areDependenciesMet ? 'warning' : undefined"
-              :color="!areDependenciesMet ? 'warning' : 'primary'"
-              label="Dependencies"
-              @click="openDependenciesForm"
-            />
-          </template>
-        </q-select>
-
-        <q-option-group
-          v-model="localSchedule.format"
-          :options="formatOptions"
-          label="Format"
-          inline
-          dense
-          class="q-mb-sm"
-          :rules="[(val: number) => !!val || '*Required']"
-        />
-
-        <q-select
-          v-model="localSchedule.schedule"
-          :options="scheduleOptions"
-          option-label="label"
-          option-value="value"
-          label="Schedule"
-          map-options
-          emit-value
-          options-dense
-          dense
-          filled
-          :rules="[(val) => !!val || '*Required']"
-        >
-          <template #after>
-            <q-btn
-              @click="openCoreScheduleForm"
-              color="primary"
-              flat
-              no-caps
-              dense
-              >Create new Schedule</q-btn
-            >
-          </template>
-        </q-select>
-
-        <div class="row">
-          <div class="col-9">Email recipients</div>
-          <div class="col-3">
-            <q-btn
-              no-caps
-              dense
-              flat
-              icon="fas fa-plus"
-              color="primary"
-              label="Add email"
-              @click="toggleAddEmail"
-            />
-          </div>
-          <div class="col-12">
-            <q-list dense v-if="localSchedule.email_recipients.length !== 0">
-              <q-item
-                v-for="email in localSchedule.email_recipients"
-                :key="email"
+          <tactical-dropdown
+            v-model="localSchedule.report_template"
+            :options="reportTemplateOptions"
+            label="Report Template"
+            dense
+            filled
+            map-options
+            emit-value
+            options-dense
+            filterable
+            :rules="[(val: number) => !!val || '*Required']"
+          >
+            <template #after v-if="hasDependencies">
+              <q-btn
+                flat
                 dense
-              >
-                <q-item-section>
-                  <q-item-label>{{ email }}</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-icon
-                    class="cursor-pointer"
-                    name="delete"
-                    color="red"
-                    @click="removeEmail(email)"
-                  />
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <q-list v-else>
-              <q-item-section>
-                <q-item-label
-                  >No recipients. Will use recipients in global
-                  settings.</q-item-label
-                >
-              </q-item-section>
-            </q-list>
-          </div>
-        </div>
+                no-caps
+                :icon="!areDependenciesMet ? 'warning' : undefined"
+                :color="!areDependenciesMet ? 'warning' : 'primary'"
+                label="Dependencies"
+                @click="openDependenciesForm"
+              />
+            </template>
+          </tactical-dropdown>
 
-        <q-checkbox
-          v-model="localSchedule.no_email"
-          label="Do not send any emails"
-          class="q-pt-md"
-          dense
-        />
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup dense />
-        <q-btn
-          flat
-          label="Save"
-          color="primary"
-          type="submit"
-          :loading="isLoading"
-          class="q-ml-sm"
-          @click="submit"
-        />
-      </q-card-actions>
+          <q-option-group
+            v-model="localSchedule.format"
+            :options="formatOptions"
+            label="Format"
+            inline
+            dense
+            class="q-mb-sm"
+            :rules="[(val: number) => !!val || '*Required']"
+          />
+
+          <tactical-dropdown
+            v-model="localSchedule.schedule"
+            :options="scheduleOptions"
+            label="Schedule"
+            map-options
+            emit-value
+            options-dense
+            dense
+            filled
+            filterable
+            :rules="[(val: string) => !!val || '*Required']"
+          >
+            <template #after>
+              <q-btn
+                @click="openCoreScheduleForm"
+                color="primary"
+                flat
+                no-caps
+                dense
+                >Create new Schedule</q-btn
+              >
+            </template>
+          </tactical-dropdown>
+
+          <div class="row">
+            <div class="col-9">Email recipients</div>
+            <div class="col-3">
+              <q-btn
+                no-caps
+                dense
+                flat
+                icon="fas fa-plus"
+                color="primary"
+                label="Add email"
+                @click="toggleAddEmail"
+              />
+            </div>
+            <div class="col-12">
+              <q-list dense v-if="localSchedule.email_recipients.length !== 0">
+                <q-item
+                  v-for="email in localSchedule.email_recipients"
+                  :key="email"
+                  dense
+                >
+                  <q-item-section>
+                    <q-item-label>{{ email }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-icon
+                      class="cursor-pointer"
+                      name="delete"
+                      color="red"
+                      @click="removeEmail(email)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <q-list v-else>
+                <q-item-section>
+                  <q-item-label
+                    >No recipients. Will use recipients in global
+                    settings.</q-item-label
+                  >
+                </q-item-section>
+              </q-list>
+            </div>
+          </div>
+
+          <q-checkbox
+            v-model="localSchedule.no_email"
+            label="Do not send any emails"
+            class="q-pt-md"
+            dense
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" v-close-popup dense />
+          <q-btn
+            flat
+            label="Save"
+            color="primary"
+            :loading="isLoading"
+            class="q-ml-sm"
+            type="submit"
+          />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -161,8 +168,12 @@ import {
 import { useReportTemplateDropdown } from "../composables";
 import { useScheduleDropdown } from "@/core/settings/composables";
 import { isValidEmail } from "@/utils/validation";
+import { notifyWarning } from "@/utils/notify";
+
+// ui imports
 import ReportDependencyPrompt from "./ReportDependencyPrompt.vue";
 import ScheduleForm from "@/core/settings/components/ScheduleForm.vue";
+import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 import type {
   ReportSchedule,
@@ -170,10 +181,10 @@ import type {
   ReportTemplate,
   ReportDependencies,
 } from "../types/reporting";
-import { notifyWarning } from "@/utils/notify";
 
 const props = defineProps<{
   schedule?: ReportSchedule;
+  reportTemplate?: number;
   clone?: boolean;
 }>();
 
@@ -202,7 +213,7 @@ const localSchedule = reactive<ReportSchedule>(
         id: 0,
         name: "",
         enabled: true,
-        report_template: undefined,
+        report_template: props.reportTemplate,
         format: "html",
         schedule: undefined,
         email_recipients: [],
@@ -223,10 +234,13 @@ const areDependenciesMet = computed(() => {
   return required.every((key) => localSchedule.dependencies[key] != null);
 });
 
-// set selected template if editing the form
-if (props.schedule && props.schedule.report_template) {
+// set selected template if editing the form or r
+if (
+  props.reportTemplate ||
+  (props.schedule && props.schedule.report_template)
+) {
   const template = reportTemplates.value.find(
-    (t) => t.id === props.schedule?.report_template,
+    (t) => t.id === localSchedule?.report_template,
   );
   if (template?.depends_on && template.depends_on.length > 0) {
     selectedTemplate.value = template;

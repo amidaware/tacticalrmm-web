@@ -66,12 +66,13 @@ For details, see: https://license.tacticalrmm.com/ee
         </template>
 
         <template #body="props">
-          <q-tr :props="props">
+          <q-tr :props="props" class="cursor-pointer">
             <q-menu context-menu>
               <q-list dense style="min-width: 200px">
                 <q-item
                   v-close-popup
                   clickable
+                  :disabled="props.row.error_data"
                   @click="openReportHistory(props.row.id, 'pdf')"
                 >
                   <q-item-section side>
@@ -83,6 +84,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  :disabled="props.row.error_data"
                   @click="
                     openReportHistory(
                       props.row.id,
@@ -117,6 +119,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  :disabled="props.row.error_data"
                   @click="
                     downloadReportHistory(
                       props.row.id,
@@ -134,6 +137,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item
                   v-close-popup
                   clickable
+                  :disabled="props.row.error_data"
                   @click="
                     downloadReportHistory(
                       props.row.id,

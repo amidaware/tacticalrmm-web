@@ -1,6 +1,19 @@
 <template>
-  <div class="text-h6">Schedules</div>
-  <q-card>
+  <div>
+    <div class="row">
+      <div class="text-subtitle2">Schedules</div>
+      <q-space />
+      <q-btn
+        size="sm"
+        color="grey-5"
+        icon="fas fa-plus"
+        text-color="black"
+        label="Add key"
+        @click="openAddScheduleForm"
+      />
+    </div>
+    <q-separator />
+
     <tactical-table
       :rows="schedules"
       :columns="columns"
@@ -10,65 +23,59 @@
       :rows-per-page-options="[0]"
       :loading="isLoading"
       column-select
-      selection="single"
-      v-model:selected="selected"
+      dense
       storage-key="schedule-table"
     >
-      <template v-slot:top>
-        <div class="q-gutter-sm">
-          <q-btn
-            label="Add Schedule"
-            no-caps
-            flat
-            @click="openAddScheduleForm"
-          />
-          <q-btn-dropdown
-            label="Manage Schedule"
-            no-caps
-            flat
-            :disable="selected.length === 0"
-          >
-            <q-list>
+      <template #body="{ row, cols }">
+        <q-tr class="cursor-pointer" @dblclick="openEditScheduleForm(row)">
+          <q-menu context-menu>
+            <q-list dense style="min-width: 200px">
               <q-item
                 clickable
                 v-close-popup
-                @click="
-                  selected.length > 0 && openEditScheduleForm(selected[0])
-                "
+                @click="openEditScheduleForm(row)"
               >
                 <q-item-section>
                   <q-item-label>Edit</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item
-                clickable
-                v-close-popup
-                @click="selected.length > 0 && removeSchedule(selected[0])"
-              >
+              <q-item clickable v-close-popup @click="removeSchedule(row)">
                 <q-item-section>
                   <q-item-label>Delete</q-item-label>
                 </q-item-section>
               </q-item>
+
+              <q-separator />
+
+              <q-item clickable v-close-popup>
+                <q-item-section>
+                  <q-item-label>Close</q-item-label>
+                </q-item-section>
+              </q-item>
             </q-list>
-          </q-btn-dropdown>
-        </div>
-        <q-space />
+          </q-menu>
+
+          <q-td v-for="col in cols" :key="col.id">
+            {{ col.value }}
+          </q-td>
+        </q-tr>
       </template>
     </tactical-table>
-  </q-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { useQuasar } from "quasar";
+import { onMounted } from "vue";
+import { QTableColumn, useQuasar } from "quasar";
 import { useScheduleShared } from "../api";
 import type { Schedule } from "../types";
 
 // ui imports
 import ScheduleForm from "./ScheduleForm.vue";
-import TacticalTable from "@/components/ui/TacticalTable.vue";
+import TacticalTable from "src/core/dashboard/ui/TacticalTable.vue";
 import { until } from "@vueuse/shared";
+import { capitalize } from "@/utils/format";
 
 const months = [
   "Jan",
@@ -95,7 +102,7 @@ function getAbbrevWeekday(n: number) {
   return weekDays[n];
 }
 
-const columns = [
+const columns: QTableColumn[] = [
   {
     name: "name",
     label: "Name",
@@ -103,6 +110,14 @@ const columns = [
     field: "name",
     sortable: true,
     required: true,
+  },
+  {
+    name: "schedule_type",
+    label: "Schedule Type",
+    align: "left",
+    field: "schedule_type",
+    sortable: true,
+    format: (val: string) => capitalize(val),
   },
   {
     name: "run_time",
@@ -173,8 +188,6 @@ const $q = useQuasar();
 
 const { schedules, getSchedules, deleteSchedule, isLoading, isError } =
   useScheduleShared;
-
-const selected = ref<Schedule[]>([]);
 
 function openEditScheduleForm(schedule: Schedule) {
   $q.dialog({
