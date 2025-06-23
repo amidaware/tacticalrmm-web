@@ -81,6 +81,7 @@ export interface ReportSchedule {
   no_email: boolean;
   last_run?: string;
   dependencies: ReportDependencies;
+  email_settings: EmailSettings;
 }
 
 export interface ReportHistory {
@@ -91,4 +92,10 @@ export interface ReportHistory {
   report_template_type: ReportTemplateType;
   error_data?: string;
   date_created: string;
+}
+
+export interface EmailSettings {
+  subject?: string;
+  body?: string;
+  attachment_name?: string;
 }

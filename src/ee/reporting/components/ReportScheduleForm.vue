@@ -91,7 +91,18 @@ For details, see: https://license.tacticalrmm.com/ee
           </tactical-dropdown>
 
           <div class="row">
-            <div class="col-9">Email recipients</div>
+            <div class="col-9">
+              Email recipients
+              <q-btn
+                class="q-ml-md"
+                no-caps
+                dense
+                flat
+                color="primary"
+                label=" Customize Email Settings"
+                @click="openEmailSettings"
+              />
+            </div>
             <div class="col-3">
               <q-btn
                 no-caps
@@ -133,7 +144,6 @@ For details, see: https://license.tacticalrmm.com/ee
               </q-list>
             </div>
           </div>
-
           <q-checkbox
             v-model="localSchedule.no_email"
             label="Do not send any emails"
@@ -180,7 +190,9 @@ import type {
   ReportFormat,
   ReportTemplate,
   ReportDependencies,
+  EmailSettings,
 } from "../types/reporting";
+import ReportEmailSettingsForm from "./ReportEmailSettingsForm.vue";
 
 const props = defineProps<{
   schedule?: ReportSchedule;
@@ -219,6 +231,7 @@ const localSchedule = reactive<ReportSchedule>(
         email_recipients: [],
         no_email: false,
         dependencies: {},
+        email_settings: {},
       },
 );
 
@@ -285,6 +298,15 @@ function openCoreScheduleForm() {
   $q.dialog({
     component: ScheduleForm,
   });
+}
+
+function openEmailSettings() {
+  $q.dialog({
+    component: ReportEmailSettingsForm,
+    componentProps: {
+      emailSettings: localSchedule.email_settings,
+    },
+  }).onOk((data: EmailSettings) => (localSchedule.email_settings = data));
 }
 
 function toggleAddEmail() {

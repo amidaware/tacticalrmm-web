@@ -125,6 +125,10 @@ const columns: QTableColumn[] = [
     align: "left",
     field: "run_time",
     sortable: true,
+    format: (val: string) => {
+      const parts = val.split(":");
+      return `${parts[0]}:${parts[1]}`;
+    },
   },
   {
     name: "run_time_weekdays",

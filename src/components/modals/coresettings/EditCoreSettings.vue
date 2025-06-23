@@ -707,10 +707,10 @@
           <q-card-section class="row items-center">
             <q-btn
               v-show="
-                tab !== 'customfields' &&
-                tab !== 'keystore' &&
-                tab !== 'urlactions' &&
-                tab !== 'sso'
+                tab === 'general' &&
+                tab === 'emailalerts' &&
+                tab === 'smsalerts' &&
+                tab === 'meshcentral'
               "
               label="Save"
               color="primary"
