@@ -246,6 +246,10 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section>Schedule Report</q-item-section>
                 </q-item>
 
+                <q-item v-close-popup clickable @click="emailReport(props.row)">
+                  <q-item-section>Email Report</q-item-section>
+                </q-item>
+
                 <q-separator />
 
                 <q-item
@@ -410,6 +414,16 @@ function scheduleReport(template: ReportTemplate) {
     component: ReportScheduleForm,
     componentProps: {
       reportTemplate: template.id,
+    },
+  });
+}
+
+function emailReport(template: ReportTemplate) {
+  $q.dialog({
+    component: ReportScheduleForm,
+    componentProps: {
+      reportTemplate: template.id,
+      emailOnly: true,
     },
   });
 }

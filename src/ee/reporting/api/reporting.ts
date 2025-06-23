@@ -20,6 +20,7 @@ import type {
   RunReportRequest,
   VariableAnalysis,
   SharedTemplate,
+  EmailSettings,
 } from "../types/reporting";
 import type { QTreeFileNode } from "@/types/filebrowser";
 import { notifySuccess } from "@/utils/notify";
@@ -326,6 +327,32 @@ export function useReportTemplates() {
       .finally(() => (isLoading.value = false));
   }
 
+  interface EmailReportRequest {
+    format: ReportFormat;
+    email_recipients: string[];
+    dependencies: ReportDependencies;
+    email_settings: EmailSettings;
+  }
+
+  function emailReport(id: number, payload: EmailReportRequest) {
+    isLoading.value = true;
+    isError.value = false;
+
+    axios
+      .post(`${baseUrl}/templates/${id}/email/`, payload)
+      .then(() => {
+        notifySuccess(
+          "Report was generated and the email is queued from delivery",
+        );
+      })
+      .catch(() => {
+        isError.value = true;
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  }
+
   return {
     reportTemplates,
     isLoading,
@@ -349,6 +376,7 @@ export function useReportTemplates() {
     importSharedTemplates,
     variableAnalysis,
     getAllowedValues,
+    emailReport,
   };
 }
 

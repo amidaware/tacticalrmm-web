@@ -8,7 +8,10 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        {{ schedule && !clone ? "Edit" : "Add" }} Report Schedule
+        <template v-if="!emailOnly">
+          {{ schedule && !clone ? "Edit" : "Add" }} Report Schedule
+        </template>
+        <template v-else> Email Report </template>
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -16,6 +19,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-form @submit.prevent="submit">
         <q-card-section class="q-pa-md">
           <q-input
+            v-if="!emailOnly"
             v-model="localSchedule.name"
             label="Name"
             dense
@@ -24,6 +28,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
 
           <q-toggle
+            v-if="!emailOnly"
             v-model="localSchedule.enabled"
             label="Enabled"
             dense
@@ -67,6 +72,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
 
           <tactical-dropdown
+            v-if="!emailOnly"
             v-model="localSchedule.schedule"
             :options="scheduleOptions"
             label="Schedule"
@@ -145,6 +151,7 @@ For details, see: https://license.tacticalrmm.com/ee
             </div>
           </div>
           <q-checkbox
+            v-if="!emailOnly"
             v-model="localSchedule.no_email"
             label="Do not send any emails"
             class="q-pt-md"
@@ -155,7 +162,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn flat label="Cancel" v-close-popup dense />
           <q-btn
             flat
-            label="Save"
+            :label="!emailOnly ? 'Save' : 'Send'"
             color="primary"
             :loading="isLoading"
             class="q-ml-sm"
@@ -198,6 +205,7 @@ const props = defineProps<{
   schedule?: ReportSchedule;
   reportTemplate?: number;
   clone?: boolean;
+  emailOnly?: boolean;
 }>();
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -206,7 +214,7 @@ defineEmits(useDialogPluginComponent.emits);
 const { addReportSchedule, editReportSchedule, isLoading, isError } =
   useSharedReportSchedules;
 
-const { reportTemplates } = useSharedReportTemplates;
+const { reportTemplates, emailReport } = useSharedReportTemplates;
 
 const $q = useQuasar();
 
@@ -333,11 +341,21 @@ function removeEmail(email: string) {
 async function submit() {
   // make sure dependencies are set
   if (!areDependenciesMet.value) {
-    notifyWarning("All required dependencies must be set before saving.");
+    notifyWarning(
+      `All required dependencies must be set before ${!props.emailOnly ? "saving" : "sending"}.`,
+    );
     return;
   }
 
-  if (!props.clone && props.schedule) {
+  if (props.emailOnly && props.reportTemplate) {
+    if (props.reportTemplate)
+      emailReport(props.reportTemplate, {
+        format: localSchedule.format,
+        email_recipients: localSchedule.email_recipients,
+        dependencies: localSchedule.dependencies,
+        email_settings: localSchedule.email_settings,
+      });
+  } else if (!props.clone && props.schedule) {
     editReportSchedule(props.schedule.id, localSchedule);
   } else {
     addReportSchedule(localSchedule);
