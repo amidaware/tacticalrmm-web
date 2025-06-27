@@ -181,12 +181,12 @@ const columns: QTableColumn[] = [
     format: (val: string[]) => val.join(", "),
   },
   {
-    name: "no_email",
+    name: "send_report_email",
     label: "Send Email",
-    field: "no_email",
+    field: "send_report_email",
     align: "center",
     sortable: true,
-    format: (val: boolean) => (!val ? "Yes" : "No"),
+    format: (val: boolean) => (val ? "Yes" : "No"),
   },
   {
     name: "last_run",

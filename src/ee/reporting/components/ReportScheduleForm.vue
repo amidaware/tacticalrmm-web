@@ -87,28 +87,18 @@ For details, see: https://license.tacticalrmm.com/ee
             <template #after>
               <q-btn
                 @click="openCoreScheduleForm"
+                icon="fas fa-plus"
                 color="primary"
                 flat
                 no-caps
                 dense
-                >Create new Schedule</q-btn
-              >
+                label="Create New Schedule"
+              />
             </template>
           </tactical-dropdown>
 
           <div class="row">
-            <div class="col-9">
-              Email recipients
-              <q-btn
-                class="q-ml-md"
-                no-caps
-                dense
-                flat
-                color="primary"
-                label=" Customize Email Settings"
-                @click="openEmailSettings"
-              />
-            </div>
+            <div class="col-9 text-weight-medium">Email recipients</div>
             <div class="col-3">
               <q-btn
                 no-caps
@@ -143,8 +133,8 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-list v-else>
                 <q-item-section>
                   <q-item-label
-                    >No recipients. Will use recipients in global
-                    settings.</q-item-label
+                    >No recipients added yet, emails from global settings will
+                    be used.</q-item-label
                   >
                 </q-item-section>
               </q-list>
@@ -152,10 +142,20 @@ For details, see: https://license.tacticalrmm.com/ee
           </div>
           <q-checkbox
             v-if="!emailOnly"
-            v-model="localSchedule.no_email"
-            label="Do not send any emails"
+            v-model="localSchedule.send_report_email"
+            label="Send report via Email"
             class="q-pt-md"
             dense
+          />
+        </q-card-section>
+        <q-card-section>
+          <q-btn
+            no-caps
+            dense
+            flat
+            color="primary"
+            label=" Customize Email Content"
+            @click="openEmailSettings"
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -222,8 +222,8 @@ const { reportTemplateOptions } = useReportTemplateDropdown();
 const { scheduleOptions } = useScheduleDropdown();
 
 const formatOptions: { label: string; value: ReportFormat }[] = [
-  { label: "HTML", value: "html" },
   { label: "PDF", value: "pdf" },
+  { label: "HTML", value: "html" },
 ];
 
 const localSchedule = reactive<ReportSchedule>(
@@ -234,10 +234,10 @@ const localSchedule = reactive<ReportSchedule>(
         name: "",
         enabled: true,
         report_template: props.reportTemplate,
-        format: "html",
+        format: "pdf",
         schedule: undefined,
         email_recipients: [],
-        no_email: false,
+        send_report_email: true,
         dependencies: {},
         email_settings: {},
       },

@@ -78,7 +78,7 @@ export interface ReportSchedule {
   format: ReportFormat;
   schedule?: number;
   email_recipients: string[];
-  no_email: boolean;
+  send_report_email: boolean;
   last_run?: string;
   dependencies: ReportDependencies;
   email_settings: EmailSettings;
