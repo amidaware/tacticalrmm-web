@@ -342,7 +342,7 @@ export function useReportTemplates() {
       .post(`${baseUrl}/templates/${id}/email/`, payload)
       .then(() => {
         notifySuccess(
-          "Report was generated and the email is queued from delivery",
+          "Report was generated and the email is queued for delivery",
         );
       })
       .catch(() => {
