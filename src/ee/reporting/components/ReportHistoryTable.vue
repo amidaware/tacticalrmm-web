@@ -61,8 +61,8 @@ For details, see: https://license.tacticalrmm.com/ee
           </q-input>
         </template>
 
-        <template #header-cell-report_template_name>
-          <q-th auto-width></q-th>
+        <template #header-cell-report_template_name="props">
+          <q-th auto-width :props="props">{{ props.col.label }}</q-th>
         </template>
 
         <template #body="props">
