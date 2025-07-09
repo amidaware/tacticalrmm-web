@@ -490,7 +490,7 @@ export default {
         prompt: {
           model: "",
           type: "text",
-          isValid: (val) => val === "yes",
+          isValid: (val) => val.toLowerCase() === "yes",
         },
         cancel: true,
         ok: { label: "Shutdown", color: "negative" },
@@ -565,7 +565,7 @@ export default {
         prompt: {
           model: "",
           type: "text",
-          isValid: (val) => val === "yes",
+          isValid: (val) => val.toLowerCase() === "yes",
         },
         cancel: true,
         ok: { label: "Uninstall", color: "negative" },
