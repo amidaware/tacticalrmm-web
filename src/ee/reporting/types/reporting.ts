@@ -82,6 +82,7 @@ export interface ReportSchedule {
   last_run?: string;
   dependencies: ReportDependencies;
   email_settings: EmailSettings;
+  timezone: string | null;
 }
 
 export interface ReportHistory {

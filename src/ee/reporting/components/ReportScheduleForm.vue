@@ -97,8 +97,31 @@ For details, see: https://license.tacticalrmm.com/ee
             </template>
           </tactical-dropdown>
 
-          <div class="row">
-            <div class="col-9 text-weight-medium">Email recipients</div>
+          <tactical-dropdown
+            v-if="!emailOnly"
+            v-model="localSchedule.timezone"
+            :options="settings?.all_timezones || []"
+            label="Timezone"
+            options-dense
+            dense
+            filled
+            filterable
+            clearable
+            :hint="`Default timezone ${settings?.default_time_zone} will be used if blank`"
+          />
+
+          <div class="row q-pt-sm">
+            <div class="col-9 text-weight-medium">
+              Email recipients
+              <q-icon name="info" size="xs" class="cursor-pointer">
+                <q-tooltip max-width="300px">{{
+                  settings?.email_alert_recipients &&
+                  settings.email_alert_recipients.length > 0
+                    ? `Default email recipients: ${settings.email_alert_recipients.join(", ")}`
+                    : "No email recipients configured"
+                }}</q-tooltip>
+              </q-icon>
+            </div>
             <div class="col-3">
               <q-btn
                 no-caps
@@ -133,8 +156,8 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-list v-else>
                 <q-item-section>
                   <q-item-label
-                    >No recipients added yet, emails from global settings will
-                    be used.</q-item-label
+                    >No recipients added yet. Default email recipients from
+                    global settings will be used.</q-item-label
                   >
                 </q-item-section>
               </q-list>
@@ -175,7 +198,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, unref, reactive, computed } from "vue";
+import { ref, watch, unref, reactive, computed, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, extend } from "quasar";
 import { until } from "@vueuse/shared";
 import {
@@ -200,6 +223,8 @@ import type {
   EmailSettings,
 } from "../types/reporting";
 import ReportEmailSettingsForm from "./ReportEmailSettingsForm.vue";
+import { fetchCoreSettings } from "@/api/core";
+import { CoreSetting } from "@/types/core/settings";
 
 const props = defineProps<{
   schedule?: ReportSchedule;
@@ -240,6 +265,7 @@ const localSchedule = reactive<ReportSchedule>(
         send_report_email: true,
         dependencies: {},
         email_settings: {},
+        timezone: null,
       },
 );
 
@@ -325,6 +351,7 @@ function toggleAddEmail() {
       isValid: (val) => isValidEmail(val),
       type: "email",
     },
+    color: "primary",
     cancel: true,
     ok: { label: "Add", color: "primary" },
     persistent: false,
@@ -365,4 +392,12 @@ async function submit() {
 
   onDialogOK();
 }
+
+const settings = ref<CoreSetting | null>(null);
+
+async function getCoreSettings() {
+  settings.value = await fetchCoreSettings();
+}
+
+onMounted(getCoreSettings);
 </script>
