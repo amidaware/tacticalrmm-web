@@ -23,6 +23,9 @@ export function useAgentCmdWSConnection(agentId: string) {
         const parsed = JSON.parse(ev.data);
         if (parsed?.output != null) {
           const clean = String(parsed.output).replace(/\r\n/g, "\n");
+          if (lines.value.length === 0 && clean.trim() === "") {
+            return;
+          }
           lines.value = [...lines.value, clean];
         }
       } catch {
@@ -30,7 +33,7 @@ export function useAgentCmdWSConnection(agentId: string) {
       }
     },
   });
-    
+
   function reset() {
     lines.value = [];
   }
@@ -42,7 +45,7 @@ export function useAgentCmdWSConnection(agentId: string) {
 
   return {
     status: ws.status,
-     data: lines,
+    data: lines,
     send: ws.send,
     open: ws.open,
     reset,
