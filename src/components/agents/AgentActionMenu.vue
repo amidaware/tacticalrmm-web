@@ -42,7 +42,7 @@
       <q-item-section>VNC</q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple @click="getURLActions">
+    <q-item clickable v-ripple>
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
       </q-item-section>
@@ -245,7 +245,7 @@
 
 <script>
 // composition imports
-import { ref, inject } from "vue";
+import { ref, inject, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 import { fetchURLActions, runURLAction } from "@/api/core";
@@ -584,6 +584,11 @@ export default {
         }
       });
     }
+
+    onMounted(async () => {
+      await getURLActions();
+      await getFavoriteScripts();
+    });
 
     return {
       // reactive data
