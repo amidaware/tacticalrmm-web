@@ -1,16 +1,7 @@
 import { ref } from "vue";
 import { useWebSocket } from "@vueuse/core";
-import { getBaseUrl } from "@/boot/axios";
 import { useAuthStore } from "@/stores/auth";
-
-function getWSUrl(path: string, token: string | null) {
-  const url = getBaseUrl().split("://")[1];
-  const proto =
-    process.env.NODE_ENV === "production" || process.env.DOCKER_BUILD
-      ? "wss"
-      : "ws";
-  return `${proto}://${url}/ws/${path}/?access_token=${token}`;
-}
+import { getWSUrl } from "./websocket";
 
 export function useAgentCmdWSConnection(agentId: string) {
   const auth = useAuthStore();
