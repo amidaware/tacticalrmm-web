@@ -10,10 +10,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watchEffect, nextTick, computed } from "vue";
 import { useAgentCmdWSConnection } from "@/websocket/agent";
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
+import { generateUUID } from "@/utils/helpers";
 
 const props = defineProps({
   agentId: { type: String, required: true },
@@ -25,7 +26,8 @@ const props = defineProps({
 // emits
 const emit = defineEmits(["updateOutput", "streamLoaded", "streamClosed"]);
 
-const { send, data, reset, close, status } = useAgentCmdWSConnection(props.agentId);
+const cmdId = generateUUID();
+const { send, data, reset, close, status } = useAgentCmdWSConnection(props.agentId, cmdId);
 
 const outputText = ref("");
 const streamContainer = ref<HTMLElement | null>(null);
@@ -35,10 +37,12 @@ const hasText = computed(() => outputText.value.trim() !== "");
 
 watchEffect(() => {
   if (data.value.length) {
-    outputText.value = data.value.join("\n");
+    const relevant = data.value.filter((msg) => msg.cmd_id === cmdId && msg.output != null);
+
+    outputText.value = relevant.map((msg) => msg.output).join("\n");
     emit("updateOutput", outputText.value);
 
-    if (!firstChunk) {
+    if (!firstChunk && relevant.length > 0) {
       firstChunk = true;
       emit("streamLoaded");
     }
@@ -52,9 +56,7 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-  if (status.value === "CLOSED") {
-    emit("streamClosed");
-  }
+  if (status.value === "CLOSED") emit("streamClosed");
 });
 
 onMounted(() => {
@@ -67,6 +69,7 @@ onMounted(() => {
     run_as_user: false,
     custom_shell: "",
     stream: true,
+    cmd_id: cmdId,
   }));
 });
 
