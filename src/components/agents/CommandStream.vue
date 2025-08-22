@@ -14,7 +14,7 @@
 import { ref, onMounted, onUnmounted, watchEffect, nextTick, computed } from "vue";
 import { useAgentCmdWSConnection } from "@/websocket/agent";
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
-import { generateUUID } from "@/utils/helpers";
+import { uid } from 'quasar'
 
 const props = defineProps({
   agentId: { type: String, required: true },
@@ -26,7 +26,7 @@ const props = defineProps({
 // emits
 const emit = defineEmits(["updateOutput", "streamLoaded", "streamClosed"]);
 
-const cmdId = generateUUID();
+const cmdId = uid();
 const { send, data, reset, close, status } = useAgentCmdWSConnection(props.agentId, cmdId);
 
 const outputText = ref("");
