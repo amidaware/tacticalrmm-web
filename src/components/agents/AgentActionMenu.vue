@@ -62,7 +62,7 @@
               runURLAction({ agent_id: agent.agent_id, action: action.id })
             "
           >
-            <q-item-label>{{ action.name }}</q-item-label>
+            <q-item-section>{{ action.name }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
@@ -100,7 +100,7 @@
             v-close-popup
             @click="showRunScript(agent, script.value)"
           >
-            <q-item-label>{{ script.label }}</q-item-label>
+            <q-item-section>{{ script.label }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>

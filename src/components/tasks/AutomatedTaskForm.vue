@@ -806,7 +806,7 @@ import {
   onMounted,
   defineComponent,
 } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, extend } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
 import { useScriptDropdown } from "@/composables/scripts";
@@ -936,7 +936,7 @@ export default defineComponent({
 
     // add task logic
     const localTask = props.task
-      ? reactive(Object.assign({}, props.task))
+      ? reactive(extend(true, {}, props.task))
       : reactive({
           ...props.parent,
           actions: [],
