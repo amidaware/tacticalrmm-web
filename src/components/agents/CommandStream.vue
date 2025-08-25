@@ -37,12 +37,12 @@ const hasText = computed(() => outputText.value.trim() !== "");
 
 watchEffect(() => {
   if (data.value.length) {
-    const relevant = data.value.filter((msg) => msg.cmd_id === cmdId && msg.output != null);
+    // const relevant = data.value.filter((msg) => msg.cmd_id === cmdId && msg.output != null);
 
-    outputText.value = relevant.map((msg) => msg.output).join("\n");
+    outputText.value = data.value.map((msg) => msg.output).join("\n");
     emit("updateOutput", outputText.value);
 
-    if (!firstChunk && relevant.length > 0) {
+    if (!firstChunk && data.value.length > 0) {
       firstChunk = true;
       emit("streamLoaded");
     }
