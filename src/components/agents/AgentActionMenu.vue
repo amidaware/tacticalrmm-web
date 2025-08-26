@@ -42,7 +42,7 @@
       <q-item-section>VNC</q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple @click="getURLActions">
+    <q-item clickable v-ripple :disable="urlActions.length === 0">
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
       </q-item-section>
@@ -62,7 +62,7 @@
               runURLAction({ agent_id: agent.agent_id, action: action.id })
             "
           >
-            {{ action.name }}
+            <q-item-section>{{ action.name }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
@@ -82,7 +82,7 @@
       <q-item-section>Run Script</q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple @click="getFavoriteScripts">
+    <q-item clickable v-ripple :disable="favoriteScripts.length === 0">
       <q-item-section side>
         <q-icon size="xs" name="star" />
       </q-item-section>
@@ -100,7 +100,7 @@
             v-close-popup
             @click="showRunScript(agent, script.value)"
           >
-            {{ script.label }}
+            <q-item-section>{{ script.label }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
@@ -245,7 +245,7 @@
 
 <script>
 // composition imports
-import { ref, inject } from "vue";
+import { ref, inject, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 import { fetchURLActions, runURLAction } from "@/api/core";
@@ -263,7 +263,7 @@ import {
 import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
 import { runAgentChecks } from "@/api/checks";
 import { fetchScripts } from "@/api/scripts";
-import { notifySuccess, notifyWarning, notifyError } from "@/utils/notify";
+import { notifySuccess, notifyError } from "@/utils/notify";
 
 // ui imports
 import PendingActions from "@/components/logs/PendingActions.vue";
@@ -296,7 +296,6 @@ export default {
 
     const urlActions = ref([]);
     const favoriteScripts = ref([]);
-    const menuLoading = ref(false);
 
     function showEditAgent(agent_id) {
       $q.dialog({
@@ -317,22 +316,12 @@ export default {
     }
 
     async function getURLActions() {
-      menuLoading.value = true;
       try {
         urlActions.value = (await fetchURLActions())
           .filter((action) => action.action_type === "web")
           .sort((a, b) => a.name.localeCompare(b.name));
-
-        if (urlActions.value.length === 0) {
-          notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
-          );
-          return;
-        }
       } catch (e) {
         console.error(e);
-      } finally {
-        menuLoading.value = false;
       }
     }
 
@@ -358,18 +347,12 @@ export default {
     async function getFavoriteScripts() {
       favoriteScripts.value = [];
 
-      menuLoading.value = true;
       try {
         const data = await fetchScripts({
           showCommunityScripts: store.state.showCommunityScripts,
         });
 
         const scripts = data.filter((script) => !!script.favorite);
-
-        if (scripts.length === 0) {
-          notifyWarning("You don't have any scripts favorited!");
-          return;
-        }
 
         favoriteScripts.value = scripts
           .map((script) => ({
@@ -584,6 +567,11 @@ export default {
         }
       });
     }
+
+    onMounted(async () => {
+      await getURLActions();
+      await getFavoriteScripts();
+    });
 
     return {
       // reactive data
