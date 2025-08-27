@@ -707,9 +707,9 @@
           <q-card-section class="row items-center">
             <q-btn
               v-show="
-                tab === 'general' &&
-                tab === 'emailalerts' &&
-                tab === 'smsalerts' &&
+                tab === 'general' ||
+                tab === 'emailalerts' ||
+                tab === 'smsalerts' ||
                 tab === 'meshcentral'
               "
               label="Save"
