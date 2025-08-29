@@ -1,5 +1,20 @@
 <template>
   <q-layout>
+    <div
+      class="q-pa-md flex justify-end items-center"
+      style="position: absolute; top: 0; right: 0; z-index: 10"
+    >
+      <q-select
+        v-model="currentLocale"
+        :options="localeOptions"
+        dense
+        outlined
+        emit-value
+        map-options
+        style="min-width: 120px"
+        @update:model-value="changeLocale"
+      />
+    </div>
     <q-page-container>
       <q-page class="flex bg-image flex-center">
         <q-card
@@ -15,20 +30,20 @@
               <q-input
                 filled
                 v-model="credentials.username"
-                label="Username"
+                :label="$t('username')"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) => (val && val.length > 0) || $t('requiredField'),
                 ]"
               />
               <q-input
                 v-model="credentials.password"
                 filled
                 :type="showPassword ? 'password' : 'text'"
-                label="Password"
+                :label="$t('password')"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) => (val && val.length > 0) || $t('requiredField'),
                 ]"
               >
                 <template v-slot:append>
@@ -41,7 +56,7 @@
               </q-input>
               <div>
                 <q-btn
-                  label="Login"
+                  :label="$t('login')"
                   type="submit"
                   color="primary"
                   class="full-width"
@@ -92,8 +107,7 @@
                   autocomplete="one-time-code"
                   v-model="twofactor"
                   :rules="[
-                    (val) =>
-                      (val && val.length > 0) || 'This field is required',
+                    (val) => (val && val.length > 0) || $t('requiredField'),
                   ]"
                 />
               </q-card-section>
@@ -120,6 +134,8 @@ import {
   getSSOConfig,
   type SSOProviderConfig,
 } from "@/ee/sso/api/sso";
+import { useI18n } from "vue-i18n";
+import { locales } from "@/i18n";
 
 // setup quasar
 const $q = useQuasar();
@@ -130,6 +146,16 @@ const auth = useAuthStore();
 
 // setup router
 const router = useRouter();
+
+// i18n setup
+const { locale } = useI18n();
+const currentLocale = ref(locale.value);
+const localeOptions = locales;
+function changeLocale(val: string) {
+  locale.value = val;
+  currentLocale.value = val;
+  localStorage.setItem("locale", val);
+}
 
 const form = ref<QForm | null>(null);
 const formToken = ref<QForm | null>(null);
