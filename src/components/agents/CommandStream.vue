@@ -11,10 +11,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watchEffect, nextTick, computed } from "vue";
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  watchEffect,
+  nextTick,
+  computed,
+} from "vue";
+import { useTemplateRef } from "vue";
 import { useAgentCmdWSConnection } from "@/websocket/agent";
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
-import { uid } from 'quasar'
+import { uid } from "quasar";
 
 const props = defineProps({
   agentId: { type: String, required: true },
@@ -27,18 +35,19 @@ const props = defineProps({
 const emit = defineEmits(["updateOutput", "streamLoaded", "streamClosed"]);
 
 const cmdId = uid();
-const { send, data, reset, close, status } = useAgentCmdWSConnection(props.agentId, cmdId);
+const { send, data, reset, close, status } = useAgentCmdWSConnection(
+  props.agentId,
+  cmdId,
+);
 
 const outputText = ref("");
-const streamContainer = ref<HTMLElement | null>(null);
+const streamContainer = useTemplateRef<HTMLElement>("streamContainer");
 let firstChunk = false;
 
 const hasText = computed(() => outputText.value.trim() !== "");
 
 watchEffect(() => {
   if (data.value.length) {
-    // const relevant = data.value.filter((msg) => msg.cmd_id === cmdId && msg.output != null);
-
     outputText.value = data.value.map((msg) => msg.output).join("\n");
     emit("updateOutput", outputText.value);
 
@@ -62,15 +71,17 @@ watchEffect(() => {
 onMounted(() => {
   outputText.value = "";
   reset();
-  send(JSON.stringify({
-    shell: props.shell,
-    cmd: props.cmd,
-    timeout: props.timeout,
-    run_as_user: false,
-    custom_shell: "",
-    stream: true,
-    cmd_id: cmdId,
-  }));
+  send(
+    JSON.stringify({
+      shell: props.shell,
+      cmd: props.cmd,
+      timeout: props.timeout,
+      run_as_user: false,
+      custom_shell: "",
+      stream: true,
+      cmd_id: cmdId,
+    }),
+  );
 });
 
 onUnmounted(close);
@@ -87,5 +98,7 @@ onUnmounted(close);
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.terminal { white-space: pre-wrap; }
+.terminal {
+  white-space: pre-wrap;
+}
 </style>
