@@ -7,7 +7,7 @@
   >
     <q-card
       class="q-dialog-plugin"
-      :style="{ 'min-width': (ret || streamOutput || loading) ? '70vw' : '40vw' }"
+      :style="{ 'min-width': ret || streamOutput || loading ? '70vw' : '40vw' }"
     >
       <q-bar>
         Send command on {{ agent.hostname }}
@@ -108,8 +108,8 @@
           </div>
         </q-card-actions>
         <q-card-section v-if="ret !== null"
-        ><script-output-copy-clip label="Output" :data="ret" /> <q-separator
-         /></q-card-section>
+          ><script-output-copy-clip label="Output" :data="ret" /> <q-separator
+        /></q-card-section>
         <q-card-section
           v-if="ret !== null"
           class="q-pl-md q-pr-md q-pt-none q-ma-none scroll"
@@ -124,7 +124,7 @@
             :cmd="streamCmd"
             :shell="state.shell"
             :timeout="state.timeout"
-            @updateOutput="(val) => streamOutput = val"
+            @updateOutput="(val) => (streamOutput = val)"
             @streamLoaded="loading = false"
             @streamClosed="loading = false"
           />
