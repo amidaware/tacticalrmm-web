@@ -61,6 +61,19 @@
         </q-input>
         <export-table-btn :data="software" :columns="columns" />
       </template>
+
+      <template v-slot:body-cell-uninstall="props">
+        <td>
+          <q-btn
+            v-if="props.row.uninstall"
+            label="Uninstall"
+            color="primary"
+            dense
+            size="sm"
+            @click="openUninstallSoftware(props.row)"
+          />
+        </td>
+      </template>
     </q-table>
   </div>
 </template>
@@ -70,11 +83,17 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
-import { fetchAgentSoftware, refreshAgentSoftware } from "@/api/software";
+import {
+  fetchAgentSoftware,
+  refreshAgentSoftware,
+  uninstallAgentSoftware,
+} from "@/api/software";
 
 // ui imports
 import InstallSoftware from "@/components/software/InstallSoftware.vue";
+import UninstallSoftware from "@/components/software/UninstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
+import { notifySuccess } from "@/utils/notify";
 
 // static data
 const columns = [
@@ -116,6 +135,13 @@ const columns = [
     field: "version",
     sortable: false,
   },
+  {
+    name: "uninstall",
+    align: "left",
+    label: "",
+    field: "uninstall",
+    sortable: false,
+  },
 ];
 
 export default {
@@ -145,7 +171,7 @@ export default {
 
     async function getSoftware() {
       loading.value = true;
-      software.value = await fetchAgentSoftware(selectedAgent.value);
+      software.value = (await fetchAgentSoftware(selectedAgent.value)) || [];
       loading.value = false;
     }
 
@@ -162,6 +188,36 @@ export default {
         componentProps: {
           agent_id: selectedAgent.value,
         },
+      });
+    }
+
+    function openUninstallSoftware(software) {
+      $q.dialog({
+        component: UninstallSoftware,
+
+        componentProps: {
+          softwareName: software.name,
+          initialUninstallString:
+            software.uninstall +
+            (software.uninstall.toLowerCase().includes("msiexec")
+              ? " /qn /norestart"
+              : ""),
+        },
+      }).onOk(async (data) => {
+        try {
+          loading.value = true;
+          const ret = await uninstallAgentSoftware(selectedAgent.value, {
+            name: software.name,
+            command: data.uninstallString, // use user supplied value, not the one from db. to prevent db injection attack
+            run_as_user: data.run_as_user,
+            timeout: data.timeout,
+          });
+          notifySuccess(ret);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          loading.value = false;
+        }
       });
     }
 
@@ -191,6 +247,7 @@ export default {
       // methods
       refreshSoftware,
       showInstallSoftwareModal,
+      openUninstallSoftware,
     };
   },
 };
