@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { useWebSocket } from "@vueuse/core";
 import { useAuthStore } from "@/stores/auth";
 import { getWSUrl } from "./websocket";
-
+import { Notify } from "quasar";
 interface CmdMessage {
   cmd_id: string;
   output?: string;
@@ -20,8 +20,29 @@ export function useAgentCmdWSConnection(agentId: string, cmdId: string) {
     onMessage(_, ev) {
       try {
         const parsed = JSON.parse(ev.data);
+        if (parsed?.error) {
+          const msg = `${parsed.error ? parsed.error : "Unknown WebSocket error"}`;
+          const caption = parsed.status
+            ? `${parsed.status}: Forbidden`
+            : "Error";
+          Notify.create({
+            message: msg,
+            color: "negative",
+            position: "top",
+            caption,
+            timeout: 4000,
+          });
+          ws.close();
+          return;
+        }
         if (parsed?.cmd_id !== cmdId) return;
-        if (parsed?.output != null && !((lines.value.length === 0 || lines.value.length === 1) && parsed.output.trim() === "")) {
+        if (
+          parsed?.output != null &&
+          !(
+            (lines.value.length === 0 || lines.value.length === 1) &&
+            parsed.output.trim() === ""
+          )
+        ) {
           lines.value.push(parsed);
         }
       } catch {

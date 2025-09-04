@@ -7,7 +7,7 @@
   >
     <q-card
       class="q-dialog-plugin"
-      :style="{ 'min-width': ret || streamOutput || loading ? '70vw' : '40vw' }"
+      :style="{ 'min-width': ret || streamOutput ? '70vw' : '40vw' }"
     >
       <q-bar>
         Send command on {{ agent.hostname }}
