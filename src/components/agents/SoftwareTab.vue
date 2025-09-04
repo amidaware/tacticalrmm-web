@@ -91,6 +91,7 @@ import {
 
 // ui imports
 import InstallSoftware from "@/components/software/InstallSoftware.vue";
+import UninstallSoftware from "@/components/software/UninstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import { notifySuccess } from "@/utils/notify";
 
@@ -192,28 +193,26 @@ export default {
 
     function openUninstallSoftware(software) {
       $q.dialog({
-        title: `Uninstalling ${software.name}`,
-        message: "Modify the uninstall string as needed",
-        prompt: {
-          model:
+        component: UninstallSoftware,
+
+        componentProps: {
+          softwareName: software.name,
+          initialUninstallString:
             software.uninstall +
             (software.uninstall.toLowerCase().includes("msiexec")
               ? " /qn /norestart"
               : ""),
         },
-        style: "width: 50vw; max-width: 50vw",
-        color: "primary",
-        cancel: true,
-        ok: "Uninstall",
-        persistent: true,
-      }).onOk(async (uninstall) => {
+      }).onOk(async (data) => {
         try {
           loading.value = true;
-          await uninstallAgentSoftware(selectedAgent.value, {
+          const ret = await uninstallAgentSoftware(selectedAgent.value, {
             name: software.name,
-            command: uninstall, // use user supplied value, not the one from db. to prevent db injection attack
+            command: data.uninstallString, // use user supplied value, not the one from db. to prevent db injection attack
+            run_as_user: data.run_as_user,
+            timeout: data.timeout,
           });
-          notifySuccess("Uninstall command was sent successfully");
+          notifySuccess(ret);
         } catch (e) {
           console.error(e);
         } finally {
