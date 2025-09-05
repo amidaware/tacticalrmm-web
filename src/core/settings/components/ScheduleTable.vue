@@ -8,7 +8,7 @@
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add key"
+        label="Add Schedule"
         @click="openAddScheduleForm"
       />
     </div>

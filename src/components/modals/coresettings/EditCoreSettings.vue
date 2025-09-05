@@ -710,7 +710,8 @@
                 tab === 'general' ||
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
-                tab === 'meshcentral'
+                tab === 'meshcentral' ||
+                tab === 'retention'
               "
               label="Save"
               color="primary"
