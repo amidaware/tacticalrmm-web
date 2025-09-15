@@ -29,6 +29,7 @@
         icon="fas fa-clipboard-list"
         label="Event Log"
       />
+      <q-tab name="registry" icon="fa-solid fa-database" label="Registry" />
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab">
@@ -75,6 +76,13 @@
           }"
         ></iframe>
       </q-tab-panel>
+      <q-tab-panel
+        v-if="$route.query.agentPlatform === 'windows'"
+        name="registry"
+        class="q-pa-none"
+      >
+        <RegistryManager :agent_id="agent_id" />
+      </q-tab-panel>
     </q-tab-panels>
   </div>
 </template>
@@ -91,6 +99,7 @@ import { fetchDashboardInfo } from "@/api/core";
 import ProcessManager from "@/components/agents/remotebg/ProcessManager.vue";
 import ServicesManager from "@/components/agents/remotebg/ServicesManager.vue";
 import EventLogManager from "@/components/agents/remotebg/EventLogManager.vue";
+import RegistryManager from "@/components/agents/remotebg/RegistryManager.vue";
 
 export default {
   name: "RemoteBackground",
@@ -98,6 +107,7 @@ export default {
     ServicesManager,
     EventLogManager,
     ProcessManager,
+    RegistryManager,
   },
   setup() {
     // setup quasar
