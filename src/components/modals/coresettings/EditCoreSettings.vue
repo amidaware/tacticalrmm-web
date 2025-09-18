@@ -14,6 +14,7 @@
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
+          <q-tab name="branding" label="Branding" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -643,6 +644,11 @@
                 <SSOProvidersTable />
               </q-tab-panel>
 
+              <!-- branding -->
+              <q-tab-panel name="branding">
+                <BrandSettings />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -690,10 +696,13 @@
           <q-card-section class="row items-center">
             <q-btn
               v-show="
+                tab !== 'apikeys' &&
+                tab !== 'webhooks' &&
                 tab !== 'customfields' &&
                 tab !== 'keystore' &&
                 tab !== 'urlactions' &&
-                tab !== 'sso'
+                tab !== 'sso' &&
+                tab !== 'branding'
               "
               label="Save"
               color="primary"
@@ -732,6 +741,7 @@ import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vu
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import BrandSettings from "@/ee/whitelabel/components/BrandSettings.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -743,6 +753,7 @@ export default {
     APIKeysTable,
     SSOProvidersTable,
     TacticalDropdown,
+    BrandSettings,
   },
   mixins: [mixins],
   data() {
