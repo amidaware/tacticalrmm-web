@@ -60,9 +60,11 @@
           <q-tooltip>Back to Dashboard</q-tooltip>
         </q-btn>
         <q-toolbar-title>
-          Tactical RMM<span class="text-overline q-ml-sm"
-            >v{{ currentTRMMVersion }}</span
-          >
+          {{
+            $branding && $branding.companyName
+              ? $branding.companyName
+              : "Tactical RMM"
+          }}<span class="text-overline q-ml-sm">v{{ currentTRMMVersion }}</span>
           <!-- update check -->
           <q-chip
             v-if="updateAvailable"
