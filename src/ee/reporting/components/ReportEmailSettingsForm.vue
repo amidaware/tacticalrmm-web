@@ -19,6 +19,7 @@ For details, see: https://license.tacticalrmm.com/ee
           label="Subject"
           dense
           filled
+          hint="Default if left blank: 'Scheduled Report: <report name>'"
         />
       </q-card-section>
 
@@ -29,7 +30,7 @@ For details, see: https://license.tacticalrmm.com/ee
           label="Body"
           dense
           filled
-          hint="Report link will be included at end of body if html report is used"
+          hint="Default if blank: 'Your report is attached.'"
         />
       </q-card-section>
 
@@ -39,8 +40,34 @@ For details, see: https://license.tacticalrmm.com/ee
           label="Attachment Name"
           dense
           filled
-          hint="Don't include extension"
+          hint="Do not include the extension."
         />
+      </q-card-section>
+
+      <q-card-section
+        v-if="props.format === 'plaintext'"
+        class="q-pa-md"
+        style="padding-top: 0"
+      >
+        <q-input
+          v-model="localEmailSettings.attachment_extension"
+          label="Attachment Extension"
+          dense
+          filled
+          prefix="."
+          hint="Enter the desired extension without a dot (e.g., csv, json, txt). Defaults to 'txt' if blank."
+        />
+      </q-card-section>
+
+      <q-card-section v-if="props.format === 'html'" class="q-pa-md">
+        <q-checkbox
+          v-model="localEmailSettings.include_report_link"
+          label="Include a direct link to view the report online (requires authentication)."
+        >
+          <q-tooltip class="text-caption">
+            The link will be automatically added at the end of the email body.
+          </q-tooltip>
+        </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -61,10 +88,11 @@ For details, see: https://license.tacticalrmm.com/ee
 import { reactive } from "vue";
 import { useDialogPluginComponent, extend } from "quasar";
 
-import { EmailSettings } from "../types/reporting";
+import { EmailSettings, ReportFormat } from "../types/reporting";
 
 const props = defineProps<{
   emailSettings: EmailSettings;
+  format: ReportFormat;
 }>();
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -77,6 +105,8 @@ const localEmailSettings = reactive<EmailSettings>(
         subject: "",
         body: "",
         attachment_name: "",
+        attachment_extension: "",
+        include_report_link: false,
       },
 );
 

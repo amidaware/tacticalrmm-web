@@ -99,4 +99,6 @@ export interface EmailSettings {
   subject?: string;
   body?: string;
   attachment_name?: string;
+  attachment_extension?: string;
+  include_report_link?: boolean;
 }

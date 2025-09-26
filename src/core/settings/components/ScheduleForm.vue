@@ -41,7 +41,6 @@
             stack-label
             filled
             v-model="localSchedule.run_time"
-            hint="Agent or global timezone will be used."
             :rules="[(val) => !!val || '*Required']"
           />
         </q-card-section>

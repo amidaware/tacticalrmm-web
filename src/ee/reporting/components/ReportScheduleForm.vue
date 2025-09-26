@@ -156,8 +156,9 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-list v-else>
                 <q-item-section>
                   <q-item-label
-                    >No recipients added yet. Default email recipients from
-                    global settings will be used.</q-item-label
+                    >No recipients added yet. Emails will be sent to the default
+                    recipients from global settings. Adding recipients here will
+                    override those defaults.</q-item-label
                   >
                 </q-item-section>
               </q-list>
@@ -247,8 +248,9 @@ const { reportTemplateOptions } = useReportTemplateDropdown();
 const { scheduleOptions } = useScheduleDropdown();
 
 const formatOptions: { label: string; value: ReportFormat }[] = [
-  { label: "PDF", value: "pdf" },
   { label: "HTML", value: "html" },
+  { label: "PDF", value: "pdf" },
+  { label: "Plain Text (or CSV)", value: "plaintext" },
 ];
 
 const localSchedule = reactive<ReportSchedule>(
@@ -259,12 +261,18 @@ const localSchedule = reactive<ReportSchedule>(
         name: "",
         enabled: true,
         report_template: props.reportTemplate,
-        format: "pdf",
+        format: "html",
         schedule: undefined,
         email_recipients: [],
         send_report_email: true,
         dependencies: {},
-        email_settings: {},
+        email_settings: {
+          subject: "",
+          body: "",
+          attachment_name: "",
+          attachment_extension: "",
+          include_report_link: false,
+        },
         timezone: null,
       },
 );
@@ -339,6 +347,7 @@ function openEmailSettings() {
     component: ReportEmailSettingsForm,
     componentProps: {
       emailSettings: localSchedule.email_settings,
+      format: localSchedule.format,
     },
   }).onOk((data: EmailSettings) => (localSchedule.email_settings = data));
 }
