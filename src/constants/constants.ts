@@ -1,4 +1,4 @@
-import { RegistryValue } from "@/types/agents";
+// import { RegistryValue } from "@/types/agents";
 import type { QTableColumn } from "quasar";
 
 export const GOARCH_AMD64 = "amd64";
@@ -19,16 +19,16 @@ export const registryTableColumns: QTableColumn[] = [
     field: "name",
     align: "left",
     style:
-      "width: 220px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
-    headerStyle: "width: 220px; max-width: 220px;",
+      "width: 240px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+    headerStyle: "width: 240px; max-width: 240px;",
   },
   {
     name: "type",
     label: "Type",
     field: "type",
     align: "left",
-    style: "width: 120px; max-width: 120px; white-space: nowrap;",
-    headerStyle: "width: 120px; max-width: 120px;",
+    style: "width: 160px; max-width: 160px; white-space: nowrap;",
+    headerStyle: "width: 160px; max-width: 160px;",
   },
   {
     name: "data",
@@ -50,29 +50,3 @@ export const registryValueTypes = [
   { label: "Multi-String Value", type: "REG_MULTI_SZ" },
   { label: "Expandable String Value", type: "REG_EXPAND_SZ" },
 ];
-
-export const dummyRegistry: Record<
-  string,
-  { keys?: string[]; values?: RegistryValue[] }
-> = {
-  HKEY_CURRENT_USER: { keys: ["Software", "Environment", "Console"] },
-  "HKEY_CURRENT_USER\\Console": {
-    values: [{ name: "(Default)", type: "REG_SZ", data: "(value not set)" }],
-  },
-  HKEY_LOCAL_MACHINE: { keys: ["SOFTWARE", "SYSTEM"] },
-  "HKEY_LOCAL_MACHINE\\SOFTWARE": { keys: ["Microsoft", "Wow6432Node"] },
-  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft": {
-    values: [
-      {
-        name: "InstallPath (x86) and (x64) merged for demo",
-        type: "REG_SZ",
-        data: "C:\\Program Files\\Microsoft",
-      },
-      { name: "Version", type: "REG_DWORD", data: "0x00000001 (1)" },
-    ],
-  },
-  HKEY_USERS: { keys: ["S-1-5-18", "S-1-5-19"] },
-  "HKEY_USERS\\S-1-5-18\\Console": {
-    values: [{ name: "(Default)", type: "REG_SZ", data: "(value not set)" }],
-  },
-};
