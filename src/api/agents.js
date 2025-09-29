@@ -265,3 +265,55 @@ export async function wakeUpWOL(agent_id) {
   const { data } = await axios.post(`${baseUrl}/${agent_id}/wol/`);
   return data;
 }
+
+export async function fetchAgentRegistry(agent_id, path) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/${agent_id}/registry/`, {
+      params: { path: `${path}` },
+    });
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteRegistryKey(agent_id, path) {
+  try {
+    const { data } = await axios.delete(
+      `${baseUrl}/${agent_id}/registry/delete-key/`,
+      {
+        params: { path: `${path}` },
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function createRegistryKey(agent_id, path) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agent_id}/registry/create-key/`,
+      { path },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function renameRegistryKey(agent_id, old_path, new_path) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agent_id}/registry/rename-key/`,
+      { old_path, new_path },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
