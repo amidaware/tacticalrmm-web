@@ -317,3 +317,35 @@ export async function renameRegistryKey(agent_id, old_path, new_path) {
     throw e;
   }
 }
+
+export async function deleteRegistryValue(agent_id, path, name) {
+  try {
+    const { data } = await axios.delete(
+      `${baseUrl}/${agent_id}/registry/delete-value/`,
+      {
+        params: { path, name },
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to delete value:", e);
+    throw e;
+  }
+}
+
+export async function renameRegistryValue(agentId, path, oldName, newName) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/rename-value/`,
+      {
+        path,
+        old_name: oldName,
+        new_name: newName,
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to rename value:", e);
+    throw e;
+  }
+}

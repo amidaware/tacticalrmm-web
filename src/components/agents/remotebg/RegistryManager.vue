@@ -143,8 +143,22 @@
             >
               <template #body-cell-name="props">
                 <q-td :props="props" class="registry-cell">
-                  <div class="cell-text">{{ props.row.name }}</div>
-                  <div class="cell-hover">{{ props.row.name }}</div>
+                  <q-input
+                    v-if="editingValueName === props.row.name"
+                    v-model="editValueName"
+                    dense
+                    autofocus
+                    :id="`value-input-${props.row.name}`"
+                    @keyup.enter="finishRenameValue(props.row, 'enter')"
+                    @blur="finishRenameValue(props.row, 'blur')"
+                    outlined
+                    style="max-width: 200px"
+                    @click.stop
+                  />
+                  <div v-else>
+                    <div class="cell-text">{{ props.row.name }}</div>
+                    <div class="cell-hover">{{ props.row.name }}</div>
+                  </div>
                   <q-menu
                     context-menu
                     transition-show="jump-up"
@@ -161,7 +175,7 @@
                       <q-item
                         clickable
                         v-close-popup
-                        @click="openDialog('rename', props.row)"
+                        @click="renameValue(props.row)"
                       >
                         <q-item-section>Rename</q-item-section>
                       </q-item>
@@ -187,26 +201,19 @@
         </div>
       </template>
     </q-splitter>
-    <!-- Confirm Delete Key Dialog -->
-    <q-dialog v-model="confirmDeleteKeyDialog" persistent>
-      <q-card style="min-width: 420px; max-width: 500px">
-        <q-card-section class="text-subtitle1 text-bold">
-          Confirm Key Delete
-        </q-card-section>
-        <q-card-section class="row items-start q-gutter-sm flex-nowrap">
-          <q-icon name="warning" color="orange" size="32px" />
-          <div>
-            Are you sure you want to permanently delete this key and all of its
-            subkeys?
-          </div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right">
-          <q-btn flat label="Yes" color="primary" @click="confirmDeleteKey" />
-          <q-btn flat label="No" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <!-- Confirm Delete Key/Value Dialog -->
+    <ConfirmDialog
+      v-model="confirmDeleteKeyDialog"
+      title="Confirm Key Delete"
+      message="Are you sure you want to permanently delete this key and all of its subkeys?"
+      @confirm="confirmDeleteKey"
+    />
+    <ConfirmDialog
+      v-model="confirmDeleteValueDialog"
+      title="Confirm Value Delete"
+      message="Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?"
+      @confirm="confirmDeleteValue"
+    />
 
     <q-dialog v-model="editDialog">
       <q-card style="min-width: 400px">
@@ -253,9 +260,12 @@ import { RegistryNode, RegistryValue } from "@/types/agents";
 import {
   createRegistryKey,
   deleteRegistryKey,
+  deleteRegistryValue,
   fetchAgentRegistry,
   renameRegistryKey,
+  renameRegistryValue,
 } from "@/api/agents";
+import ConfirmDialog from "@/components/ui/ConfirmDialog.vue";
 
 const props = defineProps<{
   agent_id: string;
@@ -282,9 +292,14 @@ const renameRow = ref<RegistryValue>({ name: "", type: "", data: "" });
 let originalName = ref<string>("");
 const confirmDeleteKeyDialog = ref(false);
 const nodeToDelete = ref<RegistryNode | null>(null);
-
+const confirmDeleteValueDialog = ref(false);
+const valueToDelete = ref<RegistryValue | null>(null);
+const editingValueName = ref<string | null>(null);
+const editValueName = ref("");
 const renameOpenedAt = ref<number | null>(null);
 const isFinishingRename = ref(false);
+const valueRenameOpenedAt = ref<number | null>(null);
+const isFinishingValueRename = ref(false);
 
 onMounted(async () => {
   loading.value = true;
@@ -429,11 +444,6 @@ function saveRow(type: "edit" | "rename") {
     }
     renameDialog.value = false;
   }
-}
-
-function deleteValue(row: RegistryValue) {
-  console.log("TODO: API call → delete value", row);
-  tableRows.value = tableRows.value.filter((r) => r.name !== row.name);
 }
 
 function refreshParent(parentId: string) {
@@ -600,6 +610,90 @@ function renameKey(node: RegistryNode) {
     inputEl?.focus();
     inputEl?.select();
   });
+}
+
+function deleteValue(row: RegistryValue) {
+  valueToDelete.value = row;
+  confirmDeleteValueDialog.value = true;
+}
+
+async function confirmDeleteValue() {
+  if (!valueToDelete.value || !currentPath.value) return;
+  loading.value = true;
+  try {
+    await deleteRegistryValue(
+      props.agent_id,
+      currentPath.value,
+      valueToDelete.value.name,
+    );
+    tableRows.value = tableRows.value.filter(
+      (r) => r.name !== valueToDelete.value!.name,
+    );
+  } catch (err) {
+    console.error("Failed to delete registry value:", err);
+  } finally {
+    confirmDeleteValueDialog.value = false;
+    valueToDelete.value = null;
+    loading.value = false;
+  }
+}
+
+function renameValue(row: RegistryValue) {
+  editingValueName.value = row.name;
+  editValueName.value = row.name;
+  valueRenameOpenedAt.value = Date.now();
+  console.log("------------------", editingValueName.value);
+  nextTick(() => {
+    const inputEl = document.querySelector<HTMLInputElement>(
+      `#value-input-${row.name}`,
+    );
+    inputEl?.focus();
+    inputEl?.select();
+  });
+}
+
+async function finishRenameValue(
+  row: RegistryValue,
+  source: "enter" | "blur" = "enter",
+) {
+  if (isFinishingValueRename.value) return;
+  if (source === "blur" && valueRenameOpenedAt.value) {
+    const elapsed = Date.now() - valueRenameOpenedAt.value;
+    if (elapsed < 150) {
+      return;
+    }
+  }
+  valueRenameOpenedAt.value = null;
+  isFinishingValueRename.value = true;
+  if (!currentPath.value) {
+    isFinishingValueRename.value = false;
+    return;
+  }
+  const newName = editValueName.value.trim() || row.name;
+  if (newName === row.name) {
+    editingValueName.value = null;
+    isFinishingValueRename.value = false;
+    return;
+  }
+  try {
+    loading.value = true;
+    await renameRegistryValue(
+      props.agent_id,
+      currentPath.value,
+      row.name,
+      newName,
+    );
+    const index = tableRows.value.findIndex((r) => r.name === row.name);
+    if (index !== -1) {
+      tableRows.value[index].name = newName;
+    }
+  } catch (err) {
+    console.error("Failed to rename value:", err);
+  } finally {
+    editingValueName.value = null;
+    loading.value = false;
+    isFinishingValueRename.value = false;
+  }
 }
 </script>
 
