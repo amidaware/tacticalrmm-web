@@ -168,7 +168,7 @@
                       <q-item
                         clickable
                         v-close-popup
-                        @click="openDialog('edit', props.row)"
+                        @click="openModifyDialog(props.row)"
                       >
                         <q-item-section>Modify</q-item-section>
                       </q-item>
@@ -215,35 +215,36 @@
       @confirm="confirmDeleteValue"
     />
 
-    <q-dialog v-model="editDialog">
-      <q-card style="min-width: 400px">
-        <q-card-section>
-          <div class="text-h6">Edit Registry Value</div>
+    <q-dialog v-model="modifyDialog" persistent>
+      <q-card style="min-width: 420px; max-width: 480px">
+        <q-card-section class="q-pb-none">
+          <div class="text-subtitle1">Edit String</div>
         </q-card-section>
         <q-card-section>
-          <q-input v-model="editRow.name" label="Name" filled disable />
-          <q-input v-model="editRow.type" label="Type" filled disable />
-          <q-input v-model="editRow.data" label="Data" filled type="textarea" />
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat dense label="Cancel" v-close-popup />
-          <q-btn flat label="Save" color="primary" @click="saveRow('edit')" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <!-- Rename Dialog -->
-    <q-dialog v-model="renameDialog">
-      <q-card style="min-width: 400px">
-        <q-card-section>
-          <div class="text-h6">Rename Registry Value</div>
+          <div class="text-body2 q-mb-xs">Value name:</div>
+          <q-input v-model="modifyRow.name" dense outlined readonly disable />
         </q-card-section>
         <q-card-section>
-          <q-input v-model="renameRow.name" label="New Name" filled />
+          <div class="text-body2 q-mb-xs">Value data:</div>
+          <q-input
+            v-if="modifyRow.type === 'REG_MULTI_SZ'"
+            v-model="modifyRow.data"
+            type="textarea"
+            outlined
+            autofocus
+          />
+          <q-input
+            v-else
+            v-model="modifyRow.data"
+            type="text"
+            outlined
+            dense
+            autofocus
+          />
         </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat dense label="Cancel" v-close-popup />
-          <q-btn flat label="Save" color="primary" @click="saveRow('rename')" />
+        <q-card-actions align="right" class="q-gutter-sm">
+          <q-btn label="OK" color="primary" unelevated @click="saveModify" />
+          <q-btn label="Cancel" flat v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -262,6 +263,7 @@ import {
   deleteRegistryKey,
   deleteRegistryValue,
   fetchAgentRegistry,
+  modifyRegistryValue,
   renameRegistryKey,
   renameRegistryValue,
 } from "@/api/agents";
@@ -284,12 +286,7 @@ const editLabel = ref("");
 const emptySpaceMenu = ref(false);
 
 // Dialog state
-const editDialog = ref(false);
-const renameDialog = ref(false);
 const registryTree = ref();
-const editRow = ref<RegistryValue>({ name: "", type: "", data: "" });
-const renameRow = ref<RegistryValue>({ name: "", type: "", data: "" });
-let originalName = ref<string>("");
 const confirmDeleteKeyDialog = ref(false);
 const nodeToDelete = ref<RegistryNode | null>(null);
 const confirmDeleteValueDialog = ref(false);
@@ -300,6 +297,8 @@ const renameOpenedAt = ref<number | null>(null);
 const isFinishingRename = ref(false);
 const valueRenameOpenedAt = ref<number | null>(null);
 const isFinishingValueRename = ref(false);
+const modifyDialog = ref(false);
+const modifyRow = ref<RegistryValue>({ name: "", type: "", data: "" });
 
 onMounted(async () => {
   loading.value = true;
@@ -412,37 +411,6 @@ async function confirmDeleteKey() {
     confirmDeleteKeyDialog.value = false;
     nodeToDelete.value = null;
     loading.value = false;
-  }
-}
-
-function openDialog(type: "edit" | "rename", row: RegistryValue) {
-  if (type === "edit") {
-    editRow.value = { ...row };
-    editDialog.value = true;
-  } else {
-    renameRow.value = { ...row };
-    originalName.value = row.name;
-    renameDialog.value = true;
-  }
-}
-
-function saveRow(type: "edit" | "rename") {
-  if (type === "edit") {
-    const index = tableRows.value.findIndex(
-      (r) => r.name === editRow.value.name,
-    );
-    if (index !== -1) {
-      tableRows.value[index] = { ...editRow.value };
-    }
-    editDialog.value = false;
-  } else {
-    const index = tableRows.value.findIndex(
-      (r) => r.name === originalName.value,
-    );
-    if (index !== -1) {
-      tableRows.value[index].name = renameRow.value.name;
-    }
-    renameDialog.value = false;
   }
 }
 
@@ -642,7 +610,6 @@ function renameValue(row: RegistryValue) {
   editingValueName.value = row.name;
   editValueName.value = row.name;
   valueRenameOpenedAt.value = Date.now();
-  console.log("------------------", editingValueName.value);
   nextTick(() => {
     const inputEl = document.querySelector<HTMLInputElement>(
       `#value-input-${row.name}`,
@@ -695,6 +662,39 @@ async function finishRenameValue(
     isFinishingValueRename.value = false;
   }
 }
+
+function openModifyDialog(row: RegistryValue) {
+  if (row.type === "REG_SZ" || row.type === "REG_MULTI_SZ") {
+    modifyRow.value = { ...row };
+    modifyDialog.value = true;
+  } else {
+    console.warn("Modify not yet implemented for type:", row.type);
+  }
+}
+async function saveModify() {
+  if (!currentPath.value) return;
+  try {
+    loading.value = true;
+    await modifyRegistryValue(
+      props.agent_id,
+      currentPath.value,
+      modifyRow.value.name,
+      modifyRow.value.type,
+      modifyRow.value.data,
+    );
+    const index = tableRows.value.findIndex(
+      (r) => r.name === modifyRow.value.name,
+    );
+    if (index !== -1) {
+      tableRows.value[index].data = modifyRow.value.data;
+    }
+  } catch (err) {
+    console.error("Failed to modify value:", err);
+  } finally {
+    modifyDialog.value = false;
+    loading.value = false;
+  }
+}
 </script>
 
 <style scoped>
@@ -712,7 +712,8 @@ async function finishRenameValue(
   top: -1px;
   left: 0;
   white-space: nowrap;
-  background: rgb(156, 153, 153);
+  background: #e0e0e0;
+  color: #000000;
   display: none;
   padding: 5px 6px 3px 16px;
   min-width: 100%;

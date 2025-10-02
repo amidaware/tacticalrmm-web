@@ -349,3 +349,27 @@ export async function renameRegistryValue(agentId, path, oldName, newName) {
     throw e;
   }
 }
+
+export async function modifyRegistryValue(
+  agentId,
+  path,
+  name,
+  type,
+  dataValue,
+) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/modify-value/`,
+      {
+        path,
+        name,
+        type,
+        data: dataValue,
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to modify registry value:", e);
+    throw e;
+  }
+}
