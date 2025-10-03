@@ -62,7 +62,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section v-if="props.format === 'html'" class="q-pa-md">
         <q-checkbox
           v-model="localEmailSettings.include_report_link"
-          label="Include a direct link to view the report online (requires authentication)."
+          label="Include a direct link to view the report online (requires TRMM account authentication)."
         >
           <q-tooltip class="text-caption">
             The link will be automatically added at the end of the email body.
