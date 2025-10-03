@@ -19,7 +19,7 @@ jobs:
 
       - run: touch env-config.js
 
-      - run: sudo npm install -g npm@11.6.0
+      - run: sudo npm install -g npm@11.6.1
 
       - name: Install
         run: npm install

@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: "20.19.5"
 
-      - run: sudo npm install -g npm@11.6.0
+      - run: sudo npm install -g npm@11.6.1
 
       - run: npm install
 
