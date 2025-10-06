@@ -44,7 +44,6 @@ export const registryTableColumns: QTableColumn[] = [
 export const registryValueTypes = [
   { label: "Key", type: "KEY" },
   { label: "String Value", type: "REG_SZ" },
-  { label: "Binary Value", type: "REG_BINARY" },
   { label: "DWORD (32-bit) Value", type: "REG_DWORD" },
   { label: "QWORD (64-bit) Value", type: "REG_QWORD" },
   { label: "Multi-String Value", type: "REG_MULTI_SZ" },

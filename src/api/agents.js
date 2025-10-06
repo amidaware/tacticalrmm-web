@@ -373,3 +373,21 @@ export async function modifyRegistryValue(
     throw e;
   }
 }
+
+export async function createRegistryValue(agentId, path, name, type, data) {
+  const formData = new FormData();
+  formData.append("path", path);
+  formData.append("name", name);
+  formData.append("type", type);
+  formData.append("data", data);
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/create-value/`,
+      formData,
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to create registry value:", e);
+    throw e;
+  }
+}
