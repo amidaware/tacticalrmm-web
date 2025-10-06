@@ -22,5 +22,5 @@ export interface RegistryNode {
 export interface RegistryValue {
   name: string;
   type: string;
-  data: string;
+  data: string | number | string[];
 }
