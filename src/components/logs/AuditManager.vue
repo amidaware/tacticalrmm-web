@@ -266,6 +266,8 @@ const objectOptions = [
   { value: "urlaction", label: "URL Action" },
   { value: "keystore", label: "Global Key Store" },
   { value: "customfield", label: "Custom Field" },
+  { value: "schedule", label: "Schedule" },
+  { value: "reportschedule", label: "Report Schedule" },
 ];
 
 const timeOptions = [
@@ -414,7 +416,7 @@ export default {
             agentFilter.value = [props.agent];
             search();
           }
-        }
+        },
       );
     }
 
@@ -460,7 +462,7 @@ export default {
       tableNoDataText: computed(() =>
         searched.value
           ? "No data found. Try to refine you search"
-          : "Click search to find audit logs"
+          : "Click search to find audit logs",
       ),
 
       // methods

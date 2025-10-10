@@ -14,6 +14,7 @@
           <q-tab name="retention" label="Retention" />
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
+          <q-tab name="schedules" label="Schedules" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -632,6 +633,17 @@
                     hint="Setting this value to 0 disables this feature"
                   />
                 </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Report History (days):</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    dense
+                    outlined
+                    v-model="settings.report_history_prune_days"
+                    class="col-6"
+                    hint="Setting this value to 0 disables this feature"
+                  />
+                </q-card-section>
               </q-tab-panel>
 
               <q-tab-panel name="apikeys">
@@ -641,6 +653,11 @@
               <!-- sso integration -->
               <q-tab-panel name="sso">
                 <SSOProvidersTable />
+              </q-tab-panel>
+
+              <!-- schedules -->
+              <q-tab-panel name="schedules">
+                <ScheduleTable />
               </q-tab-panel>
 
               <!-- Open AI -->
@@ -690,10 +707,11 @@
           <q-card-section class="row items-center">
             <q-btn
               v-show="
-                tab !== 'customfields' &&
-                tab !== 'keystore' &&
-                tab !== 'urlactions' &&
-                tab !== 'sso'
+                tab === 'general' ||
+                tab === 'emailalerts' ||
+                tab === 'smsalerts' ||
+                tab === 'meshcentral' ||
+                tab === 'retention'
               "
               label="Save"
               color="primary"
@@ -732,6 +750,7 @@ import URLActionsTable from "@/components/modals/coresettings/URLActionsTable.vu
 import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -743,6 +762,7 @@ export default {
     APIKeysTable,
     SSOProvidersTable,
     TacticalDropdown,
+    ScheduleTable,
   },
   mixins: [mixins],
   data() {

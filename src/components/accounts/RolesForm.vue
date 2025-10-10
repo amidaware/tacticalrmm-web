@@ -188,6 +188,14 @@
                 label="Edit Custom Fields"
               />
               <q-checkbox
+                v-model="localRole.can_view_schedules"
+                label="List Schedules"
+              />
+              <q-checkbox
+                v-model="localRole.can_manage_schedules"
+                label="Manage Schedules"
+              />
+              <q-checkbox
                 v-if="!hosted"
                 v-model="localRole.can_use_webterm"
                 label="Use TRMM Server Web Terminal"
@@ -492,6 +500,8 @@ export default {
           can_run_urlactions: false,
           can_view_customfields: false,
           can_manage_customfields: false,
+          can_view_schedules: false,
+          can_manage_schedules: false,
           // api key perms
           can_list_api_keys: false,
           can_manage_api_keys: false,

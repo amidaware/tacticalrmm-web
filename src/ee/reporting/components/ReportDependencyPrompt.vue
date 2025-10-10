@@ -80,6 +80,7 @@ import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
+import { ReportDependencies } from "../types/reporting";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -87,6 +88,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 // props
 const props = defineProps<{
   dependsOn: string[];
+  values?: ReportDependencies;
 }>();
 
 // quasar dialog setup
@@ -98,8 +100,13 @@ const { clientOptions, getClientOptions } = useClientDropdown();
 const { siteOptions, getSiteOptions } = useSiteDropdown();
 
 // logic
-const dependencies = reactive<{ [x: string]: string | number | null }>({});
-props.dependsOn.forEach((dep) => (dependencies[dep] = null));
+const dependencies = props.values
+  ? reactive(props.values)
+  : reactive<{ [x: string]: string | number | null }>({});
+
+props.dependsOn.forEach((dep) => {
+  if (!dependencies[dep]) dependencies[dep] = null;
+});
 
 const loading = ref(false);
 
