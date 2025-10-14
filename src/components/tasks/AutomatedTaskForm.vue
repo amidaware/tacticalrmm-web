@@ -798,8 +798,15 @@
 
 <script>
 // composition imports
-import { computed, ref, watch, onMounted, defineComponent } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import {
+  computed,
+  reactive,
+  ref,
+  watch,
+  onMounted,
+  defineComponent,
+} from "vue";
+import { useDialogPluginComponent, extend } from "quasar";
 import draggable from "vuedraggable";
 import { saveTask, updateTask } from "@/api/tasks";
 import { useScriptDropdown } from "@/composables/scripts";
@@ -928,9 +935,9 @@ export default defineComponent({
     });
 
     // add task logic
-    const task = props.task
-      ? ref(Object.assign({}, props.task))
-      : ref({
+    const localTask = props.task
+      ? reactive(extend(true, {}, props.task))
+      : reactive({
           ...props.parent,
           actions: [],
           assigned_check: null,
@@ -961,8 +968,8 @@ export default defineComponent({
     const isPosix = computed(() => {
       return (
         (!!props.plat && props.plat !== "windows") ||
-        task.value.task_supported_platforms?.includes("linux") ||
-        task.value.task_supported_platforms?.includes("darwin")
+        localTask.task_supported_platforms?.includes("linux") ||
+        localTask.task_supported_platforms?.includes("darwin")
       );
     });
 
@@ -983,7 +990,7 @@ export default defineComponent({
     });
 
     // set the default, have to do it this way to avoid circular dependency issue
-    task.value.task_supported_platforms = task_supported_platforms.value;
+    localTask.task_supported_platforms = task_supported_platforms.value;
 
     const actionType = ref("script");
     const command = ref("");
@@ -998,21 +1005,21 @@ export default defineComponent({
     // if all months is selected or cleared it will either clear the monthly_months_of_year array or add all options to it.
     const allMonthsCheckbox = ref(false);
     function toggleMonths() {
-      task.value.monthly_months_of_year = allMonthsCheckbox.value
+      localTask.monthly_months_of_year = allMonthsCheckbox.value
         ? monthOptions.map((month) => month.value)
         : [];
     }
 
     const allMonthDaysCheckbox = ref(false);
     function toggleMonthDays() {
-      task.value.monthly_days_of_month = allMonthDaysCheckbox.value
+      localTask.monthly_days_of_month = allMonthDaysCheckbox.value
         ? dayOfMonthOptions.map((day) => day.value)
         : [];
     }
 
     const allWeekDaysCheckbox = ref(false);
     function toggleWeekDays() {
-      task.value.run_time_bit_weekdays = allWeekDaysCheckbox.value
+      localTask.run_time_bit_weekdays = allWeekDaysCheckbox.value
         ? dayOfWeekOptions.map((day) => day.value)
         : [];
     }
@@ -1034,7 +1041,7 @@ export default defineComponent({
       }
 
       if (actionType.value === "script") {
-        task.value.actions.push({
+        localTask.actions.push({
           type: "script",
           name: scriptName.value,
           script: script.value,
@@ -1049,7 +1056,7 @@ export default defineComponent({
         } else {
           tempShell = shell.value;
         }
-        task.value.actions.push({
+        localTask.actions.push({
           type: "cmd",
           command: command.value,
           shell: tempShell,
@@ -1066,7 +1073,7 @@ export default defineComponent({
     }
 
     function removeAction(index) {
-      task.value.actions.splice(index, 1);
+      localTask.actions.splice(index, 1);
     }
 
     // runs whenever task data is saved
@@ -1101,7 +1108,7 @@ export default defineComponent({
       if (taskData.expire_date) data.expire_date += "Z";
 
       // change task type if monthly day of week is set
-      if (task.value.task_type === "monthly" && monthlyType.value === "weeks") {
+      if (localTask.task_type === "monthly" && monthlyType.value === "weeks") {
         data.task_type = "monthlydow";
       }
 
@@ -1111,34 +1118,34 @@ export default defineComponent({
     // runs when editing a task to convert values to be compatible with quasar
     function processTaskDatafromDB() {
       // converts fields from integers to arrays
-      task.value.run_time_bit_weekdays = task.value.run_time_bit_weekdays
-        ? convertToBitArray(task.value.run_time_bit_weekdays)
+      localTask.run_time_bit_weekdays = localTask.run_time_bit_weekdays
+        ? convertToBitArray(localTask.run_time_bit_weekdays)
         : [];
-      task.value.monthly_months_of_year = task.value.monthly_months_of_year
-        ? convertToBitArray(task.value.monthly_months_of_year)
+      localTask.monthly_months_of_year = localTask.monthly_months_of_year
+        ? convertToBitArray(localTask.monthly_months_of_year)
         : [];
-      task.value.monthly_days_of_month = task.value.monthly_days_of_month
-        ? convertToBitArray(task.value.monthly_days_of_month)
+      localTask.monthly_days_of_month = localTask.monthly_days_of_month
+        ? convertToBitArray(localTask.monthly_days_of_month)
         : [];
-      task.value.monthly_weeks_of_month = task.value.monthly_weeks_of_month
-        ? convertToBitArray(task.value.monthly_weeks_of_month)
+      localTask.monthly_weeks_of_month = localTask.monthly_weeks_of_month
+        ? convertToBitArray(localTask.monthly_weeks_of_month)
         : [];
 
       // remove milliseconds and Z to work with native date input
-      task.value.run_time_date = formatDateInputField(
-        task.value.run_time_date,
+      localTask.run_time_date = formatDateInputField(
+        localTask.run_time_date,
         true,
       );
 
-      if (task.value.expire_date)
-        task.value.expire_date = formatDateInputField(
-          task.value.expire_date,
+      if (localTask.expire_date)
+        localTask.expire_date = formatDateInputField(
+          localTask.expire_date,
           true,
         );
 
       // set task type if monthlydow is being used
-      if (task.value.task_type === "monthlydow") {
-        task.value.task_type = "monthly";
+      if (localTask.task_type === "monthlydow") {
+        localTask.task_type = "monthly";
         monthlyType.value = "weeks";
       }
     }
@@ -1147,8 +1154,8 @@ export default defineComponent({
       loading.value = true;
       try {
         const result = props.task
-          ? await updateTask(task.value.id, processTaskDataforDB(task.value))
-          : await saveTask(processTaskDataforDB(task.value));
+          ? await updateTask(localTask.id, processTaskDataforDB(localTask))
+          : await saveTask(processTaskDataforDB(localTask));
         notifySuccess(result);
         onDialogOK();
       } catch (e) {
@@ -1161,22 +1168,22 @@ export default defineComponent({
     if (props.task) processTaskDatafromDB();
 
     watch(
-      () => task.value.task_type,
+      () => localTask.task_type,
       () => {
-        task.value.assigned_check = null;
-        task.value.run_time_bit_weekdays = [];
-        task.value.remove_if_not_scheduled = false;
-        task.value.task_repetition_interval = null;
-        task.value.task_repetition_duration = null;
-        task.value.stop_task_at_duration_end = false;
-        task.value.random_task_delay = null;
-        task.value.weekly_interval = 1;
-        task.value.daily_interval = 1;
-        task.value.monthly_months_of_year = [];
-        task.value.monthly_days_of_month = [];
-        task.value.monthly_weeks_of_month = [];
-        task.value.task_instance_policy = 0;
-        task.value.expire_date = null;
+        localTask.assigned_check = null;
+        localTask.run_time_bit_weekdays = [];
+        localTask.remove_if_not_scheduled = false;
+        localTask.task_repetition_interval = null;
+        localTask.task_repetition_duration = null;
+        localTask.stop_task_at_duration_end = false;
+        localTask.random_task_delay = null;
+        localTask.weekly_interval = 1;
+        localTask.daily_interval = 1;
+        localTask.monthly_months_of_year = [];
+        localTask.monthly_days_of_month = [];
+        localTask.monthly_weeks_of_month = [];
+        localTask.task_instance_policy = 0;
+        localTask.expire_date = null;
       },
     );
 
@@ -1190,16 +1197,13 @@ export default defineComponent({
     const isValidStep3 = ref(true);
 
     function validateStep(form, stepper) {
-      if (
-        step.value === 1 &&
-        task.value.task_supported_platforms.length === 0
-      ) {
+      if (step.value === 1 && localTask.task_supported_platforms.length === 0) {
         notifyError("There must be at least one supported platform");
         return;
       }
 
       if (step.value === 2) {
-        if (task.value.actions.length > 0) {
+        if (localTask.actions.length > 0) {
           isValidStep2.value = true;
           stepper.next();
           return;
@@ -1227,7 +1231,7 @@ export default defineComponent({
 
     return {
       // reactive data
-      state: task,
+      state: localTask,
       script,
       defaultTimeout,
       defaultArgs,

@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.101.55",
+  "version": "0.101.56",
   "private": true,
   "productName": "Tactical RMM",
   "scripts": {
@@ -17,15 +17,15 @@
     "@xterm/addon-fit": "0.10.0",
     "@xterm/xterm": "5.5.0",
     "apexcharts": "3.54.1",
-    "axios": "1.8.4",
-    "dompurify": "3.2.5",
+    "axios": "1.12.2",
+    "dompurify": "3.2.6",
     "dotenv": "16.4.5",
     "monaco-editor": "0.50.0",
     "pinia": "2.2.6",
     "qrcode": "1.5.4",
-    "quasar": "2.18.1",
-    "vue": "3.5.13",
-    "vue-router": "4.4.5",
+    "quasar": "2.18.5",
+    "vue": "3.5.22",
+    "vue-router": "4.5.1",
     "vue3-apexcharts": "1.7.0",
     "vuedraggable": "4.1.0",
     "vuex": "4.1.0",
@@ -43,6 +43,6 @@
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-vue": "8.7.1",
     "prettier": "3.3.3",
-    "typescript": "5.6.2"
+    "typescript": "5.9.2"
   }
 }

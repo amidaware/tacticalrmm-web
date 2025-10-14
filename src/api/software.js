@@ -27,6 +27,14 @@ export async function installAgentSoftware(agent_id, payload) {
   return data;
 }
 
+export async function uninstallAgentSoftware(agent_id, payload) {
+  const { data } = await axios.post(
+    `${baseUrl}/${agent_id}/uninstall/`,
+    payload,
+  );
+  return data;
+}
+
 export async function refreshAgentSoftware(agent_id) {
   try {
     const { data } = await axios.put(`${baseUrl}/${agent_id}/`);

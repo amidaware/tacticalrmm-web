@@ -139,6 +139,14 @@
               :rules="[(val) => val >= 5 || 'Minimum is 5']"
               hide-bottom-space
             />
+            <q-input
+              label="Syntax"
+              v-model="script.syntax"
+              dense
+              filled
+              autogrow
+              :readonly="readonly"
+            />
             <q-checkbox
               v-model="script.run_as_user"
               label="Run As User (Windows only)"
@@ -150,15 +158,6 @@
                 is logged in, the script will run as SYSTEM.
               </q-tooltip>
             </q-checkbox>
-            <q-input
-              label="Syntax"
-              type="textarea"
-              style="height: 150px; overflow-y: auto; resize: none"
-              v-model="script.syntax"
-              dense
-              filled
-              :readonly="readonly"
-            />
           </div>
         </q-scroll-area>
         <div
@@ -169,7 +168,7 @@
       </div>
       <q-card-actions>
         <tactical-dropdown
-          style="width: 450px"
+          style="width: 550px"
           dense
           :loading="agentLoading"
           filled
@@ -197,14 +196,29 @@
               color="secondary"
               dense
               flat
-              label="Test on Server"
+              label="Test on Tactical's Server"
               :disable="
                 !script.script_body ||
                 !script.default_timeout ||
                 !server_scripts_enabled
               "
               @click="openTestScriptModal('server')"
-            />
+            >
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                transition-show="fade"
+                transition-hide="fade"
+              >
+                <div>
+                  <strong>Runs on Tactical RMM local Linux Server.</strong
+                  ><br />
+                  Only available interpreters or frameworks will be used.<br />
+                  <em>Example:</em> PowerShell scripts require PowerShell to be
+                  installed on the system.
+                </div>
+              </q-tooltip>
+            </q-btn>
           </template>
         </tactical-dropdown>
         <q-space />
