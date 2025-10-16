@@ -98,6 +98,13 @@
                     </q-list>
                   </q-menu>
                 </q-item>
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="refreshNode(prop.node.id)"
+                >
+                  <q-item-section>Refresh</q-item-section>
+                </q-item>
                 <q-item clickable v-close-popup @click="renameKey(prop.node)">
                   <q-item-section>Rename</q-item-section>
                 </q-item>
@@ -384,6 +391,27 @@ async function loadChildren({
     done(pendingNodes.value[node.id] || []);
   } finally {
     loading.value = false;
+  }
+}
+
+function refreshNode(nodeId: string) {
+  const node = findNodeById(registryNodes.value, nodeId);
+  if (node) {
+    node.children = [];
+    nodePage.value[node.id] = 0;
+    nodeHasMore.value[node.id] = false;
+    pendingNodes.value[node.id] = [];
+    if (registryTree.value) {
+      registryTree.value.setExpanded(node.id, true);
+    }
+    loadChildren({
+      node,
+      done: (children: RegistryNode[]) => {
+        node.children = children;
+        registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
+      },
+    });
+    currentPath.value = nodeId || currentPath.value;
   }
 }
 
