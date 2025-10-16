@@ -36,8 +36,8 @@ export const registryTableColumns: QTableColumn[] = [
     field: "data",
     align: "left",
     style:
-      "min-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
-    headerStyle: "min-width: 300px;",
+      "min-width: 300px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+    headerStyle: "min-width: 300px; max-width: 300px;",
   },
 ];
 

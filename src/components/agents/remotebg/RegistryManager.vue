@@ -90,7 +90,7 @@
                         @click="
                           item.type === 'KEY'
                             ? createKey(prop.node)
-                            : createValue(prop.node, item.type)
+                            : createValue(prop.node, item.type, (newKey = true))
                         "
                       >
                         <q-item-section>{{ item.label }}</q-item-section>
@@ -150,7 +150,7 @@
                         @click="
                           item.type === 'KEY'
                             ? safeCreateKey()
-                            : createValue(undefined, item.type)
+                            : createValue(undefined, item.type, (newKey = true))
                         "
                       >
                         <q-item-section>{{ item.label }}</q-item-section>
@@ -231,10 +231,34 @@
               <template #body-cell-data="props">
                 <q-td :props="props">
                   <span v-if="Array.isArray(props.row.data)">
-                    {{ JSON.stringify(props.row.data).replace(/^\[|\]$/g, "") }}
+                    {{
+                      JSON.stringify(props.row.data)
+                        .replace(/^\[|\]$/g, "")
+                        .replace(/['"]/g, "")
+                        .replace(/,/g, ", ")
+                    }}
+                    <q-tooltip
+                      anchor="top middle"
+                      self="bottom middle"
+                      :offset="[10, 10]"
+                    >
+                      {{
+                        JSON.stringify(props.row.data)
+                          .replace(/^\[|\]$/g, "")
+                          .replace(/['"]/g, "")
+                          .replace(/,/g, ", ")
+                      }}
+                    </q-tooltip>
                   </span>
                   <span v-else>
                     {{ props.row.data }}
+                    <q-tooltip
+                      anchor="top middle"
+                      self="bottom middle"
+                      :offset="[10, 10]"
+                    >
+                      {{ props.row.data }}
+                    </q-tooltip>
                   </span>
                 </q-td>
               </template>
@@ -786,7 +810,7 @@ async function saveModify(row: RegistryValue) {
   try {
     loading.value = true;
     const existing = tableRows.value.find((r) => r.name === row.name);
-    if (existing) {
+    if (existing && !row.newKey) {
       const response = await modifyRegistryValue(
         props.agent_id,
         currentPath.value,
@@ -813,7 +837,11 @@ async function saveModify(row: RegistryValue) {
   }
 }
 
-function createValue(node: RegistryNode | undefined, type: string) {
+function createValue(
+  node: RegistryNode | undefined,
+  type: string,
+  newKey: boolean = false,
+) {
   const targetNode =
     node || findNodeById(registryNodes.value, selectedKey.value || "");
   if (!targetNode?.id) return;
@@ -825,7 +853,7 @@ function createValue(node: RegistryNode | undefined, type: string) {
         ? 0
         : "";
 
-  modifyRow.value = { name: defaultName, type, data: defaultData };
+  modifyRow.value = { name: defaultName, type, data: defaultData, newKey };
   modifyDialog.value = true;
   currentPath.value = targetNode.id;
 }
