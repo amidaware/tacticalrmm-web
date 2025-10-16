@@ -266,10 +266,10 @@ export async function wakeUpWOL(agent_id) {
   return data;
 }
 
-export async function fetchAgentRegistry(agent_id, path) {
+export async function fetchAgentRegistry(agent_id, path, page = 1) {
   try {
     const { data } = await axios.get(`${baseUrl}/${agent_id}/registry/`, {
-      params: { path: `${path}` },
+      params: { path: `${path}`, page },
     });
     return data;
   } catch (e) {

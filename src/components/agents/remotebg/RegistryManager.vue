@@ -21,6 +21,7 @@
         >
           <template v-slot:default-header="prop">
             <div
+              v-if="!prop.node.isLoadMore"
               class="row items-center nowrap flex-nowrap"
               @dblclick="toggleNode(prop.node)"
               style="cursor: pointer"
@@ -40,7 +41,30 @@
               />
               <span v-else>{{ prop.node.label }}</span>
             </div>
+            <div v-else class="q-ml-xs q-my-xs">
+              <q-btn
+                dense
+                size="sm"
+                color="primary"
+                label="Load More"
+                class="q-px-xs q-py-xs fontt-weight-medium"
+                :loading="
+                  loadingMoreNodes[getParentIdFromLoadNode(prop.node.id)]
+                "
+                @click.stop="onClickLoadMoreFromPlaceholder(prop.node)"
+              />
+              <!-- <q-icon
+                name="fa-solid fa-spinner"
+                class="q-mr-xs"
+                style="font-size: 15px"
+              /> -->
+              <!-- <q-icon name="sync" class="q-mr-xs" style="font-size: 15px" />
+              <span @click.stop="onClickLoadMoreFromPlaceholder(prop.node)"
+                >Load More</span
+              > -->
+            </div>
             <q-menu
+              v-if="!prop.node.isLoadMore"
               context-menu
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -119,7 +143,7 @@
                         @click="
                           item.type === 'KEY'
                             ? safeCreateKey()
-                            : safeCreateKey()
+                            : createValue(undefined, item.type)
                         "
                       >
                         <q-item-section>{{ item.label }}</q-item-section>
@@ -194,7 +218,14 @@
                 <q-td :props="props">{{ props.row.type }}</q-td>
               </template>
               <template #body-cell-data="props">
-                <q-td :props="props">{{ props.row.data }}</q-td>
+                <q-td :props="props">
+                  <span v-if="Array.isArray(props.row.data)">
+                    {{ JSON.stringify(props.row.data).replace(/^\[|\]$/g, "") }}
+                  </span>
+                  <span v-else>
+                    {{ props.row.data }}
+                  </span>
+                </q-td>
               </template>
             </q-table>
           </div>
@@ -231,6 +262,7 @@ import {
 import { RegistryNode, RegistryValue } from "@/types/agents";
 import {
   createRegistryKey,
+  createRegistryValue,
   deleteRegistryKey,
   deleteRegistryValue,
   fetchAgentRegistry,
@@ -257,8 +289,6 @@ const editingNodeId = ref<string | null>(null);
 const pendingNodes = ref<Record<string, RegistryNode[]>>({});
 const editLabel = ref("");
 const emptySpaceMenu = ref(false);
-
-// Dialog state
 const registryTree = ref();
 const confirmDeleteKeyDialog = ref(false);
 const nodeToDelete = ref<RegistryNode | null>(null);
@@ -273,6 +303,9 @@ const isFinishingValueRename = ref(false);
 const modifyDialog = ref(false);
 const modifyRow = ref({} as RegistryValue);
 const $q = useQuasar();
+const nodePage = ref<Record<string, number>>({});
+const nodeHasMore = ref<Record<string, boolean>>({});
+const loadingMoreNodes = ref<Record<string, boolean>>({});
 
 onMounted(async () => {
   loading.value = true;
@@ -316,7 +349,8 @@ async function loadChildren({
 }) {
   loading.value = true;
   try {
-    const data = await fetchAgentRegistry(props.agent_id, node.id);
+    const currentPage = nodePage.value[node.id] || 1;
+    const data = await fetchAgentRegistry(props.agent_id, node.id, currentPage);
     const keys = data?.subkeys || [];
     const children = keys.map((key: { name: string; hasSubkeys: boolean }) => {
       const id = node.id.endsWith("\\")
@@ -326,11 +360,25 @@ async function loadChildren({
         id,
         label: key.name,
         lazy: key.hasSubkeys,
-      };
+      } as RegistryNode;
     });
-
-    const tempNodes = pendingNodes.value[node.id] || [];
-    done([...tempNodes, ...children]);
+    nodeHasMore.value[node.id] = data?.has_more ?? false;
+    nodePage.value[node.id] = data?.page ?? currentPage;
+    if (nodeHasMore.value[node.id]) {
+      const placeholderId = makeLoadMoreId(node.id);
+      children.push({
+        id: placeholderId,
+        label: "Load More",
+        isLoadMore: true,
+        lazy: false,
+      } as RegistryNode);
+    }
+    const parent = findNodeById(registryNodes.value, node.id);
+    if (parent) {
+      parent.children = children;
+      registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
+    }
+    done(children);
   } catch (err) {
     console.error("Failed to load registry children:", err);
     done(pendingNodes.value[node.id] || []);
@@ -339,14 +387,70 @@ async function loadChildren({
   }
 }
 
+function onClickLoadMoreFromPlaceholder(placeholderNode: RegistryNode) {
+  const parentId = getParentIdFromLoadNode(placeholderNode.id);
+  const parent = findNodeById(registryNodes.value, parentId);
+  if (parent) {
+    loadMoreSubkeys(parent);
+  }
+}
+
+async function loadMoreSubkeys(parent: RegistryNode) {
+  if (!parent || !parent.id) return;
+  const parentId = parent.id;
+  loadingMoreNodes.value[parentId] = true;
+  try {
+    const nextPage = (nodePage.value[parentId] || 1) + 1;
+    const data = await fetchAgentRegistry(props.agent_id, parentId, nextPage);
+    const keys = data?.subkeys || [];
+    const newChildren = keys.map(
+      (key: { name: string; hasSubkeys: boolean }) => {
+        const id = parentId.endsWith("\\")
+          ? `${parentId}${key.name}\\`
+          : `${parentId}\\${key.name}\\`;
+        return {
+          id,
+          label: key.name,
+          lazy: key.hasSubkeys,
+        } as RegistryNode;
+      },
+    );
+    const filteredChildren = (parent.children ?? []).filter(
+      (c) => !c.isLoadMore,
+    );
+    parent.children = [...filteredChildren, ...newChildren];
+    nodeHasMore.value[parentId] = data?.has_more ?? false;
+    nodePage.value[parentId] = data?.page ?? nextPage;
+    if (nodeHasMore.value[parentId]) {
+      parent.children.push({
+        id: makeLoadMoreId(parentId),
+        label: "Load More",
+        isLoadMore: true,
+        lazy: false,
+      } as RegistryNode);
+    }
+    registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
+  } catch (err) {
+    console.error("Failed to load more subkeys:", err);
+  } finally {
+    loadingMoreNodes.value[parentId] = false;
+  }
+}
+
+function makeLoadMoreId(parentId: string) {
+  return `${parentId}__load_more__`;
+}
+function isLoadMoreId(id: string) {
+  return id.endsWith("__load_more__");
+}
+function getParentIdFromLoadNode(loadNodeId: string) {
+  return loadNodeId.replace(/__load_more__$/, "");
+}
+
 async function onKeySelect(nodeId: string) {
   if (!nodeId) return;
-  if (editingNodeId.value && nodeId === editingNodeId.value) {
-    return;
-  }
-  if (nodeId.includes("__temp_new_key__")) {
-    return;
-  }
+  if (editingNodeId.value && nodeId === editingNodeId.value) return;
+  if (nodeId.includes("__temp_new_key__") || isLoadMoreId(nodeId)) return;
   loading.value = true;
   try {
     const data = await fetchAgentRegistry(props.agent_id, nodeId);
@@ -537,10 +641,6 @@ function findNodeById(nodes: RegistryNode[], id: string): RegistryNode | null {
   return null;
 }
 
-function createValue(node: RegistryNode, type: string) {
-  console.log("TODO: API call → create value in", node.id, "of type", type);
-}
-
 function renameKey(node: RegistryNode) {
   editingNodeId.value = node.id;
   editLabel.value = node.label;
@@ -653,23 +753,49 @@ async function saveModify(row: RegistryValue) {
   if (!currentPath.value) return;
   try {
     loading.value = true;
-    await modifyRegistryValue(
-      props.agent_id,
-      currentPath.value,
-      row.name,
-      row.type,
-      String(row.data),
-    );
-    const index = tableRows.value.findIndex((r) => r.name === row.name);
-    if (index !== -1) {
-      tableRows.value[index].data = row.data;
+    const existing = tableRows.value.find((r) => r.name === row.name);
+    if (existing) {
+      const response = await modifyRegistryValue(
+        props.agent_id,
+        currentPath.value,
+        row.name,
+        row.type,
+        String(row.data),
+      );
+      existing.data = response.data.data;
+    } else {
+      const response = await createRegistryValue(
+        props.agent_id,
+        currentPath.value,
+        row.name,
+        row.type,
+        String(row.data),
+      );
+      tableRows.value.push(response.data);
     }
     modifyDialog.value = false;
   } catch (err) {
-    console.error("Failed to modify value:", err);
+    console.error("Failed to save value:", err);
   } finally {
     loading.value = false;
   }
+}
+
+function createValue(node: RegistryNode | undefined, type: string) {
+  const targetNode =
+    node || findNodeById(registryNodes.value, selectedKey.value || "");
+  if (!targetNode?.id) return;
+  const defaultName = "";
+  const defaultData =
+    type === "REG_MULTI_SZ"
+      ? []
+      : type === "REG_DWORD" || type === "REG_QWORD"
+        ? 0
+        : "";
+
+  modifyRow.value = { name: defaultName, type, data: defaultData };
+  modifyDialog.value = true;
+  currentPath.value = targetNode.id;
 }
 </script>
 

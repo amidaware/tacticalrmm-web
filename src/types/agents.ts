@@ -17,8 +17,8 @@ export interface RegistryNode {
   lazy?: boolean;
   children?: RegistryNode[];
   isComputer?: boolean;
+  isLoadMore?: boolean;
 }
-
 export interface RegistryValue {
   name: string;
   type: string;
