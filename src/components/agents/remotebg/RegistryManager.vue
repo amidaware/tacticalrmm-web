@@ -186,7 +186,11 @@
                     style="max-width: 200px"
                     @click.stop
                   />
-                  <div v-else>
+                  <div
+                    v-else
+                    @dblclick="openModifyDialog(props.row)"
+                    class="cursor-pointer"
+                  >
                     <div class="cell-text">{{ props.row.name }}</div>
                     <div class="cell-hover">{{ props.row.name }}</div>
                   </div>
