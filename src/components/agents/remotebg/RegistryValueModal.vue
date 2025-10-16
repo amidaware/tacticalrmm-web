@@ -7,7 +7,7 @@
     <q-card style="min-width: 420px; max-width: 480px">
       <q-card-section class="q-pb-none">
         <div class="text-subtitle1">
-          Edit
+          {{ row.name ? "Edit" : "Create" }}
           <span v-if="row.type === 'REG_DWORD'">DWORD (32-bit) Value</span>
           <span v-else-if="row.type === 'REG_QWORD'">QWORD (64-bit) Value</span>
           <span v-else-if="row.type === 'REG_MULTI_SZ'">Multi-String</span>
@@ -17,7 +17,17 @@
 
       <q-card-section>
         <div class="text-body2 q-mb-xs">Value name:</div>
-        <q-input v-model="localRow.name" dense outlined readonly disable />
+        <q-input
+          v-model="localRow.name"
+          ref="nameInputRef"
+          dense
+          outlined
+          :readonly="!!row.name"
+          :disable="!!row.name"
+          :autofocus="!row.name"
+          :rules="[(val) => !!val || 'Name is required']"
+          lazy-rules
+        />
       </q-card-section>
       <q-card-section>
         <div class="text-body2 q-mb-sm">Value data:</div>
@@ -27,7 +37,7 @@
           type="textarea"
           dense
           outlined
-          autofocus
+          :autofocus="!!row.name"
         />
         <div
           v-else-if="row.type === 'REG_DWORD' || row.type === 'REG_QWORD'"
@@ -40,6 +50,8 @@
               outlined
               autofocus
               :input-class="localBase === 'hex' ? 'text-uppercase' : ''"
+              :error="!!numericError"
+              :error-message="numericError"
               @keypress="onKeyPress"
             />
           </div>
@@ -61,16 +73,24 @@
         <q-input v-else v-model="stringValue" dense outlined autofocus />
       </q-card-section>
       <q-card-actions align="right" class="q-gutter-sm">
-        <q-btn label="OK" color="primary" unelevated @click="onSave" />
-        <q-btn label="Cancel" flat v-close-popup />
+        <q-btn
+          label="OK"
+          color="primary"
+          unelevated
+          @click="onSave"
+          :loading="isSaving"
+          :disable="isSaving"
+        />
+        <q-btn label="Cancel" flat v-close-popup :disable="isSaving" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { RegistryValue } from "@/types/agents";
 import { ref, watch, computed } from "vue";
+import { QInput } from "quasar";
+import { RegistryValue } from "@/types/agents";
 
 const props = defineProps<{
   modelValue: boolean;
@@ -82,6 +102,9 @@ const emit = defineEmits<{
   (e: "save", row: RegistryValue & { base?: "hex" | "dec" }): void;
 }>();
 
+const nameInputRef = ref();
+const numericError = ref<string>("");
+const isSaving = ref(false);
 const localRow = ref<RegistryValue>({ ...props.row });
 const localBase = ref<"hex" | "dec">("hex");
 const stringValue = ref<string>(
@@ -136,7 +159,6 @@ watch(
   { deep: true, immediate: true },
 );
 
-// Formatted value for numeric
 const formattedValue = computed({
   get() {
     return localBase.value === "hex"
@@ -158,34 +180,66 @@ function onKeyPress(e: KeyboardEvent) {
   if (localBase.value === "hex") {
     if (!/[0-9a-fA-Fx]/.test(e.key)) e.preventDefault();
   } else {
-    if (!/[0-9.]/.test(e.key)) e.preventDefault();
+    if (!/[0-9]/.test(e.key)) e.preventDefault();
   }
 }
 
-function onSave() {
-  let updatedData: string | number | string[] = localRow.value.data;
-
+async function onSave() {
+  numericError.value = "";
+  const input: QInput | null = nameInputRef.value;
+  if (input && !(input.validate?.() ?? true)) return;
   if (
     localRow.value.type === "REG_DWORD" ||
     localRow.value.type === "REG_QWORD"
   ) {
-    updatedData =
-      localBase.value === "hex"
-        ? "0x" + numericValue.value.toString(16).toUpperCase().padStart(8, "0")
-        : numericValue.value.toString();
-  } else if (localRow.value.type === "REG_MULTI_SZ") {
-    updatedData = multiStringData.value
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean);
-  } else if (typeof stringValue.value === "string") {
-    updatedData = stringValue.value;
+    const maxValue =
+      localRow.value.type === "REG_DWORD"
+        ? 0xffffffff // 4,294,967,295
+        : Number.MAX_SAFE_INTEGER; // 9,007,199,254,740,991 (safe 64-bit limit)
+
+    if (numericValue.value < 0) {
+      numericError.value = "Value cannot be negative.";
+      return;
+    }
+
+    if (numericValue.value > maxValue) {
+      numericError.value =
+        localRow.value.type === "REG_DWORD"
+          ? "DWORD (32-bit) value cannot exceed 4,294,967,295."
+          : "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991.";
+      return;
+    }
   }
 
-  emit("save", {
-    ...localRow.value,
-    data: updatedData,
-    base: localBase.value,
-  });
+  isSaving.value = true;
+  try {
+    let updatedData: string | number | string[] = localRow.value.data;
+
+    if (
+      localRow.value.type === "REG_DWORD" ||
+      localRow.value.type === "REG_QWORD"
+    ) {
+      updatedData =
+        localBase.value === "hex"
+          ? "0x" +
+            numericValue.value.toString(16).toUpperCase().padStart(8, "0")
+          : numericValue.value.toString();
+    } else if (localRow.value.type === "REG_MULTI_SZ") {
+      updatedData = multiStringData.value
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    } else if (typeof stringValue.value === "string") {
+      updatedData = stringValue.value;
+    }
+    await emit("save", {
+      ...localRow.value,
+      data: updatedData,
+      base: localBase.value,
+    });
+    emit("update:modelValue", false);
+  } finally {
+    isSaving.value = false;
+  }
 }
 </script>
