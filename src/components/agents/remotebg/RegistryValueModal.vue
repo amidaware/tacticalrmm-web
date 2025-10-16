@@ -15,7 +15,7 @@
         </div>
       </q-card-section>
 
-      <q-card-section>
+      <q-card-section class="q-pb-none">
         <div class="text-body2 q-mb-xs">Value name:</div>
         <q-input
           v-model="localRow.name"
@@ -27,6 +27,7 @@
           :autofocus="!row.name"
           :rules="[(val) => !!val || 'Name is required']"
           lazy-rules
+          class="q-pb-sm"
         />
       </q-card-section>
       <q-card-section>
