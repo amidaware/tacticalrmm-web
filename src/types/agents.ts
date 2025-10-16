@@ -23,4 +23,5 @@ export interface RegistryValue {
   name: string;
   type: string;
   data: string | number | string[];
+  newKey?: boolean;
 }
