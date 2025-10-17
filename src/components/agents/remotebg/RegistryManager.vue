@@ -53,15 +53,6 @@
                 "
                 @click.stop="onClickLoadMoreFromPlaceholder(prop.node)"
               />
-              <!-- <q-icon
-                name="fa-solid fa-spinner"
-                class="q-mr-xs"
-                style="font-size: 15px"
-              /> -->
-              <!-- <q-icon name="sync" class="q-mr-xs" style="font-size: 15px" />
-              <span @click.stop="onClickLoadMoreFromPlaceholder(prop.node)"
-                >Load More</span
-              > -->
             </div>
             <q-menu
               v-if="!prop.node.isLoadMore"
@@ -90,7 +81,7 @@
                         @click="
                           item.type === 'KEY'
                             ? createKey(prop.node)
-                            : createValue(prop.node, item.type, (newKey = true))
+                            : createValue(prop.node, item.type, true)
                         "
                       >
                         <q-item-section>{{ item.label }}</q-item-section>
@@ -150,7 +141,7 @@
                         @click="
                           item.type === 'KEY'
                             ? safeCreateKey()
-                            : createValue(undefined, item.type, (newKey = true))
+                            : createValue(undefined, item.type, true)
                         "
                       >
                         <q-item-section>{{ item.label }}</q-item-section>
