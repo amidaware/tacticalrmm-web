@@ -183,8 +183,7 @@
                     v-if="editingValueName === props.row.name"
                     v-model="editValueName"
                     dense
-                    autofocus
-                    :id="`value-input-${props.row.name}`"
+                    ref="editInputRef"
                     @keyup.enter="finishRenameValue(props.row, 'enter')"
                     @blur="finishRenameValue(props.row, 'blur')"
                     outlined
@@ -297,7 +296,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from "vue";
-import { useQuasar } from "quasar";
+import { QInput, useQuasar } from "quasar";
 import { watch } from "vue";
 import {
   registryTableColumns,
@@ -350,6 +349,7 @@ const nodePage = ref<Record<string, number>>({});
 const nodeHasMore = ref<Record<string, boolean>>({});
 const loadingMoreNodes = ref<Record<string, boolean>>({});
 const pathInput = ref("");
+const editInputRef = ref<InstanceType<typeof QInput> | null>(null);
 
 onMounted(async () => {
   loading.value = true;
@@ -753,11 +753,12 @@ function renameValue(row: RegistryValue) {
   editValueName.value = row.name;
   valueRenameOpenedAt.value = Date.now();
   nextTick(() => {
-    const inputEl = document.querySelector<HTMLInputElement>(
-      `#value-input-${row.name}`,
-    );
-    inputEl?.focus();
-    inputEl?.select();
+    setTimeout(() => {
+      const inputEl = editInputRef.value?.$el?.querySelector("input");
+      if (inputEl) {
+        inputEl.focus();
+      }
+    }, 50);
   });
 }
 
