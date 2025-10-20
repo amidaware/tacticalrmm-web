@@ -1,20 +1,34 @@
 <template>
   <div>
-    <div class="q-pa-sm bg-grey-4 text-dark text-body2 folder-path">
-      Computer\{{ currentPath }}
+    <div class="text-body2 row items-center px-2 folder-path">
+      <q-input
+        v-model="pathInput"
+        dense
+        class="col"
+        borderless
+        @keyup.enter="navigateToPath"
+      >
+        <template #prepend>
+          <q-icon
+            name="fa-solid fa-display"
+            class="q-mr-sm text-blue-5"
+            size="18px"
+          />
+        </template>
+      </q-input>
     </div>
-    <q-splitter v-model="splitter" :style="{ height: 'calc(100vh - 72px)' }">
+    <q-splitter v-model="splitter" :style="{ height: 'calc(100vh - 80px)' }">
       <!-- (Left Pane: Registry Keys) -->
       <template #before>
         <q-tree
-          class="q-pb-xs q-pt-xs"
+          class="q-pb-md q-pt-xs"
           ref="registryTree"
           v-model:selected="selectedKey"
           node-key="id"
           label-key="label"
           :nodes="registryNodes"
           :lazy="true"
-          :loading.sync="loading"
+          :loading="loading"
           selected-color="primary"
           @lazy-load="loadChildren"
           @update:selected="onKeySelect"
@@ -183,7 +197,9 @@
                     class="cursor-pointer"
                   >
                     <div class="cell-text">{{ props.row.name }}</div>
-                    <div class="cell-hover">{{ props.row.name }}</div>
+                    <div v-if="props.row.name" class="cell-hover">
+                      {{ props.row.name }}
+                    </div>
                   </div>
                   <q-menu
                     context-menu
@@ -281,6 +297,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from "vue";
+import { useQuasar } from "quasar";
+import { watch } from "vue";
 import {
   registryTableColumns,
   registryValueTypes,
@@ -298,7 +316,6 @@ import {
 } from "@/api/agents";
 import ConfirmDialog from "@/components/ui/ConfirmDialog.vue";
 import RegistryValueModal from "@/components/agents/remotebg/RegistryValueModal.vue";
-import { useQuasar } from "quasar";
 
 const props = defineProps<{
   agent_id: string;
@@ -332,11 +349,14 @@ const $q = useQuasar();
 const nodePage = ref<Record<string, number>>({});
 const nodeHasMore = ref<Record<string, boolean>>({});
 const loadingMoreNodes = ref<Record<string, boolean>>({});
+const pathInput = ref("");
 
 onMounted(async () => {
   loading.value = true;
   try {
-    const data = await fetchAgentRegistry(props.agent_id, "Computer");
+    const rootPath = "Computer";
+    pathInput.value = rootPath;
+    const data = await fetchAgentRegistry(props.agent_id, rootPath);
     const keys = data?.subkeys || [];
     registryNodes.value = keys.map(
       (key: { name: string; hasSubkeys: boolean }) => ({
@@ -348,6 +368,7 @@ onMounted(async () => {
     if (data?.values) {
       tableRows.value = data.values;
     }
+    currentPath.value = rootPath;
   } catch (err) {
     console.error("Failed to fetch root registry nodes:", err);
   } finally {
@@ -848,6 +869,57 @@ function createValue(
   modifyDialog.value = true;
   currentPath.value = targetNode.id;
 }
+
+async function navigateToPath() {
+  if (!pathInput.value) return;
+  let inputPath = pathInput.value.trim();
+  if (inputPath.startsWith("Computer")) {
+    if (inputPath.startsWith("Computer"))
+      inputPath = inputPath.replace(/^Computer[/\\]*/, "");
+  }
+  loading.value = true;
+  try {
+    const data = await fetchAgentRegistry(props.agent_id, inputPath);
+    currentPath.value = inputPath;
+    tableRows.value = data.values || [];
+    await expandTreeToPath(`${inputPath}`);
+  } catch (err) {
+    console.error("Invalid path:", err);
+  } finally {
+    loading.value = false;
+  }
+}
+async function expandTreeToPath(path: string) {
+  if (!registryTree.value) return;
+  const parts = path.split("\\").filter(Boolean);
+  let currentId = "";
+  for (let i = 0; i < parts.length; i++) {
+    currentId += parts[i] + "\\";
+    let node = findNodeById(registryNodes.value, currentId);
+    if (!node) {
+      const parentPath = currentId.split("\\").slice(0, -2).join("\\") + "\\";
+      const parentNode = findNodeById(registryNodes.value, parentPath);
+      if (parentNode) {
+        await new Promise<void>((resolve) => {
+          loadChildren({
+            node: parentNode,
+            done: () => resolve(),
+          });
+        });
+        node = findNodeById(registryNodes.value, currentId);
+      }
+    }
+    if (node) {
+      registryTree.value.setExpanded(node.id, true);
+    }
+  }
+  selectedKey.value = currentId;
+}
+watch(currentPath, (newPath) => {
+  if (newPath) {
+    pathInput.value = newPath;
+  }
+});
 </script>
 
 <style scoped>
@@ -884,7 +956,7 @@ function createValue(
 }
 .folder-path {
   border: 1px solid #ccc;
-  height: 36px;
+  padding: 0 6px;
 }
 .nowrap {
   text-wrap: nowrap;
