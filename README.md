@@ -22,4 +22,5 @@ Rollout Flag: Safe deployment with ui-modern class
 Accessibility: Focus states, reduced motion support
 Total: 7 new files, 6 modified files
 
-All changes are additive and non-breaking, with a rollout flag for safe deployment and testing. The glassmorphic design system and professional iconography create a modern, visually striking interface while maintaining full functionality.
+All changes are additive and non-breaking, with a rollout flag for safe deployment and testing. 
+The glassmorphic design system and professional iconography create a modern, visually striking interface while maintaining full functionality.
