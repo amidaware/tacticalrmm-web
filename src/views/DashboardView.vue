@@ -8,14 +8,14 @@
       <template v-slot:before>
         <div
           v-if="!treeReady"
-          class="q-pa-sm q-gutter-sm text-center"
+          class="q-pa-sm q-gutter-sm text-center u-card"
           style="height: 30vh"
         >
           <q-spinner size="40px" color="primary" />
         </div>
         <div
           v-else
-          class="q-pa-sm q-gutter-sm scroll"
+          class="q-pa-sm q-gutter-sm scroll u-card"
           style="height: 85vh; overflow: initial"
         >
           <q-list dense class="rounded-borders">
@@ -238,7 +238,7 @@
           emit-immediately
         >
           <template v-slot:before>
-            <div class="row">
+            <div class="row u-surface q-pa-sm" style="border-radius: 10px;">
               <q-tabs
                 v-model="tab"
                 dense
