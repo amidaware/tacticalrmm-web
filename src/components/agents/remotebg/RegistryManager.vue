@@ -45,9 +45,9 @@
                 @click.stop
                 v-if="editingNodeId === prop.node.id"
                 v-model="editLabel"
+                ref="editInputRef"
                 dense
                 autofocus
-                :id="`input-${prop.node.id.replace(/\\/g, '-')}`"
                 @keyup.enter="finishRename(prop.node, 'enter')"
                 @blur="finishRename(prop.node, 'blur')"
                 outlined
@@ -75,7 +75,7 @@
               transition-hide="jump-down"
             >
               <q-list dense style="min-width: 180px">
-                <q-item clickable>
+                <q-item clickable style="padding-right: 4px !important">
                   <q-item-section>New</q-item-section>
                   <q-item-section side>
                     <q-icon name="chevron_right" />
@@ -713,13 +713,7 @@ function renameKey(node: RegistryNode) {
   editingNodeId.value = node.id;
   editLabel.value = node.label;
   renameOpenedAt.value = Date.now();
-  nextTick(() => {
-    const inputEl = document.querySelector<HTMLInputElement>(
-      `#input-${node.id.replace(/\\/g, "-")}`,
-    );
-    inputEl?.focus();
-    inputEl?.select();
-  });
+  focusInput();
 }
 
 function deleteValue(row: RegistryValue) {
@@ -748,10 +742,7 @@ async function confirmDeleteValue() {
   }
 }
 
-function renameValue(row: RegistryValue) {
-  editingValueName.value = row.name;
-  editValueName.value = row.name;
-  valueRenameOpenedAt.value = Date.now();
+const focusInput = () => {
   nextTick(() => {
     setTimeout(() => {
       const inputEl = editInputRef.value?.$el?.querySelector("input");
@@ -760,6 +751,13 @@ function renameValue(row: RegistryValue) {
       }
     }, 50);
   });
+};
+
+function renameValue(row: RegistryValue) {
+  editingValueName.value = row.name;
+  editValueName.value = row.name;
+  valueRenameOpenedAt.value = Date.now();
+  focusInput();
 }
 
 async function finishRenameValue(
