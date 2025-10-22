@@ -279,12 +279,26 @@
       title="Confirm Key Delete"
       message="Are you sure you want to permanently delete this key and all of its subkeys?"
       @confirm="confirmDeleteKey"
+      type="confirm"
+      icon="warning"
+      iconColor="orange"
     />
     <ConfirmDialog
       v-model="confirmDeleteValueDialog"
       title="Confirm Value Delete"
       message="Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?"
       @confirm="confirmDeleteValue"
+      type="confirm"
+      icon="warning"
+      iconColor="orange"
+    />
+    <ConfirmDialog
+      v-model="warningDialog"
+      title="Selection Required"
+      message="Please select a hive or key before creating a new key."
+      :showConfirm="false"
+      icon="warning"
+      iconColor="orange"
     />
     <RegistryValueModal
       v-model="modifyDialog"
@@ -350,6 +364,7 @@ const nodeHasMore = ref<Record<string, boolean>>({});
 const loadingMoreNodes = ref<Record<string, boolean>>({});
 const pathInput = ref("");
 const editInputRef = ref<InstanceType<typeof QInput> | null>(null);
+const warningDialog = ref(false);
 
 onMounted(async () => {
   loading.value = true;
@@ -612,10 +627,15 @@ async function createKey(parentNode: RegistryNode) {
 }
 
 function safeCreateKey() {
-  if (!selectedKey.value) return;
+  if (!selectedKey.value) {
+    warningDialog.value = true;
+    return;
+  }
   const parentNode = findNodeById(registryNodes.value, selectedKey.value);
   if (parentNode) {
     createKey(parentNode);
+  } else {
+    warningDialog.value = true;
   }
 }
 
@@ -855,7 +875,10 @@ function createValue(
 ) {
   const targetNode =
     node || findNodeById(registryNodes.value, selectedKey.value || "");
-  if (!targetNode?.id) return;
+  if (!targetNode?.id) {
+    warningDialog.value = true;
+    return;
+  }
   const defaultName = "";
   const defaultData =
     type === "REG_MULTI_SZ"
@@ -913,6 +936,23 @@ async function expandTreeToPath(path: string) {
     }
   }
   selectedKey.value = currentId;
+  await nextTick();
+  await new Promise((r) => setTimeout(r, 150));
+  scrollSelectedNodeIntoView();
+}
+function scrollSelectedNodeIntoView() {
+  nextTick(() => {
+    const treeEl = registryTree.value?.$el;
+    if (!treeEl || !selectedKey.value) return;
+    const selectedEl = treeEl.querySelector(".q-tree__node--selected");
+    if (selectedEl && selectedEl.scrollIntoView) {
+      selectedEl.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  });
 }
 watch(currentPath, (newPath) => {
   if (newPath) {
