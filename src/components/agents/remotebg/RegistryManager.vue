@@ -21,6 +21,7 @@
       <!-- (Left Pane: Registry Keys) -->
       <template #before>
         <q-tree
+          no-transition
           class="q-pb-md q-pt-xs"
           ref="registryTree"
           v-model:selected="selectedKey"
@@ -365,6 +366,11 @@ const loadingMoreNodes = ref<Record<string, boolean>>({});
 const pathInput = ref("");
 const editInputRef = ref<InstanceType<typeof QInput> | null>(null);
 const warningDialog = ref(false);
+const searchKeys = ref(false);
+const inFlightLoads: Record<
+  string,
+  Array<(children: RegistryNode[]) => void>
+> = {};
 
 onMounted(async () => {
   loading.value = true;
@@ -380,9 +386,7 @@ onMounted(async () => {
         lazy: key.hasSubkeys,
       }),
     );
-    if (data?.values) {
-      tableRows.value = data.values;
-    }
+    if (data?.values) tableRows.value = data.values;
     currentPath.value = rootPath;
   } catch (err) {
     console.error("Failed to fetch root registry nodes:", err);
@@ -392,9 +396,7 @@ onMounted(async () => {
 });
 
 function toggleNode(node: RegistryNode) {
-  if (editingNodeId.value && editingNodeId.value.includes(node.id)) {
-    return;
-  }
+  if (editingNodeId.value && editingNodeId.value.includes(node.id)) return;
   if (!registryTree.value) return;
   registryTree.value.setExpanded(
     node.id,
@@ -409,21 +411,36 @@ async function loadChildren({
   node: RegistryNode;
   done: (children: RegistryNode[]) => void;
 }) {
+  const existingParent = findNodeById(registryNodes.value, node.id);
+  if (existingParent?.children && existingParent.children.length > 0) {
+    const children = existingParent.children.filter((c) => !c.isLoadMore);
+    done(children);
+    return;
+  }
+  if (inFlightLoads[node.id]) {
+    inFlightLoads[node.id].push(done);
+    return;
+  }
+  inFlightLoads[node.id] = [done];
   loading.value = true;
   try {
     const currentPage = nodePage.value[node.id] || 1;
-    const data = await fetchAgentRegistry(props.agent_id, node.id, currentPage);
+    const data = await fetchAgentRegistry(
+      props.agent_id,
+      node.id,
+      currentPage,
+      searchKeys.value,
+    );
     const keys = data?.subkeys || [];
-    const children = keys.map((key: { name: string; hasSubkeys: boolean }) => {
-      const id = node.id.endsWith("\\")
-        ? `${node.id}${key.name}\\`
-        : `${node.id}\\${key.name}\\`;
-      return {
-        id,
-        label: key.name,
-        lazy: key.hasSubkeys,
-      } as RegistryNode;
-    });
+    const children: RegistryNode[] = keys.map(
+      (key: { name: string; hasSubkeys: boolean }) => {
+        const id = node.id.endsWith("\\")
+          ? `${node.id}${key.name}\\`
+          : `${node.id}\\${key.name}\\`;
+        return { id, label: key.name, lazy: key.hasSubkeys } as RegistryNode;
+      },
+    );
+
     nodeHasMore.value[node.id] = data?.has_more ?? false;
     nodePage.value[node.id] = data?.page ?? currentPage;
     if (nodeHasMore.value[node.id]) {
@@ -440,11 +457,15 @@ async function loadChildren({
       parent.children = children;
       registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
     }
-    done(children);
+    const queue = inFlightLoads[node.id] || [];
+    queue.forEach((cb) => cb(children));
   } catch (err) {
     console.error("Failed to load registry children:", err);
-    done(pendingNodes.value[node.id] || []);
+    const fallback = pendingNodes.value[node.id] || [];
+    const queue = inFlightLoads[node.id] || [];
+    queue.forEach((cb) => cb(fallback));
   } finally {
+    delete inFlightLoads[node.id];
     loading.value = false;
   }
 }
@@ -456,9 +477,7 @@ function refreshNode(nodeId: string) {
     nodePage.value[node.id] = 0;
     nodeHasMore.value[node.id] = false;
     pendingNodes.value[node.id] = [];
-    if (registryTree.value) {
-      registryTree.value.setExpanded(node.id, true);
-    }
+    if (registryTree.value) registryTree.value.setExpanded(node.id, true);
     loadChildren({
       node,
       done: (children: RegistryNode[]) => {
@@ -473,9 +492,7 @@ function refreshNode(nodeId: string) {
 function onClickLoadMoreFromPlaceholder(placeholderNode: RegistryNode) {
   const parentId = getParentIdFromLoadNode(placeholderNode.id);
   const parent = findNodeById(registryNodes.value, parentId);
-  if (parent) {
-    loadMoreSubkeys(parent);
-  }
+  if (parent) loadMoreSubkeys(parent);
 }
 
 async function loadMoreSubkeys(parent: RegistryNode) {
@@ -614,9 +631,8 @@ async function createKey(parentNode: RegistryNode) {
     lazy: false,
   };
   parentNode.children.unshift(newNode);
-  if (!pendingNodes.value[parentNode.id]) {
+  if (!pendingNodes.value[parentNode.id])
     pendingNodes.value[parentNode.id] = [];
-  }
   pendingNodes.value[parentNode.id].unshift(newNode);
   selectedKey.value = parentNode.id;
   registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
@@ -646,9 +662,7 @@ async function finishRename(
   if (isFinishingRename.value) return;
   if (source === "blur" && renameOpenedAt.value) {
     const elapsed = Date.now() - renameOpenedAt.value;
-    if (elapsed < 150) {
-      return;
-    }
+    if (elapsed < 150) return;
   }
   renameOpenedAt.value = null;
   isFinishingRename.value = true;
@@ -766,9 +780,7 @@ const focusInput = () => {
   nextTick(() => {
     setTimeout(() => {
       const inputEl = editInputRef.value?.$el?.querySelector("input");
-      if (inputEl) {
-        inputEl.focus();
-      }
+      if (inputEl) inputEl.focus();
     }, 50);
   });
 };
@@ -787,9 +799,7 @@ async function finishRenameValue(
   if (isFinishingValueRename.value) return;
   if (source === "blur" && valueRenameOpenedAt.value) {
     const elapsed = Date.now() - valueRenameOpenedAt.value;
-    if (elapsed < 150) {
-      return;
-    }
+    if (elapsed < 150) return;
   }
   valueRenameOpenedAt.value = null;
   isFinishingValueRename.value = true;
@@ -812,9 +822,7 @@ async function finishRenameValue(
       newName,
     );
     const index = tableRows.value.findIndex((r) => r.name === row.name);
-    if (index !== -1) {
-      tableRows.value[index].name = newName;
-    }
+    if (index !== -1) tableRows.value[index].name = newName;
   } catch (err) {
     console.error("Failed to rename value:", err);
   } finally {
@@ -895,13 +903,17 @@ function createValue(
 async function navigateToPath() {
   if (!pathInput.value) return;
   let inputPath = pathInput.value.trim();
-  if (inputPath.startsWith("Computer")) {
-    if (inputPath.startsWith("Computer"))
-      inputPath = inputPath.replace(/^Computer[/\\]*/, "");
-  }
+  if (inputPath.startsWith("Computer"))
+    inputPath = inputPath.replace(/^Computer[/\\]*/, "");
   loading.value = true;
   try {
-    const data = await fetchAgentRegistry(props.agent_id, inputPath);
+    searchKeys.value = true;
+    const data = await fetchAgentRegistry(
+      props.agent_id,
+      inputPath,
+      1,
+      searchKeys.value,
+    );
     currentPath.value = inputPath;
     tableRows.value = data.values || [];
     await expandTreeToPath(`${inputPath}`);
@@ -909,6 +921,7 @@ async function navigateToPath() {
     console.error("Invalid path:", err);
   } finally {
     loading.value = false;
+    searchKeys.value = false;
   }
 }
 async function expandTreeToPath(path: string) {
@@ -931,9 +944,7 @@ async function expandTreeToPath(path: string) {
         node = findNodeById(registryNodes.value, currentId);
       }
     }
-    if (node) {
-      registryTree.value.setExpanded(node.id, true);
-    }
+    if (node) registryTree.value.setExpanded(node.id, true);
   }
   selectedKey.value = currentId;
   await nextTick();
@@ -955,9 +966,7 @@ function scrollSelectedNodeIntoView() {
   });
 }
 watch(currentPath, (newPath) => {
-  if (newPath) {
-    pathInput.value = newPath;
-  }
+  if (newPath) pathInput.value = newPath;
 });
 </script>
 

@@ -266,10 +266,15 @@ export async function wakeUpWOL(agent_id) {
   return data;
 }
 
-export async function fetchAgentRegistry(agent_id, path, page = 1) {
+export async function fetchAgentRegistry(
+  agent_id,
+  path,
+  page = 1,
+  hiveSearch = false,
+) {
   try {
     const { data } = await axios.get(`${baseUrl}/${agent_id}/registry/`, {
-      params: { path: `${path}`, page },
+      params: { path: `${path}`, page, page_size: hiveSearch ? 100000 : 400 },
     });
     return data;
   } catch (e) {
