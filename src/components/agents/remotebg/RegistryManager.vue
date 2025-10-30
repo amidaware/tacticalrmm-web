@@ -313,6 +313,7 @@
 import { ref, onMounted, nextTick } from "vue";
 import { QInput, useQuasar } from "quasar";
 import { watch } from "vue";
+import { AxiosError } from "axios";
 import {
   registryTableColumns,
   registryValueTypes,
@@ -388,7 +389,18 @@ onMounted(async () => {
     );
     if (data?.values) tableRows.value = data.values;
     currentPath.value = rootPath;
-  } catch (err) {
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ detail?: string }>;
+    if (error.response?.status === 403) {
+      $q.notify({
+        color: "negative",
+        message: error.response.data?.detail,
+        caption: error.response
+          ? error.response.status + ": " + error.response.statusText
+          : "",
+        timeout: 2500,
+      });
+    }
     console.error("Failed to fetch root registry nodes:", err);
   } finally {
     loading.value = false;

@@ -129,6 +129,10 @@
                 v-model="localRole.can_recover_agents"
                 label="Recover Agents"
               />
+              <q-checkbox
+                v-model="localRole.can_use_registry"
+                label="Use Registry"
+              />
             </div>
           </q-card-section>
           <div class="text-subtitle2">Core</div>
