@@ -29,7 +29,12 @@
         icon="fas fa-clipboard-list"
         label="Event Log"
       />
-      <q-tab name="registry" icon="fa-solid fa-database" label="Registry" />
+      <q-tab v-if="$route.query.agentPlatform === 'windows'" name="registry">
+        <div class="flex items-center text-weight-bold text-subtitle2">
+          <q-icon :name="`img:${registryIcon}`" size="25px" />
+          <span class="q-ml-sm font">Registry</span>
+        </div>
+      </q-tab>
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab">
@@ -100,6 +105,7 @@ import ProcessManager from "@/components/agents/remotebg/ProcessManager.vue";
 import ServicesManager from "@/components/agents/remotebg/ServicesManager.vue";
 import EventLogManager from "@/components/agents/remotebg/EventLogManager.vue";
 import RegistryManager from "@/components/agents/remotebg/RegistryManager.vue";
+import registryIcon from "../assets/windows-registry.png";
 
 export default {
   name: "RemoteBackground",
@@ -150,6 +156,7 @@ export default {
       file,
       tab,
       agent_id,
+      registryIcon,
     };
   },
 };

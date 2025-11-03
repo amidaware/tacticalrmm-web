@@ -180,25 +180,32 @@
             >
               <template #body-cell-name="props">
                 <q-td :props="props" class="registry-cell">
-                  <q-input
-                    v-if="editingValueName === props.row.name"
-                    v-model="editValueName"
-                    dense
-                    ref="editInputRef"
-                    @keyup.enter="finishRenameValue(props.row, 'enter')"
-                    @blur="finishRenameValue(props.row, 'blur')"
-                    outlined
-                    style="max-width: 200px"
-                    @click.stop
-                  />
-                  <div
-                    v-else
-                    @dblclick="openModifyDialog(props.row)"
-                    class="cursor-pointer"
-                  >
-                    <div class="cell-text">{{ props.row.name }}</div>
-                    <div v-if="props.row.name" class="cell-hover">
-                      {{ props.row.name }}
+                  <div class="registry-item">
+                    <q-icon
+                      :name="`img:${props.row.type === 'REG_MULTI_SZ' || props.row.type === 'REG_SZ' || props.row.type === 'REG_EXPAND_SZ' ? stringType : binaryType}`"
+                      size="14px"
+                      class="registry-icon"
+                    />
+                    <q-input
+                      v-if="editingValueName === props.row.name"
+                      v-model="editValueName"
+                      dense
+                      ref="editInputRef"
+                      @keyup.enter="finishRenameValue(props.row, 'enter')"
+                      @blur="finishRenameValue(props.row, 'blur')"
+                      outlined
+                      style="max-width: 200px"
+                      @click.stop
+                    />
+                    <div
+                      v-else
+                      @dblclick="openModifyDialog(props.row)"
+                      class="registry-name"
+                    >
+                      <div class="cell-text">{{ props.row.name }}</div>
+                      <div v-if="props.row.name" class="cell-hover">
+                        {{ props.row.name }}
+                      </div>
                     </div>
                   </div>
                   <q-menu
@@ -331,6 +338,8 @@ import {
 } from "@/api/agents";
 import ConfirmDialog from "@/components/ui/ConfirmDialog.vue";
 import RegistryValueModal from "@/components/agents/remotebg/RegistryValueModal.vue";
+import stringType from "../../../assets/string_type.png";
+import binaryType from "../../../assets/binary_type.png";
 
 const props = defineProps<{
   agent_id: string;
@@ -994,16 +1003,18 @@ watch(currentPath, (newPath) => {
 }
 .cell-hover {
   position: absolute;
-  top: -1px;
+  top: -6px;
   left: 0;
   white-space: nowrap;
   background: #e0e0e0;
   color: #000000;
   display: none;
-  padding: 5px 6px 3px 16px;
+  padding: 5px;
   min-width: 100%;
-  border: 1px solid #000;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   z-index: 100;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 .registry-cell:hover .cell-hover {
   display: block;
@@ -1027,5 +1038,30 @@ watch(currentPath, (newPath) => {
 }
 .q-field--dense .q-field__control {
   height: 36px;
+}
+.registry-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  overflow: visible !important;
+  padding: 2px 4px;
+}
+.registry-icon {
+  flex-shrink: 0;
+  opacity: 0.85;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+.registry-item:hover .registry-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.registry-name {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  position: relative;
 }
 </style>
