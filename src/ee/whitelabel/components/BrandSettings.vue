@@ -187,19 +187,39 @@ For details, see: https://license.tacticalrmm.com/ee
             class="col-6"
             v-model="localFavicon"
             filled
-            label="Favicon (png, ico, svg)"
+            :label="
+              branding.favicon
+                ? 'Favicon set'
+                : 'Click to select favicon (png, ico, svg)'
+            "
             accept=".svg, .png, .ico"
             @update:model-value="fileChanged"
             clearable
             dense
           >
+            <template v-slot:append>
+              <q-btn
+                v-if="branding.favicon && !localFavicon"
+                icon="cancel"
+                flat
+                round
+                dense
+                @click.stop.prevent="clearFavicon"
+              >
+                <q-tooltip>Clear favicon</q-tooltip>
+              </q-btn>
+            </template>
             <template v-slot:after>
               <q-img
                 v-if="branding.favicon !== null"
                 :src="branding.favicon"
                 height="32px"
                 width="32px"
-              />
+                class="q-mx-sm cursor-pointer"
+                @click="showFaviconModal = true"
+              >
+                <q-tooltip>Click to view</q-tooltip>
+              </q-img>
             </template>
           </q-file>
         </q-card-section>
@@ -211,16 +231,39 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-spinner color="primary" size="3em" />
       </q-inner-loading>
     </q-card>
+
+    <!-- Favicon preview modal -->
+    <q-dialog v-model="showFaviconModal">
+      <q-card style="min-width: 400px">
+        <q-card-section class="row items-center q-pb-none">
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section class="q-pt-md flex flex-center">
+          <q-img
+            :src="branding.favicon"
+            fit="contain"
+            style="max-width: 300px; max-height: 300px"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </template>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, getCurrentInstance, computed } from "vue";
 import { brandingStore } from "../api";
 
 const localFavicon = ref<File | null>(null);
+const showFaviconModal = ref(false);
 
 const { branding, isLoading } = brandingStore;
+
+const instance = getCurrentInstance();
+const $branding = computed(() => {
+  return instance?.appContext.config.globalProperties.$branding || null;
+});
 
 // setup stores
 async function submit() {
@@ -237,6 +280,11 @@ async function fileChanged(file: File | null) {
     return;
   }
   branding.value.favicon = await fileToDataUrl(file);
+}
+
+function clearFavicon() {
+  branding.value.favicon = "";
+  localFavicon.value = null;
 }
 
 function fileToDataUrl(file: File): Promise<string> {

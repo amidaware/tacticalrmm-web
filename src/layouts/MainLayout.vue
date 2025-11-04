@@ -220,7 +220,13 @@
 </template>
 <script setup lang="ts">
 // composition imports
-import { computed, onMounted, onBeforeUnmount, ref } from "vue";
+import {
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  getCurrentInstance,
+} from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
 import { useDashboardStore } from "@/stores/dashboard";
@@ -240,6 +246,12 @@ import ResetPass from "@/components/accounts/ResetPass.vue";
 
 const store = useStore();
 const $q = useQuasar();
+
+// safely access $branding from global properties
+const instance = getCurrentInstance();
+const $branding = computed(() => {
+  return instance?.appContext.config.globalProperties.$branding || null;
+});
 
 const {
   serverCount,

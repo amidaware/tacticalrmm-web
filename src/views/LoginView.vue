@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, getCurrentInstance, computed } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
@@ -130,6 +130,12 @@ import {
 // setup quasar
 const $q = useQuasar();
 $q.dark.set(true);
+
+// safely access $branding from global properties
+const instance = getCurrentInstance();
+const $branding = computed(() => {
+  return instance?.appContext.config.globalProperties.$branding || null;
+});
 
 // setup auth store
 const auth = useAuthStore();
