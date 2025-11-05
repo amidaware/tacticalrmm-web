@@ -494,6 +494,7 @@ async function loadChildren({
 function refreshNode(nodeId: string) {
   const node = findNodeById(registryNodes.value, nodeId);
   if (node) {
+    onKeySelect(nodeId);
     node.children = [];
     nodePage.value[node.id] = 0;
     nodeHasMore.value[node.id] = false;
@@ -508,6 +509,7 @@ function refreshNode(nodeId: string) {
     });
     currentPath.value = nodeId || currentPath.value;
   }
+  selectedKey.value = nodeId;
 }
 
 function onClickLoadMoreFromPlaceholder(placeholderNode: RegistryNode) {
@@ -613,14 +615,6 @@ async function confirmDeleteKey() {
   }
 }
 
-function refreshParent(parentId: string) {
-  const parent = findNodeById(registryNodes.value, parentId);
-  if (parent) {
-    parent.children = [...(parent.children ?? [])];
-    registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
-  }
-}
-
 async function createKey(parentNode: RegistryNode) {
   try {
     const data = await fetchAgentRegistry(props.agent_id, parentNode.id);
@@ -720,7 +714,7 @@ async function finishRename(
         (n) => n.id !== originalId,
       );
     }
-    refreshParent(parentPath);
+    refreshNode(newId);
   } catch (err) {
     console.error("Failed to rename/create registry key:", err);
     if (isTempNode) {
