@@ -62,6 +62,19 @@
         @click="openAgentWindow(selectedAgent)"
       />
       <q-btn
+        v-if="summary && rustDeskAction && rustDeskUrl !== '#'"
+        dense
+        flat
+        type="a"
+        :href="rustDeskUrl"
+        target="_blank"
+        label="LaunchRD"
+        icon="fas fa-desktop"
+        size="md"
+        no-caps
+        class="q-mr-sm"
+      />
+      <q-btn
         dense
         flat
         label="Take Control"
@@ -240,8 +253,8 @@ import {
   runTakeControl,
   openAgentWindow,
 } from "@/api/agents";
+import { fetchCustomFields, fetchURLActions } from "@/api/core.ts";
 import { notifySuccess } from "@/utils/notify";
-import { fetchCustomFields } from "@/api/core";
 
 // ui imports
 import AgentActionMenu from "@/components/agents/AgentActionMenu.vue";
@@ -265,8 +278,58 @@ export default {
     const summary = ref(null);
     const customFieldsDefinitions = ref(null);
     const loading = ref(false);
+    const urlActions = ref([]);
+
+    const rustDeskAction = computed(() => {
+      return urlActions.value.find(
+        (action) => action.name === "RustDesk_Connect",
+      );
+    });
+
+    const rustDeskUrl = computed(() => {
+      const agent = summary.value;
+      const definitions = customFieldsDefinitions.value;
+
+      if (
+        rustDeskAction.value &&
+        rustDeskAction.value.pattern &&
+        agent &&
+        definitions
+      ) {
+        try {
+          let url = rustDeskAction.value.pattern;
+
+          const rustDeskFieldDefinition = definitions.find(
+            (def) => def.name === "RustDesk_ID",
+          );
+
+          let rustDeskId = "";
+          if (rustDeskFieldDefinition) {
+            const agentRustDeskField = agent.custom_fields.find(
+              (field) => field.field === rustDeskFieldDefinition.id,
+            );
+            if (agentRustDeskField) {
+              rustDeskId = agentRustDeskField.value;
+            }
+          }
+
+          if (!rustDeskId) {
+            return "#";
+          }
+
+          url = url.replace(/{{agent.RustDesk_ID}}/g, rustDeskId);
+
+          return url;
+        } catch (e) {
+          console.error("Error building RustDesk URL:", e);
+          return "#";
+        }
+      }
+      return "#";
+    });
 
     const serial_number = computed(() => {
+      if (!summary.value) return "";
       if (summary.value.plat === "windows") {
         return summary.value.wmi_detail.bios?.[0]?.[0]?.SerialNumber;
       } else {
@@ -275,10 +338,11 @@ export default {
     });
 
     const cpu = computed(() => {
+      if (!summary.value) return "";
       if (summary.value.cpu_model?.length > 1) {
         return `${summary.value.cpu_model.length}x ${summary.value.cpu_model[0]}`;
       }
-      return summary.value.cpu_model[0];
+      return summary.value.cpu_model?.[0];
     });
 
     function diskBarColor(percent) {
@@ -292,26 +356,18 @@ export default {
     }
 
     const disks = computed(() => {
-      if (!summary.value.disks) {
-        return [];
-      }
-
+      if (!summary.value?.disks) return [];
       const entries = Object.entries(summary.value.disks);
       const ret = [];
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (let [k, v] of entries) {
+      for (const [, v] of entries) {
         ret.push(v);
       }
       return ret;
     });
 
     const customFields = computed(() => {
-      if (!summary.value.custom_fields) {
-        return [];
-      }
-      if (!customFieldsDefinitions.value) {
-        return [];
-      }
+      if (!summary.value?.custom_fields) return [];
+      if (!customFieldsDefinitions.value) return [];
       const ret = [];
       for (const customField of summary.value.custom_fields) {
         const definition = customFieldsDefinitions.value.find(
@@ -322,13 +378,9 @@ export default {
           !definition.hide_in_summary &&
           customField.value?.length > 0
         ) {
-          ret.push({
-            name: definition.name,
-            value: customField.value,
-          });
+          ret.push({ name: definition.name, value: customField.value });
         }
       }
-
       return ret;
     });
 
@@ -336,6 +388,7 @@ export default {
       loading.value = true;
       summary.value = await fetchAgent(selectedAgent.value);
       customFieldsDefinitions.value = await fetchCustomFields();
+      urlActions.value = await fetchURLActions();
       store.commit("setRefreshSummaryTab", false);
       store.commit("setAgentPlatform", summary.value.plat);
       loading.value = false;
@@ -343,7 +396,6 @@ export default {
 
     async function refreshSummary() {
       loading.value = true;
-      summary.value = await fetchAgent(selectedAgent.value);
       try {
         const result = await refreshAgentWMI(selectedAgent.value);
         await getSummary();
@@ -355,16 +407,11 @@ export default {
     }
 
     watch(selectedAgent, (newValue) => {
-      if (newValue) {
-        getSummary();
-      }
+      if (newValue) getSummary();
     });
 
     watch(refreshSummaryTab, (newValue) => {
-      if (newValue && selectedAgent.value) {
-        getSummary();
-      }
-
+      if (newValue && selectedAgent.value) getSummary();
       store.commit("setRefreshSummaryTab", false);
     });
 
@@ -373,7 +420,6 @@ export default {
     });
 
     return {
-      // reactive data
       summary,
       customFields,
       loading,
@@ -393,6 +439,8 @@ export default {
       diskBarColor,
       runTakeControl,
       openAgentWindow,
+      rustDeskAction,
+      rustDeskUrl,
     };
   },
 };
