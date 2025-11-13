@@ -556,6 +556,7 @@ export default {
           // reporting perms
           can_view_reports: false,
           can_manage_reports: false,
+          can_use_registry: false,
         });
 
     const loading = ref(false);
