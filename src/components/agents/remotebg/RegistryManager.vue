@@ -606,6 +606,11 @@ async function confirmDeleteKey() {
       );
       registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
     }
+    if (parentId) {
+      selectedKey.value = parentId;
+      await nextTick();
+      onKeySelect(parentId);
+    }
   } catch (err) {
     console.error("Failed to delete key:", err);
   } finally {
