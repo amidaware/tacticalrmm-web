@@ -93,7 +93,7 @@ onUnmounted(close);
   background: #191818;
   color: #fff;
   padding: 0 10px;
-  height: 240px;
+  height: 30vh;
   overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 4px;
