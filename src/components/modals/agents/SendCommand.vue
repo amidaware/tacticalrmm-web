@@ -123,6 +123,7 @@
             :agent-id="agent.agent_id"
             :cmd="streamCmd"
             :shell="state.shell"
+            :custom_shell="state.custom_shell"
             :timeout="state.timeout"
             @updateOutput="(val) => (streamOutput = val)"
             @streamLoaded="loading = false"
