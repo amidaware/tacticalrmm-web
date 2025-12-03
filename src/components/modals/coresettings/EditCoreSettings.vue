@@ -718,8 +718,7 @@
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
                 tab === 'meshcentral' ||
-                tab === 'retention' ||
-                tab === 'branding'
+                tab === 'retention'
               "
               label="Save"
               color="primary"

@@ -5,6 +5,7 @@ For details, see: https://license.tacticalrmm.com/ee
 */
 
 import { ref } from "vue";
+import { Dialog } from "quasar";
 import axios from "axios";
 import type { Branding } from "./types";
 import { notifySuccess } from "@/utils/notify";
@@ -23,6 +24,32 @@ export function useBrandingStore() {
     warning_color: "",
     favicon: "",
   });
+
+  function promptReload() {
+    if (!process.env.DOCKER_BUILD) {
+      Dialog.create({
+        title: "",
+        ok: {
+          label: "Reload",
+          color: "primary",
+        },
+        cancel: false,
+        noBackdropDismiss: true,
+        noEscDismiss: true,
+        message: "You must reload the page for changes to take effect.",
+      }).onOk(() => location.reload());
+    } else {
+      Dialog.create({
+        title: "",
+        ok: false,
+        cancel: false,
+        noBackdropDismiss: true,
+        noEscDismiss: true,
+        message:
+          "You must run `docker compose down && docker compose up` to apply changes the reload this page.",
+      });
+    }
+  }
 
   const isLoading = ref(false);
 
@@ -48,6 +75,7 @@ export function useBrandingStore() {
       await axios.post("/core/branding/", data);
       branding.value = data;
       notifySuccess("Branding saved successfully");
+      promptReload();
     } catch (error) {
       //
     } finally {
@@ -55,11 +83,24 @@ export function useBrandingStore() {
     }
   }
 
+  function resetToDefault() {
+    branding.value.primary_color = "";
+    branding.value.secondary_color = "";
+    branding.value.accent_color = "";
+    branding.value.dark_color = "";
+    branding.value.dark_page_color = "";
+    branding.value.positive_color = "";
+    branding.value.negative_color = "";
+    branding.value.info_color = "";
+    branding.value.warning_color = "";
+  }
+
   return {
     branding,
     isLoading,
     getBranding,
     saveBranding,
+    resetToDefault,
   };
 }
 
