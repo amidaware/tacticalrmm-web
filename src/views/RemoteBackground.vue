@@ -39,14 +39,15 @@
     <q-separator />
     <q-tab-panels v-model="tab">
       <q-tab-panel name="terminal" class="q-pa-none">
-        <iframe
+        <!-- <iframe
           allow="clipboard-read; clipboard-write"
           :src="terminal"
           :style="{
             height: `${$q.screen.height - 30}px`,
             width: `${$q.screen.width}px`,
           }"
-        ></iframe>
+        ></iframe> -->
+        <TerminalManager :agent_id="agent_id" />
       </q-tab-panel>
       <q-tab-panel name="processes" class="q-pa-none">
         <ProcessManager :agent_id="agent_id" />
@@ -106,6 +107,7 @@ import ServicesManager from "@/components/agents/remotebg/ServicesManager.vue";
 import EventLogManager from "@/components/agents/remotebg/EventLogManager.vue";
 import RegistryManager from "@/components/agents/remotebg/RegistryManager.vue";
 import registryIcon from "../assets/windows-registry.png";
+import TerminalManager from "@/components/agents/remotebg/TerminalManager.vue";
 
 export default {
   name: "RemoteBackground",
@@ -114,6 +116,7 @@ export default {
     EventLogManager,
     ProcessManager,
     RegistryManager,
+    TerminalManager,
   },
   setup() {
     // setup quasar
