@@ -79,3 +79,25 @@ export function useCliWSConnection() {
     close: closeConnection,
   };
 }
+
+export function useTerminalWSConnection(agentId: string, sessionId: string) {
+  const auth = useAuthStore();
+
+  const path = `agent/${agentId}/terminal/${sessionId}`;
+  const url = getWSUrl(path, auth.token);
+
+  const connection = useWebSocket(url);
+  const { status, data, send, open, close } = connection;
+  const parsedData = ref<WSReturn>({ action: "", data: {} });
+  watch(data, (newValue) => {
+    if (newValue) parsedData.value = JSON.parse(newValue);
+  });
+
+  return {
+    status,
+    data: parsedData,
+    send,
+    open,
+    close,
+  };
+}
