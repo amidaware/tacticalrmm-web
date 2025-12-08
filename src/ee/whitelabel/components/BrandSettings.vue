@@ -118,6 +118,7 @@ For details, see: https://license.tacticalrmm.com/ee
                               transition-hide="scale"
                             >
                               <q-color
+                                format-model="hexa"
                                 :model-value="branding[colorDef.key] as string"
                                 @update:model-value="
                                   (val) =>
