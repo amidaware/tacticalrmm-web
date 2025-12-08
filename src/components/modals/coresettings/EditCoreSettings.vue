@@ -1,5 +1,5 @@
 <template>
-  <q-card style="min-width: 60vw">
+  <q-card :style="cardStyle">
     <q-splitter v-model="splitterModel">
       <template v-slot:before>
         <q-tabs dense v-model="tab" vertical class="text-primary">
@@ -27,7 +27,7 @@
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup />
           </q-card-section>
-          <q-scroll-area :thumb-style="thumbStyle" style="height: 60vh">
+          <q-scroll-area :thumb-style="thumbStyle" :style="scrollAreaStyle">
             <q-tab-panels
               v-model="tab"
               animated
@@ -805,6 +805,17 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    cardStyle() {
+      return {
+        minWidth: "60vw",
+        ...(this.tab === "branding" ? { height: "75vh" } : {}),
+      };
+    },
+    scrollAreaStyle() {
+      return {
+        height: this.tab === "branding" ? "65vh" : "60vh",
+      };
     },
   },
   watch: {
