@@ -1,8 +1,6 @@
 <template>
   <q-layout container view="hHh lpr lfr">
-    <q-header
-      :class="{ 'bg-dark': $q.dark.isActive, 'bg-light': !$q.dark.isActive }"
-    >
+    <div class="row">
       <q-tabs
         v-model="subtab"
         dense
@@ -86,7 +84,7 @@
         />
       </q-tabs>
       <q-separator />
-    </q-header>
+    </div>
     <q-page-container>
       <q-tab-panels v-model="subtab" :animated="false">
         <q-tab-panel
