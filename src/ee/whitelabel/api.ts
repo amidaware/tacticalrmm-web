@@ -22,6 +22,8 @@ export function useBrandingStore() {
     negative_color: "",
     info_color: "",
     warning_color: "",
+    toolbar_color: "",
+    toolbar_text_color: "",
     favicon: "",
   });
 
@@ -93,6 +95,8 @@ export function useBrandingStore() {
     branding.value.negative_color = "";
     branding.value.info_color = "";
     branding.value.warning_color = "";
+    branding.value.toolbar_color = "";
+    branding.value.toolbar_text_color = "";
   }
 
   return {

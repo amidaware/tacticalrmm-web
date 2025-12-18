@@ -74,7 +74,7 @@ a
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #1d1d1d
+    background-color: color-mix(in srgb, var(--q-dark) 100%, black 20%)
 
 .bg-dark
   background-color: --q-page-dark
@@ -86,7 +86,7 @@ a
   background-color: #c9e6ff
 
 .highlight-dark
-  background-color: #404040
+  background-color: color-mix(in srgb, var(--q-dark) 100%, white 40%)
 
 .action-completed
   background-color: $positive

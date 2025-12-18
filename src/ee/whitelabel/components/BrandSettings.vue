@@ -95,8 +95,11 @@ For details, see: https://license.tacticalrmm.com/ee
                         backgroundColor:
                           (branding[colorDef.key] as string) ||
                           colorDef.default,
+                        color: getTextColor(colorDef.key),
                       }"
-                    ></div>
+                    >
+                      <span class="text-caption">Aa</span>
+                    </div>
                     <div class="col">
                       <div class="text-caption text-weight-medium">
                         {{ colorDef.label }}
@@ -104,7 +107,7 @@ For details, see: https://license.tacticalrmm.com/ee
                       <q-input
                         :model-value="branding[colorDef.key] as string"
                         @update:model-value="
-                          (val) => updateColor(colorDef.key, val as string)
+                          (val: string) => updateColor(colorDef.key, val)
                         "
                         dense
                         filled
@@ -121,14 +124,78 @@ For details, see: https://license.tacticalrmm.com/ee
                                 format-model="hexa"
                                 :model-value="branding[colorDef.key] as string"
                                 @update:model-value="
-                                  (val) =>
-                                    updateColor(colorDef.key, val as string)
+                                  (val: string) =>
+                                    updateColor(colorDef.key, val)
                                 "
                               />
                             </q-popup-proxy>
                           </q-icon>
                         </template>
                       </q-input>
+                    </div>
+                  </div>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+
+          <div class="row q-gutter-md q-mt-md">
+            <div class="col-12">
+              <q-card flat bordered>
+                <q-card-section>
+                  <div class="text-caption text-weight-medium q-mb-sm">
+                    Toolbar
+                  </div>
+                  <div class="row q-gutter-md">
+                    <div
+                      v-for="colorDef in toolbarColors"
+                      :key="colorDef.key"
+                      class="col-12 col-sm-6"
+                    >
+                      <div class="row items-center q-gutter-sm">
+                        <div
+                          class="color-preview"
+                          :style="{
+                            backgroundColor:
+                              (branding[colorDef.key] as string) ||
+                              colorDef.default,
+                            color: getTextColor(colorDef.key),
+                          }"
+                        >
+                          <span class="text-caption">Aa</span>
+                        </div>
+                        <div class="col">
+                          <q-input
+                            :model-value="branding[colorDef.key] as string"
+                            @update:model-value="
+                              (val: string) => updateColor(colorDef.key, val)
+                            "
+                            dense
+                            filled
+                            placeholder="Hex color"
+                          >
+                            <template v-slot:append>
+                              <q-icon name="colorize" class="cursor-pointer">
+                                <q-popup-proxy
+                                  cover
+                                  transition-show="scale"
+                                  transition-hide="scale"
+                                >
+                                  <q-color
+                                    :model-value="
+                                      branding[colorDef.key] as string
+                                    "
+                                    @update:model-value="
+                                      (val: string) =>
+                                        updateColor(colorDef.key, val)
+                                    "
+                                  />
+                                </q-popup-proxy>
+                              </q-icon>
+                            </template>
+                          </q-input>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </q-card-section>
@@ -144,27 +211,55 @@ For details, see: https://license.tacticalrmm.com/ee
           <!-- Preview Components -->
           <div class="row q-gutter-md">
             <div class="col-12">
-              <q-card flat>
+              <q-card>
                 <q-card-section>
                   <div class="text-h6">Primary Theme Colors</div>
                   <div class="row q-gutter-sm q-mt-md">
-                    <q-chip color="primary" label="Primary" />
-                    <q-chip color="secondary" label="Secondary" />
-                    <q-chip color="accent" label="Accent" />
+                    <q-chip
+                      color="primary"
+                      label="Primary"
+                      :style="{ color: getTextColor('primary_color') }"
+                    />
+                    <q-chip
+                      color="secondary"
+                      label="Secondary"
+                      :style="{ color: getTextColor('secondary_color') }"
+                    />
+                    <q-chip
+                      color="accent"
+                      label="Accent"
+                      :style="{ color: getTextColor('accent_color') }"
+                    />
                   </div>
                 </q-card-section>
               </q-card>
             </div>
 
             <div class="col-12">
-              <q-card flat>
+              <q-card>
                 <q-card-section>
                   <div class="text-h6">Status Colors</div>
                   <div class="row q-gutter-sm q-mt-md">
-                    <q-chip color="positive" label="Positive" />
-                    <q-chip color="negative" label="Negative" />
-                    <q-chip color="warning" label="Warning" />
-                    <q-chip color="info" label="Info" />
+                    <q-chip
+                      color="positive"
+                      label="Positive"
+                      :style="{ color: getTextColor('positive_color') }"
+                    />
+                    <q-chip
+                      color="negative"
+                      label="Negative"
+                      :style="{ color: getTextColor('negative_color') }"
+                    />
+                    <q-chip
+                      color="warning"
+                      label="Warning"
+                      :style="{ color: getTextColor('warning_color') }"
+                    />
+                    <q-chip
+                      color="info"
+                      label="Info"
+                      :style="{ color: getTextColor('info_color') }"
+                    />
                   </div>
                 </q-card-section>
               </q-card>
@@ -175,9 +270,21 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-card-section>
                   <div class="text-h6">Buttons</div>
                   <div class="row q-gutter-sm q-mt-md">
-                    <q-btn color="primary" label="Primary Button" />
-                    <q-btn color="secondary" label="Secondary Button" />
-                    <q-btn color="accent" label="Accent Button" />
+                    <q-btn
+                      color="primary"
+                      label="Primary Button"
+                      :style="{ color: getTextColor('primary_color') }"
+                    />
+                    <q-btn
+                      color="secondary"
+                      label="Secondary Button"
+                      :style="{ color: getTextColor('secondary_color') }"
+                    />
+                    <q-btn
+                      color="accent"
+                      label="Accent Button"
+                      :style="{ color: getTextColor('accent_color') }"
+                    />
                   </div>
                 </q-card-section>
               </q-card>
@@ -187,13 +294,8 @@ For details, see: https://license.tacticalrmm.com/ee
       </div>
 
       <q-card-actions align="right" class="q-pa-md">
-        <q-btn label="Reset" outline color="grey" @click="resetToSaved" />
-        <q-btn
-          label="Reset to Default"
-          outline
-          color="grey"
-          @click="resetToDefault"
-        />
+        <q-btn label="Reset" outline @click="resetToSaved" />
+        <q-btn label="Reset to Default" outline @click="resetToDefault" />
         <q-space />
         <q-btn label="Save" color="primary" @click="submit" />
       </q-card-actions>
@@ -223,7 +325,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, getCurrentInstance, computed } from "vue";
+import { ref, onMounted, getCurrentInstance, computed, watch } from "vue";
 import { brandingStore } from "../api";
 import type { Branding } from "../types";
 
@@ -239,6 +341,8 @@ type ColorKey = keyof Pick<
   | "negative_color"
   | "info_color"
   | "warning_color"
+  | "toolbar_color"
+  | "toolbar_text_color"
 >;
 
 interface ColorDefinition {
@@ -257,6 +361,10 @@ const colorDefinitions: ColorDefinition[] = [
   { key: "negative_color", label: "Negative", default: "#C10015" },
   { key: "info_color", label: "Info", default: "#31CCEC" },
   { key: "warning_color", label: "Warning", default: "#F2C037" },
+];
+
+const toolbarColors: ColorDefinition[] = [
+  { key: "toolbar_color", label: "Toolbar", default: "#424242" },
 ];
 
 const localFavicon = ref<File | null>(null);
@@ -283,6 +391,98 @@ const previewStyles = computed(() => {
     "--q-dark": b.dark_color || "#1D1D1D",
   };
 });
+
+// Convert named colors to hex
+function colorNameToHex(color: string): string {
+  const colorMap: Record<string, string> = {
+    white: "#FFFFFF",
+    black: "#000000",
+    red: "#FF0000",
+    green: "#008000",
+    blue: "#0000FF",
+    yellow: "#FFFF00",
+    cyan: "#00FFFF",
+    magenta: "#FF00FF",
+    gray: "#808080",
+    grey: "#808080",
+  };
+  const lowerColor = color.toLowerCase().trim();
+  return colorMap[lowerColor] || color;
+}
+
+// Calculate text color based on background color luminance
+function getTextColor(colorKey: ColorKey): string {
+  const bgColor = (branding.value[colorKey] as string) || "";
+  if (!bgColor || bgColor.trim() === "") {
+    // Use default text color based on the color type
+    const defaultColors: Record<string, string> = {
+      primary_color: "#FFFFFF",
+      secondary_color: "#FFFFFF",
+      accent_color: "#FFFFFF",
+      positive_color: "#FFFFFF",
+      negative_color: "#FFFFFF",
+      info_color: "#000000",
+      warning_color: "#000000",
+      toolbar_color: "#FFFFFF",
+    };
+    return defaultColors[colorKey] || "#FFFFFF";
+  }
+
+  // For toolbar_color, use the calculated toolbar_text_color
+  if (colorKey === "toolbar_color") {
+    const calculatedTextColor = branding.value.toolbar_text_color || "";
+    if (calculatedTextColor) {
+      return calculatedTextColor;
+    }
+    // Fallback to calculating it on the fly if not set
+    return calculateTextColorForToolbar(bgColor);
+  }
+
+  // Check if custom text color is set
+  const textColorKey = colorKey.replace(
+    "_color",
+    "_text_color",
+  ) as keyof Branding;
+  const customTextColor = branding.value[textColorKey] as string;
+  if (customTextColor && customTextColor.trim() !== "") {
+    return customTextColor;
+  }
+
+  // Convert named colors to hex
+  const normalizedColor = colorNameToHex(bgColor);
+
+  // Calculate luminance to determine if we need light or dark text
+  // Normalize hex color (remove #, handle 3-digit hex)
+  let hex = normalizedColor.trim().replace("#", "");
+
+  // Handle 3-digit hex colors (e.g., #FFF -> #FFFFFF)
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((char) => char + char)
+      .join("");
+  }
+
+  // Ensure we have a valid 6-digit hex
+  if (hex.length !== 6) {
+    return "#FFFFFF"; // Default to white text if invalid
+  }
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Check for NaN values (invalid hex)
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    return "#FFFFFF"; // Default to white text if invalid
+  }
+
+  // Calculate relative luminance (WCAG formula)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Use white text for dark backgrounds (luminance < 0.5), black for light backgrounds
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+}
 
 // setup stores
 async function submit() {
@@ -317,11 +517,68 @@ function fileToDataUrl(file: File): Promise<string> {
 
 function updateColor(key: ColorKey, value: string) {
   branding.value[key] = value as Branding[ColorKey];
+
+  // Automatically calculate toolbar_text_color when toolbar_color changes
+  if (key === "toolbar_color") {
+    branding.value.toolbar_text_color = calculateTextColorForToolbar(value);
+  }
+}
+
+// Calculate text color for toolbar background
+function calculateTextColorForToolbar(bgColor: string): string {
+  if (!bgColor || bgColor.trim() === "") {
+    return "#FFFFFF";
+  }
+
+  // Convert named colors to hex
+  const normalizedColor = colorNameToHex(bgColor);
+
+  // Normalize hex color (remove #, handle 3-digit hex)
+  let hex = normalizedColor.trim().replace("#", "");
+
+  // Handle 3-digit hex colors (e.g., #FFF -> #FFFFFF)
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((char) => char + char)
+      .join("");
+  }
+
+  // Ensure we have a valid 6-digit hex
+  if (hex.length !== 6) {
+    return "#FFFFFF"; // Default to white text if invalid
+  }
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Check for NaN values (invalid hex)
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    return "#FFFFFF"; // Default to white text if invalid
+  }
+
+  // Calculate relative luminance (WCAG formula)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Use white text for dark backgrounds (luminance < 0.5), black for light backgrounds
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
 }
 
 function resetToSaved() {
   brandingStore.getBranding();
 }
+
+// Watch for toolbar_color changes and auto-calculate toolbar_text_color
+watch(
+  () => branding.value.toolbar_color,
+  (newColor) => {
+    if (newColor) {
+      branding.value.toolbar_text_color =
+        calculateTextColorForToolbar(newColor);
+    }
+  },
+);
 
 function resetToDefault() {
   brandingStore.resetToDefault();
@@ -329,12 +586,19 @@ function resetToDefault() {
 
 onMounted(() => {
   brandingStore.getBranding();
+  // Calculate toolbar_text_color after loading if needed
+  // Using nextTick to ensure branding data is loaded
+  setTimeout(() => {
+    if (branding.value.toolbar_color && !branding.value.toolbar_text_color) {
+      branding.value.toolbar_text_color = calculateTextColorForToolbar(
+        branding.value.toolbar_color,
+      );
+    }
+  }, 100);
 });
 </script>
 
 <style lang="sass" scoped>
-
-
 
 .color-preview
   width: 48px

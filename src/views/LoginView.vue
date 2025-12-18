@@ -200,9 +200,9 @@ onMounted(async () => {
 .bg-image {
   background-image: linear-gradient(
     90deg,
-    rgba(20, 20, 29, 1) 0%,
-    rgba(38, 42, 56, 1) 49%,
-    rgba(15, 18, 20, 1) 100%
+    color-mix(in srgb, var(--q-dark-page) 100%, black 10%) 0%,
+    color-mix(in srgb, var(--q-dark-page) 100%, white 20%) 49%,
+    color-mix(in srgb, var(--q-dark-page) 100%, black 10%) 100%
   );
 }
 </style>

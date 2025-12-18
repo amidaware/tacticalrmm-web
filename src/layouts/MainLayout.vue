@@ -42,7 +42,12 @@
           @click="$store.dispatch('reload')"
         />
       </q-banner>
-      <q-toolbar>
+      <q-toolbar
+        :style="{
+          backgroundColor: 'var(--q-bg-toolbar)',
+          color: 'var(--q-text-toolbar)',
+        }"
+      >
         <q-btn
           dense
           flat
@@ -104,7 +109,13 @@
           style="font-size: 16px"
         />
         <!-- Devices Chip -->
-        <q-chip class="cursor-pointer">
+        <q-chip
+          class="cursor-pointer"
+          style="
+            background-color: var(--q-bg-toolbar);
+            color: var(--q-text-toolbar);
+          "
+        >
           <q-avatar size="md" icon="devices" color="primary" />
           <q-tooltip :delay="600" anchor="top middle" self="top middle"
             >Agent Count</q-tooltip

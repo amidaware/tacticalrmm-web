@@ -15,5 +15,7 @@ export interface Branding {
   negative_color: string;
   info_color: string;
   warning_color: string;
+  toolbar_color: string;
+  toolbar_text_color: string;
   favicon: string;
 }
