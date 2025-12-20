@@ -109,13 +109,7 @@
           style="font-size: 16px"
         />
         <!-- Devices Chip -->
-        <q-chip
-          class="cursor-pointer"
-          style="
-            background-color: var(--q-bg-toolbar);
-            color: var(--q-text-toolbar);
-          "
-        >
+        <q-chip class="cursor-pointer">
           <q-avatar size="md" icon="devices" color="primary" />
           <q-tooltip :delay="600" anchor="top middle" self="top middle"
             >Agent Count</q-tooltip

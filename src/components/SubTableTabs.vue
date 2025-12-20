@@ -83,8 +83,8 @@
           label="Audit"
         />
       </q-tabs>
-      <q-separator />
     </div>
+    <q-separator />
     <q-page-container>
       <q-tab-panels v-model="subtab" :animated="false">
         <q-tab-panel

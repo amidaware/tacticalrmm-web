@@ -240,9 +240,8 @@
                   <div>
                     <q-btn
                       size="sm"
-                      color="grey-5"
+                      color="primary"
                       icon="fas fa-plus"
-                      text-color="black"
                       label="Add emails"
                       @click="toggleAddEmail"
                     />
@@ -380,9 +379,8 @@
                   <div>
                     <q-btn
                       size="sm"
-                      color="grey-5"
+                      color="primary"
                       icon="fas fa-plus"
-                      text-color="black"
                       label="Add numbers"
                       @click="toggleAddSMSNumber"
                     />
