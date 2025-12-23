@@ -107,7 +107,7 @@ const columnOptions = computed(() =>
 .column-bgcolor
   td:last-child
     /* bg color is important for td; just specify one */
-    background-color: var(--q-light-card, #ffffff)
+    background-color: var(--q-light, #ffffff)
 
 .sticky-header-right-column
   tr th

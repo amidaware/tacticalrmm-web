@@ -12,7 +12,7 @@ export interface Branding {
   dark_color: string;
   dark_page_color: string;
   light_page_color: string;
-  light_card_color: string;
+  light_color: string;
   positive_color: string;
   negative_color: string;
   info_color: string;

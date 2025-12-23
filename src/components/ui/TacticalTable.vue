@@ -76,7 +76,7 @@ const columnOptions = ref(
 .column-bgcolor
   tbody tr td:last-child
     /* bg color is important for td; just specify one */
-    background-color: var(--q-light-card, #ffffff) !important
+    background-color: var(--q-light, #ffffff) !important
 
 .sticky-header-right-column
   tr th

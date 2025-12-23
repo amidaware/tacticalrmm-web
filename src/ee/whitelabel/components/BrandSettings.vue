@@ -515,7 +515,7 @@ type ColorKey = keyof Pick<
   | "dark_color"
   | "dark_page_color"
   | "light_page_color"
-  | "light_card_color"
+  | "light_color"
   | "positive_color"
   | "negative_color"
   | "info_color"
@@ -537,7 +537,7 @@ const colorDefinitions: ColorDefinition[] = [
   { key: "dark_color", label: "Dark", default: "#1D1D1D" },
   { key: "dark_page_color", label: "Dark Page", default: "#121212" },
   { key: "light_page_color", label: "Light Page", default: "#F5F5F5" },
-  { key: "light_card_color", label: "Light Card", default: "#FFFFFF" },
+  { key: "light_color", label: "Light Card", default: "#FFFFFF" },
   { key: "positive_color", label: "Positive", default: "#21BA45" },
   { key: "negative_color", label: "Negative", default: "#C10015" },
   { key: "info_color", label: "Info", default: "#31CCEC" },
@@ -617,7 +617,7 @@ const previewStyles = computed(() => {
     "--q-dark": b.dark_color || getDefaultColor("dark_color"),
     "--q-dark-page": b.dark_page_color || getDefaultColor("dark_page_color"),
     "--q-light-page": b.light_page_color || getDefaultColor("light_page_color"),
-    "--q-light-card": b.light_card_color || getDefaultColor("light_card_color"),
+    "--q-light": b.light_color || getDefaultColor("light_color"),
   };
 });
 
@@ -726,7 +726,7 @@ function getColorRules(
   if (colorKey === "dark_color" || colorKey === "dark_page_color") {
     return [darkColorRule];
   }
-  if (colorKey === "light_page_color" || colorKey === "light_card_color") {
+  if (colorKey === "light_page_color" || colorKey === "light_color") {
     return [lightColorRule];
   }
   return [];

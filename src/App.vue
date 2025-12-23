@@ -69,7 +69,7 @@ a
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: color-mix(in srgb, var(--q-light-card) 100%, black 20%) !important
+    background-color: color-mix(in srgb, var(--q-light) 100%, black 20%) !important
 
 .table-bgcolor-dark
   .q-table__top,
@@ -84,7 +84,7 @@ a
   background-color: var(--q-light-page, #ffffff)
 
 .highlight
-  background-color: color-mix(in srgb, var(--q-light-card) 100%, white 40%)
+  background-color: color-mix(in srgb, var(--q-light) 100%, white 40%)
 
 .highlight-dark
   background-color: color-mix(in srgb, var(--q-dark) 100%, white 40%)
@@ -103,22 +103,22 @@ a
 
 .body--light
   .q-card
-    background-color: var(--q-light-card, #fff) !important
+    background-color: var(--q-light, #fff) !important
 
   .q-table__bottom
-    background-color: var(--q-light-card, #fff) !important
+    background-color: var(--q-light, #fff) !important
 
   .q-table__container
-    background-color: var(--q-light-card, #fff) !important
+    background-color: var(--q-light, #fff) !important
 
   .q-tab-panels
-    background-color: var(--q-light-card, #fff) !important
+    background-color: var(--q-light, #fff) !important
 
   .q-chip
-    background-color: var(--q-light-card, #fff)
+    background-color: var(--q-light, #fff)
 
   .q-menu
-    background-color: var(--q-light-card, #fff) !important
+    background-color: var(--q-light, #fff) !important
 
 .main-toolbar
   .q-chip
