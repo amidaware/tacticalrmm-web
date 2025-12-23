@@ -277,7 +277,9 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-page
             class="q-pa-lg"
             :style="{
-              background: previewDarkMode ? 'var(--q-dark-page)' : '#f5f5f5',
+              background: previewDarkMode
+                ? 'var(--q-dark-page)'
+                : 'var(--q-light-page)',
             }"
           >
             <div class="row q-col-gutter-lg">
@@ -432,29 +434,15 @@ For details, see: https://license.tacticalrmm.com/ee
               <div class="col-12 col-md-6">
                 <q-card>
                   <q-card-section>
-                    <div class="text-h6 q-mb-md">Progress & Loading</div>
-                    <div class="q-gutter-md">
-                      <q-linear-progress
-                        :value="0.6"
-                        color="primary"
-                        class="q-mb-sm"
-                      />
-                      <q-linear-progress
-                        :value="0.4"
-                        color="secondary"
-                        class="q-mb-sm"
-                      />
-                      <q-linear-progress
-                        :value="0.8"
-                        color="accent"
-                        class="q-mb-sm"
-                      />
-                      <div class="row q-gutter-md justify-center q-mt-md">
-                        <q-spinner color="primary" size="2em" />
-                        <q-spinner-dots color="secondary" size="2em" />
-                        <q-spinner-bars color="accent" size="2em" />
-                      </div>
-                    </div>
+                    <div class="text-h6 q-mb-md">Table Preview</div>
+                    <TacticalTable
+                      :rows="previewTableRows"
+                      :columns="previewTableColumns"
+                      row-key="id"
+                      dense
+                      :rows-per-page-options="[0]"
+                      hide-pagination
+                    />
                   </q-card-section>
                 </q-card>
               </div>
@@ -499,39 +487,6 @@ For details, see: https://license.tacticalrmm.com/ee
                   </q-card-section>
                 </q-card>
               </div>
-
-              <div class="col-12">
-                <q-card>
-                  <q-card-section>
-                    <div class="text-h6 q-mb-md">Tabs</div>
-                    <q-tabs
-                      v-model="previewTab"
-                      class="text-grey"
-                      active-color="primary"
-                      indicator-color="primary"
-                    >
-                      <q-tab name="tab1" label="Tab One" />
-                      <q-tab name="tab2" label="Tab Two" />
-                      <q-tab name="tab3" label="Tab Three" />
-                    </q-tabs>
-                    <q-separator />
-                    <q-tab-panels v-model="previewTab" animated>
-                      <q-tab-panel name="tab1">
-                        <div class="text-body1">
-                          Content for Tab One - demonstrating the primary color
-                          indicator.
-                        </div>
-                      </q-tab-panel>
-                      <q-tab-panel name="tab2">
-                        <div class="text-body1">Content for Tab Two</div>
-                      </q-tab-panel>
-                      <q-tab-panel name="tab3">
-                        <div class="text-body1">Content for Tab Three</div>
-                      </q-tab-panel>
-                    </q-tab-panels>
-                  </q-card-section>
-                </q-card>
-              </div>
             </div>
           </q-page>
         </q-page-container>
@@ -542,9 +497,10 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script lang="ts" setup>
 import { ref, onMounted, getCurrentInstance, computed, watch } from "vue";
-import { colors, useQuasar, QForm } from "quasar";
+import { colors, useQuasar, QForm, type QTableColumn } from "quasar";
 import { brandingStore } from "../api";
 import type { Branding } from "../types";
+import TacticalTable from "@/core/dashboard/ui/TacticalTable.vue";
 
 const $q = useQuasar();
 const formRef = ref<QForm | null>(null);
@@ -558,6 +514,8 @@ type ColorKey = keyof Pick<
   | "accent_color"
   | "dark_color"
   | "dark_page_color"
+  | "light_page_color"
+  | "light_card_color"
   | "positive_color"
   | "negative_color"
   | "info_color"
@@ -578,6 +536,8 @@ const colorDefinitions: ColorDefinition[] = [
   { key: "accent_color", label: "Accent", default: "#9C27B0" },
   { key: "dark_color", label: "Dark", default: "#1D1D1D" },
   { key: "dark_page_color", label: "Dark Page", default: "#121212" },
+  { key: "light_page_color", label: "Light Page", default: "#F5F5F5" },
+  { key: "light_card_color", label: "Light Card", default: "#FFFFFF" },
   { key: "positive_color", label: "Positive", default: "#21BA45" },
   { key: "negative_color", label: "Negative", default: "#C10015" },
   { key: "info_color", label: "Info", default: "#31CCEC" },
@@ -597,7 +557,45 @@ const previewSelect = ref("Option 1");
 const previewToggle = ref(true);
 const previewCheckbox = ref(true);
 const previewRadio = ref("1");
-const previewTab = ref("tab1");
+
+// Preview table data
+const previewTableColumns: QTableColumn[] = [
+  { name: "hostname", label: "Hostname", field: "hostname", align: "left" },
+  { name: "status", label: "Status", field: "status", align: "left" },
+  { name: "os", label: "OS", field: "os", align: "left" },
+  { name: "lastSeen", label: "Last Seen", field: "lastSeen", align: "left" },
+];
+
+const previewTableRows = [
+  {
+    id: 1,
+    hostname: "DESKTOP-ABC123",
+    status: "Online",
+    os: "Windows 11",
+    lastSeen: "Just now",
+  },
+  {
+    id: 2,
+    hostname: "SERVER-PROD01",
+    status: "Online",
+    os: "Windows Server 2022",
+    lastSeen: "2 min ago",
+  },
+  {
+    id: 3,
+    hostname: "LAPTOP-XYZ789",
+    status: "Offline",
+    os: "Windows 10",
+    lastSeen: "1 hour ago",
+  },
+  {
+    id: 4,
+    hostname: "WORKSTATION-42",
+    status: "Online",
+    os: "Ubuntu 22.04",
+    lastSeen: "5 min ago",
+  },
+];
 
 const { branding, isLoading } = brandingStore;
 
@@ -618,6 +616,8 @@ const previewStyles = computed(() => {
     "--q-warning": b.warning_color || getDefaultColor("warning_color"),
     "--q-dark": b.dark_color || getDefaultColor("dark_color"),
     "--q-dark-page": b.dark_page_color || getDefaultColor("dark_page_color"),
+    "--q-light-page": b.light_page_color || getDefaultColor("light_page_color"),
+    "--q-light-card": b.light_card_color || getDefaultColor("light_card_color"),
   };
 });
 
@@ -697,10 +697,26 @@ function isDarkColor(color: string): boolean {
   }
 }
 
+// Check if a color is light enough (luminosity > 0.5)
+function isLightColor(color: string): boolean {
+  if (!color || color.trim() === "") return true;
+  try {
+    return luminosity(color.trim()) > 0.5;
+  } catch {
+    return true;
+  }
+}
+
 // Validation rule for dark colors
 function darkColorRule(val: string): boolean | string {
   if (!val || val.trim() === "") return true;
   return isDarkColor(val) || "Color must be dark (luminosity ≤ 50%)";
+}
+
+// Validation rule for light colors
+function lightColorRule(val: string): boolean | string {
+  if (!val || val.trim() === "") return true;
+  return isLightColor(val) || "Color must be light (luminosity > 50%)";
 }
 
 // Get validation rules for a color key
@@ -709,6 +725,9 @@ function getColorRules(
 ): ((val: string) => boolean | string)[] {
   if (colorKey === "dark_color" || colorKey === "dark_page_color") {
     return [darkColorRule];
+  }
+  if (colorKey === "light_page_color" || colorKey === "light_card_color") {
+    return [lightColorRule];
   }
   return [];
 }

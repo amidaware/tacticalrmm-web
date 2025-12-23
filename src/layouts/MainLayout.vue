@@ -47,6 +47,7 @@
           backgroundColor: 'var(--q-bg-toolbar)',
           color: 'var(--q-text-toolbar)',
         }"
+        class="main-toolbar"
       >
         <q-btn
           dense

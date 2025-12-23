@@ -18,6 +18,8 @@ export function useBrandingStore() {
     accent_color: "",
     dark_color: "",
     dark_page_color: "",
+    light_page_color: "",
+    light_card_color: "",
     positive_color: "",
     negative_color: "",
     info_color: "",
@@ -91,6 +93,8 @@ export function useBrandingStore() {
     branding.value.accent_color = "";
     branding.value.dark_color = "";
     branding.value.dark_page_color = "";
+    branding.value.light_page_color = "";
+    branding.value.light_card_color = "";
     branding.value.positive_color = "";
     branding.value.negative_color = "";
     branding.value.info_color = "";
