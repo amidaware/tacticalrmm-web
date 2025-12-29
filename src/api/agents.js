@@ -265,3 +265,134 @@ export async function wakeUpWOL(agent_id) {
   const { data } = await axios.post(`${baseUrl}/${agent_id}/wol/`);
   return data;
 }
+
+export async function fetchAgentRegistry(
+  agent_id,
+  path,
+  page = 1,
+  hiveSearch = false,
+) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/${agent_id}/registry/`, {
+      params: { path: `${path}`, page, page_size: hiveSearch ? 100000 : 400 },
+    });
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteRegistryKey(agent_id, path) {
+  try {
+    const { data } = await axios.delete(
+      `${baseUrl}/${agent_id}/registry/delete-key/`,
+      {
+        params: { path: `${path}` },
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function createRegistryKey(agent_id, path) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agent_id}/registry/create-key/`,
+      { path },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function renameRegistryKey(agent_id, old_path, new_path) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agent_id}/registry/rename-key/`,
+      { old_path, new_path },
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteRegistryValue(agent_id, path, name) {
+  try {
+    const { data } = await axios.delete(
+      `${baseUrl}/${agent_id}/registry/delete-value/`,
+      {
+        params: { path, name },
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to delete value:", e);
+    throw e;
+  }
+}
+
+export async function renameRegistryValue(agentId, path, oldName, newName) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/rename-value/`,
+      {
+        path,
+        old_name: oldName,
+        new_name: newName,
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to rename value:", e);
+    throw e;
+  }
+}
+
+export async function modifyRegistryValue(
+  agentId,
+  path,
+  name,
+  type,
+  dataValue,
+) {
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/modify-value/`,
+      {
+        path,
+        name,
+        type,
+        data: dataValue,
+      },
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to modify registry value:", e);
+    throw e;
+  }
+}
+
+export async function createRegistryValue(agentId, path, name, type, data) {
+  const formData = new FormData();
+  formData.append("path", path);
+  formData.append("name", name);
+  formData.append("type", type);
+  formData.append("data", data);
+  try {
+    const { data } = await axios.post(
+      `${baseUrl}/${agentId}/registry/create-value/`,
+      formData,
+    );
+    return data;
+  } catch (e) {
+    console.error("Failed to create registry value:", e);
+    throw e;
+  }
+}
