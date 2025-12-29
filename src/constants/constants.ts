@@ -1,4 +1,3 @@
-// import { RegistryValue } from "@/types/agents";
 import type { QTableColumn } from "quasar";
 
 export const GOARCH_AMD64 = "amd64";
