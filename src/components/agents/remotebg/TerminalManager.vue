@@ -18,6 +18,7 @@ interface TerminalWSMessage {
   data?: {
     output?: string;
     done?: boolean;
+    messageId?: string;
   };
 }
 
@@ -35,21 +36,25 @@ const { data, send, close, status } = useTerminalWSConnection(
 };
 
 const xtermContainer = ref<HTMLElement | null>(null);
-let term: Terminal;
+let term: Terminal | null = null;
 const fit = new FitAddon();
+
+let dataDisposable: { dispose: () => void } | null = null;
+let stopResizeObserver: (() => void) | null = null;
+let wsReadyInterval: number | null = null;
 
 onMounted(() => {
   setupXTerm();
-  useResizeObserver(xtermContainer, () => resizeWindow());
-  const wsReadyInterval = setInterval(() => {
+  const { stop } = useResizeObserver(xtermContainer, () => resizeWindow());
+  stopResizeObserver = stop;
+
+  wsReadyInterval = window.setInterval(() => {
     if (status.value === "OPEN") {
-      send(
-        JSON.stringify({
-          action: "start",
-          shell: "/bin/bash",
-        }),
-      );
-      clearInterval(wsReadyInterval);
+      send(JSON.stringify({ action: "start", shell: "/bin/bash" }));
+      if (wsReadyInterval) {
+        clearInterval(wsReadyInterval);
+        wsReadyInterval = null;
+      }
     }
   }, 100);
 });
@@ -65,17 +70,16 @@ function setupXTerm() {
     fontSize: 14,
     fontWeight: 400,
     cursorBlink: true,
-    theme: {
-      background: "#333",
-    },
+    theme: { background: "#333" },
   });
 
   term.loadAddon(fit);
   term.open(xtermContainer.value!);
   fit.fit();
 
-  term.onData((data) => {
-    send(JSON.stringify({ action: "input", data: data }));
+  // store disposable
+  dataDisposable = term.onData((d) => {
+    send(JSON.stringify({ action: "input", data: d }));
   });
 }
 
@@ -83,35 +87,47 @@ const resizeWindow = useDebounceFn(() => {
   if (!term) return;
 
   fit.fit();
-  send(
-    JSON.stringify({
-      action: "resize",
-      rows: term.rows,
-      cols: term.cols,
-    }),
-  );
+  send(JSON.stringify({ action: "resize", rows: term.rows, cols: term.cols }));
 }, 200);
 
 function disconnect() {
+  // stop interval if still running
+  if (wsReadyInterval) {
+    clearInterval(wsReadyInterval);
+    wsReadyInterval = null;
+  }
+
+  // stop resize observer
+  if (stopResizeObserver) {
+    stopResizeObserver();
+    stopResizeObserver = null;
+  }
+
+  // dispose onData handler first (prevents duplicates on reopen)
+  if (dataDisposable) {
+    dataDisposable.dispose();
+    dataDisposable = null;
+  }
+
   try {
     send(JSON.stringify({ action: "kill" }));
   } catch {}
+
   close();
-  term.dispose();
+
+  if (term) {
+    term.dispose();
+    term = null;
+  }
 }
 
 watch(data, (msg) => {
-  if (!msg || !msg.action) return;
+  if (!msg || !msg.action || !term) return;
   const output = msg.data?.output;
   const done = msg.data?.done;
 
-  if (output !== undefined) {
-    term.write(output);
-  }
-
-  if (done) {
-    term.write("\r\n[Session Ended]\r\n");
-  }
+  if (output !== undefined) term.write(output);
+  if (done) term.write("\r\n[Session Ended]\r\n");
 });
 </script>
 
