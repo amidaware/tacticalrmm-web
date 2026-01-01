@@ -5,8 +5,7 @@
       <q-space />
       <q-btn
         size="sm"
-        color="grey-5"
-        text-color="black"
+        color="primary"
         class="q-mr-sm"
         :label="isPwd ? 'Show values' : 'Hide values'"
         :icon="isPwd ? 'visibility_off' : 'visibility'"
@@ -14,9 +13,8 @@
       />
       <q-btn
         size="sm"
-        color="grey-5"
+        color="primary"
         icon="fas fa-plus"
-        text-color="black"
         label="Add key"
         @click="addKey"
       />

@@ -11,9 +11,8 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-space />
       <q-btn
         size="sm"
-        color="grey-5"
+        color="primary"
         icon="fas fa-plus"
-        text-color="black"
         label="Add OIDC Provider"
         @click="addSSOProvider"
         :disable="!ssoSettings.sso_enabled"
