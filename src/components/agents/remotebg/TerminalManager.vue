@@ -43,6 +43,9 @@ let dataDisposable: { dispose: () => void } | null = null;
 let stopResizeObserver: (() => void) | null = null;
 let wsReadyInterval: number | null = null;
 
+let started = false;
+let pendingResize: { rows: number; cols: number } | null = null;
+
 onMounted(() => {
   setupXTerm();
   const { stop } = useResizeObserver(xtermContainer, () => resizeWindow());
@@ -51,6 +54,20 @@ onMounted(() => {
   wsReadyInterval = window.setInterval(() => {
     if (status.value === "OPEN") {
       send(JSON.stringify({ action: "start", shell: "/bin/bash" }));
+      started = true;
+      if (pendingResize) {
+        send(JSON.stringify({ action: "resize", ...pendingResize }));
+        pendingResize = null;
+      } else if (term) {
+        send(
+          JSON.stringify({
+            action: "resize",
+            rows: term.rows,
+            cols: term.cols,
+          }),
+        );
+      }
+
       if (wsReadyInterval) {
         clearInterval(wsReadyInterval);
         wsReadyInterval = null;
@@ -79,6 +96,7 @@ function setupXTerm() {
 
   // store disposable
   dataDisposable = term.onData((d) => {
+    if (!started) return;
     send(JSON.stringify({ action: "input", data: d }));
   });
 }
@@ -87,7 +105,16 @@ const resizeWindow = useDebounceFn(() => {
   if (!term) return;
 
   fit.fit();
-  send(JSON.stringify({ action: "resize", rows: term.rows, cols: term.cols }));
+  const rows = term.rows;
+  const cols = term.cols;
+
+  // buffer resize until started
+  if (!started) {
+    pendingResize = { rows, cols };
+    return;
+  }
+
+  send(JSON.stringify({ action: "resize", rows, cols }));
 }, 200);
 
 function disconnect() {
@@ -108,6 +135,10 @@ function disconnect() {
     dataDisposable.dispose();
     dataDisposable = null;
   }
+
+  // reset gating state
+  started = false;
+  pendingResize = null;
 
   try {
     send(JSON.stringify({ action: "kill" }));
