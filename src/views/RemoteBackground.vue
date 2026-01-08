@@ -29,6 +29,12 @@
         icon="fas fa-clipboard-list"
         label="Event Log"
       />
+      <q-tab v-if="$route.query.agentPlatform === 'windows'" name="registry">
+        <div class="flex items-center text-weight-bold text-subtitle2">
+          <q-icon :name="`img:${registryIcon}`" size="25px" />
+          <span class="q-ml-sm font">Registry</span>
+        </div>
+      </q-tab>
     </q-tabs>
     <q-separator />
     <q-tab-panels v-model="tab">
@@ -75,6 +81,13 @@
           }"
         ></iframe>
       </q-tab-panel>
+      <q-tab-panel
+        v-if="$route.query.agentPlatform === 'windows'"
+        name="registry"
+        class="q-pa-none"
+      >
+        <RegistryManager :agent_id="agent_id" />
+      </q-tab-panel>
     </q-tab-panels>
   </div>
 </template>
@@ -91,6 +104,8 @@ import { fetchDashboardInfo } from "@/api/core";
 import ProcessManager from "@/components/agents/remotebg/ProcessManager.vue";
 import ServicesManager from "@/components/agents/remotebg/ServicesManager.vue";
 import EventLogManager from "@/components/agents/remotebg/EventLogManager.vue";
+import RegistryManager from "@/components/agents/remotebg/RegistryManager.vue";
+import registryIcon from "../assets/windows-registry.png";
 
 export default {
   name: "RemoteBackground",
@@ -98,6 +113,7 @@ export default {
     ServicesManager,
     EventLogManager,
     ProcessManager,
+    RegistryManager,
   },
   setup() {
     // setup quasar
@@ -140,6 +156,7 @@ export default {
       file,
       tab,
       agent_id,
+      registryIcon,
     };
   },
 };

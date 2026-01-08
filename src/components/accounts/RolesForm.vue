@@ -129,6 +129,10 @@
                 v-model="localRole.can_recover_agents"
                 label="Recover Agents"
               />
+              <q-checkbox
+                v-model="localRole.can_use_registry"
+                label="Use Registry"
+              />
             </div>
           </q-card-section>
           <div class="text-subtitle2">Core</div>
@@ -552,6 +556,7 @@ export default {
           // reporting perms
           can_view_reports: false,
           can_manage_reports: false,
+          can_use_registry: false,
         });
 
     const loading = ref(false);
