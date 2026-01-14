@@ -9,6 +9,7 @@
       'column-bgcolor': !$q.dark.isActive && columnSelect,
       'sticky-header-right-column': columnSelect,
       'tbl-sticky': !columnSelect,
+      'u-table-modern': true,
     }"
     v-bind="$attrs"
   >

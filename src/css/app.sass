@@ -1,1 +1,194 @@
 // app global css in Sass form
+
+/* bridge Quasar SASS → CSS variables */
+:root
+  --trmm-bg: #F7F9FC
+  --trmm-surface: #FFFFFF
+  --trmm-elevated: #FFFFFF
+  --trmm-text: #0B1220
+  --trmm-muted: #5B6B7A
+  --trmm-border: rgba(2,6,23,.08)
+  --trmm-primary: #{$primary}
+  --trmm-positive: #{$positive}
+  --trmm-warning: #{$warning}
+  --trmm-negative: #{$negative}
+  --trmm-radius-sm: 6px
+  --trmm-radius-md: 10px
+  --trmm-radius-lg: 14px
+  --trmm-shadow-sm: 0 1px 2px rgba(0,0,0,.08)
+  --trmm-shadow-md: 0 4px 12px rgba(0,0,0,.12)
+
+/* dark scope ties to Quasar dark */
+body.body--dark
+  --trmm-bg: #0B0F14
+  --trmm-surface: #121923
+  --trmm-elevated: #1A2532
+  --trmm-text: #E6EDF3
+  --trmm-muted: #9FB1C1
+  --trmm-border: rgba(148,163,184,.18)
+
+/* base document */
+body
+  background: var(--trmm-bg)
+  color: var(--trmm-text)
+
+/* utilities (scoped behind rollout flag) */
+body.ui-modern .u-surface
+  background: rgba(255, 255, 255, 0.05)
+  backdrop-filter: blur(12px) saturate(120%)
+  border: 1px solid rgba(255, 255, 255, 0.1)
+  border-radius: var(--trmm-radius-md)
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+body.ui-modern .u-elevated
+  background: rgba(255, 255, 255, 0.08)
+  backdrop-filter: blur(16px) saturate(120%)
+  border: 1px solid rgba(255, 255, 255, 0.15)
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15)
+body.ui-modern .u-muted
+  color: var(--trmm-muted)
+body.ui-modern .u-card
+  @extend .u-surface
+  padding: 1rem
+
+/* light theme glassmorphic surface adjustments */
+body.ui-modern.theme-light .u-surface
+  background: rgba(255, 255, 255, 0.7)
+  border: 1px solid rgba(255, 255, 255, 0.3)
+body.ui-modern.theme-light .u-elevated
+  background: rgba(255, 255, 255, 0.8)
+  border: 1px solid rgba(255, 255, 255, 0.4)
+
+/* table surfaces via tokens */
+.table-bgcolor
+  .q-table__top, .q-table__bottom, thead tr:first-child th
+    background-color: var(--trmm-surface)
+
+.table-bgcolor-dark
+  .q-table__top, .q-table__bottom, thead tr:first-child th
+    background-color: var(--trmm-elevated)
+
+/* modern table hover/zebra additive */
+body.ui-modern .u-table-modern
+  tbody tr:nth-child(odd)
+    background: color-mix(in oklab, var(--trmm-surface) 92%, var(--trmm-text))
+  tbody tr:hover
+    background: color-mix(in oklab, var(--trmm-surface) 86%, var(--trmm-text))
+
+/* enhanced status badges with glassmorphic effects */
+body.ui-modern .status-badge
+  display: inline-flex
+  align-items: center
+  gap: 0.375rem
+  height: 1.75rem
+  padding: 0 0.75rem
+  border-radius: 999px
+  border: 1px solid rgba(255, 255, 255, 0.2)
+  backdrop-filter: blur(8px) saturate(120%)
+  font-size: var(--trmm-text-xs)
+  font-weight: 600
+  text-transform: uppercase
+  letter-spacing: 0.025em
+  transition: all 200ms ease
+
+body.ui-modern .status-badge-online
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%)
+  color: #10B981
+  border-color: rgba(16, 185, 129, 0.3)
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .status-badge-offline
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.25) 100%)
+  color: #EF4444
+  border-color: rgba(239, 68, 68, 0.3)
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .status-badge-maintenance
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.25) 100%)
+  color: #F59E0B
+  border-color: rgba(245, 158, 11, 0.3)
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .status-badge-overdue
+  background: linear-gradient(135deg, rgba(220, 38, 127, 0.15) 0%, rgba(220, 38, 127, 0.25) 100%)
+  color: #DC267F
+  border-color: rgba(220, 38, 127, 0.3)
+  box-shadow: 0 2px 8px rgba(220, 38, 127, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+/* enhanced checks badges with glassmorphic effects */
+body.ui-modern .checks-badge
+  display: inline-flex
+  align-items: center
+  gap: 0.375rem
+  height: 1.75rem
+  padding: 0 0.75rem
+  border-radius: 999px
+  border: 1px solid rgba(255, 255, 255, 0.2)
+  backdrop-filter: blur(8px) saturate(120%)
+  font-size: var(--trmm-text-xs)
+  font-weight: 600
+  text-transform: uppercase
+  letter-spacing: 0.025em
+  transition: all 200ms ease
+
+body.ui-modern .checks-badge-passing
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%)
+  color: #10B981
+  border-color: rgba(16, 185, 129, 0.3)
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .checks-badge-failing
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.25) 100%)
+  color: #EF4444
+  border-color: rgba(239, 68, 68, 0.3)
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .checks-badge-warning
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.25) 100%)
+  color: #F59E0B
+  border-color: rgba(245, 158, 11, 0.3)
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .checks-badge-info
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.25) 100%)
+  color: #3B82F6
+  border-color: rgba(59, 130, 246, 0.3)
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+/* glassmorphic surfaces */
+body.ui-modern .glass-surface
+  background: rgba(255, 255, 255, 0.05)
+  backdrop-filter: blur(12px) saturate(120%)
+  border: 1px solid rgba(255, 255, 255, 0.1)
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)
+
+body.ui-modern .glass-elevated
+  background: rgba(255, 255, 255, 0.08)
+  backdrop-filter: blur(16px) saturate(120%)
+  border: 1px solid rgba(255, 255, 255, 0.15)
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15)
+
+/* light theme glassmorphic adjustments */
+body.ui-modern.theme-light .glass-surface
+  background: rgba(255, 255, 255, 0.7)
+  border: 1px solid rgba(255, 255, 255, 0.3)
+
+body.ui-modern.theme-light .glass-elevated
+  background: rgba(255, 255, 255, 0.8)
+  border: 1px solid rgba(255, 255, 255, 0.4)
+
+body.ui-modern.theme-light .status-badge-online,
+body.ui-modern.theme-light .status-badge-offline,
+body.ui-modern.theme-light .status-badge-maintenance,
+body.ui-modern.theme-light .status-badge-overdue,
+body.ui-modern.theme-light .checks-badge-passing,
+body.ui-modern.theme-light .checks-badge-failing,
+body.ui-modern.theme-light .checks-badge-warning,
+body.ui-modern.theme-light .checks-badge-info
+  border: 1px solid rgba(0, 0, 0, 0.1)
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3)
+
+@media (prefers-reduced-motion: reduce)
+  *
+    animation-duration: .001ms !important
+    animation-iteration-count: 1 !important
+    transition-duration: .001ms !important
