@@ -274,8 +274,7 @@ import EditAgent from "@/components/modals/agents/EditAgent.vue";
 import SendCommand from "@/components/modals/agents/SendCommand.vue";
 import RunScript from "@/components/modals/agents/RunScript.vue";
 import IntegrationsContextMenu from "@/components/ui/IntegrationsContextMenu.vue";
-
-import DOMPurify from "dompurify";
+import ConfirmYesDialog from "@/components/agents/ConfirmYesDialog.vue";
 
 export default {
   name: "AgentActionMenu",
@@ -467,18 +466,15 @@ export default {
     }
 
     function shutdown(agent) {
-      const clean = DOMPurify.sanitize(agent.hostname);
       $q.dialog({
-        title: `Please type <code style="color:red">yes</code> in the box below to confirm shutdown of <span style="color:red">${clean}</span>.`,
-        prompt: {
-          model: "",
-          type: "text",
-          isValid: (val) => val.toLowerCase() === "yes",
+        component: ConfirmYesDialog,
+        componentProps: {
+          hostname: agent.hostname,
+          actionVerb: "shutdown",
+          title: "Confirm Shutdown",
+          okLabel: "Shutdown",
+          okColor: "negative",
         },
-        cancel: true,
-        ok: { label: "Shutdown", color: "negative" },
-        persistent: true,
-        html: true,
       }).onOk(async () => {
         $q.loading.show();
         try {
@@ -542,18 +538,15 @@ export default {
     }
 
     function deleteAgent(agent) {
-      const clean = DOMPurify.sanitize(agent.hostname);
       $q.dialog({
-        title: `Please type <code style="color:red">yes</code> in the box below to confirm deletion of <span style="color:red">${clean}</span>.`,
-        prompt: {
-          model: "",
-          type: "text",
-          isValid: (val) => val.toLowerCase() === "yes",
+        component: ConfirmYesDialog,
+        componentProps: {
+          hostname: agent.hostname,
+          actionVerb: "deletion",
+          title: "Confirm Deletion",
+          okLabel: "Uninstall",
+          okColor: "negative",
         },
-        cancel: true,
-        ok: { label: "Uninstall", color: "negative" },
-        persistent: true,
-        html: true,
       }).onOk(async () => {
         try {
           const data = await removeAgent(agent.agent_id);
