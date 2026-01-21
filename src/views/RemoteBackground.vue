@@ -47,7 +47,10 @@
             width: `${$q.screen.width}px`,
           }"
         ></iframe> -->
-        <TerminalManager :agent_id="agent_id" />
+        <TerminalManager
+          :agent_id="agent_id"
+          :agentPlatform="$route.query.agentPlatform"
+        />
       </q-tab-panel>
       <q-tab-panel name="processes" class="q-pa-none">
         <ProcessManager :agent_id="agent_id" />

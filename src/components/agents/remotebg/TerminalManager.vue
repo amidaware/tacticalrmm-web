@@ -1,11 +1,30 @@
 <template>
   <div class="full-page-terminal">
-    <div ref="xtermContainer" class="xterm-container"></div>
+    <div
+      v-if="shellOptions.length > 0"
+      class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
+    >
+      <div class="text-subtitle1 text-body2 q-mr-lg">Shell:</div>
+      <q-option-group
+        dense
+        v-model="selectedShell"
+        :options="shellOptions"
+        type="radio"
+        inline
+        color="primary"
+        @update:model-value="onShellChange"
+        class="q-ml-sm"
+      />
+    </div>
+    <div class="terminal-wrapper">
+      <div ref="xtermContainer" class="xterm-container"></div>
+      <q-inner-loading :showing="loading" color="primary" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, Ref } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, Ref, computed } from "vue";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { uid } from "quasar";
@@ -22,65 +41,106 @@ interface TerminalWSMessage {
   };
 }
 
-const props = defineProps<{ agent_id: string }>();
-const session_id = uid();
+const props = defineProps<{ agent_id: string; agentPlatform: string }>();
+const loading = ref(false);
 
-const { data, send, close, status } = useTerminalWSConnection(
-  props.agent_id,
-  session_id,
-) as {
-  data: Ref<TerminalWSMessage | null>;
-  send: (msg: string) => void;
-  close: () => void;
-  status: Ref<string>;
-};
+const shellOptions = computed(() => {
+  return props.agentPlatform === "windows"
+    ? [
+        { label: "CMD", value: "cmd" },
+        { label: "PowerShell", value: "powershell" },
+      ]
+    : [{ label: "Bash", value: "/bin/bash" }];
+});
 
-const xtermContainer = ref<HTMLElement | null>(null);
+const selectedShell = ref(
+  props.agentPlatform === "windows" ? "cmd" : "/bin/bash",
+);
+
 let term: Terminal | null = null;
 const fit = new FitAddon();
-
 let dataDisposable: { dispose: () => void } | null = null;
 let stopResizeObserver: (() => void) | null = null;
 let wsReadyInterval: number | null = null;
-
 let started = false;
-let pendingResize: { rows: number; cols: number } | null = null;
 
-onMounted(() => {
-  setupXTerm();
-  const { stop } = useResizeObserver(xtermContainer, () => resizeWindow());
-  stopResizeObserver = stop;
+let wsData: Ref<TerminalWSMessage | null>;
+let wsSend: (msg: string) => void;
+let wsClose: () => void;
+let wsStatus: Ref<string>;
 
-  wsReadyInterval = window.setInterval(() => {
-    if (status.value === "OPEN") {
-      send(JSON.stringify({ action: "start", shell: "/bin/bash" }));
+const xtermContainer = ref<HTMLElement | null>(null);
+
+function waitForLayout(): Promise<void> {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        resolve();
+      });
+    });
+  });
+}
+
+function initWS(shell: string) {
+  dataDisposable?.dispose();
+  dataDisposable = null;
+  try {
+    wsClose?.();
+  } catch {}
+
+  ({
+    data: wsData,
+    send: wsSend,
+    close: wsClose,
+    status: wsStatus,
+  } = useTerminalWSConnection(props.agent_id, uid()) as {
+    data: Ref<TerminalWSMessage | null>;
+    send: (msg: string) => void;
+    close: () => void;
+    status: Ref<string>;
+  });
+
+  watch(wsData, (msg) => {
+    if (!msg?.action || !term) return;
+
+    if (msg.data?.output) term.write(msg.data.output);
+    if (msg.data?.done) term.write("\r\n[Session Ended]\r\n");
+  });
+
+  dataDisposable = term!.onData((d) => {
+    if (!started) return;
+    wsSend(JSON.stringify({ action: "input", data: d }));
+  });
+
+  const interval = setInterval(async () => {
+    if (wsStatus.value === "OPEN" && term) {
+      await waitForLayout();
+      fit.fit();
+      wsSend(JSON.stringify({ action: "start", shell }));
+      wsSend(
+        JSON.stringify({
+          action: "resize",
+          rows: term.rows,
+          cols: term.cols,
+        }),
+      );
       started = true;
-      if (pendingResize) {
-        send(JSON.stringify({ action: "resize", ...pendingResize }));
-        pendingResize = null;
-      } else if (term) {
-        send(
-          JSON.stringify({
-            action: "resize",
-            rows: term.rows,
-            cols: term.cols,
-          }),
-        );
-      }
-
-      if (wsReadyInterval) {
-        clearInterval(wsReadyInterval);
-        wsReadyInterval = null;
-      }
+      loading.value = false;
+      clearInterval(interval);
     }
-  }, 100);
-});
+  }, 50);
+}
 
-onBeforeUnmount(() => {
-  disconnect();
-});
+async function onShellChange(newShell: string) {
+  if (!term) return;
+  loading.value = true;
+  started = false;
+  term.clear();
+  fit.fit();
+  initWS(newShell);
+}
 
-function setupXTerm() {
+async function setupXTerm() {
   term = new Terminal({
     convertEol: true,
     fontFamily: "Menlo, Monaco, 'Courier New', monospace",
@@ -93,86 +153,67 @@ function setupXTerm() {
   term.loadAddon(fit);
   term.open(xtermContainer.value!);
   fit.fit();
-
-  // store disposable
-  dataDisposable = term.onData((d) => {
-    if (!started) return;
-    send(JSON.stringify({ action: "input", data: d }));
-  });
 }
 
-const resizeWindow = useDebounceFn(() => {
-  if (!term) return;
+const resizeWindow = useDebounceFn(async () => {
+  if (!term || !started) return;
 
+  await waitForLayout();
   fit.fit();
-  const rows = term.rows;
-  const cols = term.cols;
-
-  // buffer resize until started
-  if (!started) {
-    pendingResize = { rows, cols };
-    return;
-  }
-
-  send(JSON.stringify({ action: "resize", rows, cols }));
+  wsSend(
+    JSON.stringify({ action: "resize", rows: term.rows, cols: term.cols }),
+  );
 }, 200);
 
 function disconnect() {
-  // stop interval if still running
-  if (wsReadyInterval) {
-    clearInterval(wsReadyInterval);
-    wsReadyInterval = null;
-  }
+  if (wsReadyInterval) clearInterval(wsReadyInterval);
+  wsReadyInterval = null;
+  stopResizeObserver?.();
+  stopResizeObserver = null;
 
-  // stop resize observer
-  if (stopResizeObserver) {
-    stopResizeObserver();
-    stopResizeObserver = null;
-  }
+  dataDisposable?.dispose();
+  dataDisposable = null;
 
-  // dispose onData handler first (prevents duplicates on reopen)
-  if (dataDisposable) {
-    dataDisposable.dispose();
-    dataDisposable = null;
-  }
-
-  // reset gating state
   started = false;
-  pendingResize = null;
 
   try {
-    send(JSON.stringify({ action: "kill" }));
+    wsSend?.(JSON.stringify({ action: "kill" }));
   } catch {}
+  wsClose?.();
 
-  close();
-
-  if (term) {
-    term.dispose();
-    term = null;
-  }
+  term?.dispose();
+  term = null;
 }
 
-watch(data, (msg) => {
-  if (!msg || !msg.action || !term) return;
-  const output = msg.data?.output;
-  const done = msg.data?.done;
+onMounted(() => {
+  setupXTerm();
+  const { stop } = useResizeObserver(xtermContainer, resizeWindow);
+  stopResizeObserver = stop;
+  initWS(selectedShell.value);
+});
 
-  if (output !== undefined) term.write(output);
-  if (done) term.write("\r\n[Session Ended]\r\n");
+onBeforeUnmount(() => {
+  disconnect();
 });
 </script>
 
 <style scoped>
 .full-page-terminal {
-  height: calc(100vh - 22px);
+  height: calc(100vh - 36px);
   display: flex;
   flex-direction: column;
   background: #333333;
 }
-
+.terminal-wrapper {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+  min-height: 0;
+  padding: 10px 6px;
+}
 .xterm-container {
   flex-grow: 1;
   overflow: hidden;
-  margin: 10px 0;
+  height: 100%;
 }
 </style>
