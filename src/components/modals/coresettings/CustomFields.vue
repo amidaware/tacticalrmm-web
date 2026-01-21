@@ -5,9 +5,8 @@
       <q-space />
       <q-btn
         size="sm"
-        color="grey-5"
+        color="primary"
         icon="fas fa-plus"
-        text-color="black"
         label="Add custom field"
         @click="addCustomField"
       />
@@ -18,7 +17,6 @@
         v-model="tab"
         dense
         inline-label
-        class="text-grey"
         active-color="primary"
         indicator-color="primary"
         align="left"

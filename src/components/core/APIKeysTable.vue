@@ -5,9 +5,8 @@
       <q-space />
       <q-btn
         size="sm"
-        color="grey-5"
+        color="primary"
         icon="fas fa-plus"
-        text-color="black"
         label="Add key"
         @click="addAPIKey"
       />

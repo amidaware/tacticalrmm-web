@@ -42,7 +42,13 @@
           @click="$store.dispatch('reload')"
         />
       </q-banner>
-      <q-toolbar>
+      <q-toolbar
+        :style="{
+          backgroundColor: 'var(--q-bg-toolbar)',
+          color: 'var(--q-text-toolbar)',
+        }"
+        class="main-toolbar"
+      >
         <q-btn
           dense
           flat
@@ -60,9 +66,11 @@
           <q-tooltip>Back to Dashboard</q-tooltip>
         </q-btn>
         <q-toolbar-title>
-          Tactical RMM<span class="text-overline q-ml-sm"
-            >v{{ currentTRMMVersion }}</span
-          >
+          {{
+            $branding && $branding.companyName
+              ? $branding.companyName
+              : "Tactical RMM"
+          }}<span class="text-overline q-ml-sm">v{{ currentTRMMVersion }}</span>
           <!-- update check -->
           <q-chip
             v-if="updateAvailable"
@@ -218,7 +226,13 @@
 </template>
 <script setup lang="ts">
 // composition imports
-import { computed, onMounted, onBeforeUnmount, ref } from "vue";
+import {
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  getCurrentInstance,
+} from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
 import { useDashboardStore } from "@/stores/dashboard";
@@ -238,6 +252,12 @@ import ResetPass from "@/components/accounts/ResetPass.vue";
 
 const store = useStore();
 const $q = useQuasar();
+
+// safely access $branding from global properties
+const instance = getCurrentInstance();
+const $branding = computed(() => {
+  return instance?.appContext.config.globalProperties.$branding || null;
+});
 
 const {
   serverCount,

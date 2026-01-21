@@ -11,6 +11,7 @@ export default {
 <style lang="sass">
 body
   overflow-y: hidden
+  background-color: var(--q-light-page)
 
 a
   color: #1976D2
@@ -68,25 +69,25 @@ a
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #f5f4f2
+    background-color: color-mix(in srgb, var(--q-light) 100%, black 20%) !important
 
 .table-bgcolor-dark
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
-    background-color: #1d1d1d
+    background-color: color-mix(in srgb, var(--q-dark) 100%, black 20%)
 
 .bg-dark
-  background-color: --q-page-dark
+  background-color: var(--q-dark-page)
 
 .bg-light
-  background-color: #ffffff
+  background-color: var(--q-light-page, #ffffff)
 
 .highlight
-  background-color: #c9e6ff
+  background-color: color-mix(in srgb, var(--q-light) 100%, white 40%)
 
 .highlight-dark
-  background-color: #404040
+  background-color: color-mix(in srgb, var(--q-dark) 100%, white 40%)
 
 .action-completed
   background-color: $positive
@@ -99,4 +100,28 @@ a
 
 .min-width
   min-width: 0px !important
+
+.body--light
+  .q-card
+    background-color: var(--q-light, #fff) !important
+
+  .q-table__bottom
+    background-color: var(--q-light, #fff) !important
+
+  .q-table__container
+    background-color: var(--q-light, #fff) !important
+
+  .q-tab-panels
+    background-color: var(--q-light, #fff) !important
+
+  .q-chip
+    background-color: var(--q-light, #fff)
+
+  .q-menu
+    background-color: var(--q-light, #fff) !important
+
+.main-toolbar
+  .q-chip
+    background-color: color-mix(in srgb, var(--q-bg-toolbar) 100%, white 20%) !important
+    color: var(--q-text-toolbar) !important
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <q-card style="min-width: 60vw">
+  <q-card :style="cardStyle">
     <q-splitter v-model="splitterModel">
       <template v-slot:before>
         <q-tabs dense v-model="tab" vertical class="text-primary">
@@ -15,6 +15,8 @@
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
+          <q-tab name="branding" label="Branding" />
+
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -25,7 +27,7 @@
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup />
           </q-card-section>
-          <q-scroll-area :thumb-style="thumbStyle" style="height: 60vh">
+          <q-scroll-area :thumb-style="thumbStyle" :style="scrollAreaStyle">
             <q-tab-panels
               v-model="tab"
               animated
@@ -238,9 +240,8 @@
                   <div>
                     <q-btn
                       size="sm"
-                      color="grey-5"
+                      color="primary"
                       icon="fas fa-plus"
-                      text-color="black"
                       label="Add emails"
                       @click="toggleAddEmail"
                     />
@@ -378,9 +379,8 @@
                   <div>
                     <q-btn
                       size="sm"
-                      color="grey-5"
+                      color="primary"
                       icon="fas fa-plus"
-                      text-color="black"
                       label="Add numbers"
                       @click="toggleAddSMSNumber"
                     />
@@ -660,6 +660,11 @@
                 <ScheduleTable />
               </q-tab-panel>
 
+              <!-- branding -->
+              <q-tab-panel name="branding">
+                <BrandSettings />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -751,6 +756,7 @@ import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
+import BrandSettings from "@/ee/whitelabel/components/BrandSettings.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -763,6 +769,7 @@ export default {
     SSOProvidersTable,
     TacticalDropdown,
     ScheduleTable,
+    BrandSettings,
   },
   mixins: [mixins],
   data() {
@@ -796,6 +803,17 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    cardStyle() {
+      return {
+        minWidth: "60vw",
+        ...(this.tab === "branding" ? { height: "75vh" } : {}),
+      };
+    },
+    scrollAreaStyle() {
+      return {
+        height: this.tab === "branding" ? "65vh" : "60vh",
+      };
     },
   },
   watch: {

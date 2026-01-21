@@ -170,13 +170,7 @@
             <small>{{ summary.checks.warning }} checks warning</small>
           </q-chip>
           <q-chip v-if="summary.checks.info" square size="lg">
-            <q-avatar
-              size="lg"
-              square
-              icon="info"
-              :color="dash_info_color"
-              text-color="white"
-            />
+            <q-avatar size="lg" square icon="info" :color="dash_info_color" />
             <small>{{ summary.checks.info }} checks info</small>
           </q-chip>
           <span
@@ -201,7 +195,7 @@
         <q-list dense>
           <q-item v-for="(field, i) in customFields" :key="field + i">
             <q-item-section thumbnail>
-              <q-icon name="fas fa-user" size="xs" />
+              <q-icon name="fas fa-user" size="xs" color="primary" />
             </q-item-section>
             <q-item-section>{{ field.name }}: {{ field.value }}</q-item-section>
           </q-item>
