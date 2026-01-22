@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
   flex-grow: 1;
   display: flex;
   min-height: 0;
-  padding: 10px 6px;
+  padding: 10px 6px 4px;
 }
 .xterm-container {
   flex-grow: 1;
