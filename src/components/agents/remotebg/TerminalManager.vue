@@ -135,7 +135,7 @@ async function onShellChange(newShell: string) {
   if (!term) return;
   loading.value = true;
   started = false;
-  term.clear();
+  term.reset();
   fit.fit();
   initWS(newShell);
 }
