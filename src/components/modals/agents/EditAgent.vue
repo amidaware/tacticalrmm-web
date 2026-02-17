@@ -73,6 +73,20 @@
                       class="col-8"
                     />
                   </q-card-section>
+                  <q-card-section class="row items-center content-between">
+                    <div class="col-4">Default Terminal</div>
+                    <div class="col-8">
+                      <q-option-group
+                        v-if="agent && agent.plat"
+                        class="q-gutter-lg"
+                        v-model="agent.default_shell"
+                        :options="defaultShellOptions"
+                        type="radio"
+                        inline
+                        dense
+                      />
+                    </div>
+                  </q-card-section>
                   <q-card-section class="row">
                     <div class="col-10">Run checks every:</div>
                     <q-input
@@ -557,7 +571,17 @@ export default {
   },
   computed: {
     ...mapState(["dash_warning_color", "dash_negative_color"]),
+    defaultShellOptions() {
+      if (this.agent?.plat === "windows") {
+        return [
+          { label: "CMD", value: "cmd" },
+          { label: "PowerShell", value: "powershell" },
+        ];
+      }
+      return [{ label: "BASH", value: "bash" }];
+    },
   },
+
   mounted() {
     // Get custom fields
     this.getCustomFields("agent").then((r) => {

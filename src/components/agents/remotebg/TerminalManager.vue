@@ -13,7 +13,7 @@
         inline
         color="primary"
         @update:model-value="onShellChange"
-        class="q-ml-sm"
+        class="q-ml-sm q-gutter-lg"
       />
     </div>
     <div class="terminal-wrapper">
@@ -50,7 +50,7 @@ const shellOptions = computed(() => {
         { label: "CMD", value: "cmd" },
         { label: "PowerShell", value: "powershell" },
       ]
-    : [{ label: "Bash", value: "/bin/bash" }];
+    : [{ label: "Bash", value: "bash" }];
 });
 
 const selectedShell = ref(
