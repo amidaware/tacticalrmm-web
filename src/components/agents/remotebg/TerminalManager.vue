@@ -30,6 +30,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { uid } from "quasar";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
+import { fetchAgentShell } from "@/api/agents";
 import "@xterm/xterm/css/xterm.css";
 
 interface TerminalWSMessage {
@@ -53,9 +54,7 @@ const shellOptions = computed(() => {
     : [{ label: "Bash", value: "bash" }];
 });
 
-const selectedShell = ref(
-  props.agentPlatform === "windows" ? "cmd" : "/bin/bash",
-);
+const selectedShell = ref<string>("");
 
 let term: Terminal | null = null;
 const fit = new FitAddon();
@@ -185,10 +184,14 @@ function disconnect() {
   term = null;
 }
 
-onMounted(() => {
+onMounted(async () => {
   setupXTerm();
   const { stop } = useResizeObserver(xtermContainer, resizeWindow);
   stopResizeObserver = stop;
+  const data = await fetchAgentShell(props.agent_id);
+  if (data?.effective_default_shell) {
+    selectedShell.value = data.effective_default_shell;
+  }
   initWS(selectedShell.value);
 });
 
