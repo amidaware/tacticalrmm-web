@@ -41,17 +41,34 @@ interface TerminalWSMessage {
     messageId?: string;
   };
 }
+interface ShellOption {
+  label: string;
+  value: string;
+  disable?: boolean;
+}
 
 const props = defineProps<{ agent_id: string; agentPlatform: string }>();
 const loading = ref(false);
+const customShellPath = ref<string | null>(null);
 
-const shellOptions = computed(() => {
-  return props.agentPlatform === "windows"
+const shellOptions = computed<ShellOption[]>(() => {
+  const isWindows = props.agentPlatform === "windows";
+  const base: ShellOption[] = isWindows
     ? [
         { label: "CMD", value: "cmd" },
         { label: "PowerShell", value: "powershell" },
       ]
     : [{ label: "Bash", value: "bash" }];
+
+  base.push({
+    label: customShellPath.value
+      ? `Custom (${customShellPath.value})`
+      : "Custom Shell",
+    value: customShellPath.value || "custom",
+    disable: !customShellPath.value,
+  });
+
+  return base;
 });
 
 const selectedShell = ref<string>("");
@@ -190,7 +207,18 @@ onMounted(async () => {
   stopResizeObserver = stop;
   const data = await fetchAgentShell(props.agent_id);
   if (data?.effective_default_shell) {
-    selectedShell.value = data.effective_default_shell;
+    const shell = data.effective_default_shell;
+    if (
+      props.agentPlatform === "windows" &&
+      shell !== "cmd" &&
+      shell !== "powershell"
+    ) {
+      customShellPath.value = shell;
+    }
+    if (props.agentPlatform !== "windows" && shell !== "bash") {
+      customShellPath.value = shell;
+    }
+    selectedShell.value = shell;
   }
   initWS(selectedShell.value);
 });

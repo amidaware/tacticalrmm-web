@@ -73,7 +73,7 @@
                       class="col-8"
                     />
                   </q-card-section>
-                  <q-card-section class="row items-center content-between">
+                  <q-card-section class="row items-start content-between">
                     <div class="col-4">Default Terminal</div>
                     <div class="col-8">
                       <q-option-group
@@ -84,6 +84,14 @@
                         type="radio"
                         inline
                         dense
+                      />
+                      <q-input
+                        v-if="agent.default_shell === 'custom'"
+                        v-model="agent.default_shell_custom"
+                        class="q-mt-md"
+                        dense
+                        outlined
+                        placeholder="Enter custom shell path"
                       />
                     </div>
                   </q-card-section>
@@ -572,13 +580,32 @@ export default {
   computed: {
     ...mapState(["dash_warning_color", "dash_negative_color"]),
     defaultShellOptions() {
-      if (this.agent?.plat === "windows") {
+      if (!this.agent?.plat) return [];
+      if (this.agent.plat === "windows") {
         return [
+          { label: "Global", value: "use_global" },
           { label: "CMD", value: "cmd" },
           { label: "PowerShell", value: "powershell" },
+          { label: "Custom", value: "custom" },
         ];
       }
-      return [{ label: "BASH", value: "bash" }];
+
+      if (this.agent.plat === "linux") {
+        return [
+          { label: "Global", value: "use_global" },
+          { label: "Bash", value: "bash" },
+          { label: "Custom", value: "custom" },
+        ];
+      }
+
+      if (this.agent.plat === "darwin") {
+        return [
+          { label: "Global", value: "use_global" },
+          { label: "Bash", value: "bash" },
+          { label: "Custom", value: "custom" },
+        ];
+      }
+      return [];
     },
   },
 

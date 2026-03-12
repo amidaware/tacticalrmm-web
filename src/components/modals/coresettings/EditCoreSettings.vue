@@ -220,6 +220,69 @@
                     :rules="[(val) => val >= 0 || 'Minimum is 0']"
                   />
                 </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Windows Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_windows"
+                      :options="windowsShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_windows === 'custom'"
+                      v-model="settings.default_shell_windows_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path (e.g. C:\Windows\System32\cmd.exe)"
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Linux Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_linux"
+                      :options="linuxShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_linux === 'custom'"
+                      v-model="settings.default_shell_linux_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path (e.g. /usr/bin/fish)"
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Mac Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_darwin"
+                      :options="darwinShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_darwin === 'custom'"
+                      v-model="settings.default_shell_darwin_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path (e.g. /bin/zsh)"
+                    />
+                  </div>
+                </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">Reset Patch Policy on Agents:</div>
                   <div class="col-2"></div>
@@ -796,6 +859,25 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    windowsShellOptions() {
+      return [
+        { label: "CMD", value: "cmd" },
+        { label: "PowerShell", value: "powershell" },
+        { label: "Custom", value: "custom" },
+      ];
+    },
+    linuxShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: "Custom", value: "custom" },
+      ];
+    },
+    darwinShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: "Custom", value: "custom" },
+      ];
     },
   },
   watch: {
