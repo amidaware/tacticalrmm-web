@@ -28,6 +28,7 @@ const props = defineProps({
   agentId: { type: String, required: true },
   cmd: { type: String, required: true },
   shell: { type: String, required: true },
+  run_as_user: { type: Boolean, required: true },
   custom_shell: { type: String, required: false },
   timeout: { type: Number, default: 10 },
 });
@@ -77,7 +78,7 @@ onMounted(() => {
       shell: props.shell,
       cmd: props.cmd,
       timeout: props.timeout,
-      run_as_user: false,
+      run_as_user: props.run_as_user,
       custom_shell: props.custom_shell,
       stream: true,
       cmd_id: cmdId,
