@@ -7,7 +7,13 @@
         >
           <q-card-section>
             <div class="text-center q-pt-lg">
-              <div class="col text-h4 ellipsis">Tactical RMM</div>
+              <div class="col text-h4 ellipsis">
+                {{
+                  $branding && $branding.companyName
+                    ? $branding.companyName
+                    : "Tactical RMM"
+                }}
+              </div>
             </div>
           </q-card-section>
           <q-card-section>
@@ -111,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, getCurrentInstance, computed } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
@@ -124,6 +130,12 @@ import {
 // setup quasar
 const $q = useQuasar();
 $q.dark.set(true);
+
+// safely access $branding from global properties
+const instance = getCurrentInstance();
+const $branding = computed(() => {
+  return instance?.appContext.config.globalProperties.$branding || null;
+});
 
 // setup auth store
 const auth = useAuthStore();
@@ -188,9 +200,9 @@ onMounted(async () => {
 .bg-image {
   background-image: linear-gradient(
     90deg,
-    rgba(20, 20, 29, 1) 0%,
-    rgba(38, 42, 56, 1) 49%,
-    rgba(15, 18, 20, 1) 100%
+    color-mix(in srgb, var(--q-dark-page) 100%, black 10%) 0%,
+    color-mix(in srgb, var(--q-dark-page) 100%, white 20%) 49%,
+    color-mix(in srgb, var(--q-dark-page) 100%, black 10%) 100%
   );
 }
 </style>

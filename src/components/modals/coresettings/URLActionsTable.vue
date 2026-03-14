@@ -11,9 +11,8 @@
       <q-space />
       <q-btn
         size="sm"
-        color="grey-5"
+        color="primary"
         icon="fas fa-plus"
-        text-color="black"
         :label="`Add ${props.type === 'web' ? 'URL Action' : 'Web Hook'}`"
         @click="addURLAction"
       />
