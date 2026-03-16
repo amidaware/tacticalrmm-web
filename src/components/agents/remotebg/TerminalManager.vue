@@ -21,6 +21,25 @@
       <q-inner-loading :showing="loading" color="primary" />
     </div>
   </div>
+  <q-dialog v-model="showCustomShellDialog">
+    <q-card style="min-width: 400px">
+      <q-card-section class="text-h6"> Enter Custom Shell Path </q-card-section>
+
+      <q-card-section>
+        <q-input
+          v-model="customShellInput"
+          label="Shell Path"
+          dense
+          autofocus
+        />
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn color="primary" label="Start" @click="startCustomShell" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -50,6 +69,8 @@ interface ShellOption {
 const props = defineProps<{ agent_id: string; agentPlatform: string }>();
 const loading = ref(false);
 const customShellPath = ref<string | null>(null);
+const showCustomShellDialog = ref(false);
+const customShellInput = ref("");
 
 const shellOptions = computed<ShellOption[]>(() => {
   const isWindows = props.agentPlatform === "windows";
@@ -65,7 +86,6 @@ const shellOptions = computed<ShellOption[]>(() => {
       ? `Custom (${customShellPath.value})`
       : "Custom Shell",
     value: customShellPath.value || "custom",
-    disable: !customShellPath.value,
   });
 
   return base;
@@ -149,11 +169,31 @@ function initWS(shell: string) {
 
 async function onShellChange(newShell: string) {
   if (!term) return;
+  if (newShell === "custom") {
+    if (!customShellPath.value) {
+      showCustomShellDialog.value = true;
+      selectedShell.value = "";
+      return;
+    }
+    newShell = customShellPath.value;
+  }
   loading.value = true;
   started = false;
   term.reset();
   fit.fit();
   initWS(newShell);
+}
+
+function startCustomShell() {
+  if (!customShellInput.value) return;
+  customShellPath.value = customShellInput.value;
+  showCustomShellDialog.value = false;
+  selectedShell.value = "custom";
+  loading.value = true;
+  started = false;
+  term?.reset();
+  fit.fit();
+  initWS(customShellInput.value);
 }
 
 async function setupXTerm() {
