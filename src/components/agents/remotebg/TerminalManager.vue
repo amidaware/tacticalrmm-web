@@ -13,6 +13,7 @@
         inline
         color="primary"
         @update:model-value="onShellChange"
+        @dblclick="onOptionDblClick"
         class="q-ml-sm q-gutter-lg"
       />
     </div>
@@ -21,7 +22,7 @@
       <q-inner-loading :showing="loading" color="primary" />
     </div>
   </div>
-  <q-dialog v-model="showCustomShellDialog">
+  <q-dialog v-model="showCustomShellDialog" persistent>
     <q-card style="min-width: 400px">
       <q-card-section class="text-h6"> Enter Custom Shell Path </q-card-section>
 
@@ -35,7 +36,7 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Cancel" @click="cancelCustomShell" />
         <q-btn color="primary" label="Start" @click="startCustomShell" />
       </q-card-actions>
     </q-card>
@@ -46,7 +47,7 @@
 import { ref, onMounted, onBeforeUnmount, watch, Ref, computed } from "vue";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
-import { uid } from "quasar";
+import { uid, useQuasar } from "quasar";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
 import { fetchAgentShell } from "@/api/agents";
@@ -58,7 +59,9 @@ interface TerminalWSMessage {
     output?: string;
     done?: boolean;
     messageId?: string;
+    error?: string;
   };
+  error?: string;
 }
 interface ShellOption {
   label: string;
@@ -66,11 +69,15 @@ interface ShellOption {
   disable?: boolean;
 }
 
+const $q = useQuasar();
 const props = defineProps<{ agent_id: string; agentPlatform: string }>();
 const loading = ref(false);
 const customShellPath = ref<string | null>(null);
 const showCustomShellDialog = ref(false);
 const customShellInput = ref("");
+const invalidCustomShell = ref(false);
+const lastSelectedShell = ref<string>("");
+const pendingCustomShell = ref<string | null>(null);
 
 const shellOptions = computed<ShellOption[]>(() => {
   const isWindows = props.agentPlatform === "windows";
@@ -82,10 +89,12 @@ const shellOptions = computed<ShellOption[]>(() => {
     : [{ label: "Bash", value: "bash" }];
 
   base.push({
-    label: customShellPath.value
-      ? `Custom (${customShellPath.value})`
-      : "Custom Shell",
-    value: customShellPath.value || "custom",
+    label: invalidCustomShell.value
+      ? "Custom (Shell path doesn't exist)"
+      : customShellPath.value
+        ? `Custom (${customShellPath.value})`
+        : "Custom Shell",
+    value: "custom",
   });
 
   return base;
@@ -139,8 +148,30 @@ function initWS(shell: string) {
   watch(wsData, (msg) => {
     if (!msg?.action || !term) return;
 
-    if (msg.data?.output) term.write(msg.data.output);
-    if (msg.data?.done) term.write("\r\n[Session Ended]\r\n");
+    if (msg.action === "terminal_error") {
+      loading.value = false;
+      invalidCustomShell.value = true;
+      $q.notify({
+        type: "negative",
+        message: msg.error || msg.data?.error || "Shell path doesn't exist",
+      });
+      showCustomShellDialog.value = true;
+      pendingCustomShell.value = null;
+      return;
+    }
+    if (msg.data?.output) {
+      term.write(msg.data.output);
+      if (pendingCustomShell.value) {
+        customShellPath.value = pendingCustomShell.value;
+        selectedShell.value = "custom";
+        showCustomShellDialog.value = false;
+        pendingCustomShell.value = null;
+        invalidCustomShell.value = false;
+      }
+    }
+    if (msg.data?.done) {
+      term.write("\r\n[Session Ended]\r\n");
+    }
   });
 
   dataDisposable = term!.onData((d) => {
@@ -167,12 +198,26 @@ function initWS(shell: string) {
   }, 50);
 }
 
+function onOptionDblClick() {
+  if (selectedShell.value === "custom") {
+    handleCustomEdit();
+  }
+}
+
+function handleCustomEdit() {
+  showCustomShellDialog.value = true;
+  customShellInput.value = customShellPath.value || "";
+}
+
 async function onShellChange(newShell: string) {
   if (!term) return;
   if (newShell === "custom") {
-    if (!customShellPath.value) {
+    if (selectedShell.value !== "custom") {
+      lastSelectedShell.value = selectedShell.value;
+    }
+    if (!customShellPath.value || invalidCustomShell.value) {
       showCustomShellDialog.value = true;
-      selectedShell.value = "";
+      customShellInput.value = "";
       return;
     }
     newShell = customShellPath.value;
@@ -186,11 +231,10 @@ async function onShellChange(newShell: string) {
 
 function startCustomShell() {
   if (!customShellInput.value) return;
-  customShellPath.value = customShellInput.value;
-  showCustomShellDialog.value = false;
-  selectedShell.value = "custom";
   loading.value = true;
   started = false;
+  invalidCustomShell.value = false;
+  pendingCustomShell.value = customShellInput.value;
   term?.reset();
   fit.fit();
   initWS(customShellInput.value);
@@ -241,26 +285,55 @@ function disconnect() {
   term = null;
 }
 
+function cancelCustomShell() {
+  showCustomShellDialog.value = false;
+  selectedShell.value = lastSelectedShell.value;
+  loading.value = true;
+  started = false;
+  term?.reset();
+  fit.fit();
+  initWS(lastSelectedShell.value);
+}
+
+const BUILT_IN_SHELLS = ["cmd", "powershell", "bash"] as const;
+type BuiltInShell = (typeof BUILT_IN_SHELLS)[number];
+const isBuiltInShell = (shell: string): shell is BuiltInShell => {
+  return (BUILT_IN_SHELLS as readonly string[]).includes(shell);
+};
+
 onMounted(async () => {
   setupXTerm();
   const { stop } = useResizeObserver(xtermContainer, resizeWindow);
   stopResizeObserver = stop;
   const data = await fetchAgentShell(props.agent_id);
-  if (data?.effective_default_shell) {
-    const shell = data.effective_default_shell;
-    if (
-      props.agentPlatform === "windows" &&
-      shell !== "cmd" &&
-      shell !== "powershell"
-    ) {
-      customShellPath.value = shell;
+  if (data) {
+    const { default_shell, effective_default_shell } = data;
+    const isWindows = props.agentPlatform === "windows";
+    if (default_shell === "custom") {
+      if (isBuiltInShell(effective_default_shell)) {
+        selectedShell.value = effective_default_shell;
+        lastSelectedShell.value = effective_default_shell;
+        customShellPath.value = null;
+        invalidCustomShell.value = true;
+      } else {
+        customShellPath.value = effective_default_shell;
+        selectedShell.value = "custom";
+        lastSelectedShell.value = isWindows ? "cmd" : "bash";
+        invalidCustomShell.value = false;
+      }
+    } else {
+      selectedShell.value = effective_default_shell;
+      lastSelectedShell.value = effective_default_shell;
+
+      invalidCustomShell.value = false;
+      customShellPath.value = null;
     }
-    if (props.agentPlatform !== "windows" && shell !== "bash") {
-      customShellPath.value = shell;
-    }
-    selectedShell.value = shell;
   }
-  initWS(selectedShell.value);
+  const shellToStart =
+    selectedShell.value === "custom"
+      ? customShellPath.value!
+      : selectedShell.value;
+  initWS(shellToStart);
 });
 
 onBeforeUnmount(() => {
