@@ -44,7 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, Ref, computed } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  Ref,
+  computed,
+  type WatchStopHandle,
+} from "vue";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { uid, useQuasar } from "quasar";
@@ -63,6 +71,7 @@ interface TerminalWSMessage {
   };
   error?: string;
 }
+
 interface ShellOption {
   label: string;
   value: string;
@@ -71,6 +80,7 @@ interface ShellOption {
 
 const $q = useQuasar();
 const props = defineProps<{ agent_id: string; agentPlatform: string }>();
+
 const loading = ref(false);
 const customShellPath = ref<string | null>(null);
 const showCustomShellDialog = ref(false);
@@ -104,63 +114,130 @@ const selectedShell = ref<string>("");
 
 let term: Terminal | null = null;
 const fit = new FitAddon();
-let dataDisposable: { dispose: () => void } | null = null;
+
+let inputDisposable: { dispose: () => void } | null = null;
 let stopResizeObserver: (() => void) | null = null;
-let wsReadyInterval: number | null = null;
+let stopWSDataWatch: WatchStopHandle | null = null;
+let wsReadyInterval: ReturnType<typeof setInterval> | null = null;
+
+let startRequested = false;
 let started = false;
 
-let wsData: Ref<TerminalWSMessage | null>;
-let wsSend: (msg: string) => void;
-let wsClose: () => void;
-let wsStatus: Ref<string>;
+let activeSessionId: string | null = null;
+
+let wsData!: Ref<TerminalWSMessage | null>;
+let wsSend!: (msg: string) => void;
+let wsClose!: () => void;
+let wsStatus!: Ref<string>;
 
 const xtermContainer = ref<HTMLElement | null>(null);
 
 function waitForLayout(): Promise<void> {
   return new Promise((resolve) => {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        resolve();
-      });
+      requestAnimationFrame(() => resolve());
     });
   });
 }
 
-function initWS(shell: string) {
-  dataDisposable?.dispose();
-  dataDisposable = null;
+function clearWSReadyInterval() {
+  if (wsReadyInterval) {
+    clearInterval(wsReadyInterval);
+    wsReadyInterval = null;
+  }
+}
+
+function cleanupCurrentSession({
+  sendKill = true,
+}: { sendKill?: boolean } = {}) {
+  clearWSReadyInterval();
+
+  stopWSDataWatch?.();
+  stopWSDataWatch = null;
+
+  inputDisposable?.dispose();
+  inputDisposable = null;
+
+  startRequested = false;
+  started = false;
+
+  if (sendKill) {
+    try {
+      wsSend?.(JSON.stringify({ action: "kill" }));
+    } catch {}
+  }
+
   try {
     wsClose?.();
   } catch {}
+
+  activeSessionId = null;
+}
+
+function markSessionReadyAndResize() {
+  if (!term || !startRequested || started) return;
+
+  started = true;
+  loading.value = false;
+
+  void waitForLayout().then(() => {
+    if (!term || !started) return;
+    fit.fit();
+    wsSend(
+      JSON.stringify({
+        action: "resize",
+        rows: term.rows,
+        cols: term.cols,
+      }),
+    );
+  });
+}
+
+function initWS(shell: string) {
+  cleanupCurrentSession();
+
+  const sessionId = uid();
+  activeSessionId = sessionId;
 
   ({
     data: wsData,
     send: wsSend,
     close: wsClose,
     status: wsStatus,
-  } = useTerminalWSConnection(props.agent_id, uid()) as {
+  } = useTerminalWSConnection(props.agent_id, sessionId) as {
     data: Ref<TerminalWSMessage | null>;
     send: (msg: string) => void;
     close: () => void;
     status: Ref<string>;
   });
 
-  watch(wsData, (msg) => {
-    if (!msg?.action || !term) return;
+  stopWSDataWatch = watch(wsData, (msg) => {
+    if (!msg || !term) return;
+    if (activeSessionId !== sessionId) return;
 
     if (msg.action === "terminal_error") {
       loading.value = false;
+      startRequested = false;
+      started = false;
       invalidCustomShell.value = true;
+
       $q.notify({
         type: "negative",
         message: msg.error || msg.data?.error || "Shell path doesn't exist",
       });
+
       showCustomShellDialog.value = true;
       pendingCustomShell.value = null;
       return;
     }
+
     if (msg.data?.output) {
       term.write(msg.data.output);
+
+      if (!started) {
+        markSessionReadyAndResize();
+      }
+
       if (pendingCustomShell.value) {
         customShellPath.value = pendingCustomShell.value;
         selectedShell.value = "custom";
@@ -169,31 +246,41 @@ function initWS(shell: string) {
         invalidCustomShell.value = false;
       }
     }
+
     if (msg.data?.done) {
+      started = false;
+      startRequested = false;
+      loading.value = false;
       term.write("\r\n[Session Ended]\r\n");
     }
   });
 
-  dataDisposable = term!.onData((d) => {
+  inputDisposable = term!.onData((d) => {
     if (!started) return;
+    if (activeSessionId !== sessionId) return;
+
     wsSend(JSON.stringify({ action: "input", data: d }));
   });
 
-  const interval = setInterval(async () => {
+  wsReadyInterval = setInterval(async () => {
+    if (activeSessionId !== sessionId) {
+      clearWSReadyInterval();
+      return;
+    }
+
     if (wsStatus.value === "OPEN" && term) {
+      clearWSReadyInterval();
+
       await waitForLayout();
+      if (!term || activeSessionId !== sessionId) return;
+
       fit.fit();
+
+      startRequested = true;
+      started = false;
+      loading.value = true;
+
       wsSend(JSON.stringify({ action: "start", shell }));
-      wsSend(
-        JSON.stringify({
-          action: "resize",
-          rows: term.rows,
-          cols: term.cols,
-        }),
-      );
-      started = true;
-      loading.value = false;
-      clearInterval(interval);
     }
   }, 50);
 }
@@ -211,18 +298,23 @@ function handleCustomEdit() {
 
 async function onShellChange(newShell: string) {
   if (!term) return;
+
   if (newShell === "custom") {
     if (selectedShell.value !== "custom") {
       lastSelectedShell.value = selectedShell.value;
     }
+
     if (!customShellPath.value || invalidCustomShell.value) {
       showCustomShellDialog.value = true;
       customShellInput.value = "";
       return;
     }
+
     newShell = customShellPath.value;
   }
+
   loading.value = true;
+  startRequested = false;
   started = false;
   term.reset();
   fit.fit();
@@ -230,12 +322,15 @@ async function onShellChange(newShell: string) {
 }
 
 function startCustomShell() {
-  if (!customShellInput.value) return;
+  if (!customShellInput.value || !term) return;
+
   loading.value = true;
+  startRequested = false;
   started = false;
   invalidCustomShell.value = false;
   pendingCustomShell.value = customShellInput.value;
-  term?.reset();
+
+  term.reset();
   fit.fit();
   initWS(customShellInput.value);
 }
@@ -259,27 +354,25 @@ const resizeWindow = useDebounceFn(async () => {
   if (!term || !started) return;
 
   await waitForLayout();
+  if (!term || !started) return;
+
   fit.fit();
   wsSend(
-    JSON.stringify({ action: "resize", rows: term.rows, cols: term.cols }),
+    JSON.stringify({
+      action: "resize",
+      rows: term.rows,
+      cols: term.cols,
+    }),
   );
 }, 200);
 
 function disconnect() {
-  if (wsReadyInterval) clearInterval(wsReadyInterval);
-  wsReadyInterval = null;
+  clearWSReadyInterval();
+
   stopResizeObserver?.();
   stopResizeObserver = null;
 
-  dataDisposable?.dispose();
-  dataDisposable = null;
-
-  started = false;
-
-  try {
-    wsSend?.(JSON.stringify({ action: "kill" }));
-  } catch {}
-  wsClose?.();
+  cleanupCurrentSession();
 
   term?.dispose();
   term = null;
@@ -289,6 +382,7 @@ function cancelCustomShell() {
   showCustomShellDialog.value = false;
   selectedShell.value = lastSelectedShell.value;
   loading.value = true;
+  startRequested = false;
   started = false;
   term?.reset();
   fit.fit();
@@ -297,18 +391,22 @@ function cancelCustomShell() {
 
 const BUILT_IN_SHELLS = ["cmd", "powershell", "bash"] as const;
 type BuiltInShell = (typeof BUILT_IN_SHELLS)[number];
+
 const isBuiltInShell = (shell: string): shell is BuiltInShell => {
   return (BUILT_IN_SHELLS as readonly string[]).includes(shell);
 };
 
 onMounted(async () => {
-  setupXTerm();
+  await setupXTerm();
+
   const { stop } = useResizeObserver(xtermContainer, resizeWindow);
   stopResizeObserver = stop;
+
   const data = await fetchAgentShell(props.agent_id);
   if (data) {
     const { default_shell, effective_default_shell } = data;
     const isWindows = props.agentPlatform === "windows";
+
     if (default_shell === "custom") {
       if (isBuiltInShell(effective_default_shell)) {
         selectedShell.value = effective_default_shell;
@@ -324,15 +422,16 @@ onMounted(async () => {
     } else {
       selectedShell.value = effective_default_shell;
       lastSelectedShell.value = effective_default_shell;
-
       invalidCustomShell.value = false;
       customShellPath.value = null;
     }
   }
+
   const shellToStart =
     selectedShell.value === "custom"
       ? customShellPath.value!
       : selectedShell.value;
+
   initWS(shellToStart);
 });
 

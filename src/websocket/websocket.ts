@@ -16,6 +16,7 @@ export function getWSUrl(path: string, token: string | null) {
 interface WSReturn {
   action: string;
   data: unknown;
+  error?: string;
 }
 
 let WSConnection: UseWebSocketReturn<string> | undefined = undefined;
@@ -90,7 +91,17 @@ export function useTerminalWSConnection(agentId: string, sessionId: string) {
   const { status, data, send, open, close } = connection;
   const parsedData = ref<WSReturn>({ action: "", data: {} });
   watch(data, (newValue) => {
-    if (newValue) parsedData.value = JSON.parse(newValue);
+    if (!newValue) return;
+
+    try {
+      parsedData.value = JSON.parse(newValue);
+    } catch {
+      parsedData.value = {
+        action: "",
+        data: {},
+        error: "Invalid websocket payload",
+      };
+    }
   });
 
   return {
