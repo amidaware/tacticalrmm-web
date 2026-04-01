@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.github
+.devcontainer
+.quasar
+.vscode
+.idea
+*.md
+.env

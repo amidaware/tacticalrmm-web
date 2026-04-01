@@ -1,3 +1,10 @@
+interface Window {
+  _env_?: {
+    PROD_URL?: string;
+    WS_PROTO?: string;
+  };
+}
+
 declare module "*.png" {
   const content: string;
   export default content;
