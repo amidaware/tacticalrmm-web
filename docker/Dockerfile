@@ -22,9 +22,13 @@ RUN apk add --no-cache gettext
 
 COPY --from=build /app/dist /usr/share/nginx/html/
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
-COPY docker/entrypoint.sh /docker/entrypoint.sh
-COPY docker/env-config.js /docker/env-config.js
+COPY docker/entrypoint.sh /entrypoint.sh
+COPY docker/env-config.js /env-config.js.template
 
-RUN chmod +x /docker/entrypoint.sh
+RUN chmod +x /entrypoint.sh && \
+    chown -R nginx:nginx /usr/share/nginx/html
 
-ENTRYPOINT ["/docker/entrypoint.sh"]
+USER nginx
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
