@@ -221,6 +221,19 @@
                   />
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
+                  <div class="col-6">Terminal Experience</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.terminal_mode"
+                      :options="terminalModeOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
                   <div class="col-6">Windows Default Terminal</div>
                   <div class="col-6">
                     <q-option-group
@@ -859,6 +872,12 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    terminalModeOptions() {
+      return [
+        { label: "Use new terminal", value: "new" },
+        { label: "Use legacy terminal", value: "legacy" },
+      ];
     },
     windowsShellOptions() {
       return [

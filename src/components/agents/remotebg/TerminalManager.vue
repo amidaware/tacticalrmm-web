@@ -13,9 +13,17 @@
         inline
         color="primary"
         @update:model-value="onShellChange"
-        @dblclick="onOptionDblClick"
         class="q-ml-sm q-gutter-lg"
       />
+      <div>
+        <q-btn
+          label="Edit Path"
+          color="primary"
+          @click="handleCustomEdit"
+          class="q-px-sm q-ml-lg q-pb-0 text-caption text-capitalize"
+          dense
+        />
+      </div>
     </div>
     <div class="terminal-wrapper">
       <div ref="xtermContainer" class="xterm-container"></div>
@@ -98,12 +106,17 @@ const shellOptions = computed<ShellOption[]>(() => {
       ]
     : [{ label: "Bash", value: "bash" }];
 
+  let customLabel = "Custom Shell";
+  if (loading.value && pendingCustomShell.value) {
+    customLabel = "Custom (Shell loading...)";
+  } else if (invalidCustomShell.value) {
+    customLabel = "Custom (Shell path doesn't exist)";
+  } else if (customShellPath.value) {
+    customLabel = `Custom (${customShellPath.value})`;
+  }
+
   base.push({
-    label: invalidCustomShell.value
-      ? "Custom (Shell path doesn't exist)"
-      : customShellPath.value
-        ? `Custom (${customShellPath.value})`
-        : "Custom Shell",
+    label: customLabel,
     value: "custom",
   });
 
@@ -180,6 +193,14 @@ function markSessionReadyAndResize() {
   started = true;
   loading.value = false;
 
+  if (pendingCustomShell.value) {
+    customShellPath.value = pendingCustomShell.value;
+    selectedShell.value = "custom";
+    showCustomShellDialog.value = false;
+    pendingCustomShell.value = null;
+    invalidCustomShell.value = false;
+  }
+
   void waitForLayout().then(() => {
     if (!term || !started) return;
     fit.fit();
@@ -237,14 +258,6 @@ function initWS(shell: string) {
       if (!started) {
         markSessionReadyAndResize();
       }
-
-      if (pendingCustomShell.value) {
-        customShellPath.value = pendingCustomShell.value;
-        selectedShell.value = "custom";
-        showCustomShellDialog.value = false;
-        pendingCustomShell.value = null;
-        invalidCustomShell.value = false;
-      }
     }
 
     if (msg.data?.done) {
@@ -283,12 +296,6 @@ function initWS(shell: string) {
       wsSend(JSON.stringify({ action: "start", shell }));
     }
   }, 50);
-}
-
-function onOptionDblClick() {
-  if (selectedShell.value === "custom") {
-    handleCustomEdit();
-  }
 }
 
 function handleCustomEdit() {
