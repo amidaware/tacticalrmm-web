@@ -11,6 +11,7 @@
 const { mergeConfig } = require("vite");
 const { configure } = require("quasar/wrappers");
 const path = require("path");
+const postcssNested = require("postcss-nested");
 require("dotenv").config();
 
 module.exports = configure(function (/* ctx */) {
@@ -30,7 +31,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ["pinia", "axios", "monaco", "integrations"],
+    boot: ["pinia", "axios", "i18n", "monaco", "integrations"],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ["app.sass"],
@@ -82,8 +83,14 @@ module.exports = configure(function (/* ctx */) {
       /* eslint-disable quotes */
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       extendViteConf(viteConf, { isServer, isClient }) {
+        viteConf.css = mergeConfig(viteConf.css || {}, {
+          postcss: {
+            plugins: [postcssNested()],
+          },
+        });
+
         viteConf.build = mergeConfig(viteConf.build, {
-          chunkSizeWarningLimit: 1600,
+          chunkSizeWarningLimit: 4000,
           rollupOptions: {
             output: {
               entryFileNames: `[hash].js`,

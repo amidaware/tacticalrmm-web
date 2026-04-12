@@ -3,25 +3,60 @@
     <q-splitter v-model="splitterModel">
       <template v-slot:before>
         <q-tabs dense v-model="tab" vertical class="text-primary">
-          <q-tab name="general" label="General" />
-          <q-tab name="emailalerts" label="Email Alerts" />
-          <q-tab name="smsalerts" label="SMS Alerts" />
-          <q-tab name="meshcentral" label="MeshCentral" />
-          <q-tab name="customfields" label="Custom Fields" />
-          <q-tab name="keystore" label="Key Store" />
-          <q-tab name="urlactions" label="URL Actions" />
-          <q-tab name="webhooks" label="Web Hooks" />
-          <q-tab name="retention" label="Retention" />
-          <q-tab name="apikeys" label="API Keys" />
-          <q-tab name="sso" label="Single Sign-On (SSO)" />
-          <q-tab name="schedules" label="Schedules" />
+          <q-tab
+            name="general"
+            :label="$t('settings.editCoreSettings.tabs.general')"
+          />
+          <q-tab
+            name="emailalerts"
+            :label="$t('settings.editCoreSettings.tabs.emailAlerts')"
+          />
+          <q-tab
+            name="smsalerts"
+            :label="$t('settings.editCoreSettings.tabs.smsAlerts')"
+          />
+          <q-tab
+            name="meshcentral"
+            :label="$t('settings.editCoreSettings.tabs.meshCentral')"
+          />
+          <q-tab
+            name="customfields"
+            :label="$t('settings.editCoreSettings.tabs.customFields')"
+          />
+          <q-tab
+            name="keystore"
+            :label="$t('settings.editCoreSettings.tabs.keyStore')"
+          />
+          <q-tab
+            name="urlactions"
+            :label="$t('settings.editCoreSettings.tabs.urlActions')"
+          />
+          <q-tab
+            name="webhooks"
+            :label="$t('settings.editCoreSettings.tabs.webHooks')"
+          />
+          <q-tab
+            name="retention"
+            :label="$t('settings.editCoreSettings.tabs.retention')"
+          />
+          <q-tab
+            name="apikeys"
+            :label="$t('settings.editCoreSettings.tabs.apiKeys')"
+          />
+          <q-tab name="sso" :label="$t('settings.editCoreSettings.tabs.sso')" />
+          <q-tab
+            name="schedules"
+            :label="$t('settings.editCoreSettings.tabs.schedules')"
+          />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
       <template v-slot:after>
         <q-form @submit.prevent="editSettings">
           <q-card-section class="row items-center">
-            <div class="text-h6">Global Settings</div>
+            <div class="text-h6">
+              {{ $t("settings.editCoreSettings.title") }}
+            </div>
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup />
           </q-card-section>
@@ -34,25 +69,42 @@
             >
               <!-- general -->
               <q-tab-panel name="general">
-                <div class="text-subtitle2">General</div>
+                <div class="text-subtitle2">
+                  {{ $t("settings.editCoreSettings.tabs.general") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
                   <q-checkbox
                     v-model="settings.agent_auto_update"
-                    label="Enable agent automatic self update"
+                    :label="
+                      $t(
+                        'settings.editCoreSettings.general.enableAgentAutoUpdate',
+                      )
+                    "
                   >
-                    <q-tooltip> Runs at 35mins past every hour </q-tooltip>
+                    <q-tooltip>
+                      {{
+                        $t(
+                          "settings.editCoreSettings.general.enableAgentAutoUpdateTooltip",
+                        )
+                      }}
+                    </q-tooltip>
                   </q-checkbox>
                 </q-card-section>
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_scripts"
-                    label="Enable server side scripts"
+                    :label="
+                      $t(
+                        'settings.editCoreSettings.general.enableServerSideScripts',
+                      )
+                    "
                   >
-                    <q-tooltip
-                      >Allow running scripts on TRMM server for alert
-                      failure/resolve actions</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $t(
+                        "settings.editCoreSettings.general.enableServerSideScriptsTooltip",
+                      )
+                    }}</q-tooltip>
                   </q-checkbox>
                   <q-btn
                     size="sm"
@@ -71,9 +123,15 @@
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_webterminal"
-                    label="Enable web terminal"
+                    :label="
+                      $t('settings.editCoreSettings.general.enableWebTerminal')
+                    "
                   >
-                    <q-tooltip>Enable the web terminal</q-tooltip>
+                    <q-tooltip>{{
+                      $t(
+                        "settings.editCoreSettings.general.enableWebTerminalTooltip",
+                      )
+                    }}</q-tooltip>
                   </q-checkbox>
                   <q-btn
                     size="sm"
@@ -90,7 +148,13 @@
                   </q-btn>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default agent timezone:</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.defaultAgentTimezone",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <tactical-dropdown
                     filterable
@@ -103,7 +167,11 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default date format:</div>
+                  <div class="col-4">
+                    {{
+                      $t("settings.editCoreSettings.general.defaultDateFormat")
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -124,13 +192,23 @@
                           )
                         "
                       >
-                        <q-tooltip>Click to see formatting options</q-tooltip>
+                        <q-tooltip>{{
+                          $t(
+                            "settings.editCoreSettings.general.clickFormattingOptions",
+                          )
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default server policy:</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.defaultServerPolicy",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -145,7 +223,13 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default workstation policy:</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.defaultWorkstationPolicy",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -160,7 +244,13 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default alert template:</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.defaultAlertTemplate",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -176,24 +266,38 @@
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4 flex items-center">
-                    Receive notifications on:
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.receiveNotificationsOn",
+                      )
+                    }}:
                   </div>
                   <div class="col-2"></div>
                   <q-checkbox
                     dense
                     v-model="settings.notify_on_info_alerts"
                     class="col-3"
-                    label="Informational Alerts"
+                    :label="
+                      $t(
+                        'settings.editCoreSettings.general.informationalAlerts',
+                      )
+                    "
                   />
                   <q-checkbox
                     dense
                     v-model="settings.notify_on_warning_alerts"
                     class="col-3"
-                    label="Warning Alerts"
+                    :label="
+                      $t('settings.editCoreSettings.general.warningAlerts')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Agent Debug Level:</div>
+                  <div class="col-4">
+                    {{
+                      $t("settings.editCoreSettings.general.agentDebugLevel")
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     emit-value
@@ -208,24 +312,38 @@
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">
-                    Clear faults on agents that haven't checked in after (days):
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.clearFaultsAfterDays",
+                      )
+                    }}:
                   </div>
                   <div class="col-2"></div>
                   <q-input
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                     outlined
                     dense
                     v-model.number="settings.clear_faults_days"
                     class="col-6"
-                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
+                    :rules="[
+                      (val) =>
+                        val >= 0 ||
+                        $t('settings.editCoreSettings.minimumIsZero'),
+                    ]"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Reset Patch Policy on Agents:</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.general.resetPatchPolicyOnAgents",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-btn
                     color="negative"
-                    label="Reset"
+                    :label="$t('settings.common.reset')"
                     @click="showResetPatchPolicy"
                   />
                 </q-card-section>
@@ -233,7 +351,11 @@
               <!-- email alerts -->
               <q-tab-panel name="emailalerts">
                 <div class="text-subtitle2 row">
-                  <div>Email Alert Routing</div>
+                  <div>
+                    {{
+                      $t("settings.editCoreSettings.email.emailAlertRouting")
+                    }}
+                  </div>
                   <q-space />
                   <div>
                     <q-btn
@@ -241,14 +363,16 @@
                       color="grey-5"
                       icon="fas fa-plus"
                       text-color="black"
-                      label="Add emails"
+                      :label="$t('settings.editCoreSettings.email.addEmails')"
                       @click="toggleAddEmail"
                     />
                   </div>
                 </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Recipients</div>
+                  <div class="col-3">
+                    {{ $t("settings.editCoreSettings.email.recipients") }}
+                  </div>
                   <div class="col-4"></div>
                   <div class="col-5">
                     <q-list
@@ -274,27 +398,39 @@
                     </q-list>
                     <q-list v-else>
                       <q-item-section>
-                        <q-item-label>No recipients</q-item-label>
+                        <q-item-label>{{
+                          $t("settings.editCoreSettings.email.noRecipients")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-list>
                   </div>
                 </q-card-section>
                 <!-- smtp -->
-                <div class="text-subtitle2">SMTP Settings</div>
+                <div class="text-subtitle2">
+                  {{ $t("settings.editCoreSettings.email.smtpSettings") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-2">From email:</div>
+                  <div class="col-2">
+                    {{ $t("settings.editCoreSettings.email.fromEmail") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
                     dense
                     v-model="settings.smtp_from_email"
                     class="col-6 q-pa-none"
-                    :rules="[(val) => isValidEmail(val) || 'Invalid email']"
+                    :rules="[
+                      (val) =>
+                        isValidEmail(val) ||
+                        $t('settings.editCoreSettings.email.invalidEmail'),
+                    ]"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">From name:</div>
+                  <div class="col-2">
+                    {{ $t("settings.editCoreSettings.email.fromName") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -304,7 +440,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Host:</div>
+                  <div class="col-2">
+                    {{ $t("settings.editCoreSettings.email.host") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -314,7 +452,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Port:</div>
+                  <div class="col-2">
+                    {{ $t("settings.editCoreSettings.email.port") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     dense
@@ -323,14 +463,18 @@
                     filled
                     class="q-pa-none"
                     :rules="[
-                      (val) => (val > 0 && val <= 65535) || 'Invalid Port',
+                      (val) =>
+                        (val > 0 && val <= 65535) ||
+                        $t('settings.editCoreSettings.email.invalidPort'),
                     ]"
                   />
                 </q-card-section>
                 <q-card-section class="row">
                   <q-checkbox
                     v-model="settings.smtp_requires_auth"
-                    label="My Server Requires Authentication"
+                    :label="
+                      $t('settings.editCoreSettings.email.serverRequiresAuth')
+                    "
                     class="q-pa-none"
                   />
                 </q-card-section>
@@ -338,7 +482,7 @@
                   class="row"
                   v-show="settings.smtp_requires_auth"
                 >
-                  <div class="col-2">Username:</div>
+                  <div class="col-2">{{ $t("settings.common.username") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -351,7 +495,7 @@
                   class="row"
                   v-show="settings.smtp_requires_auth"
                 >
-                  <div class="col-2">Password:</div>
+                  <div class="col-2">{{ $t("settings.common.password") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -373,7 +517,9 @@
               <!-- twilio sms alerts -->
               <q-tab-panel name="smsalerts">
                 <div class="text-subtitle2 row">
-                  <div>SMS Alert Routing</div>
+                  <div>
+                    {{ $t("settings.editCoreSettings.sms.smsAlertRouting") }}
+                  </div>
                   <q-space />
                   <div>
                     <q-btn
@@ -381,14 +527,16 @@
                       color="grey-5"
                       icon="fas fa-plus"
                       text-color="black"
-                      label="Add numbers"
+                      :label="$t('settings.editCoreSettings.sms.addNumbers')"
                       @click="toggleAddSMSNumber"
                     />
                   </div>
                 </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Recipients</div>
+                  <div class="col-3">
+                    {{ $t("settings.editCoreSettings.sms.recipients") }}
+                  </div>
                   <div class="col-4"></div>
                   <div class="col-5">
                     <q-list
@@ -412,16 +560,22 @@
                     </q-list>
                     <q-list v-else>
                       <q-item-section>
-                        <q-item-label>No recipients</q-item-label>
+                        <q-item-label>{{
+                          $t("settings.editCoreSettings.sms.noRecipients")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-list>
                   </div>
                 </q-card-section>
                 <!-- smtp -->
-                <div class="text-subtitle2">Twilio Settings</div>
+                <div class="text-subtitle2">
+                  {{ $t("settings.editCoreSettings.sms.twilioSettings") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Number:</div>
+                  <div class="col-3">
+                    {{ $t("settings.editCoreSettings.sms.twilioNumber") }}:
+                  </div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -432,7 +586,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Account SID:</div>
+                  <div class="col-3">
+                    {{ $t("settings.editCoreSettings.sms.twilioAccountSid") }}:
+                  </div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -442,7 +598,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Auth Token:</div>
+                  <div class="col-3">
+                    {{ $t("settings.editCoreSettings.sms.twilioAuthToken") }}:
+                  </div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -454,10 +612,12 @@
               </q-tab-panel>
               <!-- meshcentral -->
               <q-tab-panel name="meshcentral">
-                <div class="text-subtitle2">MeshCentral Settings</div>
+                <div class="text-subtitle2">
+                  {{ $t("settings.editCoreSettings.mesh.title") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Username:</div>
+                  <div class="col-4">{{ $t("settings.common.username") }}:</div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -468,12 +628,14 @@
                       (val) =>
                         (val == val.toLowerCase() &&
                           val != val.toUpperCase()) ||
-                        'Username must be all lowercase',
+                        $t('settings.editCoreSettings.mesh.usernameLowercase'),
                     ]"
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Site:</div>
+                  <div class="col-4">
+                    {{ $t("settings.editCoreSettings.mesh.meshSite") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -483,7 +645,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Token:</div>
+                  <div class="col-4">
+                    {{ $t("settings.editCoreSettings.mesh.meshToken") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -493,7 +657,11 @@
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Device Group Name:</div>
+                  <div class="col-4">
+                    {{
+                      $t("settings.editCoreSettings.mesh.meshDeviceGroupName")
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -504,7 +672,9 @@
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
                   <div class="col-4 flex items-center">
-                    Sync Mesh Perms with TRMM:
+                    {{
+                      $t("settings.editCoreSettings.mesh.syncPermsWithTrmm")
+                    }}:
                     <q-icon
                       right
                       name="ion-information-circle-outline"
@@ -512,9 +682,9 @@
                       class="cursor-pointer"
                     >
                       <q-tooltip class="text-caption">
-                        It is recommended to keep this option enabled;
-                        otherwise, all TRMM users will have full permissions in
-                        MeshCentral regardless of their permissions in TRMM.
+                        {{
+                          $t("settings.editCoreSettings.mesh.syncPermsTooltip")
+                        }}
                       </q-tooltip>
                     </q-icon>
                   </div>
@@ -529,17 +699,18 @@
 
                 <q-card-section class="row items-center">
                   <div class="col-4 flex items-center">
-                    Company Name:
+                    {{ $t("settings.editCoreSettings.mesh.companyName") }}:
                     <q-icon
                       name="ion-information-circle-outline"
                       size="sm"
                       class="q-ml-sm cursor-pointer"
                     >
                       <q-tooltip class="text-caption">
-                        Adding your company name here will append it to the
-                        user's full name that appears when doing a remote
-                        control session, for example: 'John Doe - Amidaware
-                        Inc.'
+                        {{
+                          $t(
+                            "settings.editCoreSettings.mesh.companyNameTooltip",
+                          )
+                        }}
                       </q-tooltip>
                     </q-icon>
                   </div>
@@ -579,69 +750,101 @@
               <!-- retention -->
               <q-tab-panel name="retention">
                 <q-card-section class="row">
-                  <div class="col-4">Check History (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.retention.checkHistoryDays",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.check_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Resolved Alerts (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.retention.resolvedAlertsDays",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.resolved_alerts_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Agent History (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.retention.agentHistoryDays",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.agent_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Debug Logs (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t("settings.editCoreSettings.retention.debugLogsDays")
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.debug_log_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Audit Logs (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t("settings.editCoreSettings.retention.auditLogsDays")
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.audit_log_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Report History (days):</div>
+                  <div class="col-4">
+                    {{
+                      $t(
+                        "settings.editCoreSettings.retention.reportHistoryDays",
+                      )
+                    }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.report_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="$t('settings.editCoreSettings.hintSetZeroToDisable')"
                   />
                 </q-card-section>
               </q-tab-panel>
@@ -713,13 +916,13 @@
                 tab === 'meshcentral' ||
                 tab === 'retention'
               "
-              label="Save"
+              :label="$t('settings.common.save')"
               color="primary"
               type="submit"
             />
             <q-btn
               v-show="tab === 'emailalerts'"
-              label="Save and Test Email"
+              :label="$t('settings.editCoreSettings.saveAndTestEmail')"
               color="primary"
               type="submit"
               class="q-ml-md"
@@ -727,7 +930,7 @@
             />
             <q-btn
               v-show="tab === 'smsalerts'"
-              label="Save and Test SMS"
+              :label="$t('settings.editCoreSettings.saveAndTestSms')"
               color="primary"
               type="submit"
               class="q-ml-md"
@@ -786,10 +989,22 @@ export default {
       },
       alertTemplateOptions: [],
       logLevelOptions: [
-        { label: "Info", value: "info" },
-        { label: "Warning", value: "warning" },
-        { label: "Error", value: "error" },
-        { label: "Critical", value: "critical" },
+        {
+          label: this.$t("settings.editCoreSettings.logLevel.info"),
+          value: "info",
+        },
+        {
+          label: this.$t("settings.editCoreSettings.logLevel.warning"),
+          value: "warning",
+        },
+        {
+          label: this.$t("settings.editCoreSettings.logLevel.error"),
+          value: "error",
+        },
+        {
+          label: this.$t("settings.editCoreSettings.logLevel.critical"),
+          value: "critical",
+        },
       ],
     };
   },
@@ -842,11 +1057,10 @@ export default {
     confirmSyncChange(newValue) {
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message:
-            "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete.",
-          ok: { label: "Yes", color: "primary" },
-          cancel: { label: "No", color: "negative" },
+          title: this.$t("settings.editCoreSettings.confirmSync.title"),
+          message: this.$t("settings.editCoreSettings.confirmSync.message"),
+          ok: { label: this.$t("settings.common.yes"), color: "primary" },
+          cancel: { label: this.$t("settings.common.no"), color: "negative" },
         })
         .onOk(() => {
           this.settings.sync_mesh_with_trmm = newValue;
@@ -860,14 +1074,14 @@ export default {
     toggleAddEmail() {
       this.$q
         .dialog({
-          title: "Add email",
+          title: this.$t("settings.editCoreSettings.email.addEmailTitle"),
           prompt: {
             model: "",
             isValid: (val) => this.isValidEmail(val),
             type: "email",
           },
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: this.$t("settings.common.add"), color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
@@ -877,15 +1091,14 @@ export default {
     toggleAddSMSNumber() {
       this.$q
         .dialog({
-          title: "Add number",
-          message:
-            "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+          title: this.$t("settings.editCoreSettings.sms.addNumberTitle"),
+          message: this.$t("settings.editCoreSettings.sms.addNumberMessage"),
           prompt: {
             model: "",
           },
           html: true,
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: this.$t("settings.common.add"), color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
@@ -912,7 +1125,11 @@ export default {
         .then(() => {
           this.$q.loading.hide();
           if (this.emailTest) {
-            this.$q.loading.show({ message: "Sending test email..." });
+            this.$q.loading.show({
+              message: this.$t(
+                "settings.editCoreSettings.email.sendingTestEmail",
+              ),
+            });
             this.$axios
               .post("/core/emailtest/")
               .then((r) => {
@@ -926,7 +1143,9 @@ export default {
                 this.$q.loading.hide();
               });
           } else if (this.smsTest) {
-            this.$q.loading.show({ message: "Sending test SMS..." });
+            this.$q.loading.show({
+              message: this.$t("settings.editCoreSettings.sms.sendingTestSms"),
+            });
             this.$axios
               .post("/core/smstest/")
               .then((r) => {
@@ -942,7 +1161,9 @@ export default {
           } else {
             this.$emit("close");
             this.$store.dispatch("getDashInfo", false);
-            this.notifySuccess("Settings were edited!");
+            this.notifySuccess(
+              this.$t("settings.editCoreSettings.notify.saved"),
+            );
           }
         })
         .catch(() => {

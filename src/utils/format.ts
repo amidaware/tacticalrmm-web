@@ -1,4 +1,5 @@
 import { date } from "quasar";
+import { i18n } from "@/i18n";
 import { validateTimePeriod } from "@/utils/validation";
 import trmmLogo from "@/assets/trmm_256.png";
 
@@ -98,7 +99,8 @@ export function formatScriptOptions(data: Script[]): Option[] {
   let hasUnassigned = false;
 
   data.forEach((script) => {
-    const category = script.category || "Unassigned";
+    const category =
+      script.category || i18n.global.t("common.system.unassigned");
     if (!script.category) hasUnassigned = true;
 
     if (!categoryMap.has(category)) {
@@ -109,10 +111,11 @@ export function formatScriptOptions(data: Script[]): Option[] {
 
   const categories = Array.from(categoryMap.keys());
   if (hasUnassigned) {
-    // Ensure "Unassigned" is the last category
-    const index = categories.indexOf("Unassigned");
+    // Ensure translated "Unassigned" is the last category
+    const unassignedLabel = i18n.global.t("common.system.unassigned");
+    const index = categories.indexOf(unassignedLabel);
     categories.splice(index, 1);
-    categories.push("Unassigned");
+    categories.push(unassignedLabel);
   }
 
   categories.sort();
@@ -193,7 +196,11 @@ export function formatCustomFieldOptions(
     return _formatOptions(data, { label: "name", flat: true });
   } else {
     // Predefined categories for organizing the custom fields
-    const categories = ["Client", "Site", "Agent"];
+    const categories = [
+      i18n.global.t("settings.customFields.clients"),
+      i18n.global.t("settings.customFields.sites"),
+      i18n.global.t("settings.customFields.agents"),
+    ];
     const options: Option[] = [];
 
     categories.forEach((cat) => {
@@ -202,7 +209,15 @@ export function formatCustomFieldOptions(
 
       // Filter and map the custom fields that match the current category
       const matchingFields = data
-        .filter((custom_field) => custom_field.model === cat.toLowerCase())
+        .filter(
+          (custom_field) =>
+            custom_field.model ===
+            {
+              [i18n.global.t("settings.customFields.clients")]: "client",
+              [i18n.global.t("settings.customFields.sites")]: "site",
+              [i18n.global.t("settings.customFields.agents")]: "agent",
+            }[cat],
+        )
         .map((custom_field) => ({
           label: custom_field.name,
           value: custom_field.id,
@@ -308,17 +323,29 @@ export function getTimeLapse(unixtime: number) {
   const msPerYear = msPerDay * 365;
   const elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return i18n.global.t("common.timeLapse.secondsAgo", {
+      count: Math.round(elapsed / 1000),
+    });
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return i18n.global.t("common.timeLapse.minutesAgo", {
+      count: Math.round(elapsed / msPerMinute),
+    });
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return i18n.global.t("common.timeLapse.hoursAgo", {
+      count: Math.round(elapsed / msPerHour),
+    });
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return i18n.global.t("common.timeLapse.daysAgo", {
+      count: Math.round(elapsed / msPerDay),
+    });
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return i18n.global.t("common.timeLapse.monthsAgo", {
+      count: Math.round(elapsed / msPerMonth),
+    });
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return i18n.global.t("common.timeLapse.yearsAgo", {
+      count: Math.round(elapsed / msPerYear),
+    });
   }
 }
 
@@ -341,7 +368,7 @@ export function getNextAgentUpdateTime() {
   }
   const a = date.formatDate(ret, "MMM D, YYYY");
   const b = date.formatDate(ret, "h:mm A");
-  return `${a} at ${b}`;
+  return i18n.global.t("common.system.datetimeAt", { date: a, time: b });
 }
 
 // converts a date with timezone to local for html native datetime fields -> YYYY-MM-DD HH:mm:ss
@@ -396,7 +423,7 @@ export function convertMemoryToPercent(percent: number, memory: number) {
 // convert time period(str) to seconds(int) (3h -> 10800) used for comparing time intervals
 export function convertPeriodToSeconds(period: string) {
   if (!validateTimePeriod(period)) {
-    console.error("Time Period is invalid");
+    console.error(i18n.global.t("common.messages.invalidTimePeriod"));
     return 0;
   }
 

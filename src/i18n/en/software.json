@@ -1,0 +1,34 @@
+{
+  "shared": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "search": "Search",
+    "name": "Name",
+    "uninstall": "Uninstall",
+    "timeoutSeconds": "Timeout (seconds)"
+  },
+  "softwareTab": {
+    "installSoftware": "Install Software",
+    "uninstall": "Uninstall",
+    "columns": {
+      "name": "Name",
+      "publisher": "Publisher",
+      "installedOn": "Installed On",
+      "size": "Size",
+      "version": "Version"
+    }
+  },
+  "installSoftware": {
+    "title": "Install Software",
+    "installTitle": "Install {name}?",
+    "columns": {
+      "install": "Install"
+    }
+  },
+  "uninstallSoftware": {
+    "uninstalling": "Uninstalling {name}",
+    "confirmOrEdit": "Confirm or edit the uninstall command:",
+    "timeoutRequired": "Timeout is required",
+    "runAsUser": "Run as user"
+  }
+}

@@ -13,15 +13,17 @@
         {{
           props.action
             ? props.type === "web"
-              ? "Edit URL Action"
-              : "Edit Web Hook"
+              ? t("settings.urlActionsForm.editUrlAction")
+              : t("settings.urlActionsForm.editWebhook")
             : props.type === "web"
-              ? "Add URL Action"
-              : "Add Web Hook"
+              ? t("settings.urlActionsForm.addUrlAction")
+              : t("settings.urlActionsForm.addWebhook")
         }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("settings.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -29,18 +31,18 @@
         <!-- name -->
         <q-card-section>
           <q-input
-            label="Name"
+            :label="t('settings.common.name')"
             outlined
             dense
             v-model="localAction.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || t('settings.common.required')]"
           />
         </q-card-section>
 
         <!-- description -->
         <q-card-section>
           <q-input
-            label="Description"
+            :label="t('settings.urlActionsForm.description')"
             outlined
             dense
             type="textarea"
@@ -52,18 +54,18 @@
         <!-- pattern -->
         <q-card-section>
           <q-input
-            label="URL Pattern"
+            :label="t('settings.urlActionsForm.urlPattern')"
             outlined
             dense
             v-model="localAction.pattern"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || t('settings.common.required')]"
           />
         </q-card-section>
 
         <q-card-section v-if="type === 'rest'">
           <q-select
             v-model="localAction.rest_method"
-            label="Method"
+            :label="t('settings.urlActionsForm.method')"
             :options="URLActionMethods"
             outlined
             dense
@@ -77,11 +79,15 @@
             <q-tabs v-model="tab" dense shrink>
               <q-tab
                 name="body"
-                label="Request Body"
+                :label="t('settings.urlActionsForm.requestBody')"
                 :ripple="false"
                 :disable="disableBodyTab"
               />
-              <q-tab name="headers" label="Request Headers" :ripple="false" />
+              <q-tab
+                name="headers"
+                :label="t('settings.urlActionsForm.requestHeaders')"
+                :ripple="false"
+              />
             </q-tabs>
           </q-toolbar>
           <div ref="editorDiv" :style="{ height: '30vh' }"></div>
@@ -92,12 +98,17 @@
         <q-btn
           v-if="type === 'rest'"
           flat
-          label="Test"
+          :label="t('settings.common.test')"
           color="primary"
           @click="testWebHook"
         />
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Submit" color="primary" @click="submit" />
+        <q-btn flat :label="t('settings.common.cancel')" v-close-popup />
+        <q-btn
+          flat
+          :label="t('settings.common.submit')"
+          color="primary"
+          @click="submit"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -107,6 +118,7 @@
 // composition imports
 import { ref, computed, reactive, watch } from "vue";
 import { useDialogPluginComponent, useQuasar, extend } from "quasar";
+import { useI18n } from "vue-i18n";
 import { editURLAction, saveURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
 import { URLAction, URLActionType } from "@/types/core/urlactions";
@@ -124,6 +136,7 @@ const props = defineProps<{ type: URLActionType; action?: URLAction }>();
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 // static data
@@ -167,7 +180,7 @@ async function submit() {
       ? await editURLAction(localAction.id, localAction)
       : await saveURLAction(localAction);
     onDialogOK();
-    notifySuccess("Url Action was edited!");
+    notifySuccess(t("settings.urlActionsForm.notify.saved"));
   } catch (e) {}
 
   $q.loading.hide();

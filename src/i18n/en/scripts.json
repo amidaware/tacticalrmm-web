@@ -1,0 +1,154 @@
+{
+  "shared": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "add": "Add",
+    "new": "New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "clone": "Clone",
+    "search": "Search",
+    "all": "All",
+    "name": "Name",
+    "description": "Description",
+    "category": "Category",
+    "shell": "Shell",
+    "shellType": "Shell Type",
+    "supportedPlatforms": "Supported Platforms (All supported if blank)",
+    "scriptArguments": "Script Arguments (press Enter after typing each argument)",
+    "addValueHint": "Press Enter or Tab when adding a new value",
+    "scriptArgumentsPlaceholder": "(press Enter after typing each argument)",
+    "environmentVariables": "Environment Variables",
+    "envVarsPlaceholder": "(press Enter after typing each key=value pair)",
+    "defaultTimeout": "Default Timeout",
+    "defaultTimeoutSeconds": "Default Timeout (seconds)",
+    "timeoutSeconds": "Timeout (seconds)",
+    "required": "*Required",
+    "minimumSeconds": "Minimum is {min}",
+    "generateScript": "Generate Script",
+    "askChatGpt": "Ask ChatGPT what you need!",
+    "example": "Example",
+    "or": "or",
+    "shellLabels": {
+      "powershell": "Powershell",
+      "python": "Python",
+      "batch": "Batch",
+      "shell": "Shell",
+      "nushell": "Nushell",
+      "deno": "Deno"
+    }
+  },
+  "runScript": {
+    "title": "Run a script on {hostname}",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "selectScript": "Select script",
+    "scriptArguments": "Script Arguments (press Enter after typing each argument)",
+    "useGlobalEmails": "Use email addresses from global settings",
+    "customEmails": "Custom emails",
+    "emailRecipients": "Email recipients (press Enter after typing each email)",
+    "selectCustomField": "Select custom field",
+    "saveAllOutput": "Save all output",
+    "runAsUser": "Run As User",
+    "runAsUserTooltip": "Run in the context of the logged in user. If no user is logged in, the script will run as SYSTEM",
+    "runOnServer": "Run On Server",
+    "enableServerScriptsHint": "Enable server side scripts globally to activate this feature.",
+    "runOnServerHint": "Run the script on the Tactical RMM server in the context of this agent.",
+    "timeoutSeconds": "Timeout (seconds)",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "run": "Run",
+    "output": "Output",
+    "runTime": "Run Time",
+    "returnCode": "Return Code",
+    "secondsValue": "{value} seconds",
+    "standardOutput": "Standard Output",
+    "standardError": "Standard Error",
+    "outputOptions": {
+      "wait": "Wait for Output",
+      "forget": "Fire and Forget",
+      "email": "Email results",
+      "collector": "Save results to Custom Field",
+      "note": "Save results to Agent Notes"
+    }
+  },
+  "testScriptModal": {
+    "title": "Script Test",
+    "runTime": "Run Time",
+    "returnCode": "Return Code",
+    "secondsValue": "{value} seconds",
+    "standardOutput": "Standard Output",
+    "standardError": "Standard Error"
+  },
+  "scriptUploadModal": {
+    "title": "Add Script",
+    "scriptUpload": "Script Upload",
+    "type": "Type"
+  },
+  "scriptOutputCopyClip": {
+    "copyToClipboard": "Copy to Clipboard"
+  },
+  "scriptSnippets": {
+    "title": "Script Snippets",
+    "deleteSnippetTitle": "Delete script snippet: {name}?"
+  },
+  "scriptSnippetFormModal": {
+    "editing": "Editing {name}",
+    "addingNewScriptSnippet": "Adding New Script Snippet"
+  },
+  "scriptFormModal": {
+    "copyNamePrefix": "(Copy) {name}",
+    "viewing": "Viewing {name}",
+    "copying": "Copying {name}",
+    "editing": "Editing {name}",
+    "addingNewScript": "Adding new script",
+    "shebangWarning": "Shell/Python scripts on Linux/Mac need a shebang at the top of the script e.g.",
+    "shebangWarningHint": "Add one to get rid of this warning. Ignore if windows.",
+    "syntax": "Syntax",
+    "runAsUserWindowsOnly": "Run As User (Windows only)",
+    "runAsUserTooltip": "Setting this value on the script model will always override any 'Run As User' checkboxes in the UI and force this script to always be run in the context of the logged in user. If no user is logged in, the script will run as SYSTEM.",
+    "agentToRunTestScriptOn": "Agent to run test script on",
+    "testScript": "Test Script",
+    "testOnServer": "Test on Tactical's Server",
+    "testOnServerTooltip": {
+      "title": "Runs on Tactical RMM local Linux Server.",
+      "body": "Only available interpreters or frameworks will be used.",
+      "example": "PowerShell scripts require PowerShell to be installed on the system."
+    },
+    "shebangRequiredError": "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
+    "unsavedChangesConfirm": "You have unsaved changes. Are you sure you want to close?"
+  },
+  "scriptManager": {
+    "title": "Script Manager",
+    "newScript": "New Script",
+    "uploadScript": "Upload Script",
+    "scriptSnippets": "Script Snippets",
+    "folderView": "Folder View",
+    "tableView": "Table View",
+    "hideCommunityScripts": "Hide Community Scripts",
+    "showCommunityScripts": "Show Community Scripts",
+    "hideHiddenScripts": "Hide Hidden Scripts",
+    "showHiddenScripts": "Show Hidden Scripts",
+    "noScriptsFound": "No Scripts Found",
+    "viewCode": "View Code",
+    "addAsFavorite": "Add as Favorite",
+    "removeAsFavorite": "Remove as Favorite",
+    "downloadScript": "Download Script",
+    "showScript": "Show Script",
+    "hideScript": "Hide Script",
+    "idValue": "ID: {id}",
+    "unassigned": "Unassigned",
+    "deleteScriptTitle": "Delete script: {name}?",
+    "columns": {
+      "favorites": "Favorites",
+      "platforms": "Platforms",
+      "defaultArgs": "Default Args"
+    },
+    "notifications": {
+      "scriptFavorited": "Script was favorited!",
+      "scriptUnfavorited": "Script was removed as a favorite!",
+      "scriptHidden": "Script was hidden!",
+      "scriptUnhidden": "Script was unhidden!"
+    }
+  }
+}

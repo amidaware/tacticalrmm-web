@@ -4,8 +4,8 @@
       <div class="text-subtitle2">
         {{
           props.type === "web"
-            ? "URL Actions"
-            : "Web Hooks for Alert Failure/Resolved Actions"
+            ? t("settings.urlActionsTable.urlActions")
+            : t("settings.urlActionsTable.webhooks")
         }}
       </div>
       <q-space />
@@ -14,7 +14,11 @@
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        :label="`Add ${props.type === 'web' ? 'URL Action' : 'Web Hook'}`"
+        :label="
+          props.type === 'web'
+            ? t('settings.urlActionsTable.addUrlAction')
+            : t('settings.urlActionsTable.addWebhook')
+        "
         @click="addURLAction"
       />
     </div>
@@ -29,7 +33,11 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      :no-data-label="`No ${props.type === 'web' ? 'URL Actions' : 'Web Hooks'} added yet`"
+      :no-data-label="
+        props.type === 'web'
+          ? t('settings.urlActionsTable.noUrlActions')
+          : t('settings.urlActionsTable.noWebhooks')
+      "
       :loading="loading"
     >
       <!-- body slots -->
@@ -46,7 +54,7 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ t("settings.common.edit") }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -56,13 +64,17 @@
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{
+                  t("settings.common.delete")
+                }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{
+                  t("settings.common.close")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -88,6 +100,7 @@
 // composition imports
 import { ref, onMounted } from "vue";
 import { QTableColumn, useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { fetchURLActions, removeURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
 import { truncateText } from "@/utils/format";
@@ -103,6 +116,7 @@ const props = defineProps<{ type: URLActionType }>();
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 const loading = ref(false);
 
@@ -111,21 +125,21 @@ const actions = ref([] as URLAction[]);
 const columns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("settings.common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "desc",
-    label: "Description",
+    label: t("settings.urlActionsTable.columns.description"),
     field: "desc",
     align: "left",
     sortable: true,
   },
   {
     name: "pattern",
-    label: "URL Pattern",
+    label: t("settings.urlActionsTable.columns.urlPattern"),
     field: "pattern",
     align: "left",
     sortable: true,
@@ -167,15 +181,17 @@ function editURLAction(action: URLAction) {
 
 function deleteURLAction(action: URLAction) {
   $q.dialog({
-    title: `Delete URL Action: ${action.name}?`,
+    title: t("settings.urlActionsTable.deleteTitle", { name: action.name }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("settings.common.delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await removeURLAction(action.id);
       await getURLActions();
-      notifySuccess(`URL Action: ${action.name} was deleted!`);
+      notifySuccess(
+        t("settings.urlActionsTable.notify.deleted", { name: action.name }),
+      );
     } catch (e) {
       console.error(e);
     }

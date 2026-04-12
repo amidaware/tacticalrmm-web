@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">API Keys</div>
+      <div class="text-subtitle2">{{ t("settings.apiKeysTable.title") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add key"
+        :label="t('settings.apiKeysTable.addKey')"
         @click="addAPIKey"
       />
     </div>
@@ -23,7 +23,7 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No API tokens added yet"
+      :no-data-label="t('settings.apiKeysTable.noData')"
     >
       <!-- header slots -->
       <template v-slot:header-cell-actions="props">
@@ -44,19 +44,23 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ t("settings.common.edit") }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="deleteAPIKey(props.row)">
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{
+                  t("settings.common.delete")
+                }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{
+                  t("settings.common.close")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -81,7 +85,9 @@
               name="content_copy"
               @click="copyKeyToClipboard(props.row.key)"
             >
-              <q-tooltip>Copy API Key to clipboard</q-tooltip>
+              <q-tooltip>{{
+                t("settings.apiKeysTable.copyKeyTooltip")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
         </q-tr>
@@ -96,49 +102,16 @@ import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { fetchAPIKeys, removeAPIKey } from "@/api/accounts";
 import { useQuasar, copyToClipboard } from "quasar";
+import { useI18n } from "vue-i18n";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import APIKeysForm from "@/components/core/APIKeysForm.vue";
 
-const columns = [
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "User",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "expiration",
-    label: "Expiration",
-    field: "expiration",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "created_time",
-    label: "Created",
-    field: "created_time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "actions",
-    label: "",
-    field: "actions",
-  },
-];
 export default {
   name: "APIKeysTable",
   setup() {
     // setup quasar
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // setup vuex
     const store = useStore();
@@ -147,6 +120,42 @@ export default {
     // setup api keys logic
     const keys = ref([]);
     const loading = ref(false);
+
+    const columns = [
+      {
+        name: "name",
+        label: t("settings.common.name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: t("settings.common.user"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "expiration",
+        label: t("settings.apiKeysTable.columns.expiration"),
+        field: "expiration",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "created_time",
+        label: t("settings.apiKeysTable.columns.created"),
+        field: "created_time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "actions",
+        label: "",
+        field: "actions",
+      },
+    ];
 
     // setup table
     const pagination = ref({
@@ -158,10 +167,10 @@ export default {
     function copyKeyToClipboard(apikey) {
       copyToClipboard(apikey)
         .then(() => {
-          notifySuccess("Key was copied to clipboard!");
+          notifySuccess(t("settings.apiKeysTable.notify.copied"));
         })
         .catch(() => {
-          notifyError("Unable to copy to clipboard!");
+          notifyError(t("settings.apiKeysTable.notify.copyFailed"));
         });
     }
 
@@ -174,9 +183,9 @@ export default {
 
     async function deleteAPIKey(key) {
       $q.dialog({
-        title: `Delete API key: ${key.name}?`,
+        title: t("settings.apiKeysTable.deleteTitle", { name: key.name }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("settings.common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {
@@ -217,6 +226,7 @@ export default {
 
       // non-reactive data
       columns,
+      t,
 
       //methods
       getAPIKeys,

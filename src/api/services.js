@@ -27,7 +27,7 @@ export async function getAgentServiceDetails(agent_id, svcname, params = {}) {
 export async function editAgentServiceStartType(agent_id, svcname, payload) {
   const { data } = await axios.put(
     `${baseUrl}/${agent_id}/${svcname}/`,
-    payload
+    payload,
   );
   return data;
 }
@@ -35,7 +35,7 @@ export async function editAgentServiceStartType(agent_id, svcname, payload) {
 export async function sendAgentServiceAction(agent_id, svcname, payload) {
   const { data } = await axios.post(
     `${baseUrl}/${agent_id}/${svcname}/`,
-    payload
+    payload,
   );
   return data;
 }

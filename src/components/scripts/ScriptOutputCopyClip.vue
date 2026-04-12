@@ -3,7 +3,9 @@
     <div class="col-auto">{{ label }}</div>
     <div class="col-auto">
       <q-btn dense flat size="md" icon="content_copy" @click="copyText">
-        <q-tooltip>Copy to Clipboard</q-tooltip>
+        <q-tooltip>{{
+          t("scripts.scriptOutputCopyClip.copyToClipboard")
+        }}</q-tooltip>
       </q-btn>
     </div>
   </div>
@@ -11,6 +13,7 @@
 
 <script setup lang="ts">
 import { copyOutput } from "@/utils/helpers";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   label: String,
@@ -19,6 +22,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const { t } = useI18n();
 
 const copyText = () => {
   copyOutput(props.data);

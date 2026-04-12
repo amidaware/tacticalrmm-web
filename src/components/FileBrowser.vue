@@ -10,7 +10,9 @@
           filter="filter"
           no-selection-unset
           selected-color="primary"
-          :filter-method="(node: QTreeFileNode/*,  filter */) => node.type === 'folder'"
+          :filter-method="
+            (node: QTreeFileNode /*,  filter */) => node.type === 'folder'
+          "
           :nodes="nodes"
           @update:selected="onFolderSelection"
           @lazy-load="loadNodeChildren"
@@ -26,7 +28,7 @@
           :columns="tableColumns"
           :loading="loading"
           dense
-          no-data-label="Folder is Empty"
+          :no-data-label="t('dashboard.fileBrowser.folderEmpty')"
           binary-state-sort
           virtual-scroll
           selection="multiple"
@@ -43,7 +45,12 @@
           <template #top>
             <slot
               name="action-bar"
-              v-bind="{ selectedTreeNode: folderTree?.getNodeByKey(selectedTreeNode) as QTreeFileNode, selectedTableNodes: selectedTableNodes as FileSystemNodeTable[]}"
+              v-bind="{
+                selectedTreeNode: folderTree?.getNodeByKey(
+                  selectedTreeNode,
+                ) as QTreeFileNode,
+                selectedTableNodes: selectedTableNodes as FileSystemNodeTable[],
+              }"
             ></slot>
           </template>
 
@@ -55,7 +62,12 @@
               <!-- Context Menu -->
               <slot
                 name="table-menu"
-                v-bind="{ item: slotProps.row as FileSystemNodeTable, selectedTreeNode: folderTree?.getNodeByKey(selectedTreeNode) as QTreeFileNode }"
+                v-bind="{
+                  item: slotProps.row as FileSystemNodeTable,
+                  selectedTreeNode: folderTree?.getNodeByKey(
+                    selectedTreeNode,
+                  ) as QTreeFileNode,
+                }"
               ></slot>
 
               <!-- rows -->
@@ -89,6 +101,7 @@
 // composition imports
 import { ref, toRef, onMounted } from "vue";
 import { isDefined } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 // type imports
 import type { QTableColumn, QTreeLazyLoadParams, QTree, QTable } from "quasar";
@@ -103,6 +116,7 @@ import type {
 const emit = defineEmits<{
   (event: "lazy-load", callback: LazyLoadCallbackParams): void;
 }>();
+const { t } = useI18n();
 
 // props
 const props = withDefaults(
@@ -116,7 +130,7 @@ const props = withDefaults(
     separator: "unix",
     loading: false,
     height: "200px",
-  }
+  },
 );
 
 // expose public methods
@@ -138,21 +152,21 @@ const tableRows = ref([] as FileSystemNodeTable[]);
 const tableColumns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("dashboard.fileBrowser.columns.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "type",
-    label: "Type",
+    label: t("dashboard.fileBrowser.columns.type"),
     field: "type",
     align: "left",
     sortable: true,
   },
   {
     name: "size",
-    label: "Size",
+    label: t("dashboard.fileBrowser.columns.size"),
     field: "size",
     align: "left",
     sortable: true,
@@ -202,7 +216,7 @@ function loadNodeChildren({ node, key, done, fail }: QTreeLazyLoadParams) {
 
 // parses children of node into table rows
 function parseNodeChildrenIntoTable(
-  node: QTreeFileNode
+  node: QTreeFileNode,
 ): FileSystemNodeTable[] {
   if (isDefined(node.children)) {
     return node.children.map((childNode) => ({

@@ -1,0 +1,681 @@
+{
+  "shared": {
+    "noAgentSelected": "No agent selected",
+    "onlySupportedWindows": "Only supported for Windows agents at this time",
+    "smsAlert": "SMS Alert",
+    "emailAlert": "Email Alert",
+    "dashboardAlert": "Dashboard Alert",
+    "settingOverriddenByAlertTemplate": "Setting is overridden by alert template",
+    "passing": "Passing",
+    "informational": "Informational",
+    "never": "Never",
+    "areYouSure": "Are you sure?",
+    "required": "*Required"
+  },
+  "remoteBackground": {
+    "metaTitle": "Remote Background",
+    "tabs": {
+      "terminal": "Terminal",
+      "fileBrowser": "File Browser",
+      "services": "Services",
+      "processes": "Processes",
+      "eventLog": "Event Log",
+      "registry": "Registry"
+    }
+  },
+  "takeControl": {
+    "metaTitle": "Take Control",
+    "statusLabel": "TRMM Agent Status",
+    "restartConnection": "Restart Connection",
+    "recoverConnection": "Recover Connection",
+    "loading": {
+      "repairingMeshAgent": "Attempting to repair Mesh Agent",
+      "restartingMeshAgent": "Restarting Mesh Agent"
+    },
+    "notifications": {
+      "meshAgentRestarted": "Mesh agent service was restarted"
+    }
+  },
+  "webVnc": {
+    "metaTitle": "VNC"
+  },
+  "wmiDetail": {
+    "copyToClipboard": "Copy to Clipboard",
+    "copiedToClipboard": "Copied to clipboard"
+  },
+  "confirmYesDialog": {
+    "confirmAction": "Confirm action",
+    "promptPrefix": "Please type",
+    "yesWord": "yes",
+    "promptMiddle": "in the box below to confirm",
+    "promptSuffix": "of",
+    "typeYesToConfirm": "Type yes to confirm"
+  },
+  "summaryTab": {
+    "agentOverdue": "Agent overdue",
+    "maintenanceMode": "Maintenance Mode",
+    "agentVersion": "Agent v{version}",
+    "popout": "Popout",
+    "takeControl": "Take Control",
+    "actions": "Actions",
+    "hardwareDetails": "Hardware Details",
+    "ramLabel": "{totalRam} GB RAM",
+    "publicIp": "Public IP: {ip}",
+    "lanIp": "LAN IP: {ip}",
+    "checksStatus": "Checks Status",
+    "checksPassing": "{count} checks passing",
+    "checksFailing": "{count} checks failing",
+    "checksWarning": "{count} checks warning",
+    "checksInfo": "{count} checks info",
+    "checksAwaitingFirstSync": "{count} checks awaiting first synchronization",
+    "noChecks": "No checks",
+    "customFields": "Custom Fields",
+    "disks": "Disks",
+    "diskFreeOf": "{free} free of {total}"
+  },
+  "softwareTab": {
+    "installSoftware": "Install Software",
+    "uninstall": "Uninstall",
+    "columns": {
+      "name": "Name",
+      "publisher": "Publisher",
+      "installedOn": "Installed On",
+      "size": "Size",
+      "version": "Version"
+    }
+  },
+  "assetsTab": {
+    "tabs": {
+      "operatingSystem": "Operating System",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "usb": "USB",
+      "bios": "Bios",
+      "disks": "Disks",
+      "computerSystem": "Computer System",
+      "motherboard": "Motherboard",
+      "computerSystemProduct": "Computer System Product",
+      "networkConfig": "Network Config",
+      "graphics": "Graphics",
+      "monitors": "Monitors",
+      "networkAdapters": "Network Adapters"
+    }
+  },
+  "winUpdateTab": {
+    "noWindowsUpdates": "No Windows Updates",
+    "runUpdateScan": "Run Update Scan",
+    "installApprovedUpdates": "Install Approved Updates",
+    "actions": {
+      "inherit": "Inherit",
+      "approve": "Approve",
+      "ignore": "Ignore",
+      "doNothing": "Do Nothing"
+    },
+    "status": {
+      "installed": "Installed",
+      "pending": "Pending",
+      "ignored": "Ignored",
+      "missing": "Missing"
+    },
+    "severity": {
+      "critical": "Critical",
+      "important": "Important",
+      "moderate": "Moderate",
+      "low": "Low",
+      "other": "Other"
+    },
+    "columns": {
+      "severity": "Severity",
+      "name": "Name",
+      "moreInfo": "More Info",
+      "installedOn": "Installed On"
+    }
+  },
+  "checksTab": {
+    "noChecks": "No checks",
+    "new": "New",
+    "checkTypes": {
+      "diskSpace": "Disk Space Check",
+      "ping": "Ping Check",
+      "cpuLoad": "CPU Load Check",
+      "memory": "Memory Check",
+      "windowsService": "Windows Service Check",
+      "script": "Script Check",
+      "eventLog": "Event Log Check"
+    },
+    "runChecksNow": "Run Checks Now",
+    "resetAllChecksStatus": "Reset All Checks Status",
+    "resetCheckStatus": "Reset Check Status",
+    "checkManagedByPolicy": "This check is managed by a policy",
+    "checkOverriddenByPolicy": "This check is overriden by a policy",
+    "showRunHistory": "Show Run History",
+    "lastOutput": "Last Output",
+    "deleteCheck": "Delete {check}",
+    "checkHasNotRunYet": "Check hasn't run yet",
+    "checkAlreadyPassing": "Check is already passing",
+    "assignedTasksCount": "{count} Tasks",
+    "columns": {
+      "description": "Description",
+      "moreInfo": "More Info",
+      "lastRun": "Last Run",
+      "assignedTasks": "Assigned Tasks"
+    }
+  },
+  "notesTab": {
+    "noNotes": "No notes",
+    "addNote": "Add Note",
+    "columns": {
+      "date": "Date",
+      "user": "User",
+      "note": "Note"
+    },
+    "dialogs": {
+      "addTitle": "Add Note",
+      "editTitle": "Edit Note",
+      "deleteTitle": "Delete note?"
+    }
+  },
+  "historyTab": {
+    "output": "Output",
+    "noOutputYet": "No output is available yet",
+    "actions": {
+      "cmd_run": "Cmd Run",
+      "script_run": "Script Run",
+      "task_run": "Task Run",
+      "check_run": "Check Run"
+    },
+    "columns": {
+      "time": "Time",
+      "action": "Action",
+      "scriptCommand": "Script/Command",
+      "initiatedBy": "Initiated By",
+      "output": "Output"
+    }
+  },
+  "automatedTasksTab": {
+    "noTasks": "No tasks",
+    "addTask": "Add Task",
+    "collectorTask": "Collector Task",
+    "runTaskNow": "Run task now",
+    "taskManagedByPolicy": "This task is managed by a policy",
+    "taskUpdatesCustomField": "The task updates a custom field on the agent",
+    "output": "output",
+    "awaitingOutput": "Awaiting output",
+    "hasNotRunYet": "Has not run yet",
+    "deleteTask": "Delete {task} task",
+    "taskDisabledError": "Task cannot be run when it's disabled. Enable it first.",
+    "runTask": "Run {task} task",
+    "syncStatus": {
+      "willSyncOnNextCheckin": "Will sync on next agent checkin",
+      "synced": "Synced with agent",
+      "pendingDeletion": "Pending deletion on agent",
+      "waitingForCreation": "Waiting for task creation on agent"
+    }
+  },
+  "agentActionMenu": {
+    "editAgent": "Edit {hostname}",
+    "pendingAgentActions": "Pending Agent Actions",
+    "takeControl": "Take Control",
+    "vnc": "VNC",
+    "runUrlAction": "Run URL Action",
+    "sendCommand": "Send Command",
+    "runScript": "Run Script",
+    "runFavoritedScript": "Run Favorited Script",
+    "remoteBackground": "Remote Background",
+    "enableMaintenanceMode": "Enable Maintenance Mode",
+    "disableMaintenanceMode": "Disable Maintenance Mode",
+    "maintenanceModeUpdated": "Maintenance mode was {mode} on {hostname}",
+    "patchManagement": "Patch Management",
+    "runPatchStatusScan": "Run Patch Status Scan",
+    "installPatchesNow": "Install Patches Now",
+    "patchScanQueued": "Scan will be run shortly on {hostname}",
+    "runChecks": "Run Checks",
+    "wakeUpWol": "Wake-Up (WoL)",
+    "reboot": "Reboot",
+    "now": "Now",
+    "later": "Later",
+    "shutdown": "Shutdown",
+    "assignAutomationPolicy": "Assign Automation Policy",
+    "reporting": "Reporting",
+    "agentRecovery": "Agent Recovery",
+    "removeAgent": "Remove Agent",
+    "vncServerPort": "VNC Server Port",
+    "enterVncServerPort": "Enter the VNC server port:",
+    "launch": "Launch",
+    "rebootNow": "Reboot {hostname} now",
+    "willBeRestarted": "{hostname} will now be restarted",
+    "shutdownAction": "shutdown",
+    "confirmShutdown": "Confirm Shutdown",
+    "willBeShutdown": "{hostname} will now be shutdown",
+    "agentOffline": "Agent offline",
+    "offlineUninstallPrompt": "{hostname} cannot be contacted. Would you like to continue with the uninstall? If so, the agent will need to be manually uninstalled from the computer.",
+    "somethingWentWrong": "Something went wrong",
+    "deletionAction": "deletion",
+    "confirmDeletion": "Confirm Deletion",
+    "uninstall": "Uninstall"
+  },
+  "sendCommand": {
+    "title": "Send command on {hostname}",
+    "shell": "Shell",
+    "shells": {
+      "bash": "Bash",
+      "custom": "Custom",
+      "cmd": "CMD",
+      "powershell": "Powershell"
+    },
+    "runAsUser": "Run As User",
+    "runAsUserTooltip": "Run in the context of the logged in user. If no user is logged in, the command will run as SYSTEM",
+    "customShell": "Custom shell",
+    "timeoutSeconds": "Timeout (seconds)",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "maximumSeconds": "Maximum is {max} seconds",
+    "command": "Command",
+    "streamOutput": "Stream Output",
+    "send": "Send",
+    "output": "Output"
+  },
+  "websocketSendCommand": {
+    "title": "Send command on {hostname}",
+    "websocketDisconnected": "Websocket disconnected!",
+    "shell": "Shell",
+    "shells": {
+      "bash": "Bash",
+      "custom": "Custom",
+      "cmd": "CMD",
+      "powershell": "Powershell"
+    },
+    "customShell": "Custom shell",
+    "timeoutSeconds": "Timeout (seconds)",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "maximumSeconds": "Maximum is {max} seconds",
+    "command": "Command",
+    "send": "Send"
+  },
+  "rebootLater": {
+    "title": "Schedule reboot on {hostname}",
+    "rebootTime": "Reboot time",
+    "localTimeZoneHint": "Uses the agent's local time zone",
+    "scheduleReboot": "Schedule Reboot",
+    "rebootPending": "Reboot pending",
+    "rebootScheduledMessage": "A reboot has been scheduled for {time} on {hostname}. It can be cancelled from the Pending Actions menu until the scheduled time."
+  },
+  "updateAgents": {
+    "title": "Update Agents",
+    "banner": "If agent auto update is enabled in Global Settings, agents will automatically self update at 35 min past the hour, every hour. Use this tool to manually trigger an agent update cycle.",
+    "selectVersion": "Select Version",
+    "selectAgent": "Select Agent",
+    "selectAll": "Select All",
+    "agentsWillBeUpdated": "Agents will now be updated"
+  },
+  "agentRecovery": {
+    "title": "{hostname} Agent recovery",
+    "meshAgent": "Mesh Agent",
+    "tacticalAgent": "Tactical Agent",
+    "meshDescription": "Fix issues with the Mesh Agent which handles take control, live terminal and file browser.",
+    "tacticalDescription": "Fix issues with the Tactical RMM Agent service.",
+    "recover": "Recover"
+  },
+  "agentDownload": {
+    "manualInstallationInstructions": "Manual Installation Instructions",
+    "windowsInstructions": "Download the agent then run the following command from an elevated command prompt on the device you want to add.",
+    "macosInstructions": "Run the following command from a terminal",
+    "copyToClipboard": "Copy to clipboard",
+    "viewOptionalArgs": "View optional command line args",
+    "verboseInstall": "To enable verbose output during the install",
+    "noPopupMessages": "Do not popup any message boxes during install",
+    "skipMeshDownload": "To skip downloading the Mesh Agent during the install.",
+    "specifyMeshPath": "Specify full path to the directory containing MeshAgent.exe if using custom agent branding",
+    "noMeshInstall": "Don't install the mesh agent",
+    "useDomainCa": "To use a domain CA",
+    "setAgentDescription": "Set agent description field during install",
+    "useHttpProxy": "Use a http proxy",
+    "authTokenHours": "Note: the auth token above will be valid for {hours} hours.",
+    "downloadAgent": "Download Agent"
+  },
+  "processManager": {
+    "stopLiveRefresh": "Stop Live Refresh",
+    "resumeLiveRefresh": "Resume Live Refresh",
+    "cpuUsage": "CPU Usage",
+    "ramUsage": "RAM Usage",
+    "refreshIntervalSeconds": "Refresh interval (seconds)",
+    "endProcess": "End Process",
+    "columns": {
+      "name": "Name",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "user": "User",
+      "pid": "PID"
+    }
+  },
+  "servicesManager": {
+    "start": "Start",
+    "stop": "Stop",
+    "restart": "Restart",
+    "serviceDetails": "Service Details",
+    "localSystem": "LocalSystem",
+    "delayed": "Delayed",
+    "columns": {
+      "displayName": "Display Name",
+      "name": "Name",
+      "startup": "Startup",
+      "pid": "PID",
+      "status": "Status",
+      "logOnAs": "Log On As"
+    }
+  },
+  "serviceDetail": {
+    "title": "Service Details - {name}",
+    "serviceName": "Service name:",
+    "displayName": "Display name:",
+    "description": "Description:",
+    "path": "Path:",
+    "startupType": "Startup type:",
+    "serviceStatus": "Service status:",
+    "startupOptions": {
+      "autodelay": "Automatic (Delayed Start)",
+      "automatic": "Automatic",
+      "manual": "Manual",
+      "disabled": "Disabled"
+    }
+  },
+  "eventLogManager": {
+    "showLastDays": "Show last {days} days",
+    "totalRecords": "{logType} log total records: {count}",
+    "logTypes": {
+      "application": "Application",
+      "system": "System",
+      "security": "Security"
+    },
+    "columns": {
+      "type": "Type",
+      "source": "Source",
+      "eventId": "Event ID",
+      "time": "Time",
+      "message": "Message (click to view full)"
+    }
+  },
+  "registryManager": {
+    "loadMore": "Load More",
+    "new": "New",
+    "rename": "Rename",
+    "modify": "Modify",
+    "newKey": "New_Key",
+    "noValuesFound": "No values found",
+    "confirmKeyDelete": "Confirm Key Delete",
+    "confirmKeyDeleteMessage": "Are you sure you want to permanently delete this key and all of its subkeys?",
+    "confirmValueDelete": "Confirm Value Delete",
+    "confirmValueDeleteMessage": "Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?",
+    "selectionRequired": "Selection Required",
+    "selectHiveOrKey": "Please select a hive or key before creating a new key.",
+    "modifyRegBinaryDenied": "Modifying REG_BINARY values access denied.",
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "data": "Data"
+    },
+    "valueTypes": {
+      "key": "Key",
+      "string": "String Value",
+      "dword": "DWORD (32-bit) Value",
+      "qword": "QWORD (64-bit) Value",
+      "multiString": "Multi-String Value",
+      "expandableString": "Expandable String Value"
+    },
+    "errors": {
+      "fetchRootNodes": "Failed to fetch root registry nodes:",
+      "loadChildren": "Failed to load registry children:",
+      "loadMoreSubkeys": "Failed to load more subkeys:",
+      "loadValues": "Failed to load registry values:",
+      "deleteKey": "Failed to delete key:",
+      "loadChildrenBeforeCreate": "Failed to load children before creating key:",
+      "renameOrCreateKey": "Failed to rename/create registry key:",
+      "deleteValue": "Failed to delete registry value:",
+      "renameValue": "Failed to rename value:",
+      "modifyValue": "Failed to modify registry value:",
+      "createValue": "Failed to create registry value:",
+      "saveValue": "Failed to save value:",
+      "invalidPath": "Invalid path:"
+    }
+  },
+  "registryValueModal": {
+    "edit": "Edit",
+    "create": "Create",
+    "valueName": "Value name:",
+    "valueData": "Value data:",
+    "base": "Base",
+    "hexadecimal": "Hexadecimal",
+    "decimal": "Decimal",
+    "nameRequired": "Name is required",
+    "valueCannotBeNegative": "Value cannot be negative.",
+    "dwordTooLarge": "DWORD (32-bit) value cannot exceed 4,294,967,295.",
+    "qwordTooLarge": "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991.",
+    "types": {
+      "dword": "DWORD (32-bit) Value",
+      "qword": "QWORD (64-bit) Value",
+      "multiString": "Multi-String",
+      "string": "String"
+    }
+  },
+  "editAgent": {
+    "tabs": {
+      "general": "General",
+      "customFields": "Custom Fields",
+      "patches": "Patches",
+      "automationPolicies": "Automation Policies"
+    },
+    "title": "Edit {hostname}",
+    "site": "Site:",
+    "type": "Type:",
+    "description": "Description:",
+    "timezone": "Timezone:",
+    "runChecksEvery": "Run checks every:",
+    "seconds": "Seconds",
+    "minutes": "Minutes",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "maximumSeconds": "Maximum is {max} seconds",
+    "minimumMinutes": "Minimum is {min} minutes",
+    "maximumMinutes": "Maximum is {max} minutes",
+    "markAgentAs": "Mark an agent as",
+    "offline": "offline",
+    "overdue": "overdue",
+    "ifNotCheckedInAfter": "if it has not checked in after:",
+    "getOverdueEmailAlerts": "Get overdue email alerts",
+    "getOverdueSmsAlerts": "Get overdue sms alerts",
+    "getOverdueDashboardAlerts": "Get overdue dashboard alerts",
+    "noCustomFieldsFound": "No agent custom fields found. Go to Settings > Global Settings > Custom Settings",
+    "policies": "Policies",
+    "alertTemplate": "Alert Template",
+    "effectivePatchPolicy": "Effective Patch Policy",
+    "none": "None",
+    "disabled": "disabled",
+    "critical": "Critical",
+    "important": "Important",
+    "moderate": "Moderate",
+    "low": "Low",
+    "other": "Other",
+    "doNothing": "Do Nothing",
+    "runTimeFrequency": "Run Time Frequency",
+    "weekDays": "week days:",
+    "atHour": "at hour:",
+    "everyMonthOnDay": "Every month on day:",
+    "rebootAfterInstallation": "Reboot after installation",
+    "failedPatchOptions": "Failed patch options",
+    "reprocessFailedPatches": "Reprocess failed patches:",
+    "emailOnFail": "Email on fail:",
+    "agentEdited": "Agent was edited!",
+    "notSet": "not set",
+    "weekdayShort": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thur",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    }
+  },
+  "runScript": {
+    "title": "Run a script on {hostname}",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "selectScript": "Select script",
+    "scriptArguments": "Script Arguments (press Enter after typing each argument)",
+    "useGlobalEmails": "Use email addresses from global settings",
+    "customEmails": "Custom emails",
+    "emailRecipients": "Email recipients (press Enter after typing each email)",
+    "selectCustomField": "Select custom field",
+    "saveAllOutput": "Save all output",
+    "runAsUser": "Run As User",
+    "runOnServer": "Run On Server",
+    "enableServerScriptsHint": "Enable server side scripts globally to activate this feature.",
+    "runOnServerHint": "Run the script on the Tactical RMM server in the context of this agent.",
+    "timeoutSeconds": "Timeout (seconds)",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "run": "Run",
+    "output": "Output",
+    "runTime": "Run Time",
+    "returnCode": "Return Code",
+    "secondsValue": "{value} seconds",
+    "standardOutput": "Standard Output",
+    "standardError": "Standard Error",
+    "outputOptions": {
+      "wait": "Wait for Output",
+      "forget": "Fire and Forget",
+      "email": "Email results",
+      "collector": "Save results to Custom Field",
+      "note": "Save results to Agent Notes"
+    }
+  },
+  "bulkAction": {
+    "chooseTarget": "Choose Target",
+    "selectClient": "Select Client",
+    "selectSite": "Select Site",
+    "selectAgents": "Select Agents",
+    "agentOs": "Agent OS",
+    "agentType": "Agent Type",
+    "selectScript": "Select Script",
+    "scriptArguments": "Script Arguments (press Enter after typing each argument)",
+    "environmentVars": "Environment vars (press Enter after typing each key=value pair)",
+    "shell": "Shell",
+    "customShell": "Custom shell",
+    "command": "Command",
+    "runAsUser": "Run As User",
+    "runAsUserTooltip": "Run in the context of the logged in user. If no user is logged in, the command will run as SYSTEM",
+    "saveResultsToCustomField": "Save results to Custom Field",
+    "saveResultsToAgentNote": "Save results to Agent Note",
+    "selectCustomField": "Select custom field",
+    "saveAllOutput": "Save all output",
+    "timeoutSeconds": "Timeout (seconds)",
+    "minimumSeconds": "Minimum is {min} seconds",
+    "action": "Action",
+    "offlineAgentsNextCheckin": "Offline Agents (Run on next checkin)",
+    "offlineAgentsHint": "If the agent is offline, a pending action will be created to run on agent checkin",
+    "run": "Run",
+    "titles": {
+      "runBulkCommand": "Run Bulk Command",
+      "runBulkScript": "Run Bulk Script",
+      "bulkPatchManagement": "Bulk Patch Management"
+    },
+    "options": {
+      "all": "All",
+      "servers": "Servers",
+      "workstations": "Workstations",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "client": "Client",
+      "site": "Site",
+      "selectedAgents": "Selected Agents",
+      "scan": "Scan",
+      "install": "Install",
+      "cmd": "CMD",
+      "powershell": "Powershell",
+      "bash": "Bash",
+      "custom": "Custom"
+    }
+  },
+  "patchPolicyForm": {
+    "autoApproval": "Auto Approval",
+    "severity": "Severity",
+    "action": "Action",
+    "critical": "Critical",
+    "important": "Important",
+    "moderate": "Moderate",
+    "low": "Low",
+    "other": "Other",
+    "installationSchedule": "Installation Schedule",
+    "scheduleFrequency": "Schedule Frequency",
+    "dayOfMonthToRun": "Day of month to run",
+    "scheduledTime": "Scheduled Time",
+    "rebootAfterInstallation": "Reboot After Installation",
+    "failedPatches": "Failed Patches",
+    "inheritFailedPatchSettings": "Inherit failed patch settings",
+    "reprocessFailedPatches": "Reprocess failed patches",
+    "times": "Times",
+    "mustBeGreaterThanZero": "Must be greater than 0",
+    "sendEmailOnPatchFail": "Send an email when patch installation fails",
+    "removePolicy": "Remove Policy",
+    "deletePatchPolicy": "Delete patch policy?",
+    "notifyEdited": "Patch policy was edited successfully!",
+    "notifyCreated": "Patch policy was created successfully!",
+    "notifyDeleted": "Patch policy was deleted successfully!",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "optionLabels": {
+      "manual": "Manual",
+      "approve": "Approve",
+      "ignore": "Ignore",
+      "dailyWeekly": "Daily/Weekly",
+      "monthly": "Monthly",
+      "never": "Never",
+      "whenRequired": "When Required",
+      "always": "Always",
+      "inherit": "Inherit"
+    }
+  },
+  "installAgent": {
+    "addAgent": "Add an agent",
+    "client": "Client",
+    "site": "Site",
+    "windows": "Windows",
+    "linux": "Linux",
+    "macos": "macOS",
+    "server": "Server",
+    "workstation": "Workstation",
+    "tokenExpirationHours": "Token expiration (hours)",
+    "enableRdp": "Enable RDP",
+    "enablePing": "Enable Ping",
+    "enableIcmpEcho": "Enable ICMP echo requests in the local firewall",
+    "disableSleepHibernate": "Disable sleep/hibernate",
+    "arch": "Arch",
+    "arch64Bit": "64 bit",
+    "intel64Bit": "Intel 64 bit",
+    "arch32Bit": "32 bit",
+    "arm64Bit": "ARM 64 bit",
+    "appleSilicon": "Apple Silicon (M-Series)",
+    "arm32Bit": "ARM 32 bit",
+    "installationMethod": "Installation Method",
+    "generatedExe": "Dynamically generated exe",
+    "powershell": "Powershell",
+    "manual": "Manual",
+    "generatingExecutable": "Generating executable...",
+    "installerWillDownload": "Installer for {client}, {site} ({agenttype}) will now be downloaded. You may reuse this installer for {expires} hours before it expires. No command line arguments are needed.",
+    "installButton": {
+      "generateAndDownloadExe": "Generate and download exe",
+      "downloadPowershellScript": "Download powershell script",
+      "showManualInstallationInstructions": "Show manual installation instructions",
+      "downloadLinuxInstallScript": "Download linux install script",
+      "showInstallationInstructions": "Show installation instructions"
+    }
+  },
+  "commandStream": {
+    "liveOutput": "Live Output"
+  }
+}

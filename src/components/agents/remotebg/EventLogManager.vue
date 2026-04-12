@@ -1,6 +1,6 @@
 <template>
   <div v-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("agents.shared.onlySupportedWindows") }}
   </div>
   <div v-else>
     <div class="row q-pt-sm q-pl-sm">
@@ -16,9 +16,12 @@
       </div>
       <div class="col-7"></div>
       <div class="col-3">
-        <code v-if="events"
-          >{{ logType }} log total records: {{ events.length }}</code
-        >
+        <code v-if="events">{{
+          $t("agents.eventLogManager.totalRecords", {
+            logType,
+            count: events.length,
+          })
+        }}</code>
       </div>
     </div>
     <q-table
@@ -46,22 +49,27 @@
           v-model="logType"
           color="cyan"
           val="Application"
-          label="Application"
+          :label="$t('agents.eventLogManager.logTypes.application')"
           @update:model-value="getEventLog"
         />
-        <q-radio v-model="logType" color="cyan" val="System" label="System" />
+        <q-radio
+          v-model="logType"
+          color="cyan"
+          val="System"
+          :label="$t('agents.eventLogManager.logTypes.system')"
+        />
         <q-radio
           v-model="logType"
           color="cyan"
           val="Security"
-          label="Security"
+          :label="$t('agents.eventLogManager.logTypes.security')"
         />
         <q-space />
         <q-input
           v-model="filter"
           style="width: 300px"
           outlined
-          label="Search"
+          :label="$t('common.buttons.search')"
           dense
           clearable
         >
@@ -100,45 +108,13 @@
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { fetchAgentEventLog } from "@/api/agents";
 import { truncateText } from "@/utils/format";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
-
-// static data
-const columns = [
-  {
-    name: "eventType",
-    label: "Type",
-    field: "eventType",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "source",
-    label: "Source",
-    field: "source",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "eventID",
-    label: "Event ID",
-    field: "eventID",
-    align: "left",
-    sortable: true,
-  },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
-  {
-    name: "message",
-    label: "Message (click to view full)",
-    field: "message",
-    align: "left",
-    sortable: true,
-  },
-];
 
 const lastDaysOptions = [1, 2, 3, 4, 5, 10, 30, 60, 90, 180, 360, 9999];
 
@@ -154,6 +130,7 @@ export default {
   setup(props) {
     // quasar setup
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // eventlog manager
     const events = ref([]);
@@ -162,7 +139,47 @@ export default {
     const filter = ref("");
     const loading = ref(false);
 
-    const showDays = computed(() => `Show last ${days.value} days`);
+    const showDays = computed(() =>
+      t("agents.eventLogManager.showLastDays", { days: days.value }),
+    );
+
+    const columns = computed(() => [
+      {
+        name: "eventType",
+        label: t("agents.eventLogManager.columns.type"),
+        field: "eventType",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "source",
+        label: t("agents.eventLogManager.columns.source"),
+        field: "source",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "eventID",
+        label: t("agents.eventLogManager.columns.eventId"),
+        field: "eventID",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "time",
+        label: t("agents.eventLogManager.columns.time"),
+        field: "time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "message",
+        label: t("agents.eventLogManager.columns.message"),
+        field: "message",
+        align: "left",
+        sortable: true,
+      },
+    ]);
 
     watch([logType, days], getEventLog);
 

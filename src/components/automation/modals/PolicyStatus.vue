@@ -14,7 +14,9 @@
         {{ title.slice(0, 27) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -34,7 +36,7 @@
           dense
           virtual-scroll
           hide-pagination
-          no-data-label="There are no agents in this policy"
+          :no-data-label="$t('settings.policyStatus.noAgentsInPolicy')"
         >
           <!-- header slots -->
           <template v-slot:header-cell-statusicon="props">
@@ -53,7 +55,7 @@
                   :color="dash_positive_color"
                   name="check_circle"
                 >
-                  <q-tooltip>Passing</q-tooltip>
+                  <q-tooltip>{{ $t("agents.shared.passing") }}</q-tooltip>
                 </q-icon>
               </q-td>
               <q-td v-else-if="props.row.status === 'failing'">
@@ -63,7 +65,7 @@
                   :color="dash_info_color"
                   name="info"
                 >
-                  <q-tooltip>Informational</q-tooltip>
+                  <q-tooltip>{{ $t("agents.shared.informational") }}</q-tooltip>
                 </q-icon>
                 <q-icon
                   v-else-if="props.row.alert_severity === 'warning'"
@@ -71,7 +73,7 @@
                   :color="dash_warning_color"
                   name="warning"
                 >
-                  <q-tooltip>Warning</q-tooltip>
+                  <q-tooltip>{{ $t("common.status.warning") }}</q-tooltip>
                 </q-icon>
                 <q-icon
                   v-else
@@ -79,26 +81,26 @@
                   :color="dash_negative_color"
                   name="error"
                 >
-                  <q-tooltip>Error</q-tooltip>
+                  <q-tooltip>{{ $t("common.status.error") }}</q-tooltip>
                 </q-icon>
               </q-td>
               <q-td v-else></q-td>
               <!-- status text -->
-              <q-td v-if="props.row.status === 'pending'"
-                >Awaiting First Synchronization</q-td
-              >
-              <q-td v-else-if="props.row.sync_status === 'notsynced'"
-                >Will sync on next agent checkin</q-td
-              >
-              <q-td v-else-if="props.row.sync_status === 'synced'"
-                >Synced with agent</q-td
-              >
-              <q-td v-else-if="props.row.sync_status === 'pendingdeletion'"
-                >Pending deletion on agent</q-td
-              >
-              <q-td v-else-if="props.row.sync_status === 'initial'"
-                >Waiting for task creation on agent</q-td
-              >
+              <q-td v-if="props.row.status === 'pending'">{{
+                $t("settings.policyStatus.awaitingFirstSynchronization")
+              }}</q-td>
+              <q-td v-else-if="props.row.sync_status === 'notsynced'">{{
+                $t("tasks.automatedTasksTab.syncStatus.willSyncOnNextCheckin")
+              }}</q-td>
+              <q-td v-else-if="props.row.sync_status === 'synced'">{{
+                $t("tasks.automatedTasksTab.syncStatus.synced")
+              }}</q-td>
+              <q-td v-else-if="props.row.sync_status === 'pendingdeletion'">{{
+                $t("tasks.automatedTasksTab.syncStatus.pendingDeletion")
+              }}</q-td>
+              <q-td v-else-if="props.row.sync_status === 'initial'">{{
+                $t("tasks.automatedTasksTab.syncStatus.waitingForCreation")
+              }}</q-td>
               <q-td v-else></q-td>
               <!-- more info -->
               <q-td v-if="props.row.check_type === 'ping'">
@@ -106,7 +108,7 @@
                   style="cursor: pointer; text-decoration: underline"
                   @click="pingInfo(props.row)"
                   class="ping-cell text-primary"
-                  >output</span
+                  >{{ $t("tasks.automatedTasksTab.output") }}</span
                 >
               </q-td>
               <q-td
@@ -121,7 +123,7 @@
                   style="cursor: pointer; text-decoration: underline"
                   @click="showScriptOutput(props.row)"
                   class="script-cell text-primary"
-                  >output</span
+                  >{{ $t("tasks.automatedTasksTab.output") }}</span
                 >
               </q-td>
               <q-td v-else-if="props.row.check_type === 'eventlog'">
@@ -129,7 +131,7 @@
                   style="cursor: pointer; text-decoration: underline"
                   @click="showEventInfo(props.row)"
                   class="eventlog-cell text-primary"
-                  >output</span
+                  >{{ $t("tasks.automatedTasksTab.output") }}</span
                 >
               </q-td>
               <q-td
@@ -142,10 +144,14 @@
               <q-td v-else-if="props.row.more_info">{{
                 props.row.more_info
               }}</q-td>
-              <q-td v-else>Awaiting Output</q-td>
+              <q-td v-else>{{
+                $t("tasks.automatedTasksTab.awaitingOutput")
+              }}</q-td>
               <!-- last run -->
               <q-td>{{
-                props.row.last_run ? formatDate(props.row.last_run) : "Never"
+                props.row.last_run
+                  ? formatDate(props.row.last_run)
+                  : $t("agents.shared.never")
               }}</q-td>
             </q-tr>
           </template>
@@ -194,7 +200,7 @@ export default {
       columns: [
         {
           name: "agent",
-          label: "Hostname",
+          label: this.$t("settings.policyStatus.columns.hostname"),
           field: "agent",
           align: "left",
           sortable: true,
@@ -202,21 +208,21 @@ export default {
         { name: "statusicon", align: "left" },
         {
           name: "status",
-          label: "Status",
+          label: this.$t("settings.policyStatus.columns.status"),
           field: "status",
           align: "left",
           sortable: true,
         },
         {
           name: "moreinfo",
-          label: "More Info",
+          label: this.$t("settings.policyStatus.columns.moreInfo"),
           field: "more_info",
           align: "left",
           sortable: true,
         },
         {
           name: "datetime",
-          label: "Date / Time",
+          label: this.$t("settings.policyStatus.columns.dateTime"),
           field: "last_run",
           align: "left",
           sortable: true,
@@ -238,8 +244,10 @@ export default {
     ]),
     title() {
       return !!this.item.readable_desc
-        ? this.item.readable_desc + " Status"
-        : this.item.name + " Status";
+        ? this.$t("settings.policyStatus.title", {
+            name: this.item.readable_desc,
+          })
+        : this.$t("settings.policyStatus.title", { name: this.item.name });
     },
   },
   methods: {

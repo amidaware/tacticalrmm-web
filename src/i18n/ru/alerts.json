@@ -1,0 +1,253 @@
+{
+  "common": {
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "submit": "Отправить",
+    "snoozeAlert": "Отложить оповещение",
+    "resolveAlert": "Закрыть оповещение"
+  },
+  "validation": {
+    "required": "*Обязательно"
+  },
+  "dialog": {
+    "snoozeTitle": "Отложить оповещение",
+    "snoozeMessage": "На сколько дней отложить оповещение?"
+  },
+  "notify": {
+    "snoozedForDays": "Оповещение отложено на {days} дн.",
+    "unsnoozed": "Оповещение возвращено из отложенных",
+    "resolved": "Оповещение закрыто",
+    "bulkResolved": "Оповещения закрыты",
+    "bulkSnoozedForDays": "Оповещения отложены на {days} дн."
+  },
+  "icon": {
+    "noNewAlerts": "Нет новых оповещений",
+    "viewAllAlerts": "Показать все оповещения ({count})"
+  },
+  "manager": {
+    "title": "Менеджер оповещений",
+    "new": "Новый",
+    "noTemplates": "Нет шаблонов оповещений",
+    "default": "По умолчанию",
+    "columns": {
+      "active": "Активен",
+      "agentSettings": "Настройки агентов",
+      "checkSettings": "Настройки проверок",
+      "taskSettings": "Настройки задач",
+      "name": "Имя",
+      "appliedTo": "Применен к",
+      "alertExclusions": "Исключения оповещений",
+      "failureAction": "Действие при сбое",
+      "resolvedAction": "Действие при закрытии"
+    },
+    "menu": {
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "alertExclusions": "Исключения оповещений"
+    },
+    "tooltips": {
+      "enableTemplate": "Включить шаблон",
+      "hasAgentSettings": "Есть настройки оповещений агента",
+      "hasCheckSettings": "Есть настройки оповещений проверок",
+      "hasTaskSettings": "Есть настройки оповещений задач",
+      "templateHasAgentSettings": "Шаблон содержит настройки оповещений агента",
+      "templateHasCheckSettings": "Шаблон содержит настройки оповещений проверок",
+      "templateHasTaskSettings": "Шаблон содержит настройки оповещений задач"
+    },
+    "dialog": {
+      "deleteTemplateTitle": "Удалить шаблон оповещений {name}?"
+    },
+    "notify": {
+      "deleted": "Шаблон оповещений {name} удален!",
+      "templateEnabled": "Шаблон успешно включен",
+      "templateDisabled": "Шаблон успешно выключен"
+    },
+    "showAppliedCount": "Показать, где применен шаблон ({count})",
+    "showExclusionsCount": "Исключения оповещений ({count})"
+  },
+  "overview": {
+    "title": "Обзор оповещений",
+    "filter": "Фильтр",
+    "clients": "Клиенты",
+    "severity": "Серьезность",
+    "time": "Время",
+    "includeSnoozed": "Включить отложенные",
+    "includeResolved": "Включить закрытые",
+    "searchButton": "Поиск",
+    "alerts": "Оповещения",
+    "bulkActions": "Массовые действия",
+    "snoozeAlerts": "Отложить оповещения",
+    "resolveAlerts": "Закрыть оповещения",
+    "severityOptions": {
+      "informational": "Информационное",
+      "warning": "Предупреждение",
+      "error": "Ошибка"
+    },
+    "timeOptions": {
+      "dayAgo": "1 день назад",
+      "weekAgo": "1 неделю назад",
+      "days30Ago": "30 дней назад",
+      "months3Ago": "3 месяца назад",
+      "months6Ago": "6 месяцев назад",
+      "yearAgo": "1 год назад",
+      "everything": "За все время"
+    },
+    "columns": {
+      "time": "Время",
+      "client": "Клиент",
+      "site": "Сайт",
+      "agent": "Агент",
+      "type": "Тип",
+      "severity": "Серьезность",
+      "message": "Сообщение",
+      "resolvedOn": "Закрыто",
+      "snoozedUntil": "Отложено до",
+      "actions": "Действия"
+    },
+    "noData": {
+      "initial": "Нажмите поиск, чтобы найти оповещения",
+      "searched": "Данные не найдены. Уточните параметры поиска"
+    },
+    "tooltips": {
+      "showFailureActionResults": "Показать результаты действия при сбое",
+      "showResolvedActionResults": "Показать результаты действия при закрытии",
+      "unsnoozeAlert": "Убрать из отложенных"
+    },
+    "actionResults": {
+      "failure": "Результаты действия при сбое для {type}",
+      "resolved": "Результаты действия при закрытии для {type}"
+    }
+  },
+  "templateRelated": {
+    "assignedTo": "Назначено для {name}",
+    "tabs": {
+      "policies": "Политики",
+      "clients": "Клиенты",
+      "sites": "Сайты"
+    }
+  },
+  "templateAdd": {
+    "title": "Изменить шаблон оповещений, назначенный для {type}",
+    "selectLabel": "Шаблон оповещений для {type}",
+    "noTemplates": "Шаблоны оповещений не настроены. Перейдите в Настройки > Менеджер оповещений",
+    "actions": {
+      "assigned": "назначен",
+      "removed": "удален"
+    },
+    "notify": {
+      "templateUpdated": "Шаблон оповещений успешно {action}!"
+    }
+  },
+  "exclusions": {
+    "title": "Исключения оповещений для {name}",
+    "fields": {
+      "excludedClients": "Исключенные клиенты",
+      "excludedSites": "Исключенные сайты",
+      "excludedAgents": "Исключенные агенты",
+      "excludeWorkstations": "Исключить рабочие станции",
+      "excludeServers": "Исключить серверы"
+    },
+    "notify": {
+      "saved": "Исключения шаблона оповещений сохранены"
+    }
+  },
+  "templateForm": {
+    "dialog": {
+      "addTitle": "Добавить шаблон оповещений",
+      "editTitle": "Редактировать шаблон оповещений",
+      "addEmailTitle": "Добавить email",
+      "addNumberTitle": "Добавить номер",
+      "e164Message": "Используйте формат E.164: обязателен символ <b>+</b> и <span class='text-red'>код страны</span>, затем <span class='text-green'>номер телефона</span>, например <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>"
+    },
+    "steps": {
+      "generalSettings": "Общие настройки",
+      "alertActions": "Действия оповещений",
+      "agentOverdueSettings": "Настройки просрочки агента",
+      "checkSettings": "Настройки проверок",
+      "automatedTaskSettings": "Настройки автоматизированных задач"
+    },
+    "sections": {
+      "emailSettings": "Настройки email (переопределяют глобальные)",
+      "smsSettings": "Настройки SMS (переопределяют глобальные)",
+      "alertFailureSettings": "Настройки при сбое",
+      "alertResolvedSettings": "Настройки при закрытии",
+      "runActionsOnlyOn": "Запускать действия только для"
+    },
+    "fields": {
+      "name": "Название",
+      "enabled": "Включено",
+      "emailFromAddress": "Адрес отправителя email",
+      "emailRecipients": "Получатели email",
+      "smsRecipients": "Получатели SMS",
+      "failureScript": "Скрипт при сбое",
+      "failureWebhook": "Web Hook при сбое",
+      "failureScriptArgs": "Аргументы скрипта при сбое (Enter после каждого)",
+      "failureScriptEnvVars": "Переменные окружения скрипта при сбое (Enter после каждой пары key=value)",
+      "failureScriptTimeout": "Таймаут скрипта при сбое (сек)",
+      "resolvedScript": "Скрипт при закрытии",
+      "resolvedWebhook": "Web Hook при закрытии",
+      "resolvedScriptArgs": "Аргументы скрипта при закрытии (Enter после каждого)",
+      "resolvedActionEnvVars": "Переменные окружения действия при закрытии (Enter после каждой пары key=value)",
+      "resolvedScriptTimeout": "Таймаут скрипта при закрытии (сек)",
+      "alertAgainAfterDays": "Повторить оповещение, если не закрыто через (дней)",
+      "onlyEmailOnSeverity": "Отправлять email только при уровне",
+      "onlyTextOnSeverity": "Отправлять SMS только при уровне",
+      "onlyDashboardOnSeverity": "Показывать оповещение панели только при уровне",
+      "alertAgainIfNotResolvedDays": "Повторить оповещение, если не закрыто (дней)"
+    },
+    "hints": {
+      "defaultErrorWarning": "По умолчанию: 'error' и 'warning'",
+      "defaultErrorWarningInfo": "По умолчанию: 'error', 'warning' и 'info'"
+    },
+    "channels": {
+      "email": "Email",
+      "text": "SMS",
+      "dashboard": "Панель"
+    },
+    "targets": {
+      "agents": "Агенты",
+      "checks": "Проверки",
+      "tasks": "Задачи"
+    },
+    "actionTypes": {
+      "webhook": "Отправить Web Hook",
+      "agentScript": "Запустить скрипт на агенте",
+      "serverScript": "Запустить скрипт на TRMM-сервере"
+    },
+    "severity": {
+      "error": "Ошибка",
+      "warning": "Предупреждение",
+      "informational": "Информационное"
+    },
+    "actions": {
+      "add": "Добавить",
+      "addEmail": "Добавить email",
+      "addSmsNumber": "Добавить номер SMS",
+      "back": "Назад",
+      "next": "Далее"
+    },
+    "tooltips": {
+      "failureActionRuns": "Выбранное действие будет выполнено при срабатывании оповещения.",
+      "resolvedActionRuns": "Выбранное действие будет выполнено при закрытии оповещения.",
+      "runActionsOnlyOn": "Выбранное действие будет выполняться только для следующих типов оповещений",
+      "agentOverdueFailure": "Выберите уведомления, которые отправлять при просрочке агента. Enabled переопределяет настройки агента и всегда уведомляет. Not configured использует настройки агента. Disabled переопределяет настройки агента и никогда не уведомляет.",
+      "agentOverdueResolved": "Выберите уведомления, которые отправлять, когда просроченный агент снова в сети.",
+      "checkFailure": "Выберите уведомления, которые отправлять при сбое проверки. Enabled переопределяет настройки проверки и всегда уведомляет. Not configured использует настройки проверки. Disabled переопределяет настройки проверки и никогда не уведомляет.",
+      "checkResolved": "Выберите уведомления, которые отправлять при закрытии сбойной проверки.",
+      "taskFailure": "Выберите уведомления, которые отправлять при сбое автоматизированной задачи. Enabled переопределяет настройки задачи и всегда уведомляет. Not configured использует настройки задачи. Disabled переопределяет настройки задачи и никогда не уведомляет.",
+      "taskResolved": "Выберите уведомления, которые отправлять при закрытии сбойной задачи."
+    },
+    "validation": {
+      "failureTimeoutRequired": "Требуется таймаут скрипта при сбое",
+      "resolvedTimeoutRequired": "Требуется таймаут скрипта при закрытии",
+      "periodicDaysMinZero": "Период в днях должен быть не меньше 0"
+    },
+    "noRecipients": "Нет получателей",
+    "notify": {
+      "nameRequired": "Нужно указать название",
+      "edited": "Шаблон оповещений изменен!",
+      "created": "Шаблон оповещений создан!"
+    }
+  }
+}

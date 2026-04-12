@@ -2,39 +2,51 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="min-width: 50vw">
       <q-bar>
-        {{ agent.hostname }} Agent recovery
+        {{ $t("agents.agentRecovery.title", { hostname: agent.hostname }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="sendRecovery">
         <q-card-section>
           <div class="q-gutter-sm">
-            <q-radio dense v-model="state.mode" val="mesh" label="Mesh Agent" />
+            <q-radio
+              dense
+              v-model="state.mode"
+              val="mesh"
+              :label="$t('agents.agentRecovery.meshAgent')"
+            />
             <q-radio
               dense
               v-model="state.mode"
               val="tacagent"
-              label="Tactical Agent"
+              :label="$t('agents.agentRecovery.tacticalAgent')"
             />
           </div>
         </q-card-section>
         <q-card-section v-if="state.mode === 'mesh'">
-          Fix issues with the Mesh Agent which handles take control, live
-          terminal and file browser.
+          {{ $t("agents.agentRecovery.meshDescription") }}
         </q-card-section>
         <q-card-section v-else-if="state.mode === 'tacagent'">
-          Fix issues with the Tactical RMM Agent service.
+          {{ $t("agents.agentRecovery.tacticalDescription") }}
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat push label="Cancel" v-close-popup />
+          <q-btn
+            dense
+            flat
+            push
+            :label="$t('common.buttons.cancel')"
+            v-close-popup
+          />
           <q-btn
             :loading="loading"
             dense
             flat
             push
-            label="Recover"
+            :label="$t('agents.agentRecovery.recover')"
             color="primary"
             type="submit"
           />
@@ -73,7 +85,7 @@ export default {
       try {
         const result = await sendAgentRecovery(
           props.agent.agent_id,
-          state.value
+          state.value,
         );
         notifySuccess(result);
         onDialogOK();

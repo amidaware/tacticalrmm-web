@@ -1,0 +1,681 @@
+{
+  "shared": {
+    "noAgentSelected": "Агент не выбран",
+    "onlySupportedWindows": "Сейчас поддерживаются только агенты Windows",
+    "smsAlert": "SMS-оповещение",
+    "emailAlert": "Email-оповещение",
+    "dashboardAlert": "Оповещение в панели",
+    "settingOverriddenByAlertTemplate": "Параметр переопределен шаблоном оповещений",
+    "passing": "Успешно",
+    "informational": "Информационно",
+    "never": "Никогда",
+    "areYouSure": "Вы уверены?",
+    "required": "*Обязательно"
+  },
+  "remoteBackground": {
+    "metaTitle": "Фоновое управление",
+    "tabs": {
+      "terminal": "Терминал",
+      "fileBrowser": "Файловый браузер",
+      "services": "Службы",
+      "processes": "Процессы",
+      "eventLog": "Журнал событий",
+      "registry": "Реестр"
+    }
+  },
+  "takeControl": {
+    "metaTitle": "Удаленный доступ",
+    "statusLabel": "Статус агента TRMM",
+    "restartConnection": "Перезапустить соединение",
+    "recoverConnection": "Восстановить соединение",
+    "loading": {
+      "repairingMeshAgent": "Попытка восстановить Mesh Agent",
+      "restartingMeshAgent": "Перезапуск Mesh Agent"
+    },
+    "notifications": {
+      "meshAgentRestarted": "Служба Mesh Agent была перезапущена"
+    }
+  },
+  "webVnc": {
+    "metaTitle": "VNC"
+  },
+  "wmiDetail": {
+    "copyToClipboard": "Копировать в буфер обмена",
+    "copiedToClipboard": "Скопировано в буфер обмена"
+  },
+  "confirmYesDialog": {
+    "confirmAction": "Подтвердите действие",
+    "promptPrefix": "Введите",
+    "yesWord": "yes",
+    "promptMiddle": "в поле ниже, чтобы подтвердить",
+    "promptSuffix": "для",
+    "typeYesToConfirm": "Введите yes для подтверждения"
+  },
+  "summaryTab": {
+    "agentOverdue": "Агент просрочен",
+    "maintenanceMode": "Режим обслуживания",
+    "agentVersion": "Агент v{version}",
+    "popout": "Открыть отдельно",
+    "takeControl": "Удаленный доступ",
+    "actions": "Действия",
+    "hardwareDetails": "Сведения об оборудовании",
+    "ramLabel": "{totalRam} ГБ ОЗУ",
+    "publicIp": "Публичный IP: {ip}",
+    "lanIp": "LAN IP: {ip}",
+    "checksStatus": "Статус проверок",
+    "checksPassing": "Успешных проверок: {count}",
+    "checksFailing": "Неуспешных проверок: {count}",
+    "checksWarning": "Проверок с предупреждением: {count}",
+    "checksInfo": "Инфо-проверок: {count}",
+    "checksAwaitingFirstSync": "Проверок в ожидании первой синхронизации: {count}",
+    "noChecks": "Нет проверок",
+    "customFields": "Пользовательские поля",
+    "disks": "Диски",
+    "diskFreeOf": "{free} свободно из {total}"
+  },
+  "softwareTab": {
+    "installSoftware": "Установить ПО",
+    "uninstall": "Удалить",
+    "columns": {
+      "name": "Название",
+      "publisher": "Издатель",
+      "installedOn": "Дата установки",
+      "size": "Размер",
+      "version": "Версия"
+    }
+  },
+  "assetsTab": {
+    "tabs": {
+      "operatingSystem": "Операционная система",
+      "cpu": "CPU",
+      "memory": "Память",
+      "usb": "USB",
+      "bios": "BIOS",
+      "disks": "Диски",
+      "computerSystem": "Компьютерная система",
+      "motherboard": "Материнская плата",
+      "computerSystemProduct": "Продукт компьютерной системы",
+      "networkConfig": "Сетевая конфигурация",
+      "graphics": "Графика",
+      "monitors": "Мониторы",
+      "networkAdapters": "Сетевые адаптеры"
+    }
+  },
+  "winUpdateTab": {
+    "noWindowsUpdates": "Нет обновлений Windows",
+    "runUpdateScan": "Запустить сканирование обновлений",
+    "installApprovedUpdates": "Установить одобренные обновления",
+    "actions": {
+      "inherit": "Наследовать",
+      "approve": "Одобрить",
+      "ignore": "Игнорировать",
+      "doNothing": "Ничего не делать"
+    },
+    "status": {
+      "installed": "Установлено",
+      "pending": "В ожидании",
+      "ignored": "Игнорируется",
+      "missing": "Отсутствует"
+    },
+    "severity": {
+      "critical": "Критично",
+      "important": "Важно",
+      "moderate": "Умеренно",
+      "low": "Низко",
+      "other": "Другое"
+    },
+    "columns": {
+      "severity": "Важность",
+      "name": "Название",
+      "moreInfo": "Подробнее",
+      "installedOn": "Установлено"
+    }
+  },
+  "checksTab": {
+    "noChecks": "Нет проверок",
+    "new": "Новая",
+    "checkTypes": {
+      "diskSpace": "Проверка места на диске",
+      "ping": "Проверка Ping",
+      "cpuLoad": "Проверка загрузки CPU",
+      "memory": "Проверка памяти",
+      "windowsService": "Проверка службы Windows",
+      "script": "Проверка скрипта",
+      "eventLog": "Проверка журнала событий"
+    },
+    "runChecksNow": "Запустить проверки сейчас",
+    "resetAllChecksStatus": "Сбросить статус всех проверок",
+    "resetCheckStatus": "Сбросить статус проверки",
+    "checkManagedByPolicy": "Эта проверка управляется политикой",
+    "checkOverriddenByPolicy": "Эта проверка переопределена политикой",
+    "showRunHistory": "Показать историю запусков",
+    "lastOutput": "Последний вывод",
+    "deleteCheck": "Удалить {check}",
+    "checkHasNotRunYet": "Проверка еще не запускалась",
+    "checkAlreadyPassing": "Проверка уже успешна",
+    "assignedTasksCount": "Задач: {count}",
+    "columns": {
+      "description": "Описание",
+      "moreInfo": "Подробнее",
+      "lastRun": "Последний запуск",
+      "assignedTasks": "Назначенные задачи"
+    }
+  },
+  "notesTab": {
+    "noNotes": "Нет заметок",
+    "addNote": "Добавить заметку",
+    "columns": {
+      "date": "Дата",
+      "user": "Пользователь",
+      "note": "Заметка"
+    },
+    "dialogs": {
+      "addTitle": "Добавить заметку",
+      "editTitle": "Редактировать заметку",
+      "deleteTitle": "Удалить заметку?"
+    }
+  },
+  "historyTab": {
+    "output": "Вывод",
+    "noOutputYet": "Вывод пока недоступен",
+    "actions": {
+      "cmd_run": "Запуск cmd",
+      "script_run": "Запуск скрипта",
+      "task_run": "Запуск задачи",
+      "check_run": "Запуск проверки"
+    },
+    "columns": {
+      "time": "Время",
+      "action": "Действие",
+      "scriptCommand": "Скрипт/Команда",
+      "initiatedBy": "Запущено",
+      "output": "Вывод"
+    }
+  },
+  "automatedTasksTab": {
+    "noTasks": "Нет задач",
+    "addTask": "Добавить задачу",
+    "collectorTask": "Задача-сборщик",
+    "runTaskNow": "Запустить задачу сейчас",
+    "taskManagedByPolicy": "Эта задача управляется политикой",
+    "taskUpdatesCustomField": "Задача обновляет пользовательское поле агента",
+    "output": "вывод",
+    "awaitingOutput": "Ожидание вывода",
+    "hasNotRunYet": "Еще не запускалась",
+    "deleteTask": "Удалить задачу {task}",
+    "taskDisabledError": "Нельзя запустить отключенную задачу. Сначала включите ее.",
+    "runTask": "Запустить задачу {task}",
+    "syncStatus": {
+      "willSyncOnNextCheckin": "Синхронизируется при следующем чек-ине агента",
+      "synced": "Синхронизировано с агентом",
+      "pendingDeletion": "Ожидает удаления на агенте",
+      "waitingForCreation": "Ожидается создание задачи на агенте"
+    }
+  },
+  "agentActionMenu": {
+    "editAgent": "Редактировать {hostname}",
+    "pendingAgentActions": "Ожидающие действия агента",
+    "takeControl": "Удаленный доступ",
+    "vnc": "VNC",
+    "runUrlAction": "Запустить URL Action",
+    "sendCommand": "Отправить команду",
+    "runScript": "Запустить скрипт",
+    "runFavoritedScript": "Запустить избранный скрипт",
+    "remoteBackground": "Фоновое управление",
+    "enableMaintenanceMode": "Включить режим обслуживания",
+    "disableMaintenanceMode": "Выключить режим обслуживания",
+    "maintenanceModeUpdated": "Режим обслуживания {mode} для {hostname}",
+    "patchManagement": "Управление патчами",
+    "runPatchStatusScan": "Запустить сканирование статуса патчей",
+    "installPatchesNow": "Установить патчи сейчас",
+    "patchScanQueued": "Сканирование скоро будет запущено на {hostname}",
+    "runChecks": "Запустить проверки",
+    "wakeUpWol": "Пробудить (WoL)",
+    "reboot": "Перезагрузка",
+    "now": "Сейчас",
+    "later": "Позже",
+    "shutdown": "Выключение",
+    "assignAutomationPolicy": "Назначить политику автоматизации",
+    "reporting": "Отчетность",
+    "agentRecovery": "Восстановление агента",
+    "removeAgent": "Удалить агент",
+    "vncServerPort": "Порт VNC-сервера",
+    "enterVncServerPort": "Введите порт VNC-сервера:",
+    "launch": "Запустить",
+    "rebootNow": "Перезагрузить {hostname} сейчас",
+    "willBeRestarted": "{hostname} будет перезапущен",
+    "shutdownAction": "выключение",
+    "confirmShutdown": "Подтвердите выключение",
+    "willBeShutdown": "{hostname} будет выключен",
+    "agentOffline": "Агент офлайн",
+    "offlineUninstallPrompt": "С агентом {hostname} нет связи. Продолжить удаление? В этом случае агент потребуется удалить вручную на устройстве.",
+    "somethingWentWrong": "Что-то пошло не так",
+    "deletionAction": "удаление",
+    "confirmDeletion": "Подтвердите удаление",
+    "uninstall": "Удалить"
+  },
+  "sendCommand": {
+    "title": "Отправить команду на {hostname}",
+    "shell": "Оболочка",
+    "shells": {
+      "bash": "Bash",
+      "custom": "Пользовательская",
+      "cmd": "CMD",
+      "powershell": "Powershell"
+    },
+    "runAsUser": "Запуск от имени пользователя",
+    "runAsUserTooltip": "Выполнять в контексте вошедшего пользователя. Если пользователь не вошел, команда будет выполнена от SYSTEM",
+    "customShell": "Пользовательская оболочка",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "minimumSeconds": "Минимум {min} секунд",
+    "maximumSeconds": "Максимум {max} секунд",
+    "command": "Команда",
+    "streamOutput": "Потоковый вывод",
+    "send": "Отправить",
+    "output": "Вывод"
+  },
+  "websocketSendCommand": {
+    "title": "Отправить команду на {hostname}",
+    "websocketDisconnected": "WebSocket отключен!",
+    "shell": "Оболочка",
+    "shells": {
+      "bash": "Bash",
+      "custom": "Пользовательская",
+      "cmd": "CMD",
+      "powershell": "Powershell"
+    },
+    "customShell": "Пользовательская оболочка",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "minimumSeconds": "Минимум {min} секунд",
+    "maximumSeconds": "Максимум {max} секунд",
+    "command": "Команда",
+    "send": "Отправить"
+  },
+  "rebootLater": {
+    "title": "Запланировать перезагрузку для {hostname}",
+    "rebootTime": "Время перезагрузки",
+    "localTimeZoneHint": "Используется локальный часовой пояс агента",
+    "scheduleReboot": "Запланировать перезагрузку",
+    "rebootPending": "Перезагрузка запланирована",
+    "rebootScheduledMessage": "Перезагрузка запланирована на {time} для {hostname}. Ее можно отменить в меню ожидающих действий до указанного времени."
+  },
+  "updateAgents": {
+    "title": "Обновить агентов",
+    "banner": "Если автообновление агентов включено в глобальных настройках, агенты будут обновляться автоматически каждый час в 35 минут. Используйте этот инструмент, чтобы запустить цикл обновления вручную.",
+    "selectVersion": "Выберите версию",
+    "selectAgent": "Выберите агента",
+    "selectAll": "Выбрать все",
+    "agentsWillBeUpdated": "Агенты будут обновлены"
+  },
+  "agentRecovery": {
+    "title": "Восстановление агента {hostname}",
+    "meshAgent": "Mesh Agent",
+    "tacticalAgent": "Tactical Agent",
+    "meshDescription": "Исправление проблем Mesh Agent, который отвечает за удаленный доступ, live-терминал и файловый браузер.",
+    "tacticalDescription": "Исправление проблем службы Tactical RMM Agent.",
+    "recover": "Восстановить"
+  },
+  "agentDownload": {
+    "manualInstallationInstructions": "Инструкция по ручной установке",
+    "windowsInstructions": "Скачайте агент и выполните следующую команду из командной строки с правами администратора на устройстве, которое нужно добавить.",
+    "macosInstructions": "Выполните следующую команду в терминале",
+    "copyToClipboard": "Копировать в буфер обмена",
+    "viewOptionalArgs": "Показать дополнительные аргументы командной строки",
+    "verboseInstall": "Включить подробный вывод во время установки",
+    "noPopupMessages": "Не показывать всплывающие окна во время установки",
+    "skipMeshDownload": "Пропустить загрузку Mesh Agent во время установки.",
+    "specifyMeshPath": "Укажите полный путь к каталогу с MeshAgent.exe при использовании собственного брендинга агента",
+    "noMeshInstall": "Не устанавливать mesh agent",
+    "useDomainCa": "Использовать доменный CA",
+    "setAgentDescription": "Задать описание агента при установке",
+    "useHttpProxy": "Использовать HTTP-прокси",
+    "authTokenHours": "Примечание: токен авторизации выше будет действителен {hours} часов.",
+    "downloadAgent": "Скачать агент"
+  },
+  "processManager": {
+    "stopLiveRefresh": "Остановить автообновление",
+    "resumeLiveRefresh": "Возобновить автообновление",
+    "cpuUsage": "Использование CPU",
+    "ramUsage": "Использование RAM",
+    "refreshIntervalSeconds": "Интервал обновления (секунды)",
+    "endProcess": "Завершить процесс",
+    "columns": {
+      "name": "Имя",
+      "cpu": "CPU",
+      "memory": "Память",
+      "user": "Пользователь",
+      "pid": "PID"
+    }
+  },
+  "servicesManager": {
+    "start": "Запустить",
+    "stop": "Остановить",
+    "restart": "Перезапустить",
+    "serviceDetails": "Сведения о службе",
+    "localSystem": "LocalSystem",
+    "delayed": "Отложенный",
+    "columns": {
+      "displayName": "Отображаемое имя",
+      "name": "Имя",
+      "startup": "Запуск",
+      "pid": "PID",
+      "status": "Статус",
+      "logOnAs": "Запуск от имени"
+    }
+  },
+  "serviceDetail": {
+    "title": "Сведения о службе - {name}",
+    "serviceName": "Имя службы:",
+    "displayName": "Отображаемое имя:",
+    "description": "Описание:",
+    "path": "Путь:",
+    "startupType": "Тип запуска:",
+    "serviceStatus": "Статус службы:",
+    "startupOptions": {
+      "autodelay": "Автоматически (с задержкой)",
+      "automatic": "Автоматически",
+      "manual": "Вручную",
+      "disabled": "Отключено"
+    }
+  },
+  "eventLogManager": {
+    "showLastDays": "Показать за последние {days} дней",
+    "totalRecords": "Всего записей журнала {logType}: {count}",
+    "logTypes": {
+      "application": "Приложение",
+      "system": "Система",
+      "security": "Безопасность"
+    },
+    "columns": {
+      "type": "Тип",
+      "source": "Источник",
+      "eventId": "ID события",
+      "time": "Время",
+      "message": "Сообщение (нажмите для полного просмотра)"
+    }
+  },
+  "registryManager": {
+    "loadMore": "Загрузить еще",
+    "new": "Создать",
+    "rename": "Переименовать",
+    "modify": "Изменить",
+    "newKey": "New_Key",
+    "noValuesFound": "Значения не найдены",
+    "confirmKeyDelete": "Подтвердите удаление ключа",
+    "confirmKeyDeleteMessage": "Вы уверены, что хотите безвозвратно удалить этот ключ и все его подразделы?",
+    "confirmValueDelete": "Подтвердите удаление значения",
+    "confirmValueDeleteMessage": "Удаление некоторых значений реестра может привести к нестабильности системы. Вы уверены, что хотите удалить это значение навсегда?",
+    "selectionRequired": "Требуется выбор",
+    "selectHiveOrKey": "Выберите hive или ключ перед созданием нового ключа.",
+    "modifyRegBinaryDenied": "Изменение значений REG_BINARY запрещено.",
+    "columns": {
+      "name": "Имя",
+      "type": "Тип",
+      "data": "Данные"
+    },
+    "valueTypes": {
+      "key": "Ключ",
+      "string": "Строковое значение",
+      "dword": "Значение DWORD (32-bit)",
+      "qword": "Значение QWORD (64-bit)",
+      "multiString": "Многостроковое значение",
+      "expandableString": "Расширяемое строковое значение"
+    },
+    "errors": {
+      "fetchRootNodes": "Не удалось получить корневые узлы реестра:",
+      "loadChildren": "Не удалось загрузить дочерние ключи реестра:",
+      "loadMoreSubkeys": "Не удалось загрузить дополнительные подразделы:",
+      "loadValues": "Не удалось загрузить значения реестра:",
+      "deleteKey": "Не удалось удалить ключ:",
+      "loadChildrenBeforeCreate": "Не удалось загрузить дочерние ключи перед созданием:",
+      "renameOrCreateKey": "Не удалось переименовать/создать ключ реестра:",
+      "deleteValue": "Не удалось удалить значение реестра:",
+      "renameValue": "Не удалось переименовать значение:",
+      "modifyValue": "Не удалось изменить значение реестра:",
+      "createValue": "Не удалось создать значение реестра:",
+      "saveValue": "Не удалось сохранить значение:",
+      "invalidPath": "Некорректный путь:"
+    }
+  },
+  "registryValueModal": {
+    "edit": "Изменить",
+    "create": "Создать",
+    "valueName": "Имя значения:",
+    "valueData": "Данные значения:",
+    "base": "Основание",
+    "hexadecimal": "Шестнадцатеричное",
+    "decimal": "Десятичное",
+    "nameRequired": "Имя обязательно",
+    "valueCannotBeNegative": "Значение не может быть отрицательным.",
+    "dwordTooLarge": "Значение DWORD (32-bit) не может превышать 4,294,967,295.",
+    "qwordTooLarge": "Значение QWORD (64-bit) не может превышать 9,007,199,254,740,991.",
+    "types": {
+      "dword": "Значение DWORD (32-bit)",
+      "qword": "Значение QWORD (64-bit)",
+      "multiString": "Мультистрока",
+      "string": "Строка"
+    }
+  },
+  "editAgent": {
+    "tabs": {
+      "general": "Общие",
+      "customFields": "Пользовательские поля",
+      "patches": "Патчи",
+      "automationPolicies": "Политики автоматизации"
+    },
+    "title": "Редактировать {hostname}",
+    "site": "Сайт:",
+    "type": "Тип:",
+    "description": "Описание:",
+    "timezone": "Часовой пояс:",
+    "runChecksEvery": "Запускать проверки каждые:",
+    "seconds": "Секунды",
+    "minutes": "Минуты",
+    "minimumSeconds": "Минимум {min} секунд",
+    "maximumSeconds": "Максимум {max} секунд",
+    "minimumMinutes": "Минимум {min} минут",
+    "maximumMinutes": "Максимум {max} минут",
+    "markAgentAs": "Отмечать агента как",
+    "offline": "офлайн",
+    "overdue": "просроченный",
+    "ifNotCheckedInAfter": "если он не выходил на связь в течение:",
+    "getOverdueEmailAlerts": "Получать email-оповещения о просрочке",
+    "getOverdueSmsAlerts": "Получать sms-оповещения о просрочке",
+    "getOverdueDashboardAlerts": "Получать оповещения о просрочке в панели",
+    "noCustomFieldsFound": "Пользовательские поля агента не найдены. Перейдите в Настройки > Глобальные настройки > Пользовательские настройки",
+    "policies": "Политики",
+    "alertTemplate": "Шаблон оповещений",
+    "effectivePatchPolicy": "Эффективная политика патчей",
+    "none": "Нет",
+    "disabled": "отключено",
+    "critical": "Критично",
+    "important": "Важно",
+    "moderate": "Умеренно",
+    "low": "Низко",
+    "other": "Другое",
+    "doNothing": "Ничего не делать",
+    "runTimeFrequency": "Частота запуска",
+    "weekDays": "дни недели:",
+    "atHour": "в час:",
+    "everyMonthOnDay": "Каждый месяц, день:",
+    "rebootAfterInstallation": "Перезагрузка после установки",
+    "failedPatchOptions": "Параметры неудачных патчей",
+    "reprocessFailedPatches": "Повторно обрабатывать неудачные патчи:",
+    "emailOnFail": "Email при ошибке:",
+    "agentEdited": "Агент был отредактирован!",
+    "notSet": "не задано",
+    "weekdayShort": {
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт",
+      "sat": "Сб",
+      "sun": "Вс"
+    }
+  },
+  "runScript": {
+    "title": "Запустить скрипт на {hostname}",
+    "minimize": "Свернуть",
+    "maximize": "Развернуть",
+    "selectScript": "Выберите скрипт",
+    "scriptArguments": "Аргументы скрипта (нажимайте Enter после каждого)",
+    "useGlobalEmails": "Использовать адреса из глобальных настроек",
+    "customEmails": "Свои email",
+    "emailRecipients": "Получатели email (нажимайте Enter после каждого)",
+    "selectCustomField": "Выберите пользовательское поле",
+    "saveAllOutput": "Сохранять весь вывод",
+    "runAsUser": "Запуск от имени пользователя",
+    "runOnServer": "Запуск на сервере",
+    "enableServerScriptsHint": "Включите server side scripts глобально для активации этой функции.",
+    "runOnServerHint": "Запустить скрипт на сервере Tactical RMM в контексте этого агента.",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "minimumSeconds": "Минимум {min} секунд",
+    "run": "Запустить",
+    "output": "Вывод",
+    "runTime": "Время выполнения",
+    "returnCode": "Код возврата",
+    "secondsValue": "{value} секунд",
+    "standardOutput": "Стандартный вывод",
+    "standardError": "Стандартная ошибка",
+    "outputOptions": {
+      "wait": "Ожидать вывод",
+      "forget": "Запустить и не ждать",
+      "email": "Отправить результат на email",
+      "collector": "Сохранить результат в пользовательское поле",
+      "note": "Сохранить результат в заметки агента"
+    }
+  },
+  "bulkAction": {
+    "chooseTarget": "Выберите цель",
+    "selectClient": "Выберите клиента",
+    "selectSite": "Выберите сайт",
+    "selectAgents": "Выберите агентов",
+    "agentOs": "ОС агента",
+    "agentType": "Тип агента",
+    "selectScript": "Выберите скрипт",
+    "scriptArguments": "Аргументы скрипта (нажимайте Enter после каждого)",
+    "environmentVars": "Переменные окружения (нажимайте Enter после каждой пары key=value)",
+    "shell": "Оболочка",
+    "customShell": "Пользовательская оболочка",
+    "command": "Команда",
+    "runAsUser": "Запуск от имени пользователя",
+    "runAsUserTooltip": "Выполнять в контексте вошедшего пользователя. Если пользователь не вошел, команда будет выполнена от SYSTEM",
+    "saveResultsToCustomField": "Сохранить результат в пользовательское поле",
+    "saveResultsToAgentNote": "Сохранить результат в заметку агента",
+    "selectCustomField": "Выберите пользовательское поле",
+    "saveAllOutput": "Сохранять весь вывод",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "minimumSeconds": "Минимум {min} секунд",
+    "action": "Действие",
+    "offlineAgentsNextCheckin": "Офлайн-агенты (выполнить при следующем чек-ине)",
+    "offlineAgentsHint": "Если агент офлайн, будет создано ожидающее действие для выполнения при чек-ине агента",
+    "run": "Запустить",
+    "titles": {
+      "runBulkCommand": "Выполнить массовую команду",
+      "runBulkScript": "Запустить массовый скрипт",
+      "bulkPatchManagement": "Массовое управление патчами"
+    },
+    "options": {
+      "all": "Все",
+      "servers": "Серверы",
+      "workstations": "Рабочие станции",
+      "windows": "Windows",
+      "linux": "Linux",
+      "macos": "macOS",
+      "client": "Клиент",
+      "site": "Сайт",
+      "selectedAgents": "Выбранные агенты",
+      "scan": "Сканирование",
+      "install": "Установка",
+      "cmd": "CMD",
+      "powershell": "Powershell",
+      "bash": "Bash",
+      "custom": "Пользовательская"
+    }
+  },
+  "patchPolicyForm": {
+    "autoApproval": "Автоодобрение",
+    "severity": "Важность",
+    "action": "Действие",
+    "critical": "Критично",
+    "important": "Важно",
+    "moderate": "Умеренно",
+    "low": "Низко",
+    "other": "Другое",
+    "installationSchedule": "Расписание установки",
+    "scheduleFrequency": "Частота расписания",
+    "dayOfMonthToRun": "День месяца для запуска",
+    "scheduledTime": "Запланированное время",
+    "rebootAfterInstallation": "Перезагрузка после установки",
+    "failedPatches": "Неудачные патчи",
+    "inheritFailedPatchSettings": "Наследовать настройки неудачных патчей",
+    "reprocessFailedPatches": "Повторно обрабатывать неудачные патчи",
+    "times": "Количество",
+    "mustBeGreaterThanZero": "Должно быть больше 0",
+    "sendEmailOnPatchFail": "Отправлять email при ошибке установки патчей",
+    "removePolicy": "Удалить политику",
+    "deletePatchPolicy": "Удалить политику патчей?",
+    "notifyEdited": "Политика патчей успешно отредактирована!",
+    "notifyCreated": "Политика патчей успешно создана!",
+    "notifyDeleted": "Политика патчей успешно удалена!",
+    "days": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "wednesday": "Среда",
+      "thursday": "Четверг",
+      "friday": "Пятница",
+      "saturday": "Суббота",
+      "sunday": "Воскресенье"
+    },
+    "optionLabels": {
+      "manual": "Вручную",
+      "approve": "Одобрить",
+      "ignore": "Игнорировать",
+      "dailyWeekly": "Ежедневно/Еженедельно",
+      "monthly": "Ежемесячно",
+      "never": "Никогда",
+      "whenRequired": "Когда требуется",
+      "always": "Всегда",
+      "inherit": "Наследовать"
+    }
+  },
+  "installAgent": {
+    "addAgent": "Добавить агента",
+    "client": "Клиент",
+    "site": "Сайт",
+    "windows": "Windows",
+    "linux": "Linux",
+    "macos": "macOS",
+    "server": "Сервер",
+    "workstation": "Рабочая станция",
+    "tokenExpirationHours": "Срок действия токена (часы)",
+    "enableRdp": "Включить RDP",
+    "enablePing": "Включить Ping",
+    "enableIcmpEcho": "Разрешить ICMP echo в локальном файрволе",
+    "disableSleepHibernate": "Отключить сон/гибернацию",
+    "arch": "Архитектура",
+    "arch64Bit": "64 бит",
+    "intel64Bit": "Intel 64 бит",
+    "arch32Bit": "32 бит",
+    "arm64Bit": "ARM 64 бит",
+    "appleSilicon": "Apple Silicon (M-Series)",
+    "arm32Bit": "ARM 32 бит",
+    "installationMethod": "Метод установки",
+    "generatedExe": "Динамически сгенерированный exe",
+    "powershell": "Powershell",
+    "manual": "Вручную",
+    "generatingExecutable": "Генерация исполняемого файла...",
+    "installerWillDownload": "Установщик для {client}, {site} ({agenttype}) будет загружен сейчас. Вы можете повторно использовать этот установщик в течение {expires} часов до истечения срока. Аргументы командной строки не требуются.",
+    "installButton": {
+      "generateAndDownloadExe": "Сгенерировать и скачать exe",
+      "downloadPowershellScript": "Скачать Powershell-скрипт",
+      "showManualInstallationInstructions": "Показать инструкции по ручной установке",
+      "downloadLinuxInstallScript": "Скачать Linux-скрипт установки",
+      "showInstallationInstructions": "Показать инструкции по установке"
+    }
+  },
+  "commandStream": {
+    "liveOutput": "Потоковый вывод"
+  }
+}

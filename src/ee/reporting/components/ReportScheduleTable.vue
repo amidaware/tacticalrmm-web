@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportSchedules"
-        />Report Schedules
+        />{{ t("reporting.scheduleTable.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -48,7 +50,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             icon="add"
-            label="New"
+            :label="t('reporting.common.new')"
             no-caps
             dense
             flat
@@ -58,7 +60,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="t('reporting.common.search')"
             dense
             outlined
             clearable
@@ -80,7 +82,9 @@ For details, see: https://license.tacticalrmm.com/ee
             <q-menu context-menu>
               <q-list dense style="min-width: 200px">
                 <q-item v-close-popup clickable @click="runSchedule(props.row)">
-                  <q-item-section>Run Scheduled Report</q-item-section>
+                  <q-item-section>{{
+                    t("reporting.scheduleTable.runScheduledReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -90,7 +94,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditSchedule(props.row)"
                 >
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    t("reporting.common.edit")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -98,7 +104,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openCloneSchedule(props.row)"
                 >
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{
+                    t("reporting.common.clone")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -106,12 +114,16 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteSchedule(props.row)"
                 >
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{
+                    t("reporting.common.delete")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{
+                    t("reporting.common.close")
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -127,39 +139,43 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { formatDate, capitalize } from "@/utils/format";
 import { useSharedReportSchedules } from "../api/reporting";
 import ReportScheduleForm from "./ReportScheduleForm.vue";
 import type { ReportSchedule } from "../types/reporting";
+import { useI18n } from "vue-i18n";
 
-const columns: QTableColumn[] = [
+const { t } = useI18n();
+
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: t("reporting.common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "enabled",
-    label: "Enabled",
+    label: t("reporting.common.enabled"),
     field: "enabled",
     align: "left",
     sortable: true,
-    format: (val: boolean) => (val ? "Yes" : "No"),
+    format: (val: boolean) =>
+      val ? t("reporting.common.yes") : t("reporting.common.no"),
   },
   {
     name: "report_template_name",
-    label: "Template",
+    label: t("reporting.reportsManager.template"),
     field: "report_template_name",
     align: "left",
     sortable: true,
   },
   {
     name: "format",
-    label: "Format",
+    label: t("reporting.common.format"),
     field: "format",
     align: "left",
     sortable: true,
@@ -167,14 +183,14 @@ const columns: QTableColumn[] = [
   },
   {
     name: "schedule_name",
-    label: "Schedule",
+    label: t("reporting.common.schedule"),
     field: "schedule_name",
     align: "left",
     sortable: true,
   },
   {
     name: "email_recipients",
-    label: "Recipients",
+    label: t("reporting.scheduleForm.emailRecipients"),
     field: "email_recipients",
     align: "left",
     sortable: false,
@@ -182,21 +198,23 @@ const columns: QTableColumn[] = [
   },
   {
     name: "send_report_email",
-    label: "Send Email",
+    label: t("reporting.scheduleTable.sendEmail"),
     field: "send_report_email",
     align: "center",
     sortable: true,
-    format: (val: boolean) => (val ? "Yes" : "No"),
+    format: (val: boolean) =>
+      val ? t("reporting.common.yes") : t("reporting.common.no"),
   },
   {
     name: "last_run",
-    label: "Last Run",
+    label: t("reporting.scheduleTable.lastRun"),
     field: "last_run",
     align: "center",
     sortable: true,
-    format: (val: string) => (val ? formatDate(val) : "Never"),
+    format: (val: string) =>
+      val ? formatDate(val) : t("reporting.scheduleTable.never"),
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -243,11 +261,11 @@ function runSchedule(schedule: ReportSchedule) {
 
 function deleteSchedule(schedule: ReportSchedule) {
   $q.dialog({
-    title: `Delete Schedule ${schedule.name}?`,
-    message: "This action cannot be undone.",
+    title: t("reporting.scheduleTable.deleteTitle", { name: schedule.name }),
+    message: t("reporting.scheduleTable.deleteMessage"),
     cancel: true,
     color: "primary",
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("reporting.common.delete"), color: "negative" },
   }).onOk(() => {
     deleteReportSchedule(schedule.id);
   });

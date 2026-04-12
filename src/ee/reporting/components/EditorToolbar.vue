@@ -7,7 +7,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <q-bar>
     <q-btn-dropdown
-      label="Formatting"
+      :label="t('reporting.editorToolbar.formatting')"
       flat
       dense
       auto-close
@@ -17,44 +17,56 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-list dense>
         <q-item clickable @click="insertHeader('#')">
           <q-item-section>
-            <q-item-label>Heading 1</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 1 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('##')">
           <q-item-section>
-            <q-item-label>Heading 2</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 2 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('###')">
           <q-item-section>
-            <q-item-label>Heading 3</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 3 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('####')">
           <q-item-section>
-            <q-item-label>Heading 4</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 4 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('#####')">
           <q-item-section>
-            <q-item-label>Heading 5</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 5 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('######')">
           <q-item-section>
-            <q-item-label>Heading 6</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.heading", { level: 6 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
     </q-btn-dropdown>
 
     <q-btn-dropdown
-      label="Section"
+      :label="t('reporting.editorToolbar.section')"
       flat
       dense
       auto-close
@@ -64,49 +76,61 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-list dense>
         <q-item clickable @click="insertSection('section')">
           <q-item-section>
-            <q-item-label>Section</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.section")
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('chapter')">
           <q-item-section>
-            <q-item-label>Chapter</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.chapter")
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('header')">
           <q-item-section>
-            <q-item-label>Header</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.header")
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('footer')">
           <q-item-section>
-            <q-item-label>Footer</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.footer")
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('nav')">
           <q-item-section>
-            <q-item-label>Nav</q-item-label>
+            <q-item-label>{{ t("reporting.editorToolbar.nav") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('div')">
           <q-item-section>
-            <q-item-label>Div</q-item-label>
+            <q-item-label>{{ t("reporting.editorToolbar.div") }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable @click="insertSection('article')">
           <q-item-section>
-            <q-item-label>Article</q-item-label>
+            <q-item-label>{{
+              t("reporting.editorToolbar.article")
+            }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
     </q-btn-dropdown>
 
     <q-btn flat dense :ripple="false" icon="format_bold" @click="insertBold">
-      <q-tooltip :delay="500">Bold</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.bold")
+      }}</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -115,7 +139,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_italic"
       @click="insertItalic"
     >
-      <q-tooltip :delay="500">Italic</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.italic")
+      }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -125,7 +151,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_numbered"
       @click="insertNumberedList"
     >
-      <q-tooltip :delay="500">Numbered List</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.numberedList")
+      }}</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -134,7 +162,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_bulleted"
       @click="insertBulletList"
     >
-      <q-tooltip :delay="500">Bullet List</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.bulletList")
+      }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -144,32 +174,52 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_quote"
       @click="insertBlockQuote"
     >
-      <q-tooltip :delay="500">Block Quote</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.blockQuote")
+      }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="undo" @click="undo">
-      <q-tooltip :delay="500">Undo</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.undo")
+      }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="redo" @click="redo">
-      <q-tooltip :delay="500">Redo</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.redo")
+      }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="code" @click="insertCodeBlock">
-      <q-tooltip :delay="500">Code Block</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.codeBlock")
+      }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="link">
-      <q-tooltip :delay="500">Link</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.link")
+      }}</q-tooltip>
       <q-menu>
         <div class="no-wrap q-pa-md">
-          <div class="text-subtitle1">Create Link</div>
-          <q-input v-model="linkText" label="Text" type="text" />
+          <div class="text-subtitle1">
+            {{ t("reporting.editorToolbar.createLink") }}
+          </div>
+          <q-input
+            v-model="linkText"
+            :label="t('reporting.common.text')"
+            type="text"
+          />
 
-          <q-input v-model="linkUrl" label="Url" type="text" />
+          <q-input
+            v-model="linkUrl"
+            :label="t('reporting.common.url')"
+            type="text"
+          />
 
           <q-btn
             v-close-popup
             color="primary"
-            label="Insert Link"
+            :label="t('reporting.editorToolbar.insertLink')"
             class="full-width q-mt-sm"
             flat
             dense
@@ -179,10 +229,14 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-menu>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="image" @click="insertImage">
-      <q-tooltip :delay="500">Image</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.image")
+      }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="horizontal_rule" @click="insertHr">
-      <q-tooltip :delay="500">Horizontal Rule</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.horizontalRule")
+      }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
 
@@ -195,7 +249,9 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('block [name]', 'endblock')"
     >
-      <q-tooltip :delay="500">Jinja {% %} block</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.jinjaBlock")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -206,7 +262,9 @@ For details, see: https://license.tacticalrmm.com/ee
       label="{{ }}"
       @click="insertJinjaData()"
     >
-      <q-tooltip :delay="500">Jinja template data</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.jinjaTemplateData")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -217,7 +275,9 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('for item in items', 'endfor')"
     >
-      <q-tooltip :delay="500">Jinja for loop</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.jinjaForLoop")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -228,7 +288,9 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('if [condition]', 'endif')"
     >
-      <q-tooltip :delay="500">Jinja if condition</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.jinjaIfCondition")
+      }}</q-tooltip>
     </q-btn>
 
     <q-separator vertical inset />
@@ -240,7 +302,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-plus-outline"
       @click="openQueryAddDialog"
     >
-      <q-tooltip :delay="500">Add Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.addDataQuery")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -250,7 +314,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-arrow-down"
       @click="insertDataQuery"
     >
-      <q-tooltip :delay="500">Insert Saved Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.insertSavedDataQuery")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -260,7 +326,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-edit"
       @click="editDataQuery"
     >
-      <q-tooltip :delay="500">Edit Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.editDataQuery")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -270,7 +338,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-table-large-plus"
       @click="openTableMaker"
     >
-      <q-tooltip :delay="500">Table</q-tooltip>
+      <q-tooltip :delay="500">{{
+        t("reporting.editorToolbar.table")
+      }}</q-tooltip>
     </q-btn>
 
     <!-- <q-btn flat dense :ripple="false" icon="add_chart" @click="openChartDialog">
@@ -287,6 +357,7 @@ import { ref, toRaw, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
 import { parse, stringify } from "yaml";
+import { useI18n } from "vue-i18n";
 
 // ui import
 import ReportDataQueryForm from "./ReportDataQueryForm.vue";
@@ -310,6 +381,7 @@ const props = defineProps<{
 }>();
 
 const $q = useQuasar();
+const { t } = useI18n();
 
 const _editor = toRaw(props.editor);
 const isMultiLineSelection = ref(false);
@@ -415,7 +487,9 @@ function insertDataQuery() {
     component: DataQuerySelect,
   }).onOk((dataQuery: ReportDataQuery) => {
     _saveDataSourcesInTemplate(dataQuery);
-    notifySuccess(`${dataQuery.name} was saved successfully in template`);
+    notifySuccess(
+      t("reporting.editorToolbar.dataQuerySaved", { name: dataQuery.name }),
+    );
   });
 }
 
@@ -423,7 +497,7 @@ function editDataQuery() {
   const dataSources = _getDataSourcesInTemplate();
 
   if (!dataSources) {
-    notifyWarning("No data sources exist in template variables");
+    notifyWarning(t("reporting.editorToolbar.noDataSources"));
     return;
   }
 
@@ -441,7 +515,9 @@ function editDataQuery() {
       },
     }).onOk((dataQuery: ReportDataQuery) => {
       _saveDataSourcesInTemplate(dataQuery, false);
-      notifySuccess(`${dataQuery.name} was saved successfully in template`);
+      notifySuccess(
+        t("reporting.editorToolbar.dataQuerySaved", { name: dataQuery.name }),
+      );
     });
   });
 }

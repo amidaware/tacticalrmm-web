@@ -14,10 +14,12 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useMeta } from "quasar";
+import { useI18n } from "vue-i18n";
 
 import { fetchAgentWebVNCUrl } from "@/api/agents";
 
 const { params } = useRoute();
+const { t } = useI18n();
 const vnc = ref("");
 
 async function getVNCUrl() {
@@ -25,7 +27,7 @@ async function getVNCUrl() {
     const data = await fetchAgentWebVNCUrl(params.agent_id, params.port);
     vnc.value = data.vnc;
     useMeta({
-      title: `${data.hostname} - ${data.client} - ${data.site} | VNC`,
+      title: `${data.hostname} - ${data.client} - ${data.site} | ${t("agents.webVnc.metaTitle")}`,
     });
   } catch (e) {
     console.error(e);

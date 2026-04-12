@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agents.shared.noAgentSelected") }}
+  </div>
   <div v-else>
     <q-table
       dense
@@ -17,7 +19,7 @@
       :loading="loading"
       :rows-per-page-options="[0]"
       virtual-scroll
-      no-data-label="No checks"
+      :no-data-label="$t('agents.checksTab.noChecks')"
     >
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
@@ -35,7 +37,7 @@
         />
         <q-btn-dropdown
           icon="add"
-          label="New"
+          :label="$t('agents.checksTab.new')"
           no-caps
           dense
           flat
@@ -51,13 +53,17 @@
               <q-item-section side>
                 <q-icon size="xs" name="far fa-hdd" />
               </q-item-section>
-              <q-item-section>Disk Space Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.diskSpace")
+              }}</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="showCheckModal('ping')">
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-network-wired" />
               </q-item-section>
-              <q-item-section>Ping Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.ping")
+              }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -68,7 +74,9 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-microchip" />
               </q-item-section>
-              <q-item-section>CPU Load Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.cpuLoad")
+              }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -79,7 +87,9 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-memory" />
               </q-item-section>
-              <q-item-section>Memory Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.memory")
+              }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -90,13 +100,17 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-cogs" />
               </q-item-section>
-              <q-item-section>Windows Service Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.windowsService")
+              }}</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="showCheckModal('script')">
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-terminal" />
               </q-item-section>
-              <q-item-section>Script Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.script")
+              }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -107,12 +121,14 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-clipboard-list" />
               </q-item-section>
-              <q-item-section>Event Log Check</q-item-section>
+              <q-item-section>{{
+                $t("agents.checksTab.checkTypes.eventLog")
+              }}</q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
         <q-btn
-          label="Run Checks Now"
+          :label="$t('agents.checksTab.runChecksNow')"
           dense
           flat
           push
@@ -122,7 +138,7 @@
           class="q-mr-md"
         />
         <q-btn
-          label="Reset All Checks Status"
+          :label="$t('agents.checksTab.resetAllChecksStatus')"
           dense
           flat
           push
@@ -136,21 +152,21 @@
       <template v-slot:header-cell-smsalert="props">
         <q-th auto-width :props="props">
           <q-icon name="phone_android" size="1.5em">
-            <q-tooltip>SMS Alert</q-tooltip>
+            <q-tooltip>{{ $t("agents.shared.smsAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-emailalert="props">
         <q-th auto-width :props="props">
           <q-icon name="email" size="1.5em">
-            <q-tooltip>Email Alert</q-tooltip>
+            <q-tooltip>{{ $t("agents.shared.emailAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-dashboardalert="props">
         <q-th auto-width :props="props">
           <q-icon name="notifications" size="1.5em">
-            <q-tooltip>Dashboard Alert</q-tooltip>
+            <q-tooltip>{{ $t("agents.shared.dashboardAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -180,7 +196,7 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ $t("common.buttons.edit") }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -191,7 +207,9 @@
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{
+                  $t("common.buttons.delete")
+                }}</q-item-section>
               </q-item>
               <q-separator></q-separator>
               <q-item
@@ -202,11 +220,15 @@
                 <q-item-section side>
                   <q-icon name="info" />
                 </q-item-section>
-                <q-item-section>Reset Check Status</q-item-section>
+                <q-item-section>{{
+                  $t("agents.checksTab.resetCheckStatus")
+                }}</q-item-section>
               </q-item>
               <q-separator></q-separator>
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{
+                  $t("common.buttons.close")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -223,7 +245,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $t("agents.shared.settingOverriddenByAlertTemplate") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -250,7 +272,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $t("agents.shared.settingOverriddenByAlertTemplate") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -277,7 +299,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $t("agents.shared.settingOverriddenByAlertTemplate") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -297,12 +319,16 @@
           <!-- policy check icon -->
           <q-td v-if="props.row.policy">
             <q-icon style="font-size: 1.3rem" name="policy">
-              <q-tooltip>This check is managed by a policy</q-tooltip>
+              <q-tooltip>{{
+                $t("agents.checksTab.checkManagedByPolicy")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else-if="props.row.overridden_by_policy">
             <q-icon style="font-size: 1.3rem" name="remove_circle_outline">
-              <q-tooltip>This check is overriden by a policy</q-tooltip>
+              <q-tooltip>{{
+                $t("agents.checksTab.checkOverriddenByPolicy")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else></q-td>
@@ -314,7 +340,7 @@
               :color="dash_positive_color"
               name="check_circle"
             >
-              <q-tooltip>Passing</q-tooltip>
+              <q-tooltip>{{ $t("agents.shared.passing") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else-if="props.row.check_result.status === 'failing'">
@@ -324,7 +350,7 @@
               :color="dash_info_color"
               name="info"
             >
-              <q-tooltip>Informational</q-tooltip>
+              <q-tooltip>{{ $t("agents.shared.informational") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="getAlertSeverity(props.row) === 'warning'"
@@ -332,7 +358,7 @@
               :color="dash_warning_color"
               name="warning"
             >
-              <q-tooltip>Warning</q-tooltip>
+              <q-tooltip>{{ $t("common.status.warning") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
@@ -340,7 +366,7 @@
               :color="dash_negative_color"
               name="error"
             >
-              <q-tooltip>Error</q-tooltip>
+              <q-tooltip>{{ $t("common.status.error") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else></q-td>
@@ -360,7 +386,7 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showCheckGraphModal(props.row)"
-              >Show Run History</span
+              >{{ $t("agents.checksTab.showRunHistory") }}</span
             >
             &nbsp;&nbsp;&nbsp;
             <span
@@ -394,7 +420,7 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showEventInfo(props.row)"
-              >Last Output</span
+              >{{ $t("agents.checksTab.lastOutput") }}</span
             >
             <span
               v-else-if="
@@ -409,11 +435,13 @@
           <q-td>{{
             props.row.check_result.last_run
               ? formatDate(props.row.check_result.last_run)
-              : "Never"
+              : $t("agents.shared.never")
           }}</q-td>
-          <q-td v-if="props.row.assignedtasks.length > 1"
-            >{{ props.row.assignedtasks.length }} Tasks</q-td
-          >
+          <q-td v-if="props.row.assignedtasks.length > 1">{{
+            $t("agents.checksTab.assignedTasksCount", {
+              count: props.row.assignedtasks.length,
+            })
+          }}</q-td>
           <q-td v-else-if="props.row.assignedtasks.length === 1">{{
             props.row.assignedtasks[0].name
           }}</q-td>
@@ -429,6 +457,7 @@
 import { ref, computed, watch, inject, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import {
   updateCheck,
   removeCheck,
@@ -453,46 +482,10 @@ import EventLogCheckOutput from "@/components/checks/EventLogCheckOutput.vue";
 import CheckGraph from "@/components/graphs/CheckGraph.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
 
-// static data
-const columns = [
-  { name: "smsalert", field: "text_alert", align: "left" },
-  { name: "emailalert", field: "email_alert", align: "left" },
-  { name: "dashboardalert", field: "dashboard_alert", align: "left" },
-  { name: "policystatus", align: "left" },
-  { name: "statusicon", align: "left" },
-  {
-    name: "desc",
-    field: "readable_desc",
-    label: "Description",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "moreinfo",
-    label: "More Info",
-    field: "more_info",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "datetime",
-    label: "Last Run",
-    field: "last_run",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "assignedtasks",
-    label: "Assigned Tasks",
-    field: "assigned_task",
-    align: "left",
-    sortable: true,
-  },
-];
-
 export default {
   name: "ChecksTab",
   setup() {
+    const { t } = useI18n();
     // setup vuex
     const store = useStore();
     const selectedAgent = computed(() => store.state.selectedRow);
@@ -519,6 +512,42 @@ export default {
       descending: false,
     });
 
+    const columns = computed(() => [
+      { name: "smsalert", field: "text_alert", align: "left" },
+      { name: "emailalert", field: "email_alert", align: "left" },
+      { name: "dashboardalert", field: "dashboard_alert", align: "left" },
+      { name: "policystatus", align: "left" },
+      { name: "statusicon", align: "left" },
+      {
+        name: "desc",
+        field: "readable_desc",
+        label: t("agents.checksTab.columns.description"),
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "moreinfo",
+        label: t("agents.checksTab.columns.moreInfo"),
+        field: "more_info",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "datetime",
+        label: t("agents.checksTab.columns.lastRun"),
+        field: "last_run",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "assignedtasks",
+        label: t("agents.checksTab.columns.assignedTasks"),
+        field: "assigned_task",
+        align: "left",
+        sortable: true,
+      },
+    ]);
+
     // TODO this will break when we add translations
     function grep(text, stringsToMatch) {
       try {
@@ -531,10 +560,12 @@ export default {
           }
         }
 
-        return matched.length > 0 ? matched.join("\n") : "Last Output";
+        return matched.length > 0
+          ? matched.join("\n")
+          : t("agents.checksTab.lastOutput");
       } catch (e) {
         console.error(e);
-        return "Last Output";
+        return t("agents.checksTab.lastOutput");
       }
     }
 
@@ -545,11 +576,11 @@ export default {
         } else if (result.stderr && result.stderr.trim() !== "") {
           return result.stderr.substring(0, 60);
         } else {
-          return "Last Output";
+          return t("agents.checksTab.lastOutput");
         }
       } catch (e) {
         console.error(e);
-        return "Last Output";
+        return t("agents.checksTab.lastOutput");
       }
     }
 
@@ -593,10 +624,12 @@ export default {
 
     function deleteCheck(check) {
       $q.dialog({
-        title: "Are you sure?",
-        message: `Delete ${check.readable_desc}`,
+        title: t("agents.shared.areYouSure"),
+        message: t("agents.checksTab.deleteCheck", {
+          check: check.readable_desc,
+        }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.buttons.delete"), color: "negative" },
         persistent: true,
       }).onOk(async () => {
         loading.value = true;
@@ -614,9 +647,9 @@ export default {
     async function resetCheckStatus(check) {
       // make sure there is a check result before sending
       if (!check.check_result.status) {
-        notifyWarning("Check hasn't run yet");
+        notifyWarning(t("agents.checksTab.checkHasNotRunYet"));
       } else if (check.check_result.status === "passing") {
-        notifyWarning("Check is already passing");
+        notifyWarning(t("agents.checksTab.checkAlreadyPassing"));
       }
 
       loading.value = true;
@@ -636,10 +669,10 @@ export default {
 
     function resetAllChecks() {
       $q.dialog({
-        title: "Are you sure?",
-        message: "Reset all checks status",
+        title: t("agents.shared.areYouSure"),
+        message: t("agents.checksTab.resetAllChecksStatus"),
         cancel: true,
-        ok: { label: "Reset", color: "negative" },
+        ok: { label: t("common.actions.reset"), color: "negative" },
         persistent: true,
       }).onOk(async () => {
         loading.value = true;

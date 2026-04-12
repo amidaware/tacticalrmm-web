@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 40vw">
       <q-bar>
-        Add Deployment
+        {{ t("dashboard.deployments.addDeployment") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary" />
@@ -10,9 +10,9 @@
       </q-bar>
       <q-card-section>
         <tactical-dropdown
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || t('checks.validation.required')]"
           outlined
-          label="Site"
+          :label="t('dashboard.table.site')"
           v-model="state.site"
           :options="siteOptions"
           mapOptions
@@ -20,51 +20,67 @@
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-pl-sm">Agent Type</div>
+        <div class="q-pl-sm">{{ t("dashboard.deployments.agentType") }}</div>
         <q-radio
           v-model="state.agenttype"
           val="server"
-          label="Server"
+          :label="t('dashboard.deployments.server')"
           @update:model-value="power = false"
         />
         <q-radio
           v-model="state.agenttype"
           val="workstation"
-          label="Workstation"
+          :label="t('dashboard.deployments.workstation')"
         />
       </q-card-section>
       <q-card-section>
         <q-input
           type="datetime-local"
           dense
-          label="Expiry"
+          :label="t('dashboard.deployments.columns.expiry')"
           stack-label
           filled
           v-model="state.expires"
         />
       </q-card-section>
       <q-card-section class="q-gutter-sm">
-        <q-checkbox v-model="state.rdp" dense label="Enable RDP" />
-        <q-checkbox v-model="state.ping" dense label="Enable Ping" />
+        <q-checkbox
+          v-model="state.rdp"
+          dense
+          :label="t('dashboard.deployments.enableRdp')"
+        />
+        <q-checkbox
+          v-model="state.ping"
+          dense
+          :label="t('dashboard.deployments.enablePing')"
+        />
         <q-checkbox
           v-model="state.power"
           dense
           v-show="state.agenttype === 'workstation'"
-          label="Disable sleep/hibernate"
+          :label="t('dashboard.deployments.disableSleepHibernate')"
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-pl-sm">Arch</div>
-        <q-radio v-model="state.goarch" :val="GOARCH_AMD64" label="64 bit" />
-        <q-radio v-model="state.goarch" :val="GOARCH_i386" label="32 bit" />
+        <div class="q-pl-sm">{{ t("dashboard.deployments.columns.arch") }}</div>
+        <q-radio
+          v-model="state.goarch"
+          :val="GOARCH_AMD64"
+          :label="t('dashboard.deployments.arch64')"
+        />
+        <q-radio
+          v-model="state.goarch"
+          :val="GOARCH_i386"
+          :label="t('dashboard.deployments.arch32')"
+        />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat :label="t('common.buttons.cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Create"
+          :label="t('common.buttons.create')"
           color="primary"
           @click="submit"
         />
@@ -77,6 +93,7 @@
 // composition imports
 import { ref } from "vue";
 import { useDialogPluginComponent, date } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useSiteDropdown } from "@/composables/clients";
 import { saveDeployment } from "@/api/clients";
 import { notifySuccess } from "@/utils/notify";
@@ -96,6 +113,7 @@ export default {
   emits: [...useDialogPluginComponent.emits],
   setup() {
     // setup quasar dialog
+    const { t } = useI18n();
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup site dropdown
@@ -139,6 +157,7 @@ export default {
       state,
       loading,
       siteOptions,
+      t,
 
       // methods
       submit,

@@ -12,8 +12,10 @@
         />
         {{
           agent
-            ? `Pending Actions for ${agent.hostname}`
-            : "All Pending Actions"
+            ? $t("settings.pendingActions.titleForAgent", {
+                hostname: agent.hostname,
+              })
+            : $t("settings.pendingActions.allPendingActions")
         }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
@@ -33,7 +35,7 @@
         row-key="id"
         virtual-scroll
         :rows-per-page-options="[0]"
-        no-data-label="No Pending Actions"
+        :no-data-label="$t('settings.pendingActions.noPendingActions')"
         :loading="loading"
       >
         <template v-slot:top>
@@ -41,8 +43,12 @@
           <q-btn
             :label="
               showCompleted
-                ? `Hide ${completedCount} Completed`
-                : `Show ${completedCount} Completed`
+                ? $t('settings.pendingActions.hideCompleted', {
+                    count: completedCount,
+                  })
+                : $t('settings.pendingActions.showCompleted', {
+                    count: completedCount,
+                  })
             "
             :icon="showCompleted ? 'visibility_off' : 'visibility'"
             @click="showCompleted = !showCompleted"
@@ -66,11 +72,15 @@
                   <q-item-section side>
                     <q-icon name="fas fa-trash-alt" size="xs" />
                   </q-item-section>
-                  <q-item-section>Cancel Action</q-item-section>
+                  <q-item-section>{{
+                    $t("settings.pendingActions.cancelAction")
+                  }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{
+                    $t("common.buttons.close")
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -93,7 +103,7 @@
                   : props.row.due
               }}</span>
             </q-td>
-            <q-td v-else>Completed</q-td>
+            <q-td v-else>{{ $t("settings.pendingActions.completed") }}</q-td>
             <q-td>{{ props.row.description }}</q-td>
             <q-td v-if="!agent">{{ props.row.hostname }}</q-td>
             <q-td v-if="!agent">{{ props.row.client }}</q-td>
@@ -108,7 +118,7 @@
                 color="primary"
                 icon="preview"
                 size="sm"
-                label="View output"
+                :label="$t('settings.pendingActions.viewOutput')"
                 @click="showOutput(props.row.details.output)"
               />
             </q-td>
@@ -125,6 +135,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import {
   fetchPendingActions,
   fetchAgentPendingActions,
@@ -133,43 +144,6 @@ import {
 import { getNextAgentUpdateTime } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
 import PreDialog from "@/components/ui/PreDialog.vue";
-
-// static data
-const columns = [
-  { name: "id", field: "id" },
-  { name: "status", field: "status" },
-  {
-    name: "type",
-    label: "Type",
-    field: "action_type",
-    align: "left",
-    sortable: true,
-  },
-  { name: "due", label: "Due", field: "due", align: "left", sortable: true },
-  {
-    name: "desc",
-    label: "Description",
-    field: "description",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "agent",
-    label: "Agent",
-    field: "hostname",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "client",
-    label: "Client",
-    field: "client",
-    align: "left",
-    sortable: true,
-  },
-  { name: "site", label: "Site", field: "site", align: "left", sortable: true },
-  { name: "details", field: "details", align: "left", sortable: false },
-];
 
 export default {
   name: "PendingActions",
@@ -181,10 +155,59 @@ export default {
     // setup quasar dialog plugin
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // vuex store
     const store = useStore();
     const formatDate = computed(() => store.getters.formatDate);
+
+    const columns = [
+      { name: "id", field: "id" },
+      { name: "status", field: "status" },
+      {
+        name: "type",
+        label: t("settings.pendingActions.columns.type"),
+        field: "action_type",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "due",
+        label: t("settings.pendingActions.columns.due"),
+        field: "due",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "desc",
+        label: t("settings.pendingActions.columns.description"),
+        field: "description",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "agent",
+        label: t("settings.pendingActions.columns.agent"),
+        field: "hostname",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "client",
+        label: t("settings.pendingActions.columns.client"),
+        field: "client",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "site",
+        label: t("settings.pendingActions.columns.site"),
+        field: "site",
+        align: "left",
+        sortable: true,
+      },
+      { name: "details", field: "details", align: "left", sortable: false },
+    ];
 
     // pending actions logic
     const actions = ref([]);
@@ -215,7 +238,7 @@ export default {
       $q.dialog({
         component: PreDialog,
         componentProps: {
-          title: "Pending Action Output Details",
+          title: t("settings.pendingActions.outputDetailsTitle"),
           dialogStyle: "width: 75vw; max-width: 85vw; max-height: 65vh;",
           message: details,
         },
@@ -236,9 +259,9 @@ export default {
 
     function cancelPendingAction(action) {
       $q.dialog({
-        title: "Delete this pending action?",
+        title: t("settings.pendingActions.deletePendingActionTitle"),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.buttons.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

@@ -16,7 +16,7 @@
             icon="content_copy"
             @click="copyValueToClip(v)"
           >
-            <q-tooltip>Copy to Clipboard</q-tooltip>
+            <q-tooltip>{{ $t("agents.wmiDetail.copyToClipboard") }}</q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -32,6 +32,7 @@ import { notifySuccess } from "@/utils/notify";
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { uid } from "quasar";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "WmiDetail",
@@ -39,11 +40,12 @@ export default {
   setup() {
     // setup vuex
     const store = useStore();
+    const { t } = useI18n();
     const tabHeight = computed(() => store.state.tabHeight);
 
     function copyValueToClip(val) {
       copyToClipboard(val).then(() => {
-        notifySuccess("Copied to clipboard");
+        notifySuccess(t("agents.wmiDetail.copiedToClipboard"));
       });
     }
 

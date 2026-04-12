@@ -8,7 +8,7 @@
   >
     <q-card class="dialog-plugin" style="min-width: 60vw">
       <q-bar>
-        Run a script on {{ agent.hostname }}
+        {{ $t("scripts.runScript.title", { hostname: agent.hostname }) }}
         <q-space />
         <q-btn
           dense
@@ -17,9 +17,9 @@
           @click="maximized = false"
           :disable="!maximized"
         >
-          <q-tooltip v-if="maximized" class="bg-white text-primary"
-            >Minimize</q-tooltip
-          >
+          <q-tooltip v-if="maximized" class="bg-white text-primary">{{
+            $t("scripts.runScript.minimize")
+          }}</q-tooltip>
         </q-btn>
         <q-btn
           dense
@@ -28,21 +28,23 @@
           @click="maximized = true"
           :disable="maximized"
         >
-          <q-tooltip v-if="!maximized" class="bg-white text-primary"
-            >Maximize</q-tooltip
-          >
+          <q-tooltip v-if="!maximized" class="bg-white text-primary">{{
+            $t("scripts.runScript.maximize")
+          }}</q-tooltip>
         </q-btn>
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("scripts.shared.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit.prevent="sendScript">
         <q-card-section>
           <tactical-dropdown
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || $t('scripts.shared.required')]"
             v-model="state.script"
             :options="filterByPlatformOptions"
-            label="Select script"
+            :label="$t('scripts.runScript.selectScript')"
             outlined
             mapOptions
             filterable
@@ -68,7 +70,7 @@
         <q-card-section>
           <tactical-dropdown
             v-model="state.args"
-            label="Script Arguments (press Enter after typing each argument)"
+            :label="$t('scripts.runScript.scriptArguments')"
             filled
             use-input
             multiple
@@ -80,7 +82,7 @@
         <q-card-section>
           <tactical-dropdown
             v-model="state.env_vars"
-            :label="envVarsLabel"
+            :label="$t('scripts.shared.environmentVariables')"
             filled
             use-input
             multiple
@@ -104,13 +106,13 @@
               dense
               v-model="state.emailMode"
               val="default"
-              label="Use email addresses from global settings"
+              :label="$t('scripts.runScript.useGlobalEmails')"
             />
             <q-radio
               dense
               v-model="state.emailMode"
               val="custom"
-              label="Custom emails"
+              :label="$t('scripts.runScript.customEmails')"
             />
           </div>
         </q-card-section>
@@ -119,7 +121,7 @@
         >
           <tactical-dropdown
             v-model="state.emails"
-            label="Email recipients (press Enter after typing each email)"
+            :label="$t('scripts.runScript.emailRecipients')"
             filled
             use-input
             multiple
@@ -130,39 +132,42 @@
         </q-card-section>
         <q-card-section v-if="state.output === 'collector'">
           <tactical-dropdown
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || $t('scripts.shared.required')]"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
-            label="Select custom field"
+            :label="$t('scripts.runScript.selectCustomField')"
             mapOptions
             filterable
           />
-          <q-checkbox v-model="state.save_all_output" label="Save all output" />
+          <q-checkbox
+            v-model="state.save_all_output"
+            :label="$t('scripts.runScript.saveAllOutput')"
+          />
         </q-card-section>
         <q-card-section>
           <q-checkbox
             v-if="agent.plat === 'windows' && !state.run_on_server"
             v-model="state.run_as_user"
-            label="Run As User"
+            :label="$t('scripts.runScript.runAsUser')"
           >
-            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+            <q-tooltip>{{
+              $t("scripts.runScript.runAsUserTooltip")
+            }}</q-tooltip>
           </q-checkbox>
           <q-checkbox
             v-if="!hosted"
             :disable="!server_scripts_enabled"
             v-model="state.run_on_server"
-            label="Run On Server"
+            :label="$t('scripts.runScript.runOnServer')"
             @update:model-value="ret = null"
           >
-            <q-tooltip v-if="!server_scripts_enabled"
-              >Enable server side scripts globally to activate this
-              feature.</q-tooltip
-            >
-            <q-tooltip v-else
-              >Run the script on the Tactical RMM server in the context of this
-              agent.</q-tooltip
-            >
+            <q-tooltip v-if="!server_scripts_enabled">{{
+              $t("scripts.runScript.enableServerScriptsHint")
+            }}</q-tooltip>
+            <q-tooltip v-else>{{
+              $t("scripts.runScript.runOnServerHint")
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
         <q-card-section>
@@ -172,20 +177,21 @@
             outlined
             type="number"
             style="max-width: 150px"
-            label="Timeout (seconds)"
+            :label="$t('scripts.runScript.timeoutSeconds')"
             stack-label
             :rules="[
-              (val) => !!val || '*Required',
-              (val) => val >= 5 || 'Minimum is 5 seconds',
+              (val) => !!val || $t('scripts.shared.required'),
+              (val) =>
+                val >= 5 || $t('scripts.runScript.minimumSeconds', { min: 5 }),
             ]"
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn label="Cancel" v-close-popup />
+          <q-btn :label="$t('scripts.shared.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             :disabled="loading"
-            label="Run"
+            :label="$t('scripts.runScript.run')"
             color="primary"
             type="submit"
           />
@@ -197,23 +203,27 @@
         >
           <script-output-copy-clip
             v-if="!state.run_on_server"
-            label="Output"
+            :label="$t('scripts.runScript.output')"
             :data="ret"
           />
           <q-separator />
           <pre v-if="!state.run_on_server">{{ ret }}</pre>
           <q-card-section v-if="state.run_on_server" class="scroll">
             <div>
-              Run Time:
-              <code>{{ ret.execution_time }} seconds</code>
-              <br />Return Code:
+              {{ $t("scripts.runScript.runTime") }}:
+              <code>{{
+                $t("scripts.runScript.secondsValue", {
+                  value: ret.execution_time,
+                })
+              }}</code>
+              <br />{{ $t("scripts.runScript.returnCode") }}:
               <code>{{ ret.retcode }}</code>
               <br />
             </div>
             <br />
             <div v-if="ret.stdout">
               <script-output-copy-clip
-                label="Standard Output"
+                :label="$t('scripts.runScript.standardOutput')"
                 :data="ret.stdout"
               />
               <q-separator />
@@ -221,7 +231,7 @@
             </div>
             <div v-if="ret.stderr">
               <script-output-copy-clip
-                label="Standard Error"
+                :label="$t('scripts.runScript.standardError')"
                 :data="ret.stderr"
               />
               <q-separator />
@@ -239,11 +249,11 @@
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useDialogPluginComponent, openURL } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useScriptDropdown } from "@/composables/scripts";
 import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
-import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -259,15 +269,6 @@ const server_scripts_enabled = computed(
   () => store.state.server_scripts_enabled,
 );
 
-// static data
-const outputOptions = [
-  { label: "Wait for Output", value: "wait" },
-  { label: "Fire and Forget", value: "forget" },
-  { label: "Email results", value: "email" },
-  { label: "Save results to Custom Field", value: "collector" },
-  { label: "Save results to Agent Notes", value: "note" },
-];
-
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
 
@@ -279,6 +280,7 @@ const props = defineProps<{
 
 // setup quasar dialog plugin
 const { dialogRef, onDialogHide } = useDialogPluginComponent();
+const { t } = useI18n();
 
 // setup dropdowns
 const {
@@ -314,6 +316,17 @@ const state = ref({
 const ret = ref(null);
 const loading = ref(false);
 const maximized = ref(false);
+
+const outputOptions = computed(() => [
+  { label: t("scripts.runScript.outputOptions.wait"), value: "wait" },
+  { label: t("scripts.runScript.outputOptions.forget"), value: "forget" },
+  { label: t("scripts.runScript.outputOptions.email"), value: "email" },
+  {
+    label: t("scripts.runScript.outputOptions.collector"),
+    value: "collector",
+  },
+  { label: t("scripts.runScript.outputOptions.note"), value: "note" },
+]);
 
 async function sendScript() {
   ret.value = null;

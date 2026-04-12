@@ -1,0 +1,853 @@
+{
+  "common": {
+    "add": "Добавить",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "name": "Имя",
+    "no": "Нет",
+    "password": "Пароль",
+    "required": "Обязательно",
+    "reset": "Сброс",
+    "save": "Сохранить",
+    "submit": "Отправить",
+    "test": "Тест",
+    "user": "Пользователь",
+    "username": "Имя пользователя",
+    "yes": "Да"
+  },
+  "apiKeysForm": {
+    "addTitle": "Добавить API-ключ",
+    "editTitle": "Изменить API-ключ",
+    "generatedOnSave": "API-ключ будет сгенерирован при сохранении",
+    "key": "Ключ",
+    "keyExpiration": "Срок действия ключа (необязательно)"
+  },
+  "apiKeysTable": {
+    "title": "API-ключи",
+    "addKey": "Добавить ключ",
+    "noData": "API-токены еще не добавлены",
+    "copyKeyTooltip": "Скопировать API-ключ в буфер обмена",
+    "deleteTitle": "Удалить API-ключ: {name}?",
+    "columns": {
+      "expiration": "Срок действия",
+      "created": "Создан"
+    },
+    "notify": {
+      "copied": "Ключ скопирован в буфер обмена!",
+      "copyFailed": "Не удалось скопировать в буфер обмена!"
+    }
+  },
+  "serverMaintenance": {
+    "title": "Обслуживание сервера",
+    "actions": "Действия",
+    "auditLog": "Журнал аудита",
+    "auditLogTooltip": "Удаляет результаты проверок агентов",
+    "pendingActions": "Ожидающие действия",
+    "pendingActionsTooltip": "Удаляет завершенные ожидающие действия",
+    "alerts": "Оповещения",
+    "alertsTooltip": "Удаляет все оповещения",
+    "actionOptions": {
+      "reloadNats": "Перезагрузить конфигурацию Nats",
+      "removeOrphanedTasks": "Удалить осиротевшие задачи",
+      "pruneDbTables": "Очистить таблицы БД"
+    }
+  },
+  "codeSign": {
+    "title": "Подпись кода",
+    "codeSignAllAgents": "Подписать код на всех агентах",
+    "codeSignAllAgentsTooltip": "Принудительно обновить всех существующих агентов до версии с подписью кода",
+    "token": "Токен",
+    "tokenRequired": "Токен обязателен",
+    "deleteTokenTitle": "Удалить токен?",
+    "notify": {
+      "tokenDeleted": "Токен удален!"
+    }
+  },
+  "customFields": {
+    "title": "Пользовательские поля",
+    "addCustomField": "Добавить пользовательское поле",
+    "clients": "Клиенты",
+    "sites": "Сайты",
+    "agents": "Агенты"
+  },
+  "customFieldsTable": {
+    "noData": "Нет пользовательских полей",
+    "id": "ID: {id}",
+    "deleteTitle": "Удалить пользовательское поле {name}?",
+    "columns": {
+      "fieldType": "Тип поля",
+      "hideInUi": "Скрыть в UI",
+      "hideInSummary": "Скрыть на вкладке Сводка",
+      "defaultValue": "Значение по умолчанию"
+    },
+    "notify": {
+      "deleted": "Пользовательское поле {name} удалено!"
+    }
+  },
+  "customFieldsForm": {
+    "addTitle": "Добавить пользовательское поле",
+    "editTitle": "Изменить пользовательское поле",
+    "target": "Назначение",
+    "fieldType": "Тип поля",
+    "inputOptions": "Варианты ввода (нажимайте Enter после каждого варианта)",
+    "defaultValue": "Значение по умолчанию",
+    "defaultValues": "Значения по умолчанию",
+    "hideInDashboard": "Скрыть в Панели",
+    "hideInSummary": "Скрыть на вкладке Сводка",
+    "defaultValueRequired": "Для обязательных полей должно быть задано значение по умолчанию",
+    "type": {
+      "text": "Текст",
+      "number": "Число",
+      "dropdownSingle": "Выпадающий список (одно значение)",
+      "dropdownMultiple": "Выпадающий список (несколько значений)",
+      "datetime": "Дата и время",
+      "checkbox": "Флажок"
+    },
+    "notify": {
+      "added": "Пользовательское поле добавлено!",
+      "edited": "Пользовательское поле изменено!"
+    }
+  },
+  "keyStoreTable": {
+    "title": "Глобальное хранилище ключей",
+    "addKey": "Добавить ключ",
+    "showValues": "Показать значения",
+    "hideValues": "Скрыть значения",
+    "noData": "Ключи еще не добавлены",
+    "deleteTitle": "Удалить ключ: {name}?",
+    "columns": {
+      "value": "Значение"
+    },
+    "notify": {
+      "deleted": "ключ: {name} удален!"
+    }
+  },
+  "keyStoreForm": {
+    "addTitle": "Добавить глобальный ключ",
+    "editTitle": "Изменить глобальный ключ",
+    "notify": {
+      "added": "Ключ добавлен!",
+      "edited": "Ключ изменен!"
+    }
+  },
+  "urlActionsTable": {
+    "urlActions": "URL Actions",
+    "webhooks": "Web Hooks для действий при сбое/восстановлении оповещений",
+    "addUrlAction": "Добавить URL Action",
+    "addWebhook": "Добавить Web Hook",
+    "noUrlActions": "URL Actions еще не добавлены",
+    "noWebhooks": "Web Hooks еще не добавлены",
+    "deleteTitle": "Удалить URL Action: {name}?",
+    "columns": {
+      "description": "Описание",
+      "urlPattern": "Шаблон URL"
+    },
+    "notify": {
+      "deleted": "URL Action: {name} удален!"
+    }
+  },
+  "urlActionsForm": {
+    "addUrlAction": "Добавить URL Action",
+    "editUrlAction": "Изменить URL Action",
+    "addWebhook": "Добавить Web Hook",
+    "editWebhook": "Изменить Web Hook",
+    "description": "Описание",
+    "urlPattern": "Шаблон URL",
+    "method": "Метод",
+    "requestBody": "Тело запроса",
+    "requestHeaders": "Заголовки запроса",
+    "notify": {
+      "saved": "URL Action сохранен!"
+    }
+  },
+  "testUrlAction": {
+    "testing": "Тестирование {name}",
+    "agents": "Агенты",
+    "sites": "Сайты",
+    "client": "Клиент",
+    "url": "URL",
+    "body": "Тело",
+    "response": "Ответ",
+    "run": "Запустить",
+    "runAgainst": {
+      "agent": "Агент",
+      "site": "Сайт",
+      "client": "Клиент",
+      "none": "Нет"
+    }
+  },
+  "resetPatchPolicy": {
+    "title": "Сброс политики патчей агентов",
+    "description": "Сбрасывает политики патчей для агентов указанного клиента или сайта. Также можно оставить клиента и сайт пустыми, чтобы сбросить политику для всех агентов. (Это может занять некоторое время)",
+    "clients": "Клиенты",
+    "sites": "Сайты",
+    "clearAllPolicies": "Очистить политики для ВСЕХ агентов",
+    "clearPolicies": "Очистить политики",
+    "target": {
+      "all": "Все",
+      "client": "Клиент",
+      "site": "Сайт"
+    }
+  },
+  "editCoreSettings": {
+    "title": "Глобальные настройки",
+    "hintSetZeroToDisable": "Установите 0, чтобы отключить эту функцию",
+    "minimumIsZero": "Минимум 0",
+    "saveAndTestEmail": "Сохранить и проверить Email",
+    "saveAndTestSms": "Сохранить и проверить SMS",
+    "tabs": {
+      "general": "Общие",
+      "emailAlerts": "Email-оповещения",
+      "smsAlerts": "SMS-оповещения",
+      "meshCentral": "MeshCentral",
+      "customFields": "Пользовательские поля",
+      "keyStore": "Хранилище ключей",
+      "urlActions": "URL Actions",
+      "webHooks": "Web Hooks",
+      "retention": "Хранение",
+      "apiKeys": "API-ключи",
+      "sso": "Единый вход (SSO)",
+      "schedules": "Расписания"
+    },
+    "general": {
+      "enableAgentAutoUpdate": "Включить автоматическое самообновление агента",
+      "enableAgentAutoUpdateTooltip": "Запускается в 35 минут каждого часа",
+      "enableServerSideScripts": "Включить серверные скрипты",
+      "enableServerSideScriptsTooltip": "Разрешить запуск скриптов на сервере TRMM для действий при сбое/восстановлении оповещений",
+      "enableWebTerminal": "Включить веб-терминал",
+      "enableWebTerminalTooltip": "Включить веб-терминал",
+      "defaultAgentTimezone": "Часовой пояс агента по умолчанию",
+      "defaultDateFormat": "Формат даты по умолчанию",
+      "clickFormattingOptions": "Нажмите, чтобы увидеть варианты форматирования",
+      "defaultServerPolicy": "Политика серверов по умолчанию",
+      "defaultWorkstationPolicy": "Политика рабочих станций по умолчанию",
+      "defaultAlertTemplate": "Шаблон оповещения по умолчанию",
+      "receiveNotificationsOn": "Получать уведомления по",
+      "informationalAlerts": "Информационным оповещениям",
+      "warningAlerts": "Предупреждениям",
+      "agentDebugLevel": "Уровень отладки агента",
+      "clearFaultsAfterDays": "Очищать ошибки на агентах, не выходивших на связь (дней)",
+      "resetPatchPolicyOnAgents": "Сбросить политику патчей на агентах"
+    },
+    "email": {
+      "emailAlertRouting": "Маршрутизация email-оповещений",
+      "addEmails": "Добавить email",
+      "addEmailTitle": "Добавить email",
+      "recipients": "Получатели",
+      "noRecipients": "Нет получателей",
+      "smtpSettings": "Настройки SMTP",
+      "fromEmail": "Email отправителя",
+      "fromName": "Имя отправителя",
+      "host": "Хост",
+      "port": "Порт",
+      "invalidEmail": "Неверный email",
+      "invalidPort": "Неверный порт",
+      "serverRequiresAuth": "Мой сервер требует аутентификацию",
+      "sendingTestEmail": "Отправка тестового email..."
+    },
+    "sms": {
+      "smsAlertRouting": "Маршрутизация SMS-оповещений",
+      "addNumbers": "Добавить номера",
+      "addNumberTitle": "Добавить номер",
+      "addNumberMessage": "Используйте формат E.164: должен быть символ <b>+</b> и <span class='text-red'>код страны</span>, затем <span class='text-green'>номер телефона</span>, например <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+      "recipients": "Получатели",
+      "noRecipients": "Нет получателей",
+      "twilioSettings": "Настройки Twilio",
+      "twilioNumber": "Номер Twilio",
+      "twilioAccountSid": "SID аккаунта Twilio",
+      "twilioAuthToken": "Токен авторизации Twilio",
+      "sendingTestSms": "Отправка тестового SMS..."
+    },
+    "mesh": {
+      "title": "Настройки MeshCentral",
+      "usernameLowercase": "Имя пользователя должно быть в нижнем регистре",
+      "meshSite": "Сайт Mesh",
+      "meshToken": "Токен Mesh",
+      "meshDeviceGroupName": "Имя группы устройств Mesh",
+      "syncPermsWithTrmm": "Синхронизировать права Mesh с TRMM",
+      "syncPermsTooltip": "Рекомендуется оставить эту опцию включенной; иначе все пользователи TRMM получат полные права в MeshCentral независимо от прав в TRMM.",
+      "companyName": "Название компании",
+      "companyNameTooltip": "Добавление названия компании добавит его к полному имени пользователя в сеансах удаленного управления, например: 'John Doe - Amidaware Inc.'"
+    },
+    "retention": {
+      "checkHistoryDays": "История проверок (дней)",
+      "resolvedAlertsDays": "Решенные оповещения (дней)",
+      "agentHistoryDays": "История агента (дней)",
+      "debugLogsDays": "Логи отладки (дней)",
+      "auditLogsDays": "Логи аудита (дней)",
+      "reportHistoryDays": "История отчетов (дней)"
+    },
+    "confirmSync": {
+      "title": "Вы уверены?",
+      "message": "Эта операция может занять несколько минут в фоне и быть ресурсоемкой по CPU/диску в зависимости от оборудования и количества агентов. Дождитесь полного завершения синхронизации."
+    },
+    "logLevel": {
+      "info": "Инфо",
+      "warning": "Предупреждение",
+      "error": "Ошибка",
+      "critical": "Критично"
+    },
+    "notify": {
+      "saved": "Настройки изменены!"
+    }
+  },
+  "userPreferences": {
+    "title": "Предпочтения",
+    "userInterface": "Интерфейс пользователя",
+    "agentDoubleClickAction": "Действие по двойному клику на агенте",
+    "urlAction": "URL Action",
+    "agentTableDefaultTab": "Вкладка таблицы агентов по умолчанию",
+    "loadingBarColor": "Цвет индикатора загрузки",
+    "dashboardInfoColor": "Цвет информационных индикаторов Панели",
+    "dashboardPositiveColor": "Цвет положительных индикаторов Панели",
+    "dashboardNegativeColor": "Цвет негативных индикаторов Панели",
+    "dashboardWarningColor": "Цвет предупреждений Панели",
+    "language": "Язык",
+    "clickForColorOptions": "Нажмите, чтобы увидеть варианты цветов",
+    "clientSort": "Сортировка клиентов",
+    "dateFormat": "Формат даты",
+    "clickForFormattingOptions": "Нажмите, чтобы увидеть варианты форматирования",
+    "clearSearchWhenSwitching": "Очищать поле поиска при переключении клиента/сайта",
+    "clientSortOptions": {
+      "alphaFail": "Сортировать по алфавиту, поднимая проблемных клиентов вверх",
+      "alpha": "Сортировать только по алфавиту"
+    },
+    "agentDoubleClickOptions": {
+      "editAgent": "Редактировать агента",
+      "takeControl": "Взять управление",
+      "remoteBackground": "Фоновое управление",
+      "runUrlAction": "Запустить URL Action"
+    },
+    "defaultTabOptions": {
+      "servers": "Серверы",
+      "workstations": "Рабочие станции",
+      "mixed": "Смешанный"
+    },
+    "languageOptions": {
+      "system": "Системный (авто)"
+    },
+    "loadingBarColorOptions": {
+      "red": "Красный",
+      "pink": "Розовый",
+      "purple": "Фиолетовый",
+      "deep-purple": "Темно-фиолетовый",
+      "indigo": "Индиго",
+      "blue": "Синий",
+      "light-blue": "Голубой",
+      "cyan": "Бирюзовый",
+      "teal": "Сине-зеленый",
+      "green": "Зеленый",
+      "light-green": "Салатовый",
+      "lime": "Лаймовый",
+      "yellow": "Желтый",
+      "amber": "Янтарный",
+      "orange": "Оранжевый",
+      "deep-orange": "Темно-оранжевый",
+      "brown": "Коричневый",
+      "grey": "Серый",
+      "blue-grey": "Серо-синий"
+    },
+    "notify": {
+      "noUrlActions": "URL Actions не настроены. Перейдите в Настройки > Глобальные настройки > URL Actions",
+      "selectUrlAction": "Выберите URL Action",
+      "saved": "Предпочтения сохранены!"
+    }
+  },
+  "scheduleTable": {
+    "title": "Расписания",
+    "addSchedule": "Добавить расписание",
+    "everyWeekday": "Каждый день недели",
+    "everyMonth": "Каждый месяц",
+    "everyDay": "Каждый день",
+    "everyWeek": "Каждую неделю",
+    "last": "Последний",
+    "deleteConfirm": "Вы уверены, что хотите удалить расписание: {name}?",
+    "columns": {
+      "scheduleType": "Тип расписания",
+      "runTime": "Время запуска",
+      "weekdays": "Дни недели",
+      "months": "Месяцы",
+      "daysOfMonth": "Дни месяца",
+      "weeksOfMonth": "Недели месяца"
+    },
+    "weekOrdinal": {
+      "first": "1-я",
+      "second": "2-я",
+      "third": "3-я",
+      "fourth": "4-я"
+    }
+  },
+  "scheduleApi": {
+    "added": "Расписание успешно добавлено.",
+    "updated": "Расписание успешно изменено.",
+    "deleted": "Расписание успешно удалено."
+  },
+  "scheduleForm": {
+    "addSchedule": "Добавить расписание",
+    "editSchedule": "Изменить расписание",
+    "taskRunType": "Тип запуска задачи",
+    "hourMinute": "Часы:Минуты",
+    "runOnDays": "Запускать в дни",
+    "runOnMonths": "Запускать в месяцы",
+    "runOnWeeks": "Запускать в недели",
+    "onDays": "По дням",
+    "onWeeks": "По неделям",
+    "allMonths": "Все месяцы",
+    "allDays": "Все дни",
+    "lastDay": "Последний день",
+    "frequency": {
+      "daily": "Ежедневно",
+      "weekly": "Еженедельно",
+      "monthly": "Ежемесячно"
+    },
+    "week": {
+      "first": "Первая неделя",
+      "second": "Вторая неделя",
+      "third": "Третья неделя",
+      "fourth": "Четвертая неделя",
+      "last": "Последняя неделя"
+    }
+  },
+  "adminManager": {
+    "title": "Администрирование пользователей",
+    "new": "Новый",
+    "enableUser": "Включить пользователя",
+    "noUsers": "Нет пользователей",
+    "resetPassword": "Сбросить пароль",
+    "resetTwoFactorAuth": "Сбросить двухфакторную аутентификацию",
+    "showConnectedSsoAccounts": "Показать подключенные SSO-аккаунты",
+    "showActiveSessions": "Показать активные сессии",
+    "sso": "SSO",
+    "deleteUserTitle": "Удалить пользователя {username}?",
+    "reset2faTitle": "Сбросить 2FA для {username}?",
+    "columns": {
+      "active": "Активен",
+      "username": "Имя пользователя",
+      "email": "Email",
+      "lastLogin": "Последний вход",
+      "lastLogonFrom": "Последний вход с"
+    },
+    "notify": {
+      "userDeleted": "Пользователь {username} удален!",
+      "userEnabled": "Пользователь успешно включен",
+      "userDisabled": "Пользователь успешно отключен"
+    }
+  },
+  "permissionsManager": {
+    "title": "Управление ролями",
+    "noRoles": "Нет ролей",
+    "newRole": "Новая роль",
+    "deleteRoleTitle": "Удалить роль {name}?",
+    "columns": {
+      "superuser": "Суперпользователь",
+      "assignedUsers": "Назначенные пользователи"
+    }
+  },
+  "rolesForm": {
+    "editingRole": "Редактирование роли",
+    "addingRole": "Добавление роли",
+    "roleName": "Название роли",
+    "sections": {
+      "superUser": "Суперпользователь",
+      "reporting": "Отчетность",
+      "accounts": "Учетные записи",
+      "agents": "Агенты",
+      "core": "Ядро",
+      "checks": "Проверки",
+      "clients": "Клиенты",
+      "automationPolicies": "Политики автоматизации",
+      "tasks": "Задачи",
+      "logs": "Логи",
+      "scripts": "Скрипты",
+      "alerts": "Оповещения",
+      "windowsServices": "Службы Windows",
+      "software": "ПО",
+      "windowsUpdates": "Обновления Windows"
+    },
+    "allowedClients": "Разрешенные клиенты",
+    "allowedSites": "Разрешенные сайты",
+    "emptyMeansAllClientsAllowed": "Пусто означает, что разрешены все клиенты",
+    "emptyMeansAllSitesAllowed": "Пусто означает, что разрешены все сайты",
+    "permissionLabels": {
+      "superUser": "Суперпользователь",
+      "reportingViewer": "Просмотр отчетов",
+      "reportingManager": "Управление отчетами",
+      "listUserAccounts": "Просмотр учетных записей пользователей",
+      "manageUserAccounts": "Управление учетными записями пользователей",
+      "listRoles": "Просмотр ролей",
+      "manageRoles": "Управление ролями",
+      "listAgents": "Просмотр агентов",
+      "listAgentHistory": "Просмотр истории агентов",
+      "useMeshCentral": "Использовать MeshCentral",
+      "uninstallAgents": "Удалять агентов",
+      "updateAgents": "Обновлять агентов",
+      "editAgents": "Редактировать агентов",
+      "manageProcesses": "Управлять процессами",
+      "viewEventLogs": "Просматривать журналы событий",
+      "sendCommand": "Отправлять команды",
+      "shutdownRebootAgents": "Выключать / перезагружать агентов",
+      "wakeUpWolAgents": "Пробуждать агентов (WoL)",
+      "installAgents": "Устанавливать агентов",
+      "runScript": "Запускать скрипт",
+      "bulkActions": "Массовые действия",
+      "recoverAgents": "Восстанавливать агентов",
+      "useRegistry": "Использовать реестр",
+      "listNotes": "Просмотр заметок",
+      "manageNotes": "Управление заметками",
+      "viewGlobalSettings": "Просмотр глобальных настроек",
+      "editGlobalSettings": "Изменение глобальных настроек",
+      "viewGlobalKeyStore": "Просмотр глобального хранилища ключей",
+      "editGlobalKeyStore": "Изменение глобального хранилища ключей",
+      "doServerMaintenance": "Обслуживание сервера",
+      "manageCodeSigning": "Управление подписью кода",
+      "listApiKeys": "Просмотр API-ключей",
+      "manageApiKeys": "Управление API-ключами",
+      "runUrlActions": "Запуск URL Actions",
+      "viewCustomFields": "Просмотр пользовательских полей",
+      "editCustomFields": "Изменение пользовательских полей",
+      "listSchedules": "Просмотр расписаний",
+      "manageSchedules": "Управление расписаниями",
+      "useTrmmServerWebTerminal": "Использовать веб-терминал сервера TRMM",
+      "listChecks": "Просмотр проверок",
+      "manageChecks": "Управление проверками",
+      "runChecks": "Запуск проверок",
+      "listClients": "Просмотр клиентов",
+      "manageClients": "Управление клиентами",
+      "listSites": "Просмотр сайтов",
+      "manageSites": "Управление сайтами",
+      "listDeployments": "Просмотр развертываний",
+      "manageDeployments": "Управление развертываниями",
+      "listAutomationPolicies": "Просмотр политик автоматизации",
+      "manageAutomationPolicies": "Управление политиками автоматизации",
+      "listTasks": "Просмотр задач",
+      "manageTasks": "Управление задачами",
+      "runTasks": "Запуск задач",
+      "viewAuditLogs": "Просмотр журналов аудита",
+      "viewDebugLogs": "Просмотр логов отладки",
+      "listPendingActions": "Просмотр ожидающих действий",
+      "managePendingActions": "Управление ожидающими действиями",
+      "listScripts": "Просмотр скриптов",
+      "manageScripts": "Управление скриптами",
+      "runScriptsOnTrmmServer": "Запускать скрипты на сервере TRMM",
+      "listAlerts": "Просмотр оповещений",
+      "manageAlerts": "Управление оповещениями",
+      "listAlertTemplates": "Просмотр шаблонов оповещений",
+      "manageAlertTemplates": "Управление шаблонами оповещений",
+      "manageWindowsServices": "Управление службами Windows",
+      "listSoftware": "Просмотр ПО",
+      "manageSoftware": "Управление ПО",
+      "manageWindowsUpdates": "Управление обновлениями Windows"
+    }
+  },
+  "userSessionsTable": {
+    "title": "Сессии пользователя {username}",
+    "removeAllSessions": "Удалить все сессии",
+    "disconnect": "Отключить",
+    "disconnectSessionTitle": "Отключить сессию для {user}?",
+    "disconnectSessionMessage": "Пользователь будет немедленно разлогинен.",
+    "disconnectAllSessionsTitle": "Отключить все сессии для {username}?",
+    "columns": {
+      "created": "Создано",
+      "expires": "Истекает"
+    },
+    "notify": {
+      "loginSessionDeleted": "Сессия входа успешно удалена",
+      "loginSessionsDeleted": "Сессии входа успешно удалены"
+    }
+  },
+  "automationManager": {
+    "title": "Менеджер автоматизации",
+    "new": "Новый",
+    "policyOverview": "Обзор политик",
+    "noPolicies": "Нет политик",
+    "enablePolicy": "Включить политику",
+    "enforcePolicyTooltip": "Принудительная политика (переопределяет задачи/проверки агента)",
+    "copy": "Копировать",
+    "showRelations": "Показать связи",
+    "policyExclusions": "Исключения политики",
+    "defaultServer": "Сервер по умолчанию",
+    "defaultWorkstation": "Рабочая станция по умолчанию",
+    "showRelationsCount": "Показать связи ({count})",
+    "showPolicyExclusionsCount": "Показать исключения политики ({count})",
+    "createCopyTooltip": "Создать копию этой политики",
+    "deletePolicyTitle": "Удалить политику?",
+    "editPatchPolicy": "Изменить политику патчей",
+    "addPatchPolicy": "Добавить политику патчей",
+    "modifyPatchPolicy": "Изменить политику патчей",
+    "createPatchPolicy": "Создать политику патчей",
+    "modifyAlertTemplate": "Изменить шаблон оповещений",
+    "assignAlertTemplate": "Назначить шаблон оповещений",
+    "columns": {
+      "active": "Активна",
+      "enforced": "Принудительно",
+      "description": "Описание",
+      "relations": "Связи",
+      "exclusions": "Исключения",
+      "patchPolicy": "Политика патчей",
+      "alertTemplate": "Шаблон оповещений",
+      "actions": "Действия"
+    },
+    "notify": {
+      "policyDeleted": "Политика удалена!",
+      "policyEnabled": "Политика успешно включена",
+      "policyDisabled": "Политика успешно отключена",
+      "policyEnforced": "Политика успешно принудительно включена",
+      "policyEnforcementDisabled": "Принудительное применение политики отключено"
+    }
+  },
+  "policyOverview": {
+    "disabledSuffix": " (отключено)",
+    "policyLabelServers": "{name} (Серверы){disabled}",
+    "policyLabelWorkstations": "{name} (Рабочие станции){disabled}"
+  },
+  "policyAdd": {
+    "title": "Изменить политики, назначенные для {type}",
+    "serverPolicy": "Политика серверов",
+    "workstationPolicy": "Политика рабочих станций",
+    "policy": "Политика",
+    "blockPolicyInheritance": "Блокировать наследование политики",
+    "blockPolicyInheritanceHint": "Этот {type} не будет наследовать вышестоящие политики",
+    "noPolicies": "Политики автоматизации не настроены. Перейдите в Настройки > Менеджер автоматизации",
+    "types": {
+      "agent": "агент",
+      "site": "сайт",
+      "client": "клиент"
+    },
+    "notify": {
+      "updated": "Политики успешно обновлены!"
+    }
+  },
+  "policyExclusions": {
+    "title": "Исключения политики для {name}",
+    "excludedClients": "Исключенные клиенты",
+    "excludedSites": "Исключенные сайты",
+    "excludedAgents": "Исключенные агенты",
+    "notify": {
+      "saved": "Исключения политики сохранены"
+    }
+  },
+  "policyForm": {
+    "copyingFromPolicy": "Вы копируете проверки и задачи из политики:",
+    "intoNewPolicy": "в новую политику.",
+    "description": "Описание",
+    "active": "Активна",
+    "enforced": "Принудительно",
+    "editPolicy": "Изменить политику",
+    "addPolicy": "Добавить политику",
+    "notify": {
+      "edited": "Политика изменена!",
+      "added": "Политика добавлена. Теперь можно добавить задачи и проверки!"
+    }
+  },
+  "policyStatus": {
+    "title": "Статус: {name}",
+    "noAgentsInPolicy": "В этой политике нет агентов",
+    "awaitingFirstSynchronization": "Ожидание первой синхронизации",
+    "columns": {
+      "hostname": "Имя хоста",
+      "status": "Статус",
+      "moreInfo": "Подробнее",
+      "dateTime": "Дата / Время"
+    }
+  },
+  "relationsView": {
+    "title": "Связи: {name}",
+    "defaultServerPolicy": "Эта политика установлена как политика серверов по умолчанию.",
+    "defaultWorkstationPolicy": "Эта политика установлена как политика рабочих станций по умолчанию.",
+    "appliedToServers": "Применено к серверам",
+    "appliedToWorkstations": "Применено к рабочим станциям"
+  },
+  "auditLogDetail": {
+    "before": "До",
+    "after": "После"
+  },
+  "auditManager": {
+    "title": "Менеджер аудита",
+    "auditLogs": "Журналы аудита",
+    "agent": "Агент",
+    "agents": "Агенты",
+    "clients": "Клиенты",
+    "users": "Пользователи",
+    "action": "Действие",
+    "object": "Объект",
+    "time": "Время",
+    "noDataInitial": "Нажмите поиск, чтобы найти журналы аудита",
+    "noDataSearched": "Данные не найдены. Уточните параметры поиска",
+    "columns": {
+      "time": "Время",
+      "username": "Имя пользователя",
+      "agent": "Агент",
+      "client": "Клиент",
+      "site": "Сайт",
+      "action": "Действие",
+      "object": "Объект",
+      "message": "Сообщение",
+      "clientIp": "IP клиента"
+    },
+    "options": {
+      "addObject": "Добавить объект",
+      "modifyObject": "Изменить объект",
+      "executeCommand": "Выполнить команду",
+      "executeScript": "Выполнить скрипт",
+      "remoteSession": "Удаленная сессия",
+      "urlAction": "URL Action",
+      "agentInstalls": "Установки агента",
+      "bulkActions": "Массовые действия",
+      "deleteObject": "Удалить объект",
+      "failedUserLogin": "Неудачный вход пользователя",
+      "userLogin": "Вход пользователя",
+      "taskRunResults": "Результаты запуска задач"
+    },
+    "actions": {
+      "add": "Добавить объект",
+      "modify": "Изменить объект",
+      "delete": "Удалить объект",
+      "execute_command": "Выполнить команду",
+      "execute_script": "Выполнить скрипт",
+      "remote_session": "Удаленная сессия",
+      "url_action": "URL Action",
+      "agent_install": "Установки агента",
+      "bulk_action": "Массовые действия",
+      "failed_login": "Неудачный вход пользователя",
+      "login": "Вход пользователя",
+      "task_run": "Результаты запуска задач"
+    },
+    "objects": {
+      "agent": "Агент",
+      "automatedTask": "Автоматизированная задача",
+      "bulkActions": "Массовые действия",
+      "coreSettings": "Настройки ядра",
+      "check": "Проверка",
+      "client": "Клиент",
+      "policy": "Политика",
+      "site": "Сайт",
+      "script": "Скрипт",
+      "user": "Пользователь",
+      "patchPolicy": "Политика патчей",
+      "alertTemplate": "Шаблон оповещений",
+      "role": "Роль",
+      "urlAction": "URL Action",
+      "globalKeyStore": "Глобальное хранилище ключей",
+      "customField": "Пользовательское поле",
+      "schedule": "Расписание",
+      "reportSchedule": "Расписание отчета"
+    }
+  },
+  "debugLog": {
+    "title": "Лог отладки",
+    "logs": "Логи отладки",
+    "agentsFilter": "Фильтр агентов",
+    "logTypeFilter": "Фильтр типа лога",
+    "resultsLimited": "Результаты ограничены 1000 строками.",
+    "logTypes": {
+      "agentUpdate": "Обновление агента",
+      "agentIssues": "Проблемы агента",
+      "windowsUpdates": "Обновления Windows",
+      "systemIssues": "Системные проблемы",
+      "scripting": "Скриптинг"
+    },
+    "columns": {
+      "time": "Время",
+      "logLevel": "Уровень лога",
+      "agent": "Агент",
+      "logType": "Тип лога",
+      "message": "Сообщение"
+    }
+  },
+  "pendingActions": {
+    "titleForAgent": "Ожидающие действия для {hostname}",
+    "allPendingActions": "Все ожидающие действия",
+    "noPendingActions": "Нет ожидающих действий",
+    "hideCompleted": "Скрыть завершенные ({count})",
+    "showCompleted": "Показать завершенные ({count})",
+    "cancelAction": "Отменить действие",
+    "completed": "Завершено",
+    "viewOutput": "Показать вывод",
+    "outputDetailsTitle": "Детали вывода ожидающего действия",
+    "deletePendingActionTitle": "Удалить это ожидающее действие?",
+    "columns": {
+      "type": "Тип",
+      "due": "Срок",
+      "description": "Описание",
+      "agent": "Агент",
+      "client": "Клиент",
+      "site": "Сайт"
+    }
+  },
+  "userForm": {
+    "invalidEmail": "Неверный email",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "role": "Роль",
+    "noRolesCreated": "Роли еще не созданы. Создайте их в Настройки > Менеджер прав",
+    "denyDashboardLogins": "Запретить вход в панель мониторинга",
+    "editUser": "Изменить пользователя",
+    "addUser": "Добавить пользователя",
+    "notify": {
+      "edited": "Пользователь изменен!",
+      "added": "Пользователь {username} добавлен!"
+    }
+  },
+  "userResetPassword": {
+    "title": "Сброс пароля для {username}",
+    "newPassword": "Новый пароль",
+    "notify": {
+      "reset": "Пароль пользователя сброшен!"
+    }
+  },
+  "winUpdateDialog": {
+    "categories": "Категории",
+    "description": "Описание",
+    "supportUrls": "Ссылки поддержки"
+  },
+  "shared": {
+    "weekday": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "wednesday": "Среда",
+      "thursday": "Четверг",
+      "friday": "Пятница",
+      "saturday": "Суббота",
+      "sunday": "Воскресенье"
+    },
+    "weekdayShort": {
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт",
+      "sat": "Сб",
+      "sun": "Вс"
+    },
+    "month": {
+      "january": "Январь",
+      "february": "Февраль",
+      "march": "Март",
+      "april": "Апрель",
+      "may": "Май",
+      "june": "Июнь",
+      "july": "Июль",
+      "august": "Август",
+      "september": "Сентябрь",
+      "october": "Октябрь",
+      "november": "Ноябрь",
+      "december": "Декабрь"
+    },
+    "monthShort": {
+      "jan": "Янв",
+      "feb": "Фев",
+      "mar": "Мар",
+      "apr": "Апр",
+      "may": "Май",
+      "jun": "Июн",
+      "jul": "Июл",
+      "aug": "Авг",
+      "sep": "Сен",
+      "oct": "Окт",
+      "nov": "Ноя",
+      "dec": "Дек"
+    }
+  }
+}

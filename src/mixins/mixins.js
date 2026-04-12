@@ -1,5 +1,6 @@
 import { Notify, date } from "quasar";
 import axios from "axios";
+import { i18n } from "@/i18n";
 
 import { formatAgentOptions } from "@/utils/format";
 
@@ -13,17 +14,29 @@ function getTimeLapse(unixtime) {
   var msPerYear = msPerDay * 365;
   var elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return i18n.global.t("common.timeLapse.secondsAgo", {
+      count: Math.round(elapsed / 1000),
+    });
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return i18n.global.t("common.timeLapse.minutesAgo", {
+      count: Math.round(elapsed / msPerMinute),
+    });
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return i18n.global.t("common.timeLapse.hoursAgo", {
+      count: Math.round(elapsed / msPerHour),
+    });
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return i18n.global.t("common.timeLapse.daysAgo", {
+      count: Math.round(elapsed / msPerDay),
+    });
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return i18n.global.t("common.timeLapse.monthsAgo", {
+      count: Math.round(elapsed / msPerMonth),
+    });
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return i18n.global.t("common.timeLapse.yearsAgo", {
+      count: Math.round(elapsed / msPerYear),
+    });
   }
 }
 
@@ -69,7 +82,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold or Error Threshold need to be set",
+          message: i18n.global.t("checks.validation.thresholdRequired"),
         });
         return false;
       }
@@ -78,7 +91,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be less than Error Threshold",
+          message: i18n.global.t("checks.validation.warningLessThanError"),
         });
         return false;
       }
@@ -87,7 +100,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be more than Error Threshold",
+          message: i18n.global.t("checks.validation.warningMoreThanError"),
         });
         return false;
       }
@@ -181,7 +194,8 @@ export default {
         }
       });
 
-      if (create_unassigned) categories.push("Unassigned");
+      if (create_unassigned)
+        categories.push(i18n.global.t("common.system.unassigned"));
 
       categories.sort().forEach((cat) => {
         options.push({ category: cat });
@@ -195,7 +209,10 @@ export default {
               args: script.args,
               env_vars: script.env_vars,
             });
-          } else if (cat === "Unassigned" && !script.category) {
+          } else if (
+            cat === i18n.global.t("common.system.unassigned") &&
+            !script.category
+          ) {
             tmp.push({
               label: script.name,
               value: script.id,
@@ -227,7 +244,7 @@ export default {
       }
       const a = date.formatDate(ret, "MMM D, YYYY");
       const b = date.formatDate(ret, "h:mm A");
-      return `${a} at ${b}`;
+      return i18n.global.t("common.system.datetimeAt", { date: a, time: b });
     },
     truncateText(txt) {
       if (txt) return txt.length >= 60 ? txt.substring(0, 60) + "..." : txt;

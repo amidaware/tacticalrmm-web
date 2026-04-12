@@ -2,7 +2,7 @@
   <q-card style="min-width: 35vw">
     <q-card-section class="row">
       <q-card-actions align="left">
-        <div class="text-h6">Add an agent</div>
+        <div class="text-h6">{{ $t("agents.installAgent.addAgent") }}</div>
       </q-card-actions>
       <q-space />
       <q-card-actions align="right">
@@ -16,7 +16,7 @@
             outlined
             dense
             options-dense
-            label="Client"
+            :label="$t('agents.installAgent.client')"
             v-model="client"
             :options="client_options"
             @update:model-value="site = sites[0]"
@@ -27,7 +27,7 @@
             dense
             options-dense
             outlined
-            label="Site"
+            :label="$t('agents.installAgent.site')"
             v-model="site"
             :options="sites"
           />
@@ -37,7 +37,7 @@
             <q-radio
               v-model="agentOS"
               val="windows"
-              label="Windows"
+              :label="$t('agents.installAgent.windows')"
               @update:model-value="
                 installMethod = 'exe';
                 goarch = GOARCH_AMD64;
@@ -46,7 +46,7 @@
             <q-radio
               v-model="agentOS"
               val="linux"
-              label="Linux"
+              :label="$t('agents.installAgent.linux')"
               @update:model-value="
                 installMethod = 'bash';
                 goarch = GOARCH_AMD64;
@@ -55,7 +55,7 @@
             <q-radio
               v-model="agentOS"
               val="darwin"
-              label="macOS"
+              :label="$t('agents.installAgent.macos')"
               @update:model-value="
                 installMethod = 'mac';
                 goarch = GOARCH_AMD64;
@@ -68,13 +68,13 @@
             <q-radio
               v-model="agenttype"
               val="server"
-              label="Server"
+              :label="$t('agents.installAgent.server')"
               @update:model-value="power = false"
             />
             <q-radio
               v-model="agenttype"
               val="workstation"
-              label="Workstation"
+              :label="$t('agents.installAgent.workstation')"
             />
           </div>
         </q-card-section>
@@ -85,7 +85,7 @@
               dense
               type="number"
               filled
-              label="Token expiration (hours)"
+              :label="$t('agents.installAgent.tokenExpirationHours')"
               style="max-width: 200px"
               stack-label
             />
@@ -93,81 +93,89 @@
         </q-card-section>
         <q-card-section v-show="agentOS === 'windows'">
           <div class="q-gutter-sm">
-            <q-checkbox v-model="rdp" dense label="Enable RDP" />
-            <q-checkbox v-model="ping" dense label="Enable Ping">
+            <q-checkbox
+              v-model="rdp"
+              dense
+              :label="$t('agents.installAgent.enableRdp')"
+            />
+            <q-checkbox
+              v-model="ping"
+              dense
+              :label="$t('agents.installAgent.enablePing')"
+            >
               <q-tooltip>
-                Enable ICMP echo requests in the local firewall
+                {{ $t("agents.installAgent.enableIcmpEcho") }}
               </q-tooltip>
             </q-checkbox>
             <q-checkbox
               v-model="power"
               dense
               v-show="agenttype === 'workstation'"
-              label="Disable sleep/hibernate"
+              :label="$t('agents.installAgent.disableSleepHibernate')"
             />
           </div>
         </q-card-section>
         <q-card-section>
-          Arch
+          {{ $t("agents.installAgent.arch") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
-              label="64 bit"
+              :label="$t('agents.installAgent.arch64Bit')"
               v-show="agentOS === 'windows' || agentOS === 'linux'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
-              label="Intel 64 bit"
+              :label="$t('agents.installAgent.intel64Bit')"
               v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_i386"
-              label="32 bit"
+              :label="$t('agents.installAgent.arch32Bit')"
               v-show="agentOS !== 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
-              label="ARM 64 bit"
+              :label="$t('agents.installAgent.arm64Bit')"
               v-show="agentOS === 'linux'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
-              label="Apple Silicon (M-Series)"
+              :label="$t('agents.installAgent.appleSilicon')"
               v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
-              label="ARM 32 bit"
+              :label="$t('agents.installAgent.arm32Bit')"
               v-show="agentOS === 'linux'"
             />
           </div>
         </q-card-section>
         <q-card-section>
-          Installation Method
+          {{ $t("agents.installAgent.installationMethod") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="installMethod"
               val="exe"
               v-show="agentOS === 'windows'"
-              label="Dynamically generated exe"
+              :label="$t('agents.installAgent.generatedExe')"
             />
             <q-radio
               v-model="installMethod"
               val="powershell"
               v-show="agentOS === 'windows'"
-              label="Powershell"
+              :label="$t('agents.installAgent.powershell')"
             />
             <q-radio
               v-model="installMethod"
               val="manual"
               v-show="agentOS === 'windows'"
-              label="Manual"
+              :label="$t('agents.installAgent.manual')"
             />
           </div>
         </q-card-section>
@@ -286,7 +294,9 @@ export default {
           this.showAgentDownload = true;
         });
       } else if (this.installMethod === "exe") {
-        this.$q.loading.show({ message: "Generating executable..." });
+        this.$q.loading.show({
+          message: this.$t("agents.installAgent.generatingExecutable"),
+        });
 
         this.$axios
           .post("/agents/installer/", data, { responseType: "blob" })
@@ -329,8 +339,12 @@ export default {
     },
     showDLMessage() {
       this.$q.dialog({
-        message: `Installer for ${this.client.label}, ${this.site.label} (${this.agenttype}) will now be downloaded.
-              You may reuse this installer for ${this.expires} hours before it expires. No command line arguments are needed.`,
+        message: this.$t("agents.installAgent.installerWillDownload", {
+          client: this.client.label,
+          site: this.site.label,
+          agenttype: this.agenttype,
+          expires: this.expires,
+        }),
       });
     },
   },
@@ -342,19 +356,29 @@ export default {
       let text;
       switch (this.installMethod) {
         case "exe":
-          text = "Generate and download exe";
+          text = this.$t(
+            "agents.installAgent.installButton.generateAndDownloadExe",
+          );
           break;
         case "powershell":
-          text = "Download powershell script";
+          text = this.$t(
+            "agents.installAgent.installButton.downloadPowershellScript",
+          );
           break;
         case "manual":
-          text = "Show manual installation instructions";
+          text = this.$t(
+            "agents.installAgent.installButton.showManualInstallationInstructions",
+          );
           break;
         case "bash":
-          text = "Download linux install script";
+          text = this.$t(
+            "agents.installAgent.installButton.downloadLinuxInstallScript",
+          );
           break;
         case "mac":
-          text = "Show installation instructions";
+          text = this.$t(
+            "agents.installAgent.installButton.showInstallationInstructions",
+          );
           break;
       }
 

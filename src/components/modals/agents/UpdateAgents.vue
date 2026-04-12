@@ -1,10 +1,12 @@
 <template>
   <q-card>
     <q-bar>
-      Update Agents
+      {{ $t("agents.updateAgents.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $t("common.buttons.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-separator />
@@ -12,12 +14,10 @@
       <template v-slot:avatar>
         <q-icon name="info" />
       </template>
-      If agent auto update is enabled in Global Settings, agents will
-      automatically self update at 35 min past the hour, every hour. Use this
-      tool to manually trigger an agent update cycle.
+      {{ $t("agents.updateAgents.banner") }}
     </q-banner>
     <q-card-section>
-      Select Version
+      {{ $t("agents.updateAgents.selectVersion") }}
       <q-select
         square
         disable
@@ -29,17 +29,17 @@
       />
     </q-card-section>
     <q-card-section v-show="version !== null">
-      Select Agent
+      {{ $t("agents.updateAgents.selectAgent") }}
       <br />
       <q-separator />
       <q-checkbox
         v-model="selectAll"
-        label="Select All"
+        :label="$t('agents.updateAgents.selectAll')"
         @update:model-value="selectAllAction"
       />
       <q-btn
         v-show="group.length !== 0"
-        label="Update"
+        :label="$t('common.buttons.update')"
         color="primary"
         @click="update"
         class="q-ml-xl"
@@ -94,7 +94,7 @@ export default {
       const data = { agent_ids: this.group };
       this.$axios.post("/agents/update/", data).then(() => {
         this.$emit("close");
-        this.notifySuccess("Agents will now be updated");
+        this.notifySuccess(this.$t("agents.updateAgents.agentsWillBeUpdated"));
       });
     },
   },

@@ -1,0 +1,246 @@
+{
+  "tree": {
+    "allClients": "Все клиенты",
+    "noClients": "Нет клиентов",
+    "id": "ID",
+    "agentCount": "Количество агентов"
+  },
+  "contextMenu": {
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "addSite": "Добавить сайт",
+    "enableMaintenanceMode": "Включить режим обслуживания",
+    "disableMaintenanceMode": "Выключить режим обслуживания",
+    "installAgent": "Установить агента",
+    "assignAutomationPolicy": "Назначить политику автоматизации",
+    "assignAlertTemplate": "Назначить шаблон оповещения",
+    "runUrlAction": "Запустить URL Action",
+    "runChecks": "Запустить проверки",
+    "reporting": "Отчетность",
+    "close": "Закрыть"
+  },
+  "tabs": {
+    "servers": "Серверы",
+    "workstations": "Рабочие станции",
+    "mixed": "Смешанный"
+  },
+  "filters": {
+    "search": "Поиск",
+    "title": "Фильтр таблицы агентов",
+    "checksFailing": "Есть сбойные проверки",
+    "patchesPending": "Есть ожидающие патчи",
+    "actionsPending": "Есть ожидающие действия",
+    "rebootNeeded": "Требуется перезагрузка",
+    "availability": "Доступность",
+    "showAllAgents": "Показать всех агентов",
+    "showOnlineOnly": "Показать только онлайн",
+    "showOfflineOnly": "Показать только офлайн",
+    "showOverdueOnly": "Показать только просроченные",
+    "showOffline30Days": "Показать офлайн более 30 дней"
+  },
+  "table": {
+    "client": "Клиент",
+    "site": "Сайт",
+    "hostname": "Имя хоста",
+    "description": "Описание",
+    "user": "Пользователь",
+    "lastResponse": "Последний ответ",
+    "bootTime": "Время загрузки"
+  },
+  "dialog": {
+    "deleteTitle": "Вы уверены?",
+    "deleteTarget": "Удалить {type}: {name}."
+  },
+  "notify": {
+    "noUrlActions": "URL Actions не настроены. Перейдите в Настройки > Глобальные настройки > URL Actions"
+  },
+  "agentTable": {
+    "noAgents": "Нет агентов",
+    "checksStatus": "Статус проверок",
+    "patchesPending": "Ожидающие патчи",
+    "pendingActions": "Ожидающие действия",
+    "agentStatus": "Статус агента",
+    "reboot": "Перезагрузка",
+    "settingOverriddenByTemplate": "Параметр переопределен шаблоном оповещений: {name}",
+    "platform": {
+      "windows": "Microsoft Windows",
+      "linux": "Linux",
+      "macos": "macOS"
+    },
+    "monitoringType": {
+      "server": "Сервер",
+      "workstation": "Рабочая станция"
+    },
+    "status": {
+      "maintenanceModeEnabled": "Режим обслуживания включен",
+      "checksFailing": "Есть сбойные проверки",
+      "checksWarning": "Есть предупреждения по проверкам",
+      "checksInfo": "Есть информационные проверки",
+      "checksPassing": "Проверки в норме",
+      "rebootRequired": "Требуется перезагрузка",
+      "agentOverdue": "Агент просрочен",
+      "agentOffline": "Агент офлайн",
+      "agentOnline": "Агент онлайн"
+    },
+    "pendingActionCount": "Ожидающих действий: {count}",
+    "alerts": {
+      "dashboardOverdue": "Показывать оповещение на панели при просрочке агента",
+      "emailOverdue": "Отправлять email-оповещение при просрочке агента",
+      "smsOverdue": "Отправлять SMS-оповещение при просрочке агента",
+      "category": {
+        "email": "Email",
+        "text": "SMS",
+        "dashboard": "Панель"
+      },
+      "action": {
+        "enabled": "включены",
+        "disabled": "выключены"
+      },
+      "updated": "Оповещения типа «{category}» теперь {action}, когда агент {hostname} просрочен."
+    }
+  },
+  "fileBar": {
+    "menu": {
+      "file": "Файл",
+      "view": "Вид",
+      "agents": "Агенты",
+      "settings": "Настройки",
+      "tools": "Инструменты",
+      "reporting": "Отчетность",
+      "help": "Помощь"
+    },
+    "actions": {
+      "add": "Добавить",
+      "auditLog": "Журнал аудита",
+      "debugLog": "Журнал отладки",
+      "manageDeployments": "Управление развертываниями",
+      "updateAgents": "Обновить агентов",
+      "clientsManager": "Менеджер клиентов",
+      "scriptManager": "Менеджер скриптов",
+      "automationManager": "Менеджер автоматизации",
+      "alertsManager": "Менеджер оповещений",
+      "permissionsManager": "Менеджер прав",
+      "userAdministration": "Администрирование пользователей",
+      "globalSettings": "Глобальные настройки",
+      "codeSigning": "Подпись кода",
+      "bulkCommand": "Массовая команда",
+      "bulkScript": "Массовый скрипт",
+      "bulkPatchManagement": "Массовое управление патчами",
+      "serverMaintenance": "Обслуживание сервера",
+      "clearCache": "Очистить кэш",
+      "recoverAllAgents": "Восстановить всех агентов",
+      "reportingManager": "Менеджер отчетности",
+      "documentation": "Документация",
+      "githubRepo": "Репозиторий GitHub",
+      "bugReport": "Сообщить об ошибке",
+      "featureRequest": "Запрос функции",
+      "joinDiscord": "Присоединиться к Discord"
+    },
+    "notify": {
+      "reportingRequiresTier2": "Функция отчетности требует спонсорства уровня Tier 2 или выше. Подробности см. в документации.",
+      "cacheCleared": "Кэш очищен!",
+      "agentsRecoveryStarted": "Агенты будут восстановлены"
+    },
+    "dialog": {
+      "bulkRecoverTitle": "Восстановить всех агентов?",
+      "bulkRecoverMessage": "Это перезапустит службы Tactical и Mesh Agent на всех агентах"
+    }
+  },
+  "subTableTabs": {
+    "summary": "Сводка",
+    "checks": "Проверки",
+    "tasks": "Задачи",
+    "patches": "Патчи",
+    "software": "ПО",
+    "history": "История",
+    "notes": "Заметки",
+    "assets": "Активы",
+    "debug": "Отладка",
+    "audit": "Аудит"
+  },
+  "fileBrowser": {
+    "folderEmpty": "Папка пуста",
+    "columns": {
+      "name": "Имя",
+      "type": "Тип",
+      "size": "Размер"
+    }
+  },
+  "preDialog": {
+    "copyToClipboard": "Копировать в буфер"
+  },
+  "exportTableBtn": {
+    "exportAsCsv": "Экспортировать таблицу в CSV"
+  },
+  "tacticalTable": {
+    "columnSelect": "Выбор столбцов"
+  },
+  "clients": {
+    "managerTitle": "Менеджер клиентов",
+    "new": "Новый",
+    "noClients": "Нет клиентов",
+    "noSites": "Нет сайтов",
+    "showSites": "Показать сайты ({count})",
+    "sitesFor": "Сайты для {name}",
+    "columns": {
+      "name": "Имя",
+      "sites": "Сайты",
+      "totalAgents": "Всего агентов"
+    },
+    "dialog": {
+      "deleteClient": "Удалить клиента: {name}.",
+      "deleteSite": "Удалить сайт: {name}."
+    },
+    "form": {
+      "editingClient": "Редактирование {name}",
+      "addingClient": "Добавление клиента",
+      "defaultFirstSite": "Сайт по умолчанию",
+      "customFields": "Пользовательские поля",
+      "editingSite": "Редактирование {name}",
+      "addingSite": "Добавление сайта",
+      "clientIsRequired": "Клиент обязателен",
+      "nameIsRequired": "Имя обязательно"
+    },
+    "delete": {
+      "title": "Удалить {name}",
+      "noValidSites": "Нет подходящих сайтов для переноса агентов. Добавьте другой сайт и попробуйте снова",
+      "siteToMoveAgentsTo": "Сайт для переноса агентов",
+      "selectSiteValidation": "Выберите сайт, на который нужно перенести агентов",
+      "hint": "У удаляемого клиента есть назначенные агенты. Выберите ниже сайт, куда их перенести.",
+      "move": "Перенести",
+      "confirmMessage": "Удаление {type} {name}. {count} агентов будут перенесены на выбранный сайт",
+      "types": {
+        "client": "клиента",
+        "site": "сайта"
+      }
+    }
+  },
+  "deployments": {
+    "manageDeployments": "Управление развертываниями",
+    "addDeployment": "Добавить развертывание",
+    "noDeployments": "Нет развертываний",
+    "viewFlags": "Показать флаги",
+    "copy": "Копировать",
+    "agentType": "Тип агента",
+    "server": "Сервер",
+    "workstation": "Рабочая станция",
+    "enableRdp": "Включить RDP",
+    "enablePing": "Включить Ping",
+    "disableSleepHibernate": "Отключить сон/гибернацию",
+    "arch64": "64 бит",
+    "arch32": "32 бит",
+    "columns": {
+      "arch": "Архитектура",
+      "expiry": "Срок действия",
+      "created": "Создано",
+      "flags": "Флаги",
+      "downloadLink": "Ссылка на скачивание"
+    },
+    "dialog": {
+      "deleteDeploymentTitle": "Удалить развертывание?"
+    },
+    "notify": {
+      "linkCopied": "Ссылка скопирована в буфер"
+    }
+  }
+}
