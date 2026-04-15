@@ -2,20 +2,21 @@
   <div class="full-page-terminal">
     <div
       v-if="shellOptions.length > 0"
-      class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
+      class="row items-center q-px-lg q-py-xs bg-grey-9 text-white justify-between"
     >
-      <div class="text-subtitle1 text-body2 q-mr-lg">Shell:</div>
-      <q-option-group
-        dense
-        v-model="selectedShell"
-        :options="shellOptions"
-        type="radio"
-        inline
-        color="primary"
-        @update:model-value="onShellChange"
-        class="q-ml-sm q-gutter-lg"
-      />
-      <div>
+      <div class="row items-center">
+        <div class="text-subtitle1 text-body2 q-mr-lg">Shell:</div>
+        <q-option-group
+          dense
+          v-model="selectedShell"
+          :options="shellOptions"
+          type="radio"
+          inline
+          color="primary"
+          @update:model-value="onShellChange"
+          class="q-ml-sm q-gutter-lg"
+        />
+
         <q-btn
           label="Edit Path"
           color="primary"
@@ -24,7 +25,23 @@
           dense
         />
       </div>
+
+      <div v-if="isWindows" class="row items-center q-ml-xl">
+        <div class="text-subtitle1 text-body2 q-mr-md">Run as:</div>
+
+        <q-option-group
+          dense
+          v-model="runAsUser"
+          :options="runAsOptions"
+          type="radio"
+          inline
+          color="primary"
+          @update:model-value="onRunAsChange"
+          class="q-gutter-lg"
+        />
+      </div>
     </div>
+
     <div class="terminal-wrapper">
       <div ref="xtermContainer" class="xterm-container"></div>
       <q-inner-loading :showing="loading" color="primary" />
@@ -96,6 +113,12 @@ const customShellInput = ref("");
 const invalidCustomShell = ref(false);
 const lastSelectedShell = ref<string>("");
 const pendingCustomShell = ref<string | null>(null);
+const runAsUser = ref(false);
+const isWindows = computed(() => props.agentPlatform === "windows");
+const runAsOptions = [
+  { label: "System", value: false },
+  { label: "User", value: true },
+];
 
 const shellOptions = computed<ShellOption[]>(() => {
   const isWindows = props.agentPlatform === "windows";
@@ -293,7 +316,13 @@ function initWS(shell: string) {
       started = false;
       loading.value = true;
 
-      wsSend(JSON.stringify({ action: "start", shell }));
+      wsSend(
+        JSON.stringify({
+          action: "start",
+          shell,
+          run_as_user: isWindows.value ? runAsUser.value : false,
+        }),
+      );
     }
   }, 50);
 }
@@ -441,6 +470,25 @@ onMounted(async () => {
 
   initWS(shellToStart);
 });
+
+async function onRunAsChange() {
+  if (!term) return;
+
+  loading.value = true;
+  startRequested = false;
+  started = false;
+
+  term.write("\r\n[Restarting terminal with new mode...]\r\n");
+  term.reset();
+  fit.fit();
+
+  const shellToStart =
+    selectedShell.value === "custom"
+      ? customShellPath.value!
+      : selectedShell.value;
+
+  initWS(shellToStart);
+}
 
 onBeforeUnmount(() => {
   disconnect();
