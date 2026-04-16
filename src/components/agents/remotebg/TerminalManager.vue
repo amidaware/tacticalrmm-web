@@ -2,10 +2,10 @@
   <div class="full-page-terminal">
     <div
       v-if="shellOptions.length > 0"
-      class="row items-center q-px-lg q-py-xs bg-grey-9 text-white justify-between"
+      class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
     >
       <div class="row items-center">
-        <div class="text-subtitle1 text-body2 q-mr-lg">Shell:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md">Shell:</div>
         <q-option-group
           dense
           v-model="selectedShell"
@@ -14,7 +14,7 @@
           inline
           color="primary"
           @update:model-value="onShellChange"
-          class="q-ml-sm q-gutter-lg"
+          class="q-gutter-lg"
         />
 
         <q-btn
@@ -26,8 +26,8 @@
         />
       </div>
 
-      <div v-if="isWindows" class="row items-center q-ml-xl">
-        <div class="text-subtitle1 text-body2 q-mr-md">Run as:</div>
+      <div v-if="isWindows" class="row items-center q-ml-lg">
+        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">Run as:</div>
 
         <q-option-group
           dense
@@ -94,6 +94,7 @@ interface TerminalWSMessage {
     messageId?: string;
     error?: string;
   };
+  message?: string;
   error?: string;
 }
 
@@ -275,6 +276,16 @@ function initWS(shell: string) {
       return;
     }
 
+    if (msg.action === "terminal_info") {
+      runAsUser.value = false;
+      $q.notify({
+        type: "warning",
+        message: msg.message || "Run as user was not available..",
+      });
+
+      return;
+    }
+
     if (msg.data?.output) {
       term.write(msg.data.output);
 
@@ -440,10 +451,10 @@ onMounted(async () => {
 
   const data = await fetchAgentShell(props.agent_id);
   if (data) {
-    const { default_shell, effective_default_shell } = data;
+    const { resolved_default_shell, effective_default_shell } = data;
     const isWindows = props.agentPlatform === "windows";
 
-    if (default_shell === "custom") {
+    if (resolved_default_shell === "custom") {
       if (isBuiltInShell(effective_default_shell)) {
         selectedShell.value = effective_default_shell;
         lastSelectedShell.value = effective_default_shell;
