@@ -488,8 +488,6 @@ async function onRunAsChange() {
   loading.value = true;
   startRequested = false;
   started = false;
-
-  term.write("\r\n[Restarting terminal with new mode...]\r\n");
   term.reset();
   fit.fit();
 
