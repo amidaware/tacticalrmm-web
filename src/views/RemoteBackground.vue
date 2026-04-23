@@ -43,9 +43,10 @@
           v-if="terminalMode === 'new'"
           :agent_id="agent_id"
           :agentPlatform="$route.query.agentPlatform"
+          :terminalDefaults="terminalDefaults"
         />
         <iframe
-          v-else
+          v-else-if="terminalMode === 'legacy'"
           allow="clipboard-read; clipboard-write"
           :src="terminal"
           :style="{
@@ -103,8 +104,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar, useMeta } from "quasar";
-import { fetchAgentMeshCentralURLs } from "@/api/agents";
-import { fetchCoreSettings, fetchDashboardInfo } from "@/api/core";
+import {
+  fetchAgentMeshCentralURLs,
+  fetchAgentTerminalDefaults,
+} from "@/api/agents";
+import { fetchDashboardInfo } from "@/api/core";
 
 // ui imports
 import ProcessManager from "@/components/agents/remotebg/ProcessManager.vue";
@@ -134,7 +138,8 @@ export default {
     const terminal = ref("");
     const file = ref("");
     const tab = ref("terminal");
-    const terminalMode = ref("legacy");
+    const terminalMode = ref("");
+    const terminalDefaults = ref(null);
 
     const agent_id = computed(() => params.agent_id);
 
@@ -153,17 +158,25 @@ export default {
       $q.loadingBar.setDefaults({ size: "0px" });
     }
 
-    async function getCoreSettings() {
-      const settingsData = await fetchCoreSettings();
-      terminalMode.value =
-        settingsData?.terminal_mode === "new" ? "new" : "legacy";
+    async function getTerminalDefaults() {
+      try {
+        const data = await fetchAgentTerminalDefaults(params.agent_id);
+        terminalDefaults.value = data;
+        terminalMode.value = data?.terminal_mode === "new" ? "new" : "legacy";
+      } catch (e) {
+        $q.notify({
+          type: "negative",
+          message:
+            e?.response?.data?.detail || "Failed to load terminal settings",
+        });
+      }
     }
 
     // vue lifecycle hooks
     onMounted(() => {
       getDashInfo();
       getMeshURLs();
-      getCoreSettings();
+      getTerminalDefaults();
     });
 
     return {
@@ -174,6 +187,7 @@ export default {
       agent_id,
       registryIcon,
       terminalMode,
+      terminalDefaults,
     };
   },
 };

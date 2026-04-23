@@ -83,7 +83,6 @@ import { FitAddon } from "@xterm/addon-fit";
 import { uid, useQuasar } from "quasar";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
-import { fetchAgentShell } from "@/api/agents";
 import "@xterm/xterm/css/xterm.css";
 
 interface TerminalWSMessage {
@@ -104,8 +103,22 @@ interface ShellOption {
   disable?: boolean;
 }
 
+interface TerminalDefaults {
+  agent_id: string;
+  hostname: string;
+  plat: string;
+  default_shell: string;
+  resolved_default_shell: string;
+  effective_default_shell: string;
+  terminal_mode: "new" | "legacy";
+}
+
 const $q = useQuasar();
-const props = defineProps<{ agent_id: string; agentPlatform: string }>();
+const props = defineProps<{
+  agent_id: string;
+  agentPlatform: string;
+  terminalDefaults?: TerminalDefaults | null;
+}>();
 
 const loading = ref(false);
 const customShellPath = ref<string | null>(null);
@@ -449,7 +462,7 @@ onMounted(async () => {
   const { stop } = useResizeObserver(xtermContainer, resizeWindow);
   stopResizeObserver = stop;
 
-  const data = await fetchAgentShell(props.agent_id);
+  const data = props.terminalDefaults;
   if (data) {
     const { resolved_default_shell, effective_default_shell } = data;
     const isWindows = props.agentPlatform === "windows";

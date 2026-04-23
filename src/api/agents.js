@@ -397,7 +397,7 @@ export async function createRegistryValue(agentId, path, name, type, data) {
   }
 }
 
-export async function fetchAgentShell(agent_id) {
+export async function fetchAgentTerminalDefaults(agent_id) {
   try {
     const { data } = await axios.get(
       `${baseUrl}/${agent_id}/terminal-defaults/`,
@@ -405,5 +405,6 @@ export async function fetchAgentShell(agent_id) {
     return data;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 }
