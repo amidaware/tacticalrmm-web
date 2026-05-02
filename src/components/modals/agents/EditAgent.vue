@@ -535,20 +535,24 @@ export default {
         "client",
         "site_name",
       ];
+
+      // create shallow copy so we don't break UI when save fails
+      const payload = { ...this.agent };
+
       for (const elem of toRemove) {
-        delete this.agent[elem];
+        delete payload[elem];
       }
 
       // only send the timezone data if it has changed
       // this way django will keep the db column as null and inherit from the global setting
       // until we explicity change the agent's timezone
       if (this.timezone !== this.original_tz) {
-        this.agent.time_zone = this.timezone;
+        payload.time_zone = this.timezone;
       }
 
       this.$axios
         .put(`/agents/${this.agent_id}/`, {
-          ...this.agent,
+          ...payload,
           custom_fields: this.formatCustomFields(
             this.customFields,
             this.custom_fields,
