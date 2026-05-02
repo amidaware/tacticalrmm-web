@@ -1,5 +1,8 @@
 <template>
-  <div class="full-page-terminal">
+  <div
+    class="full-page-terminal"
+    :style="{ background: terminalTheme.background }"
+  >
     <div
       v-if="shellOptions.length > 0"
       class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
@@ -395,14 +398,137 @@ function startCustomShell() {
   initWS(customShellInput.value);
 }
 
+const windowsThemeVariant = computed<"cmd" | "powershell" | "pwsh7">(() => {
+  if (selectedShell.value === "powershell") return "powershell";
+
+  if (selectedShell.value === "custom" && customShellPath.value) {
+    if (
+      /(?:^|[\\/])pwsh(?:-preview)?(?:\.exe)?$/i.test(customShellPath.value)
+    ) {
+      return "pwsh7";
+    }
+  }
+
+  return "cmd";
+});
+
+const cmdTheme = {
+  background: "#0c0c0c",
+  foreground: "#f2f2f2",
+  cursor: "#ffffff",
+  cursorAccent: "#0c0c0c",
+  selectionBackground: "rgba(255,255,255,0.22)",
+  black: "#0c0c0c",
+  red: "#c50f1f",
+  green: "#13a10e",
+  yellow: "#c19c00",
+  blue: "#0037da",
+  magenta: "#881798",
+  cyan: "#3a96dd",
+  white: "#cccccc",
+  brightBlack: "#767676",
+  brightRed: "#e74856",
+  brightGreen: "#16c60c",
+  brightYellow: "#f9f1a5",
+  brightBlue: "#3b78ff",
+  brightMagenta: "#b4009e",
+  brightCyan: "#61d6d6",
+  brightWhite: "#f2f2f2",
+};
+
+// classic powershell 5.x
+const powershellTheme = {
+  background: "#012456",
+  foreground: "#ffffff",
+  cursor: "#ffffff",
+  cursorAccent: "#012456",
+  selectionBackground: "rgba(255,255,255,0.25)",
+  black: "#000000",
+  red: "#800000",
+  green: "#008000",
+  yellow: "#eeedf0",
+  blue: "#000080",
+  magenta: "#012456",
+  cyan: "#008080",
+  white: "#c0c0c0",
+  brightBlack: "#808080",
+  brightRed: "#ff0000",
+  brightGreen: "#00ff00",
+  brightYellow: "#ffff00",
+  brightBlue: "#0000ff",
+  brightMagenta: "#ff00ff",
+  brightCyan: "#00ffff",
+  brightWhite: "#ffffff",
+};
+
+// pwsh 7
+const pwsh7Theme = {
+  background: "#282c34",
+  foreground: "#dcdfe4",
+  cursor: "#a3b3cc",
+  cursorAccent: "#282c34",
+  selectionBackground: "rgba(116,151,196,0.35)",
+  black: "#282c34",
+  red: "#e06c75",
+  green: "#98c379",
+  yellow: "#e5c07b",
+  blue: "#61afef",
+  magenta: "#c678dd",
+  cyan: "#56b6c2",
+  white: "#dcdfe4",
+  brightBlack: "#5d677a",
+  brightRed: "#e06c75",
+  brightGreen: "#98c379",
+  brightYellow: "#e5c07b",
+  brightBlue: "#61afef",
+  brightMagenta: "#c678dd",
+  brightCyan: "#56b6c2",
+  brightWhite: "#dcdfe4",
+};
+
+const unixTheme = {
+  background: "#1d1f21",
+  foreground: "#c5c8c6",
+  cursor: "#c5c8c6",
+  cursorAccent: "#1d1f21",
+  selectionBackground: "rgba(255,255,255,0.18)",
+  black: "#1d1f21",
+  red: "#cc6666",
+  green: "#b5bd68",
+  yellow: "#f0c674",
+  blue: "#81a2be",
+  magenta: "#b294bb",
+  cyan: "#8abeb7",
+  white: "#c5c8c6",
+  brightBlack: "#666666",
+  brightRed: "#d54e53",
+  brightGreen: "#b9ca4a",
+  brightYellow: "#e7c547",
+  brightBlue: "#7aa6da",
+  brightMagenta: "#c397d8",
+  brightCyan: "#70c0b1",
+  brightWhite: "#eaeaea",
+};
+
+const terminalTheme = computed(() => {
+  if (!isWindows.value) return unixTheme;
+  if (windowsThemeVariant.value === "powershell") return powershellTheme;
+  if (windowsThemeVariant.value === "pwsh7") return pwsh7Theme;
+
+  return cmdTheme;
+});
+
 async function setupXTerm() {
   term = new Terminal({
     convertEol: true,
-    fontFamily: "Menlo, Monaco, 'Courier New', monospace",
-    fontSize: 14,
-    fontWeight: 400,
+    fontFamily: isWindows.value
+      ? "'Cascadia Mono', Consolas, 'Courier New', monospace"
+      : "Menlo, Monaco, 'SF Mono', 'Courier New', monospace",
+    fontSize: 16,
+    fontWeight: isWindows.value ? 100 : 400,
     cursorBlink: true,
-    theme: { background: "#333" },
+    theme: terminalTheme.value,
+    scrollback: 50000,
   });
 
   term.loadAddon(fit);
@@ -455,6 +581,12 @@ type BuiltInShell = (typeof BUILT_IN_SHELLS)[number];
 const isBuiltInShell = (shell: string): shell is BuiltInShell => {
   return (BUILT_IN_SHELLS as readonly string[]).includes(shell);
 };
+
+watch(terminalTheme, (newTheme) => {
+  if (term) {
+    term.options.theme = newTheme;
+  }
+});
 
 onMounted(async () => {
   await setupXTerm();
@@ -522,7 +654,6 @@ onBeforeUnmount(() => {
   height: calc(100vh - 36px);
   display: flex;
   flex-direction: column;
-  background: #333333;
 }
 .terminal-wrapper {
   position: relative;
