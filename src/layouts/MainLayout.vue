@@ -81,7 +81,7 @@
             :color="dash_negative_color"
             text-color="black"
             icon="warning"
-            >SSL certificate expires in {{ daysUntilCertExpires }} days</q-chip
+            >SSL certificate expires in {{ daysUntilCertExpires }} days. {{ certExpiryNotificationText }}</q-chip
           >
         </q-toolbar-title>
         <!-- temp dark mode toggle -->
@@ -266,6 +266,7 @@ const hosted = computed(() => store.state.hosted);
 const tokenExpired = computed(() => store.state.tokenExpired);
 const dash_warning_color = computed(() => store.state.dash_warning_color);
 const dash_negative_color = computed(() => store.state.dash_negative_color);
+const certExpiryNotificationText = computed(() => store.state.certexpiry_notification_text);
 
 const latestReleaseURL = computed(() => {
   return latestTRMMVersion.value
