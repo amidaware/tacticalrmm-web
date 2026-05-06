@@ -21,8 +21,8 @@
           </div>
         </q-card-section>
         <q-card-section v-if="state.mode === 'mesh'">
-          Fix issues with the Mesh Agent which handles take control, live
-          terminal and file browser.
+          Fix issues with the Mesh Agent which handles take control and file
+          browser.
         </q-card-section>
         <q-card-section v-else-if="state.mode === 'tacagent'">
           Fix issues with the Tactical RMM Agent service.
@@ -73,7 +73,7 @@ export default {
       try {
         const result = await sendAgentRecovery(
           props.agent.agent_id,
-          state.value
+          state.value,
         );
         notifySuccess(result);
         onDialogOK();
