@@ -20,70 +20,70 @@
           name="summary"
           icon="fas fa-info-circle"
           size="xs"
-          label="Summary"
+          :label="$t('dashboard.subTableTabs.summary')"
         />
         <q-tab
           v-if="activeTabs.includes('checks')"
           content-class="min-width"
           name="checks"
           icon="fas fa-check-double"
-          label="Checks"
+          :label="$t('dashboard.subTableTabs.checks')"
         />
         <q-tab
           v-if="activeTabs.includes('tasks')"
           content-class="min-width"
           name="tasks"
           icon="fas fa-tasks"
-          label="Tasks"
+          :label="$t('dashboard.subTableTabs.tasks')"
         />
         <q-tab
           v-if="activeTabs.includes('patches')"
           content-class="min-width"
           name="patches"
           icon="system_update"
-          label="Patches"
+          :label="$t('dashboard.subTableTabs.patches')"
         />
         <q-tab
           v-if="activeTabs.includes('software')"
           content-class="min-width"
           name="software"
           icon="fab fa-windows"
-          label="Software"
+          :label="$t('dashboard.subTableTabs.software')"
         />
         <q-tab
           v-if="activeTabs.includes('history')"
           content-class="min-width"
           name="history"
           icon="history"
-          label="History"
+          :label="$t('dashboard.subTableTabs.history')"
         />
         <q-tab
           v-if="activeTabs.includes('notes')"
           content-class="min-width"
           name="notes"
           icon="far fa-sticky-note"
-          label="Notes"
+          :label="$t('dashboard.subTableTabs.notes')"
         />
         <q-tab
           v-if="activeTabs.includes('assets')"
           content-class="min-width"
           name="assets"
           icon="fas fa-barcode"
-          label="Assets"
+          :label="$t('dashboard.subTableTabs.assets')"
         />
         <q-tab
           v-if="activeTabs.includes('debug')"
           content-class="min-width"
           name="debug"
           icon="bug_report"
-          label="Debug"
+          :label="$t('dashboard.subTableTabs.debug')"
         />
         <q-tab
           v-if="activeTabs.includes('audit')"
           content-class="min-width"
           name="audit"
           icon="travel_explore"
-          label="Audit"
+          :label="$t('dashboard.subTableTabs.audit')"
         />
       </q-tabs>
       <q-separator />

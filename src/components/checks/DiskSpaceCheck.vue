@@ -2,10 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? `Edit Disk Check` : "Add Disk Check" }}
+        {{
+          check
+            ? $t("checks.disk.dialog.editTitle")
+            : $t("checks.disk.dialog.addTitle")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("checks.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -18,8 +24,8 @@
               outlined
               v-model="state.disk"
               :options="diskOptions"
-              label="Disk"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$t('checks.disk.fields.disk')"
+              :rules="[(val) => !!val || $t('checks.validation.required')]"
             />
           </q-card-section>
           <q-card-section>
@@ -28,10 +34,14 @@
               outlined
               type="number"
               v-model.number="state.warning_threshold"
-              label="Warning Threshold Remaining (%)"
+              :label="$t('checks.disk.fields.warningThresholdRemaining')"
               :rules="[
-                (val) => val >= 0 || 'Minimum threshold is 0',
-                (val) => val < 100 || 'Maximum threshold is 99',
+                (val) =>
+                  val >= 0 ||
+                  $t('checks.validation.minimumThreshold', { min: 0 }),
+                (val) =>
+                  val < 100 ||
+                  $t('checks.validation.maximumThreshold', { max: 99 }),
               ]"
             />
           </q-card-section>
@@ -41,10 +51,14 @@
               outlined
               type="number"
               v-model.number="state.error_threshold"
-              label="Error Threshold Remaining (%)"
+              :label="$t('checks.disk.fields.errorThresholdRemaining')"
               :rules="[
-                (val) => val >= 0 || 'Minimum threshold is 0',
-                (val) => val < 100 || 'Maximum threshold is 99',
+                (val) =>
+                  val >= 0 ||
+                  $t('checks.validation.minimumThreshold', { min: 0 }),
+                (val) =>
+                  val < 100 ||
+                  $t('checks.validation.maximumThreshold', { max: 99 }),
               ]"
             />
           </q-card-section>
@@ -55,7 +69,7 @@
               options-dense
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$t('checks.common.fields.failuresBeforeAlert')"
             />
           </q-card-section>
           <q-card-section>
@@ -64,18 +78,18 @@
               outlined
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$t('checks.common.fields.runEverySeconds')"
+              :hint="$t('checks.common.hints.runEveryOverride')"
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('checks.common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$t('checks.common.save')"
             color="primary"
             type="submit"
           />

@@ -1,0 +1,5 @@
+{
+  "http": {
+    "preconditionFailed": "412: Precondition check failed"
+  }
+}

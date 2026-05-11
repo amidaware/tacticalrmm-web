@@ -1,90 +1,96 @@
 <template>
   <div class="q-pa-md">
     <!-- Auto Approval -->
-    <div class="text-subtitle2">Auto Approval</div>
+    <div class="text-subtitle2">
+      {{ $t("agents.patchPolicyForm.autoApproval") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
-      <div class="col-3">Severity</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.severity") }}</div>
       <div class="col-4"></div>
-      <div class="col-5">Action</div>
+      <div class="col-5">{{ $t("agents.patchPolicyForm.action") }}</div>
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Critical:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.critical") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.critical"
-        :options="severityOptions"
+        :options="severityOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Important:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.important") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.important"
-        :options="severityOptions"
+        :options="severityOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Moderate:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.moderate") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.moderate"
-        :options="severityOptions"
+        :options="severityOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Low:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.low") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.low"
-        :options="severityOptions"
+        :options="severityOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Other:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.other") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.other"
-        :options="severityOptions"
+        :options="severityOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <!-- Installation Schedule -->
-    <div class="text-subtitle2">Installation Schedule</div>
+    <div class="text-subtitle2">
+      {{ $t("agents.patchPolicyForm.installationSchedule") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
-      <div class="col-3">Schedule Frequency:</div>
+      <div class="col-3">
+        {{ $t("agents.patchPolicyForm.scheduleFrequency") }}:
+      </div>
       <div class="col-4"></div>
       <q-select
         dense
         class="col-5"
         outlined
         v-model="winupdatepolicy.run_time_frequency"
-        :options="frequencyOptions"
+        :options="frequencyOptionsLocalized"
         emit-value
         map-options
       />
@@ -93,7 +99,9 @@
       class="row"
       v-if="winupdatepolicy.run_time_frequency === 'monthly'"
     >
-      <div class="col-3">Day of month to run:</div>
+      <div class="col-3">
+        {{ $t("agents.patchPolicyForm.dayOfMonthToRun") }}:
+      </div>
       <div class="col-4"></div>
       <q-select
         v-show="winupdatepolicy.run_time_frequency !== 'inherit'"
@@ -110,7 +118,7 @@
       class="row"
       v-show="winupdatepolicy.run_time_frequency !== 'inherit'"
     >
-      <div class="col-3">Scheduled Time:</div>
+      <div class="col-3">{{ $t("agents.patchPolicyForm.scheduledTime") }}:</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -130,42 +138,44 @@
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="0"
-          label="Monday"
+          :label="$t('agents.patchPolicyForm.days.monday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="1"
-          label="Tuesday"
+          :label="$t('agents.patchPolicyForm.days.tuesday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="2"
-          label="Wednesday"
+          :label="$t('agents.patchPolicyForm.days.wednesday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="3"
-          label="Thursday"
+          :label="$t('agents.patchPolicyForm.days.thursday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="4"
-          label="Friday"
+          :label="$t('agents.patchPolicyForm.days.friday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="5"
-          label="Saturday"
+          :label="$t('agents.patchPolicyForm.days.saturday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="6"
-          label="Sunday"
+          :label="$t('agents.patchPolicyForm.days.sunday')"
         />
       </div>
     </q-card-section>
     <!-- Reboot After Installation -->
-    <div class="text-subtitle2">Reboot After Installation</div>
+    <div class="text-subtitle2">
+      {{ $t("agents.patchPolicyForm.rebootAfterInstallation") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
       <div class="col-3"></div>
@@ -175,19 +185,21 @@
         class="col-5"
         outlined
         v-model="winupdatepolicy.reboot_after_install"
-        :options="rebootOptions"
+        :options="rebootOptionsLocalized"
         emit-value
         map-options
       />
     </q-card-section>
     <!-- Failed Patches -->
-    <div class="text-subtitle2">Failed Patches</div>
+    <div class="text-subtitle2">
+      {{ $t("agents.patchPolicyForm.failedPatches") }}
+    </div>
     <q-separator />
     <q-card-section class="row" v-if="!policy">
       <div class="col-5">
         <q-checkbox
           v-model="winupdatepolicy.reprocess_failed_inherit"
-          label="Inherit failed patch settings"
+          :label="$t('agents.patchPolicyForm.inheritFailedPatchSettings')"
         />
       </div>
     </q-card-section>
@@ -198,7 +210,7 @@
       <div class="col-5">
         <q-checkbox
           v-model="winupdatepolicy.reprocess_failed"
-          label="Reprocess failed patches"
+          :label="$t('agents.patchPolicyForm.reprocessFailedPatches')"
         />
       </div>
 
@@ -208,23 +220,30 @@
           v-model.number="winupdatepolicy.reprocess_failed_times"
           type="number"
           filled
-          label="Times"
-          :rules="[(val) => val > 0 || 'Must be greater than 0']"
+          :label="$t('agents.patchPolicyForm.times')"
+          :rules="[
+            (val) =>
+              val > 0 || $t('agents.patchPolicyForm.mustBeGreaterThanZero'),
+          ]"
         />
       </div>
       <div class="col-3"></div>
       <q-checkbox
         v-model="winupdatepolicy.email_if_fail"
-        label="Send an email when patch installation fails"
+        :label="$t('agents.patchPolicyForm.sendEmailOnPatchFail')"
       />
     </q-card-section>
     <q-card-actions align="left" v-if="policy">
-      <q-btn label="Submit" color="primary" @click="submit" />
-      <q-btn label="Cancel" @click="$emit('hide')" />
+      <q-btn
+        :label="$t('common.actions.submit')"
+        color="primary"
+        @click="submit"
+      />
+      <q-btn :label="$t('common.buttons.cancel')" @click="$emit('hide')" />
       <q-space />
       <q-btn
         v-if="editing"
-        label="Remove Policy"
+        :label="$t('agents.patchPolicyForm.removePolicy')"
         color="negative"
         @click="deletePolicy(winupdatepolicy)"
       />
@@ -265,18 +284,18 @@ export default {
         email_if_fail: false,
       },
       severityOptions: [
-        { label: "Manual", value: "manual" },
-        { label: "Approve", value: "approve" },
-        { label: "Ignore", value: "ignore" },
+        { label: "manual", value: "manual" },
+        { label: "approve", value: "approve" },
+        { label: "ignore", value: "ignore" },
       ],
       frequencyOptions: [
-        { label: "Daily/Weekly", value: "daily" },
-        { label: "Monthly", value: "monthly" },
+        { label: "dailyWeekly", value: "daily" },
+        { label: "monthly", value: "monthly" },
       ],
       rebootOptions: [
-        { label: "Never", value: "never" },
-        { label: "When Required", value: "required" },
-        { label: "Always", value: "always" },
+        { label: "never", value: "never" },
+        { label: "whenRequired", value: "required" },
+        { label: "always", value: "always" },
       ],
       timeOptions: scheduledTimes,
       monthDays,
@@ -293,12 +312,14 @@ export default {
           this.$axios
             .put(
               `/automation/patchpolicy/${this.winupdatepolicy.id}/`,
-              this.winupdatepolicy
+              this.winupdatepolicy,
             )
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was edited successfully!");
+              this.notifySuccess(
+                this.$t("agents.patchPolicyForm.notifyEdited"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -310,7 +331,9 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was created successfully!");
+              this.notifySuccess(
+                this.$t("agents.patchPolicyForm.notifyCreated"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -321,9 +344,9 @@ export default {
     deletePolicy(policy) {
       this.$q
         .dialog({
-          title: "Delete patch policy?",
+          title: this.$t("agents.patchPolicyForm.deletePatchPolicy"),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.buttons.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -332,7 +355,9 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was deleted successfully!");
+              this.notifySuccess(
+                this.$t("agents.patchPolicyForm.notifyDeleted"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -352,10 +377,30 @@ export default {
       this.winupdatepolicy = this.agent.winupdatepolicy[0];
 
       // add agent inherit options
-      this.severityOptions.push({ label: "Inherit", value: "inherit" });
-      this.frequencyOptions.push({ label: "Inherit", value: "inherit" });
-      this.rebootOptions.push({ label: "Inherit", value: "inherit" });
+      this.severityOptions.push({ label: "inherit", value: "inherit" });
+      this.frequencyOptions.push({ label: "inherit", value: "inherit" });
+      this.rebootOptions.push({ label: "inherit", value: "inherit" });
     }
+  },
+  computed: {
+    severityOptionsLocalized() {
+      return this.severityOptions.map((opt) => ({
+        ...opt,
+        label: this.$t(`agents.patchPolicyForm.optionLabels.${opt.label}`),
+      }));
+    },
+    frequencyOptionsLocalized() {
+      return this.frequencyOptions.map((opt) => ({
+        ...opt,
+        label: this.$t(`agents.patchPolicyForm.optionLabels.${opt.label}`),
+      }));
+    },
+    rebootOptionsLocalized() {
+      return this.rebootOptions.map((opt) => ({
+        ...opt,
+        label: this.$t(`agents.patchPolicyForm.optionLabels.${opt.label}`),
+      }));
+    },
   },
 };
 </script>

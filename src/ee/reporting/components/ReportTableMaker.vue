@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 80vw">
       <q-bar>
-        Insert Table
+        {{ t("reporting.tableMaker.insertTable") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -28,15 +30,21 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="arrayOptions"
           outlined
           dense
-          label="Data Source"
+          :label="t('reporting.tableMaker.dataSource')"
         />
       </q-card-section>
       <q-card-section style="max-height: 60vh" class="scroll">
         <q-input v-model="output" filled type="textarea" autogrow />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
-        <q-btn dense flat label="Insert" color="primary" @click="insert" />
+        <q-btn v-close-popup dense flat :label="t('reporting.common.cancel')" />
+        <q-btn
+          dense
+          flat
+          :label="t('reporting.common.insert')"
+          color="primary"
+          @click="insert"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -47,6 +55,7 @@ import { ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
 import { capitalize } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -55,10 +64,11 @@ const { variableAnalysis } = useSharedReportTemplates;
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const { t } = useI18n();
 
 const tableTypeOptions = [
-  { value: "blank", label: "Blank" },
-  { value: "variables", label: "From Variables" },
+  { value: "blank", label: t("reporting.tableMaker.blank") },
+  { value: "variables", label: t("reporting.tableMaker.fromVariables") },
 ];
 
 const blankOutput = `<table>
@@ -129,7 +139,7 @@ function generateTable(columns: string[]) {
   });
 
   if (!headers) {
-    headers = "\t<th>Column Name</th>";
+    headers = `\t<th>${t("reporting.tableMaker.columnName")}</th>`;
   }
 
   if (!cells) {

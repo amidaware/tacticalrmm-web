@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agents.shared.noAgentSelected") }}
+  </div>
   <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("agents.shared.onlySupportedWindows") }}
   </div>
   <div v-else>
     <q-tabs
@@ -14,19 +16,37 @@
       narrow-indicator
       no-caps
     >
-      <q-tab name="os" label="Operating System" />
-      <q-tab name="cpu" label="CPU" />
-      <q-tab name="mem" label="Memory" />
-      <q-tab name="usb" label="USB" />
-      <q-tab name="bios" label="Bios" />
-      <q-tab name="disk" label="Disks" />
-      <q-tab name="comp_sys" label="Computer System" />
-      <q-tab name="base_board" label="Motherboard" />
-      <q-tab name="comp_sys_prod" label="Computer System Product" />
-      <q-tab name="network_config" label="Network Config" />
-      <q-tab name="graphics" label="Graphics" />
-      <q-tab name="desktop_monitor" label="Monitors" />
-      <q-tab name="network_adapter" label="Network Adapters" />
+      <q-tab name="os" :label="$t('agents.assetsTab.tabs.operatingSystem')" />
+      <q-tab name="cpu" :label="$t('agents.assetsTab.tabs.cpu')" />
+      <q-tab name="mem" :label="$t('agents.assetsTab.tabs.memory')" />
+      <q-tab name="usb" :label="$t('agents.assetsTab.tabs.usb')" />
+      <q-tab name="bios" :label="$t('agents.assetsTab.tabs.bios')" />
+      <q-tab name="disk" :label="$t('agents.assetsTab.tabs.disks')" />
+      <q-tab
+        name="comp_sys"
+        :label="$t('agents.assetsTab.tabs.computerSystem')"
+      />
+      <q-tab
+        name="base_board"
+        :label="$t('agents.assetsTab.tabs.motherboard')"
+      />
+      <q-tab
+        name="comp_sys_prod"
+        :label="$t('agents.assetsTab.tabs.computerSystemProduct')"
+      />
+      <q-tab
+        name="network_config"
+        :label="$t('agents.assetsTab.tabs.networkConfig')"
+      />
+      <q-tab name="graphics" :label="$t('agents.assetsTab.tabs.graphics')" />
+      <q-tab
+        name="desktop_monitor"
+        :label="$t('agents.assetsTab.tabs.monitors')"
+      />
+      <q-tab
+        name="network_adapter"
+        :label="$t('agents.assetsTab.tabs.networkAdapters')"
+      />
     </q-tabs>
 
     <q-separator />

@@ -6,8 +6,10 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <q-list dense>
     <q-item-label header
-      >Base Template Blocks
-      <span v-if="copiedBlock" class="float-right">Copied!</span></q-item-label
+      >{{ t("reporting.variablesSelector.baseTemplateBlocks") }}
+      <span v-if="copiedBlock" class="float-right">{{
+        t("reporting.variablesSelector.copied")
+      }}</span></q-item-label
     >
     <q-item
       v-for="block in templateBlocks"
@@ -16,10 +18,9 @@ For details, see: https://license.tacticalrmm.com/ee
     >
       <q-item-section avatar v-if="block.warning">
         <q-icon name="warning" color="warning">
-          <q-tooltip
-            >Block not found in template. Click on the block to copy and paste
-            into template</q-tooltip
-          >
+          <q-tooltip>{{
+            t("reporting.variablesSelector.blockNotFound")
+          }}</q-tooltip>
         </q-icon>
       </q-item-section>
       <q-item-section>
@@ -36,7 +37,10 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-separator />
 
     <q-item-label header>
-      Variables <span v-if="copiedVariable" class="float-right">Copied!</span>
+      {{ t("reporting.common.variables") }}
+      <span v-if="copiedVariable" class="float-right">{{
+        t("reporting.variablesSelector.copied")
+      }}</span>
     </q-item-label>
     <q-item
       v-for="warning in [...dependencyWarnings, ...variableWarnings]"
@@ -84,7 +88,7 @@ For details, see: https://license.tacticalrmm.com/ee
       >
         <q-badge
           class="cursor-pointer"
-          label="for loop"
+          :label="t('reporting.variablesSelector.forLoop')"
           @click="copy(prop.toString(), true)"
         />
       </q-item-section>
@@ -102,6 +106,7 @@ import {
 import { onMounted } from "vue";
 import { copyToClipboard } from "quasar";
 import { watchDebounced, until } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   variables: string;
@@ -115,6 +120,7 @@ const { getAllowedValues, variableAnalysis, isLoading } =
   useSharedReportTemplates;
 
 const { reportHTMLTemplates } = useSharedReportHTMLTemplates;
+const { t } = useI18n();
 
 const copiedVariable = ref(false);
 const copiedBlock = ref(false);
@@ -164,7 +170,9 @@ async function getVariables() {
   // check if any data queries returned empty results
   for (let key in variableAnalysis.value) {
     if (variableAnalysis.value[key].includes("0 Results")) {
-      variableWarnings.value.push(`Data Query: ${key} returned no results`);
+      variableWarnings.value.push(
+        t("reporting.variablesSelector.dataQueryNoResults", { key }),
+      );
     }
 
     if (variableAnalysis.value[key].toLowerCase().substring(0, 5) === "array") {
@@ -179,20 +187,20 @@ watchDebounced(
   () => {
     getVariables();
   },
-  { debounce: 5000 }
+  { debounce: 5000 },
 );
 
 // checks dependencies and adds warnings
 function checkDependencies(
   dependsOn: string[] | undefined,
-  dependencies: ReportDependencies | undefined
+  dependencies: ReportDependencies | undefined,
 ) {
   dependencyWarnings.value = [];
   // Check if dependencies aren't specified
   dependsOn?.forEach((dep) => {
     !dependencies?.[dep] &&
       dependencyWarnings.value.push(
-        `Missing value for dependency: ${dep} . Open Preview to set values`
+        t("reporting.variablesSelector.missingDependency", { dep }),
       );
   });
 }
@@ -202,7 +210,7 @@ watch(
   [() => props.dependencies, () => props.dependsOn],
   ([dependencies, dependsOn]) => {
     checkDependencies(dependsOn, dependencies);
-  }
+  },
 );
 
 // checks available blocks in base template and checks if they are used
@@ -210,7 +218,7 @@ function checkBaseTemplate(template: string, base_id: number | undefined) {
   templateBlocks.value = [];
   if (base_id) {
     const base_template = reportHTMLTemplates.value.find(
-      (template) => template.id === base_id
+      (template) => template.id === base_id,
     );
 
     let regex = /\{% block ([A-Za-z0-9_ ]+) %\}/g,
@@ -233,7 +241,7 @@ watch(
   [() => props.base_template, () => props.template],
   ([newBase, newTemplate]) => {
     checkBaseTemplate(newTemplate, newBase);
-  }
+  },
 );
 
 onMounted(() => {

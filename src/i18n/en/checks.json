@@ -1,0 +1,221 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "seconds": "seconds",
+    "fields": {
+      "alertSeverity": "Alert Severity",
+      "failuresBeforeAlert": "Number of consecutive failures before alert",
+      "runEverySeconds": "Run this check every (seconds)"
+    },
+    "hints": {
+      "runEveryOverride": "Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+    }
+  },
+  "validation": {
+    "required": "*Required",
+    "minimumThreshold": "Minimum threshold is {min}",
+    "maximumThreshold": "Maximum threshold is {max}",
+    "minValue": "Min {min}",
+    "maxValue": "Max {max}",
+    "thresholdRequired": "Warning Threshold or Error Threshold need to be set",
+    "warningLessThanError": "Warning Threshold must be less than Error Threshold",
+    "warningMoreThanError": "Warning Threshold must be more than Error Threshold"
+  },
+  "cpu": {
+    "dialog": { "addTitle": "Add CPU Check", "editTitle": "Edit CPU Check" },
+    "fields": {
+      "warningThreshold": "Warning Threshold (%)",
+      "errorThreshold": "Error Threshold (%)"
+    }
+  },
+  "memory": {
+    "dialog": {
+      "addTitle": "Add Memory Check",
+      "editTitle": "Edit Memory Check"
+    },
+    "fields": {
+      "warningThreshold": "Warning Threshold (%)",
+      "errorThreshold": "Error Threshold (%)"
+    }
+  },
+  "disk": {
+    "dialog": { "addTitle": "Add Disk Check", "editTitle": "Edit Disk Check" },
+    "fields": {
+      "disk": "Disk",
+      "warningThresholdRemaining": "Warning Threshold Remaining (%)",
+      "errorThresholdRemaining": "Error Threshold Remaining (%)"
+    }
+  },
+  "ping": {
+    "dialog": { "addTitle": "Add Ping Check", "editTitle": "Edit Ping Check" },
+    "fields": {
+      "descriptiveName": "Descriptive Name",
+      "hostnameOrIp": "Hostname or IP"
+    }
+  },
+  "script": {
+    "dialog": {
+      "addTitle": "Add Script Check",
+      "editTitle": "Edit Script Check"
+    },
+    "empty": {
+      "uploadFirst": "You need to upload a script first",
+      "path": "Settings -> Script Manager"
+    },
+    "fields": {
+      "selectScript": "Select script",
+      "scriptArgs": "Script Arguments (press Enter after typing each argument)",
+      "environmentVars": "Environment vars (press Enter after typing each key=value pair)",
+      "infoReturnCodes": "Informational return codes (press Enter after typing each code)",
+      "warningReturnCodes": "Warning return codes (press Enter after typing each code)",
+      "successReturnCodes": "Success return codes (press Enter after typing each code)",
+      "timeoutSeconds": "Script Timeout (seconds)"
+    }
+  },
+  "scriptOutput": {
+    "title": "Script Output",
+    "lastRun": "Last Run",
+    "runTime": "Run Time",
+    "returnCode": "Return Code",
+    "standardOutput": "Standard Output",
+    "standardError": "Standard Error"
+  },
+  "winSvc": {
+    "dialog": {
+      "addTitle": "Add Service Check",
+      "editTitle": "Edit Service Check"
+    },
+    "policyMode": {
+      "chooseDefaults": "Choose from defaults",
+      "enterManually": "Enter manually"
+    },
+    "fields": {
+      "service": "Service",
+      "serviceName": "Service Name",
+      "displayName": "Display Name"
+    },
+    "options": {
+      "passIfStartPending": "PASS if service is in 'Start Pending' mode",
+      "passIfNotExists": "PASS if service doesn't exist",
+      "restartIfStopped": "Restart service if it's stopped"
+    }
+  },
+  "eventLog": {
+    "dialog": {
+      "addTitle": "Add Event Log Check",
+      "editTitle": "Edit Event Log Check"
+    },
+    "fields": {
+      "descriptiveName": "Descriptive Name",
+      "logToQuery": "Event log to query",
+      "failWhen": "Fail When",
+      "eventId": "Event ID (Use * to match every event ID)",
+      "eventSource": "Event source",
+      "messageContains": "Message contains string",
+      "searchLastDays": "How many previous days to search (Enter 0 for the entire log)",
+      "eventType": "Event Type",
+      "eventsFoundBeforeAlert": "Number of events found before alert"
+    },
+    "eventTypes": {
+      "info": "Information",
+      "warning": "Warning",
+      "error": "Error",
+      "successAudit": "Success Audit",
+      "failureAudit": "Failure Audit"
+    },
+    "validation": { "invalidEventId": "Invalid Event ID" }
+  },
+  "eventLogOutput": {
+    "noEventLogs": "No event logs",
+    "notRunYet": "Check has not run yet",
+    "search": "Search",
+    "columns": {
+      "type": "Type",
+      "source": "Source",
+      "eventId": "Event ID",
+      "time": "Time",
+      "message": "Message"
+    }
+  },
+  "policyTab": {
+    "new": "New",
+    "types": {
+      "diskSpace": "Disk Space Check",
+      "ping": "Ping Check",
+      "cpuLoad": "CPU Load Check",
+      "memory": "Memory Check",
+      "windowsService": "Windows Service Check",
+      "script": "Script Check",
+      "eventLog": "Event Log Check"
+    },
+    "empty": {
+      "selectPolicy": "Click on a policy to see the checks",
+      "noChecks": "There are no checks added to this policy"
+    },
+    "headers": {
+      "smsAlert": "SMS Alert",
+      "emailAlert": "Email Alert",
+      "dashboardAlert": "Dashboard Alert"
+    },
+    "columns": {
+      "description": "Description",
+      "status": "Status",
+      "assignedTasks": "Assigned Tasks"
+    },
+    "menu": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "policyStatus": "Policy Status",
+      "close": "Close"
+    },
+    "seeStatus": "See Status",
+    "assignedTasks": {
+      "count": "{count} Tasks"
+    },
+    "actions": {
+      "enabled": "enabled",
+      "disabled": "disabled"
+    },
+    "alertTypes": {
+      "email": "Email",
+      "sms": "SMS",
+      "dashboard": "Dashboard"
+    },
+    "notify": {
+      "alertsToggled": "{type} alerts {action}",
+      "checkDeleted": "Check Deleted!"
+    },
+    "dialog": {
+      "deleteTitle": "Delete {type} check?"
+    }
+  },
+  "graph": {
+    "noData": "No Data",
+    "historyTitle": "{name} history",
+    "filters": {
+      "last24Hours": "Last 24 Hours",
+      "last7Days": "Last 7 Days",
+      "last30Days": "Last 30 Days",
+      "everything": "Everything"
+    },
+    "series": {
+      "cpuLoad": "CPU Load",
+      "memoryUsage": "Memory Usage",
+      "diskSpaceRemaining": "Disk Space Remaining",
+      "scriptResults": "Script Results",
+      "status": "Status"
+    },
+    "errorThreshold": "Error Threshold",
+    "warningThreshold": "Warning Threshold",
+    "passing": "Passing",
+    "failing": "Failing",
+    "scriptOutput": {
+      "returnCode": "Return Code",
+      "stdOut": "Std Out",
+      "errOut": "Err Out",
+      "executionTime": "Execution Time"
+    }
+  }
+}

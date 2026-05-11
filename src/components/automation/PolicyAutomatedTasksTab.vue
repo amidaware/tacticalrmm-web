@@ -13,7 +13,7 @@
       <q-btn
         v-if="!!selectedPolicy"
         icon="add"
-        label="Add Task"
+        :label="$t('tasks.policyAutomatedTasksTab.addTask')"
         no-caps
         dense
         flat
@@ -39,23 +39,27 @@
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
-            <span v-if="!selectedPolicy"
-              >Click on a policy to see the tasks</span
-            >
-            <span v-else>There are no tasks added to this policy</span>
+            <span v-if="!selectedPolicy">{{
+              $t("tasks.policyAutomatedTasksTab.clickPolicyToSeeTasks")
+            }}</span>
+            <span v-else>{{
+              $t("tasks.policyAutomatedTasksTab.noTasksInPolicy")
+            }}</span>
           </div>
         </template>
         <!-- header slots -->
         <template v-slot:header-cell-enabled="props">
           <q-th auto-width :props="props">
-            <small>Enabled</small>
+            <small>{{ $t("tasks.policyAutomatedTasksTab.enabled") }}</small>
           </q-th>
         </template>
 
         <template v-slot:header-cell-smsalert="props">
           <q-th auto-width :props="props">
             <q-icon name="phone_android" size="1.5em">
-              <q-tooltip>SMS Alert</q-tooltip>
+              <q-tooltip>{{
+                $t("tasks.policyAutomatedTasksTab.smsAlert")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -63,14 +67,18 @@
         <template v-slot:header-cell-emailalert="props">
           <q-th auto-width :props="props">
             <q-icon name="email" size="1.5em">
-              <q-tooltip>Email Alert</q-tooltip>
+              <q-tooltip>{{
+                $t("tasks.policyAutomatedTasksTab.emailAlert")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
         <template v-slot:header-cell-dashboardalert="props">
           <q-th auto-width :props="props">
             <q-icon name="notifications" size="1.5em">
-              <q-tooltip>Dashboard Alert</q-tooltip>
+              <q-tooltip>{{
+                $t("tasks.policyAutomatedTasksTab.dashboardAlert")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -78,7 +86,9 @@
         <template v-slot:header-cell-collector="props">
           <q-th auto-width :props="props">
             <q-icon name="mdi-database-arrow-up" size="1.5em">
-              <q-tooltip>Collector Task</q-tooltip>
+              <q-tooltip>{{
+                $t("tasks.policyAutomatedTasksTab.collectorTask")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -93,7 +103,9 @@
                   <q-item-section side>
                     <q-icon name="play_arrow" />
                   </q-item-section>
-                  <q-item-section>Run task now</q-item-section>
+                  <q-item-section>{{
+                    $t("tasks.policyAutomatedTasksTab.runTaskNow")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -103,24 +115,30 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("tasks.shared.edit") }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="deleteTask(props.row)">
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{
+                    $t("tasks.shared.delete")
+                  }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup @click="showStatus(props.row)">
                   <q-item-section side>
                     <q-icon name="sync" />
                   </q-item-section>
-                  <q-item-section>Policy Status</q-item-section>
+                  <q-item-section>{{
+                    $t("tasks.policyAutomatedTasksTab.policyStatus")
+                  }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{
+                    $t("tasks.shared.close")
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -173,9 +191,9 @@
                 style="font-size: 1.3rem"
                 name="check"
               >
-                <q-tooltip
-                  >The task updates a custom field on the agent</q-tooltip
-                >
+                <q-tooltip>{{
+                  $t("tasks.policyAutomatedTasksTab.taskUpdatesCustomField")
+                }}</q-tooltip>
               </q-icon>
             </q-td>
             <q-td>{{ props.row.name }}</q-td>
@@ -185,7 +203,7 @@
                 style="cursor: pointer; text-decoration: underline"
                 @click="showStatus(props.row)"
                 class="status-cell text-primary"
-                >See Status</span
+                >{{ $t("tasks.policyAutomatedTasksTab.seeStatus") }}</span
               >
             </q-td>
             <q-td>{{ props.row.check_name }}</q-td>
@@ -217,35 +235,35 @@ export default {
         { name: "dashboardalert", field: "dashboard_alert", align: "left" },
         {
           name: "collector",
-          label: "Collector",
+          label: this.$t("tasks.policyAutomatedTasksTab.columns.collector"),
           field: "custom_field",
           align: "left",
           sortable: true,
         },
         {
           name: "name",
-          label: "Name",
+          label: this.$t("tasks.policyAutomatedTasksTab.columns.name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "schedule",
-          label: "Schedule",
+          label: this.$t("tasks.policyAutomatedTasksTab.columns.schedule"),
           field: "schedule",
           align: "left",
           sortable: true,
         },
         {
           name: "status",
-          label: "More Info",
+          label: this.$t("tasks.policyAutomatedTasksTab.columns.moreInfo"),
           field: "more_info",
           align: "left",
           sortable: true,
         },
         {
           name: "check_name",
-          label: "Assigned Check",
+          label: this.$t("tasks.policyAutomatedTasksTab.columns.assignedCheck"),
           field: "check_name",
           align: "left",
           sortable: true,
@@ -321,15 +339,17 @@ export default {
     runTask(task) {
       if (!task.enabled) {
         this.notifyError(
-          "Task cannot be run when it's disabled. Enable it first.",
+          this.$t("tasks.policyAutomatedTasksTab.taskDisabledError"),
         );
         return;
       }
 
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message: `Run ${task.name} task`,
+          title: this.$t("tasks.shared.areYouSure"),
+          message: this.$t("tasks.policyAutomatedTasksTab.runTask", {
+            task: task.name,
+          }),
           cancel: true,
           persistent: true,
         })
@@ -340,7 +360,7 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.notifySuccess(
-                "The task was initiated on all affected agents",
+                this.$t("tasks.policyAutomatedTasksTab.taskInitiated"),
               );
             })
             .catch(() => {
@@ -351,8 +371,10 @@ export default {
     deleteTask(task) {
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message: `Delete ${task.name} task`,
+          title: this.$t("tasks.shared.areYouSure"),
+          message: this.$t("tasks.policyAutomatedTasksTab.deleteTask", {
+            task: task.name,
+          }),
           cancel: true,
           persistent: true,
         })
@@ -363,7 +385,9 @@ export default {
             .then(() => {
               this.getTasks();
               this.$q.loading.hide();
-              this.notifySuccess("Task was deleted successfully");
+              this.notifySuccess(
+                this.$t("tasks.policyAutomatedTasksTab.taskDeleted"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

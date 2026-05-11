@@ -25,7 +25,7 @@
           push
           @click="stopPoll"
           icon="stop"
-          label="Stop Live Refresh"
+          :label="$t('agents.processManager.stopLiveRefresh')"
         />
         <q-btn
           v-else
@@ -34,13 +34,13 @@
           push
           @click="startPoll"
           icon="play_arrow"
-          label="Resume Live Refresh"
+          :label="$t('agents.processManager.resumeLiveRefresh')"
         />
 
         <div class="flex flex-center q-ml-md">
           <q-icon name="fas fa-microchip" class="q-mr-xs" />
           <div class="text-caption q-mr-sm">
-            CPU Usage:
+            {{ $t("agents.processManager.cpuUsage") }}:
             <span class="text-body1 text-weight-medium"
               >{{ totalCpuUsage }}%</span
             >
@@ -48,7 +48,7 @@
 
           <q-icon name="fas fa-memory" class="q-mr-xs" />
           <div class="text-caption">
-            RAM Usage:
+            {{ $t("agents.processManager.ramUsage") }}:
             <span class="text-body1 text-weight-medium"
               >{{ bytes2Human(totalRamUsage) }}/{{ total_ram }} GB</span
             >
@@ -85,12 +85,18 @@
             color="blue"
             :label="pollInterval"
           />
-          Refresh interval (seconds)
+          {{ $t("agents.processManager.refreshIntervalSeconds") }}
         </div>
 
         <q-space />
 
-        <q-input v-model="filter" outlined label="Search" dense clearable>
+        <q-input
+          v-model="filter"
+          outlined
+          :label="$t('common.buttons.search')"
+          dense
+          clearable
+        >
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
@@ -108,11 +114,13 @@
               <q-item-section side>
                 <q-icon name="fas fa-trash-alt" size="xs" />
               </q-item-section>
-              <q-item-section>End Process</q-item-section>
+              <q-item-section>{{
+                $t("agents.processManager.endProcess")
+              }}</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $t("common.buttons.close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -128,6 +136,7 @@
 
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   fetchAgent,
   fetchAgentProcesses,
@@ -136,51 +145,13 @@ import {
 import { bytes2Human } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
 
-const columns = [
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "cpu_percent",
-    label: "CPU",
-    field: "cpu_percent",
-    align: "left",
-    sortable: true,
-    sort: (a, b) => parseFloat(b) < parseFloat(a),
-  },
-  {
-    name: "membytes",
-    label: "Memory",
-    field: "membytes",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "User",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "pid",
-    label: "PID",
-    field: "pid",
-    align: "left",
-    sortable: true,
-  },
-];
-
 export default {
   name: "ProcessManager",
   props: {
     agent_id: !String,
   },
   setup(props) {
+    const { t } = useI18n();
     // polling setup
     const pollInterval = ref(2);
     const poll = ref(null);
@@ -240,6 +211,45 @@ export default {
     const totalRamUsage = computed(() => {
       return processes.value.reduce((acc, proc) => acc + proc.membytes, 0);
     });
+
+    const columns = computed(() => [
+      {
+        name: "name",
+        label: t("agents.processManager.columns.name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "cpu_percent",
+        label: t("agents.processManager.columns.cpu"),
+        field: "cpu_percent",
+        align: "left",
+        sortable: true,
+        sort: (a, b) => parseFloat(b) < parseFloat(a),
+      },
+      {
+        name: "membytes",
+        label: t("agents.processManager.columns.memory"),
+        field: "membytes",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: t("agents.processManager.columns.user"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "pid",
+        label: t("agents.processManager.columns.pid"),
+        field: "pid",
+        align: "left",
+        sortable: true,
+      },
+    ]);
 
     async function getProcesses() {
       loading.value = true;

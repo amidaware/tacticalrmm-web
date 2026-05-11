@@ -1,0 +1,57 @@
+{
+  "buttons": {
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "close": "Close",
+    "confirm": "Confirm",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "finish": "Finish",
+    "ok": "OK",
+    "save": "Save",
+    "search": "Search",
+    "update": "Update"
+  },
+  "status": {
+    "disabled": "Disabled",
+    "enabled": "Enabled",
+    "error": "Error",
+    "info": "Info",
+    "loading": "Loading...",
+    "success": "Success",
+    "warning": "Warning"
+  },
+  "actions": {
+    "login": "Log in",
+    "logout": "Log out",
+    "refresh": "Refresh",
+    "reset": "Reset",
+    "retry": "Retry",
+    "submit": "Submit"
+  },
+  "system": {
+    "datetimeAt": "{date} at {time}",
+    "no": "No",
+    "notAvailable": "N/A",
+    "unassigned": "Unassigned",
+    "unknown": "Unknown",
+    "yes": "Yes"
+  },
+  "timeLapse": {
+    "secondsAgo": "{count} seconds ago",
+    "minutesAgo": "{count} minutes ago",
+    "hoursAgo": "{count} hours ago",
+    "daysAgo": "{count} days ago",
+    "monthsAgo": "{count} months ago",
+    "yearsAgo": "{count} years ago"
+  },
+  "messages": {
+    "copiedToClipboard": "Copied to clipboard",
+    "invalidTimePeriod": "Time period is invalid"
+  },
+  "csv": {
+    "browserDeniedDownload": "Browser denied file download..."
+  }
+}

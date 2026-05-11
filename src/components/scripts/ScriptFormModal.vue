@@ -16,14 +16,16 @@
           size="xs"
           :disable="loading"
           dense
-          label="Generate Script"
+          :label="t('scripts.shared.generateScript')"
           color="primary"
           no-caps
           @click="generateScriptOpenAI"
         />
         <q-space />
         <q-btn dense flat icon="close" @click="closeEditor">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("scripts.shared.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-banner
@@ -34,9 +36,10 @@
       >
         <template v-slot:avatar>
           <q-icon class="text-center" name="warning" color="black" /> </template
-        >Shell/Python scripts on Linux/Mac need a shebang at the top of the
-        script e.g. <code>#!/bin/bash</code> or <code>#!/usr/bin/python3</code
-        ><br />Add one to get rid of this warning. Ignore if windows.
+        >{{ t("scripts.scriptFormModal.shebangWarning") }}
+        <code>#!/bin/bash</code> {{ t("scripts.shared.or") }}
+        <code>#!/usr/bin/python3</code><br />
+        {{ t("scripts.scriptFormModal.shebangWarningHint") }}
       </q-banner>
       <div class="row q-pa-sm">
         <q-scroll-area
@@ -61,8 +64,8 @@
               dense
               :readonly="readonly"
               v-model="script.name"
-              label="Name"
-              :rules="[(val) => !!val || '*Required']"
+              :label="t('scripts.shared.name')"
+              :rules="[(val) => !!val || t('scripts.shared.required')]"
               hide-bottom-space
             />
             <q-input
@@ -70,7 +73,7 @@
               dense
               :readonly="readonly"
               v-model="script.description"
-              label="Description"
+              :label="t('scripts.shared.description')"
               type="textarea"
               rows="2"
             />
@@ -83,12 +86,12 @@
               :options="shellOptions"
               emit-value
               map-options
-              label="Shell Type"
+              :label="t('scripts.shared.shellType')"
             />
             <tactical-dropdown
               v-model="script.supported_platforms"
               :options="agentPlatformOptions"
-              label="Supported Platforms (All supported if blank)"
+              :label="t('scripts.shared.supportedPlatforms')"
               clearable
               mapOptions
               filled
@@ -103,13 +106,13 @@
               clearable
               new-value-mode="add-unique"
               filterable
-              label="Category"
+              :label="t('scripts.shared.category')"
               :readonly="readonly"
               hide-bottom-space
             />
             <tactical-dropdown
               v-model="script.args"
-              label="Script Arguments (press Enter after typing each argument)"
+              :label="t('scripts.shared.scriptArguments')"
               filled
               use-input
               multiple
@@ -120,7 +123,7 @@
             />
             <tactical-dropdown
               v-model="script.env_vars"
-              :label="envVarsLabel"
+              :label="t('scripts.shared.environmentVariables')"
               filled
               use-input
               multiple
@@ -135,12 +138,15 @@
               dense
               :readonly="readonly"
               v-model.number="script.default_timeout"
-              label="Timeout (seconds)"
-              :rules="[(val) => val >= 5 || 'Minimum is 5']"
+              :label="t('scripts.shared.timeoutSeconds')"
+              :rules="[
+                (val) =>
+                  val >= 5 || t('scripts.shared.minimumSeconds', { min: 5 }),
+              ]"
               hide-bottom-space
             />
             <q-input
-              label="Syntax"
+              :label="t('scripts.scriptFormModal.syntax')"
               v-model="script.syntax"
               dense
               filled
@@ -149,13 +155,10 @@
             />
             <q-checkbox
               v-model="script.run_as_user"
-              label="Run As User (Windows only)"
+              :label="t('scripts.scriptFormModal.runAsUserWindowsOnly')"
             >
               <q-tooltip
-                >Setting this value on the script model will always override any
-                'Run As User' checkboxes in the UI and force this script to
-                always be run in the context of the logged in user. If no user
-                is logged in, the script will run as SYSTEM.
+                >{{ t("scripts.scriptFormModal.runAsUserTooltip") }}
               </q-tooltip>
             </q-checkbox>
           </div>
@@ -174,7 +177,7 @@
           filled
           v-model="agent"
           :options="agentOptions"
-          label="Agent to run test script on"
+          :label="t('scripts.scriptFormModal.agentToRunTestScriptOn')"
           mapOptions
           filterable
         >
@@ -184,7 +187,7 @@
               color="primary"
               dense
               flat
-              label="Test Script"
+              :label="t('scripts.scriptFormModal.testScript')"
               :disable="
                 !agent || !script.script_body || !script.default_timeout
               "
@@ -196,7 +199,7 @@
               color="secondary"
               dense
               flat
-              label="Test on Tactical's Server"
+              :label="t('scripts.scriptFormModal.testOnServer')"
               :disable="
                 !script.script_body ||
                 !script.default_timeout ||
@@ -211,24 +214,32 @@
                 transition-hide="fade"
               >
                 <div>
-                  <strong>Runs on Tactical RMM local Linux Server.</strong
+                  <strong>{{
+                    t("scripts.scriptFormModal.testOnServerTooltip.title")
+                  }}</strong
                   ><br />
-                  Only available interpreters or frameworks will be used.<br />
-                  <em>Example:</em> PowerShell scripts require PowerShell to be
-                  installed on the system.
+                  {{ t("scripts.scriptFormModal.testOnServerTooltip.body")
+                  }}<br />
+                  <em>{{ t("scripts.shared.example") }}:</em>
+                  {{ t("scripts.scriptFormModal.testOnServerTooltip.example") }}
                 </div>
               </q-tooltip>
             </q-btn>
           </template>
         </tactical-dropdown>
         <q-space />
-        <q-btn dense flat label="Cancel" @click="closeEditor" />
+        <q-btn
+          dense
+          flat
+          :label="t('scripts.shared.cancel')"
+          @click="closeEditor"
+        />
         <q-btn
           v-if="!readonly"
           :loading="loading"
           dense
           flat
-          label="Save"
+          :label="t('scripts.shared.save')"
           color="primary"
           @click="submit"
         />
@@ -242,6 +253,7 @@
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { saveScript, editScript, downloadScript } from "@/api/scripts";
 import { useAgentDropdown, agentPlatformOptions } from "@/composables/agents";
 import { generateScript } from "@/api/core";
@@ -286,7 +298,6 @@ import type { Script } from "@/types/scripts";
 
 // static data
 import { shellOptions } from "@/composables/scripts";
-import { envVarsLabel } from "@/constants/constants";
 
 // props
 const props = withDefaults(
@@ -308,6 +319,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 // setup quasar plugins
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 const $q = useQuasar();
+const { t } = useI18n();
 
 // setup store
 const store = useStore();
@@ -333,7 +345,11 @@ const script: Script = props.script
       env_vars: [],
     });
 
-if (props.clone) script.name = `(Copy) ${script.name}`;
+if (props.clone) {
+  script.name = t("scripts.scriptFormModal.copyNamePrefix", {
+    name: script.name,
+  });
+}
 const loading = ref(false);
 const agentLoading = ref(false);
 
@@ -348,12 +364,12 @@ const missingShebang = computed(() => {
 const title = computed(() => {
   if (props.script) {
     return props.readonly
-      ? `Viewing ${script.name}`
+      ? t("scripts.scriptFormModal.viewing", { name: script.name })
       : props.clone
-        ? `Copying ${script.name}`
-        : `Editing ${script.name}`;
+        ? t("scripts.scriptFormModal.copying", { name: script.name })
+        : t("scripts.scriptFormModal.editing", { name: script.name });
   } else {
-    return "Adding new script";
+    return t("scripts.scriptFormModal.addingNewScript");
   }
 });
 
@@ -400,10 +416,7 @@ async function submit() {
 
 function openTestScriptModal(ctx: string) {
   if (ctx === "server" && !script.script_body.startsWith("#!")) {
-    notifyError(
-      "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
-      7000,
-    );
+    notifyError(t("scripts.scriptFormModal.shebangRequiredError"), 7000);
     return;
   }
   $q.dialog({
@@ -473,7 +486,7 @@ function unloadEditor() {
 
 function generateScriptOpenAI() {
   $q.dialog({
-    title: "Ask ChatGPT what you need!",
+    title: t("scripts.shared.askChatGpt"),
     prompt: {
       model: `${lang.value} code that `,
       type: "text",
@@ -494,7 +507,7 @@ const edited = ref(false);
 function closeEditor() {
   if (edited.value)
     $q.dialog({
-      title: "You have unsaved changes. Are you sure you want to close?",
+      title: t("scripts.scriptFormModal.unsavedChangesConfirm"),
       cancel: true,
       ok: true,
     }).onOk(async () => {

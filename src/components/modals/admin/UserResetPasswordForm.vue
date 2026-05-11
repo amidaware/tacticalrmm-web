@@ -3,19 +3,27 @@
     <q-card style="width: 60vw">
       <q-form ref="form" @submit="onSubmit">
         <q-card-section class="row items-center">
-          <div class="text-h6">{{ user.username }} Password Reset</div>
+          <div class="text-h6">
+            {{
+              $t("settings.userResetPassword.title", {
+                username: user.username,
+              })
+            }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">New Password:</div>
+          <div class="col-2">
+            {{ $t("settings.userResetPassword.newPassword") }}:
+          </div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="password"
               :type="isPwd ? 'password' : 'text'"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('tasks.shared.required')]"
             >
               <template v-slot:append>
                 <q-icon
@@ -28,7 +36,11 @@
           </div>
         </q-card-section>
         <q-card-section class="row items-center">
-          <q-btn label="Reset" color="primary" type="submit" />
+          <q-btn
+            :label="$t('common.actions.reset')"
+            color="primary"
+            type="submit"
+          />
         </q-card-section>
       </q-form>
     </q-card>
@@ -62,7 +74,9 @@ export default {
         .then(() => {
           this.onOk();
           this.$q.loading.hide();
-          this.notifySuccess("User Password Reset!");
+          this.notifySuccess(
+            this.$t("settings.userResetPassword.notify.reset"),
+          );
         })
         .catch(() => {
           this.$q.loading.hide();

@@ -8,10 +8,16 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog persistent ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 35vw; max-width: 35vw">
       <q-bar>
-        {{ props.provider ? "Edit OIDC Provider" : "Add OIDC Provider" }}
+        {{
+          props.provider
+            ? t("reporting.sso.providersForm.editOidcProvider")
+            : t("reporting.sso.providersForm.addOidcProvider")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -20,40 +26,40 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-input
           :readonly="!!props.provider"
           :disable="!!props.provider"
-          label="Provider Name"
+          :label="t('reporting.sso.providersForm.providerName')"
           outlined
           dense
           v-model="localProvider.name"
           :rules="[
-            (val) => !!val || '*Required',
+            (val) => !!val || t('reporting.sso.providersForm.required'),
             (val) =>
               /^[a-zA-Z0-9_-]+$/.test(val) ||
-              'Only letters, numbers, hyphens, and underscores are allowed',
+              t('reporting.sso.providersForm.providerNameValidation'),
           ]"
-          hint="A unique identifier for the SSO provider. Avoid spaces and special characters, as this will be part of the callback URL."
+          :hint="t('reporting.sso.providersForm.providerNameHint')"
         />
       </q-card-section>
 
       <!-- url -->
       <q-card-section>
         <q-input
-          label="Issuer URL"
+          :label="t('reporting.sso.providersForm.issuerUrl')"
           outlined
           dense
           v-model="localProvider.server_url"
-          :rules="[(val) => !!val || '*Required']"
-          hint="The OpenID Connect Issuer URL provided by the SSO provider. This is typically the base URL where the provider hosts their OIDC configuration."
+          :rules="[(val) => !!val || t('reporting.sso.providersForm.required')]"
+          :hint="t('reporting.sso.providersForm.issuerUrlHint')"
         />
       </q-card-section>
 
       <!-- client id -->
       <q-card-section>
         <q-input
-          label="Client ID"
+          :label="t('reporting.sso.providersForm.clientId')"
           outlined
           dense
           v-model="localProvider.client_id"
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || t('reporting.sso.providersForm.required')]"
         />
       </q-card-section>
 
@@ -63,10 +69,10 @@ For details, see: https://license.tacticalrmm.com/ee
           v-model="localProvider.secret"
           filled
           :type="hideSecret ? 'password' : 'text'"
-          label="Secret"
+          :label="t('reporting.sso.providersForm.secret')"
           outlined
           dense
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || t('reporting.sso.providersForm.required')]"
         >
           <template v-slot:append>
             <q-icon
@@ -80,7 +86,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
       <q-card-section>
         <tactical-dropdown
-          label="Default User Role"
+          :label="t('reporting.sso.providersForm.defaultUserRole')"
           :options="roleOptions"
           outlined
           dense
@@ -88,15 +94,15 @@ For details, see: https://license.tacticalrmm.com/ee
           mapOptions
           filled
           v-model="localProvider.role"
-          hint="The role assigned to users upon first sign-in through this provider."
+          :hint="t('reporting.sso.providersForm.defaultUserRoleHint')"
         />
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="t('reporting.common.cancel')" v-close-popup />
         <q-btn
           flat
-          label="Submit"
+          :label="t('reporting.common.submit')"
           color="primary"
           :loading="loading"
           @click="submit"
@@ -110,6 +116,7 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, reactive } from "vue";
 import { useDialogPluginComponent, extend } from "quasar";
+import { useI18n } from "vue-i18n";
 import { editSSOProvider, addSSOProvider } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
 import { useRoleDropdown } from "@/composables/accounts";
@@ -127,6 +134,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 const props = defineProps<{ provider?: SSOProvider }>();
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const { t } = useI18n();
 
 const loading = ref(false);
 
@@ -152,7 +160,7 @@ async function submit() {
       ? await editSSOProvider(localProvider.id, localProvider)
       : await addSSOProvider(localProvider);
     onDialogOK();
-    notifySuccess("SSO Provider was edited!");
+    notifySuccess(t("reporting.sso.providersForm.providerSaved"));
   } catch (e) {}
 
   loading.value = false;

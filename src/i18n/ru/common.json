@@ -1,0 +1,57 @@
+{
+  "buttons": {
+    "apply": "Применить",
+    "cancel": "Отмена",
+    "clear": "Очистить",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "create": "Создать",
+    "delete": "Удалить",
+    "edit": "Изменить",
+    "finish": "Завершить",
+    "ok": "ОК",
+    "save": "Сохранить",
+    "search": "Поиск",
+    "update": "Обновить"
+  },
+  "status": {
+    "disabled": "Выключено",
+    "enabled": "Включено",
+    "error": "Ошибка",
+    "info": "Информация",
+    "loading": "Загрузка...",
+    "success": "Успешно",
+    "warning": "Предупреждение"
+  },
+  "actions": {
+    "login": "Войти",
+    "logout": "Выйти",
+    "refresh": "Обновить",
+    "reset": "Сбросить",
+    "retry": "Повторить",
+    "submit": "Отправить"
+  },
+  "system": {
+    "datetimeAt": "{date} в {time}",
+    "no": "Нет",
+    "notAvailable": "Н/Д",
+    "unassigned": "Без категории",
+    "unknown": "Неизвестно",
+    "yes": "Да"
+  },
+  "timeLapse": {
+    "secondsAgo": "{count} секунд назад",
+    "minutesAgo": "{count} минут назад",
+    "hoursAgo": "{count} часов назад",
+    "daysAgo": "{count} дней назад",
+    "monthsAgo": "{count} месяцев назад",
+    "yearsAgo": "{count} лет назад"
+  },
+  "messages": {
+    "copiedToClipboard": "Скопировано в буфер обмена",
+    "invalidTimePeriod": "Некорректный период времени"
+  },
+  "csv": {
+    "browserDeniedDownload": "Браузер запретил загрузку файла..."
+  }
+}

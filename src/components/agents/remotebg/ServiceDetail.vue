@@ -2,26 +2,28 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 600px; max-width: 80vw">
       <q-bar>
-        Service Details - {{ service.display_name }}
+        {{ $t("agents.serviceDetail.title", { name: service.display_name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service name:</div>
+          <div class="col-3">{{ $t("agents.serviceDetail.serviceName") }}</div>
           <div class="col-9">{{ service.name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Display name:</div>
+          <div class="col-3">{{ $t("agents.serviceDetail.displayName") }}</div>
           <div class="col-9">{{ service.display_name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Description:</div>
+          <div class="col-3">{{ $t("agents.serviceDetail.description") }}</div>
           <div class="col-9">
             <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">{{
               service.description
@@ -30,7 +32,7 @@
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Path:</div>
+          <div class="col-3">{{ $t("agents.serviceDetail.path") }}</div>
           <div class="col-9">
             <code>{{ service.binpath }}</code>
           </div>
@@ -38,7 +40,7 @@
         <br />
         <br />
         <div class="row">
-          <div class="col-3">Startup type:</div>
+          <div class="col-3">{{ $t("agents.serviceDetail.startupType") }}</div>
           <div class="col-5">
             <q-select
               dense
@@ -55,16 +57,24 @@
       <q-separator />
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service status:</div>
+          <div class="col-3">
+            {{ $t("agents.serviceDetail.serviceStatus") }}
+          </div>
           <div class="col-9">{{ service.status }}</div>
         </div>
         <br />
         <div class="row">
           <q-btn-group color="primary" push>
-            <q-btn label="Start" @click="sendServiceAction(service, 'start')" />
-            <q-btn label="Stop" @click="sendServiceAction(service, 'stop')" />
             <q-btn
-              label="Restart"
+              :label="$t('agents.servicesManager.start')"
+              @click="sendServiceAction(service, 'start')"
+            />
+            <q-btn
+              :label="$t('agents.servicesManager.stop')"
+              @click="sendServiceAction(service, 'stop')"
+            />
+            <q-btn
+              :label="$t('agents.servicesManager.restart')"
               @click="sendServiceAction(service, 'restart')"
             />
           </q-btn-group>
@@ -72,13 +82,13 @@
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
-        <q-btn flat dense label="Cancel" v-close-popup />
+        <q-btn flat dense :label="$t('common.buttons.cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           :disable="!startupTypeEdited"
           dense
           flat
-          label="Save"
+          :label="$t('common.buttons.save')"
           color="primary"
           @click="editServiceStartup"
         />
@@ -91,31 +101,13 @@
 // composition imports
 import { ref, computed, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import {
   editAgentServiceStartType,
   sendAgentServiceAction,
 } from "@/api/services";
 import { notifySuccess } from "@/utils/notify";
 
-// static data
-const startupOptions = [
-  {
-    label: "Automatic (Delayed Start)",
-    value: "autodelay",
-  },
-  {
-    label: "Automatic",
-    value: "automatic",
-  },
-  {
-    label: "Manual",
-    value: "manual",
-  },
-  {
-    label: "Disabled",
-    value: "disabled",
-  },
-];
 export default {
   name: "ServiceDetail",
   emits: [...useDialogPluginComponent.emits],
@@ -124,12 +116,32 @@ export default {
     agent_id: !String,
   },
   setup(props) {
+    const { t } = useI18n();
     // setup quasar dialog plugin
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // services detail
     const startupType = ref("");
     const loading = ref(false);
+
+    const startupOptions = [
+      {
+        label: t("agents.serviceDetail.startupOptions.autodelay"),
+        value: "autodelay",
+      },
+      {
+        label: t("agents.serviceDetail.startupOptions.automatic"),
+        value: "automatic",
+      },
+      {
+        label: t("agents.serviceDetail.startupOptions.manual"),
+        value: "manual",
+      },
+      {
+        label: t("agents.serviceDetail.startupOptions.disabled"),
+        value: "disabled",
+      },
+    ];
 
     const startupTypeEdited = computed(() => {
       if (
@@ -146,7 +158,7 @@ export default {
         const result = await sendAgentServiceAction(
           props.agent_id,
           service.name,
-          { sv_action: action }
+          { sv_action: action },
         );
         notifySuccess(result);
         onDialogOK();
@@ -167,7 +179,7 @@ export default {
         const result = await editAgentServiceStartType(
           props.agent_id,
           props.service.name,
-          data
+          data,
         );
         notifySuccess(result);
         onDialogOK();

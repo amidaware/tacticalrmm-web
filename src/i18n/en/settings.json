@@ -1,0 +1,853 @@
+{
+  "common": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "name": "Name",
+    "no": "No",
+    "password": "Password",
+    "required": "Required",
+    "reset": "Reset",
+    "save": "Save",
+    "submit": "Submit",
+    "test": "Test",
+    "user": "User",
+    "username": "Username",
+    "yes": "Yes"
+  },
+  "apiKeysForm": {
+    "addTitle": "Add API Key",
+    "editTitle": "Edit API Key",
+    "generatedOnSave": "API Key will be generated on save",
+    "key": "Key",
+    "keyExpiration": "Key Expiration (Not required)"
+  },
+  "apiKeysTable": {
+    "title": "API Keys",
+    "addKey": "Add key",
+    "noData": "No API tokens added yet",
+    "copyKeyTooltip": "Copy API Key to clipboard",
+    "deleteTitle": "Delete API key: {name}?",
+    "columns": {
+      "expiration": "Expiration",
+      "created": "Created"
+    },
+    "notify": {
+      "copied": "Key was copied to clipboard!",
+      "copyFailed": "Unable to copy to clipboard!"
+    }
+  },
+  "serverMaintenance": {
+    "title": "Server Maintenance",
+    "actions": "Actions",
+    "auditLog": "Audit Log",
+    "auditLogTooltip": "Removes agent check results",
+    "pendingActions": "Pending Actions",
+    "pendingActionsTooltip": "Removes completed pending actions",
+    "alerts": "Alerts",
+    "alertsTooltip": "Removes all alerts",
+    "actionOptions": {
+      "reloadNats": "Reload Nats Configuration",
+      "removeOrphanedTasks": "Remove Orphaned Tasks",
+      "pruneDbTables": "Prune DB Tables"
+    }
+  },
+  "codeSign": {
+    "title": "Code Signing",
+    "codeSignAllAgents": "Code sign all agents",
+    "codeSignAllAgentsTooltip": "Force all existing agents to be updated to the code-signed version",
+    "token": "Token",
+    "tokenRequired": "Token is required",
+    "deleteTokenTitle": "Delete token?",
+    "notify": {
+      "tokenDeleted": "Token was deleted!"
+    }
+  },
+  "customFields": {
+    "title": "Custom Fields",
+    "addCustomField": "Add custom field",
+    "clients": "Clients",
+    "sites": "Sites",
+    "agents": "Agents"
+  },
+  "customFieldsTable": {
+    "noData": "No Custom Fields",
+    "id": "ID: {id}",
+    "deleteTitle": "Delete custom field {name}?",
+    "columns": {
+      "fieldType": "Field Type",
+      "hideInUi": "Hide in UI",
+      "hideInSummary": "Hide in Summary Tab",
+      "defaultValue": "Default Value"
+    },
+    "notify": {
+      "deleted": "Custom Field {name} was deleted!"
+    }
+  },
+  "customFieldsForm": {
+    "addTitle": "Add Custom Field",
+    "editTitle": "Edit Custom Field",
+    "target": "Target",
+    "fieldType": "Field Type",
+    "inputOptions": "Input Options (press Enter after typing each option)",
+    "defaultValue": "Default Value",
+    "defaultValues": "Default Value(s)",
+    "hideInDashboard": "Hide in Dashboard",
+    "hideInSummary": "Hide in Summary Tab",
+    "defaultValueRequired": "Default Value needs to be set for required fields",
+    "type": {
+      "text": "Text",
+      "number": "Number",
+      "dropdownSingle": "Dropdown Single",
+      "dropdownMultiple": "Dropdown Multiple",
+      "datetime": "DateTime",
+      "checkbox": "Checkbox"
+    },
+    "notify": {
+      "added": "Custom field added!",
+      "edited": "Custom field edited!"
+    }
+  },
+  "keyStoreTable": {
+    "title": "Global Key Store",
+    "addKey": "Add key",
+    "showValues": "Show values",
+    "hideValues": "Hide values",
+    "noData": "No Keys added yet",
+    "deleteTitle": "Delete key: {name}?",
+    "columns": {
+      "value": "Value"
+    },
+    "notify": {
+      "deleted": "key: {name} was deleted!"
+    }
+  },
+  "keyStoreForm": {
+    "addTitle": "Add Global Key",
+    "editTitle": "Edit Global Key",
+    "notify": {
+      "added": "Key was added!",
+      "edited": "Key was edited!"
+    }
+  },
+  "urlActionsTable": {
+    "urlActions": "URL Actions",
+    "webhooks": "Web Hooks for Alert Failure/Resolved Actions",
+    "addUrlAction": "Add URL Action",
+    "addWebhook": "Add Web Hook",
+    "noUrlActions": "No URL Actions added yet",
+    "noWebhooks": "No Web Hooks added yet",
+    "deleteTitle": "Delete URL Action: {name}?",
+    "columns": {
+      "description": "Description",
+      "urlPattern": "URL Pattern"
+    },
+    "notify": {
+      "deleted": "URL Action: {name} was deleted!"
+    }
+  },
+  "urlActionsForm": {
+    "addUrlAction": "Add URL Action",
+    "editUrlAction": "Edit URL Action",
+    "addWebhook": "Add Web Hook",
+    "editWebhook": "Edit Web Hook",
+    "description": "Description",
+    "urlPattern": "URL Pattern",
+    "method": "Method",
+    "requestBody": "Request Body",
+    "requestHeaders": "Request Headers",
+    "notify": {
+      "saved": "Url Action was edited!"
+    }
+  },
+  "testUrlAction": {
+    "testing": "Testing {name}",
+    "agents": "Agents",
+    "sites": "Sites",
+    "client": "Client",
+    "url": "URL",
+    "body": "Body",
+    "response": "Response",
+    "run": "Run",
+    "runAgainst": {
+      "agent": "Agent",
+      "site": "Site",
+      "client": "Client",
+      "none": "None"
+    }
+  },
+  "resetPatchPolicy": {
+    "title": "Reset Agent Patch Policy",
+    "description": "Reset the patch policies for agents in a specific client or site. You can also leave the client and site blank to reset the patch policy for all agents. (This might take a while)",
+    "clients": "Clients",
+    "sites": "Sites",
+    "clearAllPolicies": "Clear Policies for ALL Agents",
+    "clearPolicies": "Clear Policies",
+    "target": {
+      "all": "All",
+      "client": "Client",
+      "site": "Site"
+    }
+  },
+  "editCoreSettings": {
+    "title": "Global Settings",
+    "hintSetZeroToDisable": "Setting this value to 0 disables this feature",
+    "minimumIsZero": "Minimum is 0",
+    "saveAndTestEmail": "Save and Test Email",
+    "saveAndTestSms": "Save and Test SMS",
+    "tabs": {
+      "general": "General",
+      "emailAlerts": "Email Alerts",
+      "smsAlerts": "SMS Alerts",
+      "meshCentral": "MeshCentral",
+      "customFields": "Custom Fields",
+      "keyStore": "Key Store",
+      "urlActions": "URL Actions",
+      "webHooks": "Web Hooks",
+      "retention": "Retention",
+      "apiKeys": "API Keys",
+      "sso": "Single Sign-On (SSO)",
+      "schedules": "Schedules"
+    },
+    "general": {
+      "enableAgentAutoUpdate": "Enable agent automatic self update",
+      "enableAgentAutoUpdateTooltip": "Runs at 35mins past every hour",
+      "enableServerSideScripts": "Enable server side scripts",
+      "enableServerSideScriptsTooltip": "Allow running scripts on TRMM server for alert failure/resolve actions",
+      "enableWebTerminal": "Enable web terminal",
+      "enableWebTerminalTooltip": "Enable the web terminal",
+      "defaultAgentTimezone": "Default agent timezone",
+      "defaultDateFormat": "Default date format",
+      "clickFormattingOptions": "Click to see formatting options",
+      "defaultServerPolicy": "Default server policy",
+      "defaultWorkstationPolicy": "Default workstation policy",
+      "defaultAlertTemplate": "Default alert template",
+      "receiveNotificationsOn": "Receive notifications on",
+      "informationalAlerts": "Informational Alerts",
+      "warningAlerts": "Warning Alerts",
+      "agentDebugLevel": "Agent Debug Level",
+      "clearFaultsAfterDays": "Clear faults on agents that haven't checked in after (days)",
+      "resetPatchPolicyOnAgents": "Reset Patch Policy on Agents"
+    },
+    "email": {
+      "emailAlertRouting": "Email Alert Routing",
+      "addEmails": "Add emails",
+      "addEmailTitle": "Add email",
+      "recipients": "Recipients",
+      "noRecipients": "No recipients",
+      "smtpSettings": "SMTP Settings",
+      "fromEmail": "From email",
+      "fromName": "From name",
+      "host": "Host",
+      "port": "Port",
+      "invalidEmail": "Invalid email",
+      "invalidPort": "Invalid Port",
+      "serverRequiresAuth": "My Server Requires Authentication",
+      "sendingTestEmail": "Sending test email..."
+    },
+    "sms": {
+      "smsAlertRouting": "SMS Alert Routing",
+      "addNumbers": "Add numbers",
+      "addNumberTitle": "Add number",
+      "addNumberMessage": "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+      "recipients": "Recipients",
+      "noRecipients": "No recipients",
+      "twilioSettings": "Twilio Settings",
+      "twilioNumber": "Twilio Number",
+      "twilioAccountSid": "Twilio Account SID",
+      "twilioAuthToken": "Twilio Auth Token",
+      "sendingTestSms": "Sending test SMS..."
+    },
+    "mesh": {
+      "title": "MeshCentral Settings",
+      "usernameLowercase": "Username must be all lowercase",
+      "meshSite": "Mesh Site",
+      "meshToken": "Mesh Token",
+      "meshDeviceGroupName": "Mesh Device Group Name",
+      "syncPermsWithTrmm": "Sync Mesh Perms with TRMM",
+      "syncPermsTooltip": "It is recommended to keep this option enabled; otherwise, all TRMM users will have full permissions in MeshCentral regardless of their permissions in TRMM.",
+      "companyName": "Company Name",
+      "companyNameTooltip": "Adding your company name here will append it to the user's full name that appears when doing a remote control session, for example: 'John Doe - Amidaware Inc.'"
+    },
+    "retention": {
+      "checkHistoryDays": "Check History (days)",
+      "resolvedAlertsDays": "Resolved Alerts (days)",
+      "agentHistoryDays": "Agent History (days)",
+      "debugLogsDays": "Debug Logs (days)",
+      "auditLogsDays": "Audit Logs (days)",
+      "reportHistoryDays": "Report History (days)"
+    },
+    "confirmSync": {
+      "title": "Are you sure?",
+      "message": "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete."
+    },
+    "logLevel": {
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error",
+      "critical": "Critical"
+    },
+    "notify": {
+      "saved": "Settings were edited!"
+    }
+  },
+  "userPreferences": {
+    "title": "Preferences",
+    "userInterface": "User Interface",
+    "agentDoubleClickAction": "Agent double-click action",
+    "urlAction": "URL Action",
+    "agentTableDefaultTab": "Agent table default tab",
+    "loadingBarColor": "Loading Bar Color",
+    "dashboardInfoColor": "Dashboard Info Color",
+    "dashboardPositiveColor": "Dashboard Positive Color",
+    "dashboardNegativeColor": "Dashboard Negative Color",
+    "dashboardWarningColor": "Dashboard Warning Color",
+    "language": "Language",
+    "clickForColorOptions": "Click to see color options",
+    "clientSort": "Client Sort",
+    "dateFormat": "Date Format",
+    "clickForFormattingOptions": "Click to see formatting options",
+    "clearSearchWhenSwitching": "Clear search field when switching client/site",
+    "clientSortOptions": {
+      "alphaFail": "Sort alphabetically, moving failing clients to the top",
+      "alpha": "Sort alphabetically only"
+    },
+    "agentDoubleClickOptions": {
+      "editAgent": "Edit Agent",
+      "takeControl": "Take Control",
+      "remoteBackground": "Remote Background",
+      "runUrlAction": "Run URL Action"
+    },
+    "defaultTabOptions": {
+      "servers": "Servers",
+      "workstations": "Workstations",
+      "mixed": "Mixed"
+    },
+    "languageOptions": {
+      "system": "System (auto)"
+    },
+    "loadingBarColorOptions": {
+      "red": "Red",
+      "pink": "Pink",
+      "purple": "Purple",
+      "deep-purple": "Deep Purple",
+      "indigo": "Indigo",
+      "blue": "Blue",
+      "light-blue": "Light Blue",
+      "cyan": "Cyan",
+      "teal": "Teal",
+      "green": "Green",
+      "light-green": "Light Green",
+      "lime": "Lime",
+      "yellow": "Yellow",
+      "amber": "Amber",
+      "orange": "Orange",
+      "deep-orange": "Deep Orange",
+      "brown": "Brown",
+      "grey": "Grey",
+      "blue-grey": "Blue Grey"
+    },
+    "notify": {
+      "noUrlActions": "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+      "selectUrlAction": "Select a URL Action",
+      "saved": "Preferences were saved!"
+    }
+  },
+  "scheduleTable": {
+    "title": "Schedules",
+    "addSchedule": "Add Schedule",
+    "everyWeekday": "Every Weekday",
+    "everyMonth": "Every Month",
+    "everyDay": "Every Day",
+    "everyWeek": "Every week",
+    "last": "Last",
+    "deleteConfirm": "Are you sure you want to delete schedule: {name}?",
+    "columns": {
+      "scheduleType": "Schedule Type",
+      "runTime": "Run Time",
+      "weekdays": "Weekdays",
+      "months": "Months",
+      "daysOfMonth": "Days of Month",
+      "weeksOfMonth": "Weeks of Month"
+    },
+    "weekOrdinal": {
+      "first": "1st",
+      "second": "2nd",
+      "third": "3rd",
+      "fourth": "4th"
+    }
+  },
+  "scheduleApi": {
+    "added": "Schedule was added successfully.",
+    "updated": "Schedule was modified successfully.",
+    "deleted": "Schedule successfully deleted."
+  },
+  "scheduleForm": {
+    "addSchedule": "Add Schedule",
+    "editSchedule": "Edit Schedule",
+    "taskRunType": "Task run type",
+    "hourMinute": "Hour:Minute",
+    "runOnDays": "Run on Days",
+    "runOnMonths": "Run on Months",
+    "runOnWeeks": "Run on weeks",
+    "onDays": "On Days",
+    "onWeeks": "On Weeks",
+    "allMonths": "All months",
+    "allDays": "All days",
+    "lastDay": "Last Day",
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "week": {
+      "first": "First Week",
+      "second": "Second Week",
+      "third": "Third Week",
+      "fourth": "Fourth Week",
+      "last": "Last Week"
+    }
+  },
+  "adminManager": {
+    "title": "User Administration",
+    "new": "New",
+    "enableUser": "Enable User",
+    "noUsers": "No Users",
+    "resetPassword": "Reset Password",
+    "resetTwoFactorAuth": "Reset Two-Factor Auth",
+    "showConnectedSsoAccounts": "Show Connected SSO Accounts",
+    "showActiveSessions": "Show Active Sessions",
+    "sso": "SSO",
+    "deleteUserTitle": "Delete user {username}?",
+    "reset2faTitle": "Reset 2FA for {username}?",
+    "columns": {
+      "active": "Active",
+      "username": "Username",
+      "email": "Email",
+      "lastLogin": "Last Login",
+      "lastLogonFrom": "Last Logon From"
+    },
+    "notify": {
+      "userDeleted": "User {username} was deleted!",
+      "userEnabled": "User enabled successfully",
+      "userDisabled": "User disabled successfully"
+    }
+  },
+  "permissionsManager": {
+    "title": "Manage Roles",
+    "noRoles": "No Roles",
+    "newRole": "New Role",
+    "deleteRoleTitle": "Delete role {name}?",
+    "columns": {
+      "superuser": "Superuser",
+      "assignedUsers": "Assigned Users"
+    }
+  },
+  "rolesForm": {
+    "editingRole": "Editing Role",
+    "addingRole": "Adding Role",
+    "roleName": "Role Name",
+    "sections": {
+      "superUser": "Super User",
+      "reporting": "Reporting",
+      "accounts": "Accounts",
+      "agents": "Agents",
+      "core": "Core",
+      "checks": "Checks",
+      "clients": "Clients",
+      "automationPolicies": "Automation Policies",
+      "tasks": "Tasks",
+      "logs": "Logs",
+      "scripts": "Scripts",
+      "alerts": "Alerts",
+      "windowsServices": "Windows Services",
+      "software": "Software",
+      "windowsUpdates": "Windows Updates"
+    },
+    "allowedClients": "Allowed Clients",
+    "allowedSites": "Allowed Sites",
+    "emptyMeansAllClientsAllowed": "Empty means all clients are allowed",
+    "emptyMeansAllSitesAllowed": "Empty means all sites are allowed",
+    "permissionLabels": {
+      "superUser": "Super User",
+      "reportingViewer": "Reporting Viewer",
+      "reportingManager": "Reporting Manager",
+      "listUserAccounts": "List User Accounts",
+      "manageUserAccounts": "Manage User Accounts",
+      "listRoles": "List Roles",
+      "manageRoles": "Manage Roles",
+      "listAgents": "List Agents",
+      "listAgentHistory": "List Agent History",
+      "useMeshCentral": "Use MeshCentral",
+      "uninstallAgents": "Uninstall Agents",
+      "updateAgents": "Update Agents",
+      "editAgents": "Edit Agents",
+      "manageProcesses": "Manage Processes",
+      "viewEventLogs": "View Event Logs",
+      "sendCommand": "Send Command",
+      "shutdownRebootAgents": "Shutdown / Reboot Agents",
+      "wakeUpWolAgents": "Wake-Up (WoL) Agents",
+      "installAgents": "Install Agents",
+      "runScript": "Run Script",
+      "bulkActions": "Bulk Actions",
+      "recoverAgents": "Recover Agents",
+      "useRegistry": "Use Registry",
+      "listNotes": "List Notes",
+      "manageNotes": "Manage Notes",
+      "viewGlobalSettings": "View Global Settings",
+      "editGlobalSettings": "Edit Global Settings",
+      "viewGlobalKeyStore": "View Global Key Store",
+      "editGlobalKeyStore": "Edit Global Key Store",
+      "doServerMaintenance": "Do Server Maintenance",
+      "manageCodeSigning": "Manage Code Signing",
+      "listApiKeys": "List API Keys",
+      "manageApiKeys": "Manage API Keys",
+      "runUrlActions": "Run URL Actions",
+      "viewCustomFields": "View Custom Fields",
+      "editCustomFields": "Edit Custom Fields",
+      "listSchedules": "List Schedules",
+      "manageSchedules": "Manage Schedules",
+      "useTrmmServerWebTerminal": "Use TRMM Server Web Terminal",
+      "listChecks": "List Checks",
+      "manageChecks": "Manage Checks",
+      "runChecks": "Run Checks",
+      "listClients": "List Clients",
+      "manageClients": "Manage Clients",
+      "listSites": "List Sites",
+      "manageSites": "Manage Sites",
+      "listDeployments": "List Deployments",
+      "manageDeployments": "Manage Deployments",
+      "listAutomationPolicies": "List Automation Policies",
+      "manageAutomationPolicies": "Manage Automation Policies",
+      "listTasks": "List Tasks",
+      "manageTasks": "Manage Tasks",
+      "runTasks": "Run Tasks",
+      "viewAuditLogs": "View Audit Logs",
+      "viewDebugLogs": "View Debug Logs",
+      "listPendingActions": "List Pending Actions",
+      "managePendingActions": "Manage Pending Actions",
+      "listScripts": "List Scripts",
+      "manageScripts": "Manage Scripts",
+      "runScriptsOnTrmmServer": "Run Scripts on TRMM Server",
+      "listAlerts": "List Alerts",
+      "manageAlerts": "Manage Alerts",
+      "listAlertTemplates": "List Alert Templates",
+      "manageAlertTemplates": "Manage Alert Templates",
+      "manageWindowsServices": "Manage Windows Services",
+      "listSoftware": "List Software",
+      "manageSoftware": "Manage Software",
+      "manageWindowsUpdates": "Manage Windows Updates"
+    }
+  },
+  "userSessionsTable": {
+    "title": "User Sessions for {username}",
+    "removeAllSessions": "Remove All Sessions",
+    "disconnect": "Disconnect",
+    "disconnectSessionTitle": "Disconnect session for {user}?",
+    "disconnectSessionMessage": "This user will be signed out immediately.",
+    "disconnectAllSessionsTitle": "Disconnect all sessions for {username}?",
+    "columns": {
+      "created": "Created",
+      "expires": "Expires"
+    },
+    "notify": {
+      "loginSessionDeleted": "Login session deleted successfully",
+      "loginSessionsDeleted": "Login sessions deleted successfully"
+    }
+  },
+  "automationManager": {
+    "title": "Automation Manager",
+    "new": "New",
+    "policyOverview": "Policy Overview",
+    "noPolicies": "No Policies",
+    "enablePolicy": "Enable Policy",
+    "enforcePolicyTooltip": "Enforce Policy (Will override Agent tasks/checks)",
+    "copy": "Copy",
+    "showRelations": "Show Relations",
+    "policyExclusions": "Policy Exclusions",
+    "defaultServer": "Default Server",
+    "defaultWorkstation": "Default Workstation",
+    "showRelationsCount": "Show Relations ({count})",
+    "showPolicyExclusionsCount": "Show Policy Exclusions ({count})",
+    "createCopyTooltip": "Create a copy of this policy",
+    "deletePolicyTitle": "Delete policy?",
+    "editPatchPolicy": "Edit Patch Policy",
+    "addPatchPolicy": "Add Patch Policy",
+    "modifyPatchPolicy": "Modify Patch Policy",
+    "createPatchPolicy": "Create Patch Policy",
+    "modifyAlertTemplate": "Modify Alert Template",
+    "assignAlertTemplate": "Assign Alert Template",
+    "columns": {
+      "active": "Active",
+      "enforced": "Enforced",
+      "description": "Description",
+      "relations": "Relations",
+      "exclusions": "Exclusions",
+      "patchPolicy": "Patch Policy",
+      "alertTemplate": "Alert Template",
+      "actions": "Actions"
+    },
+    "notify": {
+      "policyDeleted": "Policy was deleted!",
+      "policyEnabled": "Policy enabled successfully",
+      "policyDisabled": "Policy disabled successfully",
+      "policyEnforced": "Policy enforced successfully",
+      "policyEnforcementDisabled": "Policy enforcement disabled"
+    }
+  },
+  "policyOverview": {
+    "disabledSuffix": " (disabled)",
+    "policyLabelServers": "{name} (Servers){disabled}",
+    "policyLabelWorkstations": "{name} (Workstations){disabled}"
+  },
+  "policyAdd": {
+    "title": "Edit policies assigned to {type}",
+    "serverPolicy": "Server Policy",
+    "workstationPolicy": "Workstation Policy",
+    "policy": "Policy",
+    "blockPolicyInheritance": "Block policy inheritance",
+    "blockPolicyInheritanceHint": "This {type} will not inherit from higher policies",
+    "noPolicies": "No Automation Policies have been setup. Go to Settings > Automation Manager",
+    "types": {
+      "agent": "agent",
+      "site": "site",
+      "client": "client"
+    },
+    "notify": {
+      "updated": "Policies Updated Successfully!"
+    }
+  },
+  "policyExclusions": {
+    "title": "Policy Exclusions for {name}",
+    "excludedClients": "Excluded Clients",
+    "excludedSites": "Excluded Sites",
+    "excludedAgents": "Excluded Agents",
+    "notify": {
+      "saved": "Policy exclusions added"
+    }
+  },
+  "policyForm": {
+    "copyingFromPolicy": "You are copying checks and tasks from Policy:",
+    "intoNewPolicy": "into a new policy.",
+    "description": "Description",
+    "active": "Active",
+    "enforced": "Enforced",
+    "editPolicy": "Edit Policy",
+    "addPolicy": "Add Policy",
+    "notify": {
+      "edited": "Policy edited!",
+      "added": "Policy added. Now you can add Tasks and Checks!"
+    }
+  },
+  "policyStatus": {
+    "title": "{name} Status",
+    "noAgentsInPolicy": "There are no agents in this policy",
+    "awaitingFirstSynchronization": "Awaiting First Synchronization",
+    "columns": {
+      "hostname": "Hostname",
+      "status": "Status",
+      "moreInfo": "More Info",
+      "dateTime": "Date / Time"
+    }
+  },
+  "relationsView": {
+    "title": "{name} Relations",
+    "defaultServerPolicy": "This policy is set as the Default Server Policy.",
+    "defaultWorkstationPolicy": "This policy is set as the Default Workstation Policy.",
+    "appliedToServers": "Applied to Servers",
+    "appliedToWorkstations": "Applied to Workstations"
+  },
+  "auditLogDetail": {
+    "before": "Before",
+    "after": "After"
+  },
+  "auditManager": {
+    "title": "Audit Manager",
+    "auditLogs": "Audit Logs",
+    "agent": "Agent",
+    "agents": "Agents",
+    "clients": "Clients",
+    "users": "Users",
+    "action": "Action",
+    "object": "Object",
+    "time": "Time",
+    "noDataInitial": "Click search to find audit logs",
+    "noDataSearched": "No data found. Try to refine your search",
+    "columns": {
+      "time": "Time",
+      "username": "Username",
+      "agent": "Agent",
+      "client": "Client",
+      "site": "Site",
+      "action": "Action",
+      "object": "Object",
+      "message": "Message",
+      "clientIp": "Client IP"
+    },
+    "options": {
+      "addObject": "Add Object",
+      "modifyObject": "Modify Object",
+      "executeCommand": "Execute Command",
+      "executeScript": "Execute Script",
+      "remoteSession": "Remote Session",
+      "urlAction": "URL Action",
+      "agentInstalls": "Agent Installs",
+      "bulkActions": "Bulk Actions",
+      "deleteObject": "Delete Object",
+      "failedUserLogin": "Failed User login",
+      "userLogin": "User Login",
+      "taskRunResults": "Task Run Results"
+    },
+    "actions": {
+      "add": "Add Object",
+      "modify": "Modify Object",
+      "delete": "Delete Object",
+      "execute_command": "Execute Command",
+      "execute_script": "Execute Script",
+      "remote_session": "Remote Session",
+      "url_action": "URL Action",
+      "agent_install": "Agent Installs",
+      "bulk_action": "Bulk Actions",
+      "failed_login": "Failed User login",
+      "login": "User Login",
+      "task_run": "Task Run Results"
+    },
+    "objects": {
+      "agent": "Agent",
+      "automatedTask": "Automated Task",
+      "bulkActions": "Bulk Actions",
+      "coreSettings": "Core Settings",
+      "check": "Check",
+      "client": "Client",
+      "policy": "Policy",
+      "site": "Site",
+      "script": "Script",
+      "user": "User",
+      "patchPolicy": "Patch Policy",
+      "alertTemplate": "Alert Template",
+      "role": "Role",
+      "urlAction": "URL Action",
+      "globalKeyStore": "Global Key Store",
+      "customField": "Custom Field",
+      "schedule": "Schedule",
+      "reportSchedule": "Report Schedule"
+    }
+  },
+  "debugLog": {
+    "title": "Debug Log",
+    "logs": "Debug Logs",
+    "agentsFilter": "Agents Filter",
+    "logTypeFilter": "Log Type Filter",
+    "resultsLimited": "Results are limited to 1000 rows.",
+    "logTypes": {
+      "agentUpdate": "Agent Update",
+      "agentIssues": "Agent Issues",
+      "windowsUpdates": "Windows Updates",
+      "systemIssues": "System Issues",
+      "scripting": "Scripting"
+    },
+    "columns": {
+      "time": "Time",
+      "logLevel": "Log Level",
+      "agent": "Agent",
+      "logType": "Log Type",
+      "message": "Message"
+    }
+  },
+  "pendingActions": {
+    "titleForAgent": "Pending Actions for {hostname}",
+    "allPendingActions": "All Pending Actions",
+    "noPendingActions": "No Pending Actions",
+    "hideCompleted": "Hide {count} Completed",
+    "showCompleted": "Show {count} Completed",
+    "cancelAction": "Cancel Action",
+    "completed": "Completed",
+    "viewOutput": "View output",
+    "outputDetailsTitle": "Pending Action Output Details",
+    "deletePendingActionTitle": "Delete this pending action?",
+    "columns": {
+      "type": "Type",
+      "due": "Due",
+      "description": "Description",
+      "agent": "Agent",
+      "client": "Client",
+      "site": "Site"
+    }
+  },
+  "userForm": {
+    "invalidEmail": "Invalid email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "role": "Role",
+    "noRolesCreated": "No roles have been created. Create some from Settings > Permissions Manager",
+    "denyDashboardLogins": "Deny Dashboard Logins",
+    "editUser": "Edit User",
+    "addUser": "Add User",
+    "notify": {
+      "edited": "User edited!",
+      "added": "User {username} was added!"
+    }
+  },
+  "userResetPassword": {
+    "title": "{username} Password Reset",
+    "newPassword": "New Password",
+    "notify": {
+      "reset": "User Password Reset!"
+    }
+  },
+  "winUpdateDialog": {
+    "categories": "Categories",
+    "description": "Description",
+    "supportUrls": "Support URLs"
+  },
+  "shared": {
+    "weekday": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "weekdayShort": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "month": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "monthShort": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    }
+  }
+}

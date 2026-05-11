@@ -1,4 +1,5 @@
 import { exportFile, Notify } from "quasar";
+import { i18n } from "@/i18n";
 
 function _wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -28,11 +29,11 @@ export function exportTableToCSV(rows, columns) {
               typeof col.field === "function"
                 ? col.field(row)
                 : row[col.field === void 0 ? col.name : col.field],
-              col.format
-            )
+              col.format,
+            ),
           )
-          .join(",")
-      )
+          .join(","),
+      ),
     )
     .join("\r\n");
 
@@ -40,7 +41,7 @@ export function exportTableToCSV(rows, columns) {
 
   if (status !== true) {
     Notify({
-      message: "Browser denied file download...",
+      message: i18n.global.t("common.csv.browserDeniedDownload"),
       color: "negative",
       icon: "warning",
     });

@@ -1,0 +1,230 @@
+{
+  "common": {
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "seconds": "секунд",
+    "fields": {
+      "alertSeverity": "Уровень оповещения",
+      "failuresBeforeAlert": "Количество последовательных сбоев до оповещения",
+      "runEverySeconds": "Запускать эту проверку каждые (сек)"
+    },
+    "hints": {
+      "runEveryOverride": "Значение, отличное от 0, переопределит настройку агента «Запускать проверки каждые»"
+    }
+  },
+  "validation": {
+    "required": "*Обязательно",
+    "minimumThreshold": "Минимальный порог: {min}",
+    "maximumThreshold": "Максимальный порог: {max}",
+    "minValue": "Мин. {min}",
+    "maxValue": "Макс. {max}",
+    "thresholdRequired": "Нужно задать порог предупреждения или порог ошибки",
+    "warningLessThanError": "Порог предупреждения должен быть меньше порога ошибки",
+    "warningMoreThanError": "Порог предупреждения должен быть больше порога ошибки"
+  },
+  "cpu": {
+    "dialog": {
+      "addTitle": "Добавить проверку CPU",
+      "editTitle": "Редактировать проверку CPU"
+    },
+    "fields": {
+      "warningThreshold": "Порог предупреждения (%)",
+      "errorThreshold": "Порог ошибки (%)"
+    }
+  },
+  "memory": {
+    "dialog": {
+      "addTitle": "Добавить проверку памяти",
+      "editTitle": "Редактировать проверку памяти"
+    },
+    "fields": {
+      "warningThreshold": "Порог предупреждения (%)",
+      "errorThreshold": "Порог ошибки (%)"
+    }
+  },
+  "disk": {
+    "dialog": {
+      "addTitle": "Добавить проверку диска",
+      "editTitle": "Редактировать проверку диска"
+    },
+    "fields": {
+      "disk": "Диск",
+      "warningThresholdRemaining": "Порог предупреждения остатка (%)",
+      "errorThresholdRemaining": "Порог ошибки остатка (%)"
+    }
+  },
+  "ping": {
+    "dialog": {
+      "addTitle": "Добавить Ping-проверку",
+      "editTitle": "Редактировать Ping-проверку"
+    },
+    "fields": {
+      "descriptiveName": "Понятное имя",
+      "hostnameOrIp": "Хост или IP"
+    }
+  },
+  "script": {
+    "dialog": {
+      "addTitle": "Добавить Script-проверку",
+      "editTitle": "Редактировать Script-проверку"
+    },
+    "empty": {
+      "uploadFirst": "Сначала загрузите скрипт",
+      "path": "Настройки -> Менеджер скриптов"
+    },
+    "fields": {
+      "selectScript": "Выберите скрипт",
+      "scriptArgs": "Аргументы скрипта (нажимайте Enter после каждого аргумента)",
+      "environmentVars": "Переменные окружения (нажимайте Enter после каждой пары key=value)",
+      "infoReturnCodes": "Информационные коды возврата (Enter после каждого кода)",
+      "warningReturnCodes": "Коды предупреждения (Enter после каждого кода)",
+      "successReturnCodes": "Коды успеха (Enter после каждого кода)",
+      "timeoutSeconds": "Таймаут скрипта (сек)"
+    }
+  },
+  "scriptOutput": {
+    "title": "Вывод скрипта",
+    "lastRun": "Последний запуск",
+    "runTime": "Время выполнения",
+    "returnCode": "Код возврата",
+    "standardOutput": "Стандартный вывод",
+    "standardError": "Стандартная ошибка"
+  },
+  "winSvc": {
+    "dialog": {
+      "addTitle": "Добавить проверку службы",
+      "editTitle": "Редактировать проверку службы"
+    },
+    "policyMode": {
+      "chooseDefaults": "Выбрать из стандартных",
+      "enterManually": "Ввести вручную"
+    },
+    "fields": {
+      "service": "Служба",
+      "serviceName": "Имя службы",
+      "displayName": "Отображаемое имя"
+    },
+    "options": {
+      "passIfStartPending": "Считать PASS, если служба в режиме 'Start Pending'",
+      "passIfNotExists": "Считать PASS, если служба не существует",
+      "restartIfStopped": "Перезапускать службу, если она остановлена"
+    }
+  },
+  "eventLog": {
+    "dialog": {
+      "addTitle": "Добавить проверку журнала событий",
+      "editTitle": "Редактировать проверку журнала событий"
+    },
+    "fields": {
+      "descriptiveName": "Понятное имя",
+      "logToQuery": "Журнал событий для запроса",
+      "failWhen": "Считать сбоем, когда",
+      "eventId": "ID события (используйте * для совпадения со всеми)",
+      "eventSource": "Источник события",
+      "messageContains": "Сообщение содержит строку",
+      "searchLastDays": "За сколько предыдущих дней искать (0 — весь журнал)",
+      "eventType": "Тип события",
+      "eventsFoundBeforeAlert": "Количество найденных событий до оповещения"
+    },
+    "eventTypes": {
+      "info": "Информация",
+      "warning": "Предупреждение",
+      "error": "Ошибка",
+      "successAudit": "Успешный аудит",
+      "failureAudit": "Неудачный аудит"
+    },
+    "validation": { "invalidEventId": "Некорректный ID события" }
+  },
+  "eventLogOutput": {
+    "noEventLogs": "Нет событий",
+    "notRunYet": "Проверка еще не запускалась",
+    "search": "Поиск",
+    "columns": {
+      "type": "Тип",
+      "source": "Источник",
+      "eventId": "ID события",
+      "time": "Время",
+      "message": "Сообщение"
+    }
+  },
+  "policyTab": {
+    "new": "Новая",
+    "types": {
+      "diskSpace": "Проверка дискового пространства",
+      "ping": "Ping-проверка",
+      "cpuLoad": "Проверка загрузки CPU",
+      "memory": "Проверка памяти",
+      "windowsService": "Проверка службы Windows",
+      "script": "Проверка скрипта",
+      "eventLog": "Проверка журнала событий"
+    },
+    "empty": {
+      "selectPolicy": "Нажмите на политику, чтобы увидеть проверки",
+      "noChecks": "В этой политике нет добавленных проверок"
+    },
+    "headers": {
+      "smsAlert": "SMS-оповещение",
+      "emailAlert": "Email-оповещение",
+      "dashboardAlert": "Оповещение панели"
+    },
+    "columns": {
+      "description": "Описание",
+      "status": "Статус",
+      "assignedTasks": "Назначенные задачи"
+    },
+    "menu": {
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "policyStatus": "Статус политики",
+      "close": "Закрыть"
+    },
+    "seeStatus": "См. статус",
+    "assignedTasks": {
+      "count": "Задач: {count}"
+    },
+    "actions": {
+      "enabled": "включены",
+      "disabled": "выключены"
+    },
+    "alertTypes": {
+      "email": "Email",
+      "sms": "SMS",
+      "dashboard": "Панель"
+    },
+    "notify": {
+      "alertsToggled": "Оповещения типа «{type}» {action}",
+      "checkDeleted": "Проверка удалена!"
+    },
+    "dialog": {
+      "deleteTitle": "Удалить проверку типа {type}?"
+    }
+  },
+  "graph": {
+    "noData": "Нет данных",
+    "historyTitle": "История {name}",
+    "filters": {
+      "last24Hours": "Последние 24 часа",
+      "last7Days": "Последние 7 дней",
+      "last30Days": "Последние 30 дней",
+      "everything": "Все время"
+    },
+    "series": {
+      "cpuLoad": "Загрузка CPU",
+      "memoryUsage": "Использование памяти",
+      "diskSpaceRemaining": "Оставшееся место на диске",
+      "scriptResults": "Результаты скрипта",
+      "status": "Статус"
+    },
+    "errorThreshold": "Порог ошибки",
+    "warningThreshold": "Порог предупреждения",
+    "passing": "Успешно",
+    "failing": "Сбой",
+    "scriptOutput": {
+      "returnCode": "Код возврата",
+      "stdOut": "Std Out",
+      "errOut": "Err Out",
+      "executionTime": "Время выполнения"
+    }
+  }
+}

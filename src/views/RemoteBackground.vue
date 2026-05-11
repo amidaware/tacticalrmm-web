@@ -10,29 +10,39 @@
       align="left"
       narrow-indicator
     >
-      <q-tab name="terminal" icon="fas fa-terminal" label="Terminal" />
+      <q-tab
+        name="terminal"
+        icon="fas fa-terminal"
+        :label="$t('agents.remoteBackground.tabs.terminal')"
+      />
       <q-tab
         name="filebrowser"
         icon="far fa-folder-open"
-        label="File Browser"
+        :label="$t('agents.remoteBackground.tabs.fileBrowser')"
       />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="services"
         icon="fas fa-cogs"
-        label="Services"
+        :label="$t('agents.remoteBackground.tabs.services')"
       />
-      <q-tab name="processes" icon="fas fa-chart-area" label="Processes" />
+      <q-tab
+        name="processes"
+        icon="fas fa-chart-area"
+        :label="$t('agents.remoteBackground.tabs.processes')"
+      />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="eventlog"
         icon="fas fa-clipboard-list"
-        label="Event Log"
+        :label="$t('agents.remoteBackground.tabs.eventLog')"
       />
       <q-tab v-if="$route.query.agentPlatform === 'windows'" name="registry">
         <div class="flex items-center text-weight-bold text-subtitle2">
           <q-icon :name="`img:${registryIcon}`" size="25px" />
-          <span class="q-ml-sm font">Registry</span>
+          <span class="q-ml-sm font">{{
+            $t("agents.remoteBackground.tabs.registry")
+          }}</span>
         </div>
       </q-tab>
     </q-tabs>
@@ -97,6 +107,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar, useMeta } from "quasar";
+import { useI18n } from "vue-i18n";
 import { fetchAgentMeshCentralURLs } from "@/api/agents";
 import { fetchDashboardInfo } from "@/api/core";
 
@@ -118,6 +129,7 @@ export default {
   setup() {
     // setup quasar
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // vue router
     const { params } = useRoute();
@@ -134,7 +146,7 @@ export default {
       terminal.value = data.terminal;
       file.value = data.file;
       useMeta({
-        title: `${data.hostname} - ${data.client} - ${data.site} | Remote Background`,
+        title: `${data.hostname} - ${data.client} - ${data.site} | ${t("agents.remoteBackground.metaTitle")}`,
       });
     }
 
@@ -157,6 +169,7 @@ export default {
       tab,
       agent_id,
       registryIcon,
+      t,
     };
   },
 };

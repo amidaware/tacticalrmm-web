@@ -22,16 +22,18 @@ export const useDashboardStore = defineStore("dashboard", () => {
 
   // watch for data ws data
   watch(data, (newValue) => {
-    if (newValue.action === "dashboard.agentcount") {
-      const incomingData = newValue.data as WSAgentCount;
-
-      serverCount.value = incomingData.total_server_count;
-      serverOfflineCount.value = incomingData.total_server_offline_count;
-      workstationCount.value = incomingData.total_workstation_count;
-      workstationOfflineCount.value =
-        incomingData.total_workstation_offline_count;
-      daysUntilCertExpires.value = incomingData.days_until_cert_expires;
+    if (!newValue || newValue.action !== "dashboard.agentcount") {
+      return;
     }
+
+    const incomingData = newValue.data as WSAgentCount;
+
+    serverCount.value = incomingData.total_server_count;
+    serverOfflineCount.value = incomingData.total_server_offline_count;
+    workstationCount.value = incomingData.total_workstation_count;
+    workstationOfflineCount.value =
+      incomingData.total_workstation_offline_count;
+    daysUntilCertExpires.value = incomingData.days_until_cert_expires;
   });
 
   return {

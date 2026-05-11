@@ -8,10 +8,12 @@
         flat
         push
         icon="refresh"
-      />Debug Log
+      />{{ $t("settings.debugLog.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip content-class="bg-white text-primary">{{
+          $t("common.buttons.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-table
@@ -25,7 +27,7 @@
       }"
       :rows="debugLog"
       :columns="columns"
-      :title="modal ? 'Debug Logs' : ''"
+      :title="modal ? $t('settings.debugLog.logs') : ''"
       :pagination="{ sortBy: 'entry_time', descending: true, rowsPerPage: 0 }"
       :loading="loading"
       :filter="filter"
@@ -49,7 +51,7 @@
           class="q-pr-sm"
           style="width: 250px"
           v-model="agentFilter"
-          label="Agents Filter"
+          :label="$t('settings.debugLog.agentsFilter')"
           :options="agentOptions"
           mapOptions
           outlined
@@ -60,7 +62,7 @@
           class="q-pr-sm"
           style="width: 250px"
           v-model="logTypeFilter"
-          label="Log Type Filter"
+          :label="$t('settings.debugLog.logTypeFilter')"
           :options="logTypeOptions"
           mapOptions
           outlined
@@ -70,31 +72,31 @@
           v-model="logLevelFilter"
           :color="dash_info_color"
           val="info"
-          label="Info"
+          :label="$t('settings.editCoreSettings.logLevel.info')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_negative_color"
           val="critical"
-          label="Critical"
+          :label="$t('settings.editCoreSettings.logLevel.critical')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_negative_color"
           val="error"
-          label="Error"
+          :label="$t('settings.editCoreSettings.logLevel.error')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_warning_color"
           val="warning"
-          label="Warning"
+          :label="$t('settings.editCoreSettings.logLevel.warning')"
         />
         <q-space />
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.buttons.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -110,7 +112,7 @@
         <q-tr v-if="Array.isArray(debugLog) && debugLog.length === 1000">
           <q-td colspan="100%">
             <q-icon name="warning" :color="dash_warning_color" />
-            Results are limited to 1000 rows.
+            {{ $t("settings.debugLog.resultsLimited") }}
           </q-td>
         </q-tr>
       </template>
@@ -128,6 +130,7 @@
 // composition api
 import { ref, toRef, watch, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import { useAgentDropdown } from "@/composables/agents";
 import { fetchDebugLog } from "@/api/logs";
 import { formatTableColumnText } from "@/utils/format";
@@ -137,53 +140,6 @@ import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 
 // static data
-const logTypeOptions = [
-  { label: "Agent Update", value: "agent_update" },
-  { label: "Agent Issues", value: "agent_issues" },
-  { label: "Windows Updates", value: "windows_updates" },
-  { label: "System Issues", value: "system_issues" },
-  { label: "Scripting", value: "scripting" },
-];
-
-const columns = [
-  {
-    name: "entry_time",
-    label: "Time",
-    field: "entry_time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "log_level",
-    label: "Log Level",
-    field: "log_level",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "agent",
-    label: "Agent",
-    field: "agent",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "log_type",
-    label: "Log Type",
-    field: "log_type",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  {
-    name: "message",
-    label: "Message",
-    field: "message",
-    align: "left",
-    sortable: true,
-  },
-];
-
 export default {
   name: "LogModal",
   components: {
@@ -199,6 +155,7 @@ export default {
     },
   },
   setup(props) {
+    const { t } = useI18n();
     // setup vuex
     const store = useStore();
 
@@ -219,6 +176,66 @@ export default {
     const loading = ref(false);
     const filter = ref("");
 
+    const logTypeOptions = [
+      {
+        label: t("settings.debugLog.logTypes.agentUpdate"),
+        value: "agent_update",
+      },
+      {
+        label: t("settings.debugLog.logTypes.agentIssues"),
+        value: "agent_issues",
+      },
+      {
+        label: t("settings.debugLog.logTypes.windowsUpdates"),
+        value: "windows_updates",
+      },
+      {
+        label: t("settings.debugLog.logTypes.systemIssues"),
+        value: "system_issues",
+      },
+      { label: t("settings.debugLog.logTypes.scripting"), value: "scripting" },
+    ];
+
+    const columns = [
+      {
+        name: "entry_time",
+        label: t("settings.debugLog.columns.time"),
+        field: "entry_time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "log_level",
+        label: t("settings.debugLog.columns.logLevel"),
+        field: "log_level",
+        align: "left",
+        sortable: true,
+        format: (val) => getLogLevelLabel(val),
+      },
+      {
+        name: "agent",
+        label: t("settings.debugLog.columns.agent"),
+        field: "agent",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "log_type",
+        label: t("settings.debugLog.columns.logType"),
+        field: "log_type",
+        align: "left",
+        sortable: true,
+        format: (val) => getLogTypeLabel(val),
+      },
+      {
+        name: "message",
+        label: t("settings.debugLog.columns.message"),
+        field: "message",
+        align: "left",
+        sortable: true,
+      },
+    ];
+
     async function getDebugLog() {
       loading.value = true;
       try {
@@ -235,6 +252,31 @@ export default {
       loading.value = false;
     }
 
+    function getLogLevelLabel(logLevel) {
+      if (!logLevel) return logLevel;
+      const level = logLevel?.toString().toLowerCase();
+      const levelKey = `settings.editCoreSettings.logLevel.${level}`;
+      return t(levelKey) !== levelKey ? t(levelKey) : logLevel;
+    }
+
+    function getLogTypeLabel(logType) {
+      if (!logType) return logType;
+      const keyMap = {
+        agent_update: "settings.debugLog.logTypes.agentUpdate",
+        agent_issues: "settings.debugLog.logTypes.agentIssues",
+        windows_updates: "settings.debugLog.logTypes.windowsUpdates",
+        system_issues: "settings.debugLog.logTypes.systemIssues",
+        scripting: "settings.debugLog.logTypes.scripting",
+      };
+
+      const translationKey = keyMap[logType];
+      if (translationKey && t(translationKey) !== translationKey) {
+        return t(translationKey);
+      }
+
+      return formatTableColumnText(logType);
+    }
+
     if (props.agent) {
       watch(
         () => props.agent,
@@ -243,7 +285,7 @@ export default {
             agentFilter.value = props.agent;
             getDebugLog();
           }
-        }
+        },
       );
     }
 

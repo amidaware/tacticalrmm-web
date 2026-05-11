@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agents.shared.noAgentSelected") }}
+  </div>
   <div v-else>
     <DebugLog :agent="selectedAgent" :tabHeight="tabHeight" />
   </div>

@@ -15,20 +15,22 @@
               <q-input
                 filled
                 v-model="credentials.username"
-                label="Username"
+                :label="t('auth.login.username')"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) =>
+                    (val && val.length > 0) || t('auth.validation.required'),
                 ]"
               />
               <q-input
                 v-model="credentials.password"
                 filled
                 :type="showPassword ? 'password' : 'text'"
-                label="Password"
+                :label="t('auth.login.password')"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) =>
+                    (val && val.length > 0) || t('auth.validation.required'),
                 ]"
               >
                 <template v-slot:append>
@@ -41,7 +43,7 @@
               </q-input>
               <div>
                 <q-btn
-                  label="Login"
+                  :label="t('auth.login.submit')"
                   type="submit"
                   color="primary"
                   class="full-width"
@@ -51,7 +53,9 @@
           </q-card-section>
 
           <q-card-section v-if="ssoProviders?.length > 0">
-            <div class="text-h6 text-center q-mb-md">Log in with SSO</div>
+            <div class="text-h6 text-center q-mb-md">
+              {{ t("auth.login.ssoTitle") }}
+            </div>
             <q-separator />
 
             <q-list dense bordered class="q-pa-sm">
@@ -81,9 +85,9 @@
         <q-dialog persistent v-model="prompt">
           <q-card style="min-width: 400px">
             <q-form ref="formToken" @submit.prevent="onSubmit">
-              <q-card-section class="text-center text-h6"
-                >Two-Factor Token</q-card-section
-              >
+              <q-card-section class="text-center text-h6">{{
+                t("auth.login.twoFactorToken")
+              }}</q-card-section>
 
               <q-card-section>
                 <q-input
@@ -93,14 +97,14 @@
                   v-model="twofactor"
                   :rules="[
                     (val) =>
-                      (val && val.length > 0) || 'This field is required',
+                      (val && val.length > 0) || t('auth.validation.required'),
                   ]"
                 />
               </q-card-section>
 
               <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Cancel" v-close-popup />
-                <q-btn flat label="Submit" type="submit" />
+                <q-btn flat :label="t('common.buttons.cancel')" v-close-popup />
+                <q-btn flat :label="t('common.actions.submit')" type="submit" />
               </q-card-actions>
             </q-form>
           </q-card>
@@ -113,6 +117,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { type QForm, useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import {
@@ -130,6 +135,7 @@ const auth = useAuthStore();
 
 // setup router
 const router = useRouter();
+const { t } = useI18n();
 
 const form = ref<QForm | null>(null);
 const formToken = ref<QForm | null>(null);

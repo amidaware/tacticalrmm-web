@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Import Report Template
+        {{ t("reporting.templateImport.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -19,28 +21,28 @@ For details, see: https://license.tacticalrmm.com/ee
           v-model="file"
           dense
           filled
-          label="Import File"
+          :label="t('reporting.templateImport.importFile')"
           style="width: 400px"
           accept=".json"
-          hint="Only accepts exported report template json files"
+          :hint="t('reporting.templateImport.importFileHint')"
         />
       </q-card-section>
 
       <q-card-section>
         <q-checkbox
           v-model="overwriteOnNameConflict"
-          label="Overwrite if name exists"
+          :label="t('reporting.templateImport.overwriteIfNameExists')"
         />
       </q-card-section>
 
       <q-card-actions>
         <q-space />
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="t('reporting.common.cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Import"
+          :label="t('reporting.common.import')"
           color="primary"
           @click="submit"
         />
@@ -55,11 +57,13 @@ import { until } from "@vueuse/shared";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
 import { notifyError } from "@/utils/notify";
+import { useI18n } from "vue-i18n";
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { isLoading, isError, importReport } = useSharedReportTemplates;
+const { t } = useI18n();
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
@@ -79,7 +83,7 @@ async function submit() {
 
     onDialogOK();
   } else {
-    notifyError("File is required");
+    notifyError(t("reporting.templateImport.fileRequired"));
   }
 }
 </script>

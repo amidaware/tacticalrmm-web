@@ -2,93 +2,147 @@
   <div class="q-pb-sm">
     <q-bar>
       <q-btn-group flat>
-        <q-btn size="md" dense no-caps flat label="File">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.file')"
+        >
           <q-menu>
             <q-list dense style="min-width: 100px">
               <q-item clickable>
-                <q-item-section>Add</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.add")
+                }}</q-item-section>
                 <q-item-section side>
                   <q-icon name="keyboard_arrow_right" />
                 </q-item-section>
                 <q-menu anchor="top right" self="top left">
                   <q-list dense style="min-width: 100px">
                     <q-item clickable v-close-popup @click="showAddClientModal">
-                      <q-item-section>Client</q-item-section>
+                      <q-item-section>{{
+                        $t("dashboard.table.client")
+                      }}</q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="showAddSiteModal">
-                      <q-item-section>Site</q-item-section>
+                      <q-item-section>{{
+                        $t("dashboard.table.site")
+                      }}</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
               </q-item>
 
               <q-item clickable v-close-popup @click="showAuditManager">
-                <q-item-section>Audit Log</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.auditLog")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="showDebugLog">
-                <q-item-section>Debug Log</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.debugLog")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
         <!-- view -->
-        <q-btn size="md" dense no-caps flat label="View">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.view')"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <q-item clickable v-close-popup @click="showPendingActions">
-                <q-item-section>Pending Actions</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.agentTable.pendingActions")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
         <!-- agents -->
-        <q-btn size="md" dense no-caps flat label="Agents">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.agents')"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <q-item clickable v-close-popup @click="showInstallAgent = true">
-                <q-item-section>Install Agent</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.contextMenu.installAgent")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="showDeployments">
-                <q-item-section>Manage Deployments</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.manageDeployments")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
                 v-close-popup
                 @click="showUpdateAgentsModal = true"
               >
-                <q-item-section>Update Agents</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.updateAgents")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
 
         <!-- settings -->
-        <q-btn size="md" dense no-caps flat label="Settings">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.settings')"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <!-- clients manager -->
               <q-item clickable v-close-popup @click="showClientsManager">
-                <q-item-section>Clients Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.clientsManager")
+                }}</q-item-section>
               </q-item>
               <!-- script manager -->
               <q-item clickable v-close-popup @click="showScriptManager">
-                <q-item-section>Script Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.scriptManager")
+                }}</q-item-section>
               </q-item>
               <!-- automation manager -->
               <q-item clickable v-close-popup @click="showAutomationManager">
-                <q-item-section>Automation Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.automationManager")
+                }}</q-item-section>
               </q-item>
               <!-- alerts manager -->
               <q-item clickable v-close-popup @click="showAlertsManager">
-                <q-item-section>Alerts Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.alertsManager")
+                }}</q-item-section>
               </q-item>
               <!-- permissions manager -->
               <q-item clickable v-close-popup @click="showPermissionsManager">
-                <q-item-section>Permissions Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.permissionsManager")
+                }}</q-item-section>
               </q-item>
               <!-- admin manager -->
               <q-item clickable v-close-popup @click="showAdminManager = true">
-                <q-item-section>User Administration</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.userAdministration")
+                }}</q-item-section>
               </q-item>
               <!-- core settings -->
               <q-item
@@ -96,7 +150,9 @@
                 v-close-popup
                 @click="showEditCoreSettingsModal = true"
               >
-                <q-item-section>Global Settings</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.globalSettings")
+                }}</q-item-section>
               </q-item>
               <!-- code sign -->
               <q-item
@@ -105,13 +161,21 @@
                 v-close-popup
                 @click="showCodeSign = true"
               >
-                <q-item-section>Code Signing</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.codeSigning")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
         <!-- tools -->
-        <q-btn size="md" dense no-caps flat label="Tools">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.tools')"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <!-- bulk command -->
@@ -120,15 +184,21 @@
                 v-close-popup
                 @click="showBulkAction('command')"
               >
-                <q-item-section>Bulk Command</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.bulkCommand")
+                }}</q-item-section>
               </q-item>
               <!-- bulk script -->
               <q-item clickable v-close-popup @click="showBulkAction('script')">
-                <q-item-section>Bulk Script</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.bulkScript")
+                }}</q-item-section>
               </q-item>
               <!-- bulk patch management -->
               <q-item clickable v-close-popup @click="showBulkAction('patch')">
-                <q-item-section>Bulk Patch Management</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.bulkPatchManagement")
+                }}</q-item-section>
               </q-item>
               <!-- server maintenance -->
               <q-item
@@ -136,21 +206,33 @@
                 v-close-popup
                 @click="showServerMaintenance = true"
               >
-                <q-item-section>Server Maintenance</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.serverMaintenance")
+                }}</q-item-section>
               </q-item>
               <!-- clear cache -->
               <q-item clickable v-close-popup @click="clearCache">
-                <q-item-section>Clear Cache</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.clearCache")
+                }}</q-item-section>
               </q-item>
               <!-- bulk recover agents -->
               <q-item clickable v-close-popup @click="bulkRecoverAgents">
-                <q-item-section>Recover All Agents</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.recoverAllAgents")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
         <!-- integrations -->
-        <q-btn size="md" dense no-caps flat label="Reporting">
+        <q-btn
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.reporting')"
+        >
           <q-menu auto-close>
             <q-list
               v-if="
@@ -182,34 +264,53 @@
                 v-close-popup
                 @click="
                   notifyWarning(
-                    'Reporting feature requires a Tier 2 or higher sponsorship. Please check the docs for more info.',
+                    $t('dashboard.fileBar.notify.reportingRequiresTier2'),
                     10000,
                   )
                 "
               >
-                <q-item-section>Reporting Manager</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.reportingManager")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
         </q-btn>
         <!-- help -->
-        <q-btn v-if="!hosted" size="md" dense no-caps flat label="Help">
+        <q-btn
+          v-if="!hosted"
+          size="md"
+          dense
+          no-caps
+          flat
+          :label="$t('dashboard.fileBar.menu.help')"
+        >
           <q-menu auto-close>
             <q-list dense style="min-width: 100px">
               <q-item clickable v-close-popup @click="openHelp('docs')">
-                <q-item-section>Documentation</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.documentation")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="openHelp('github')">
-                <q-item-section>GitHub Repo</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.githubRepo")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="openHelp('bug')">
-                <q-item-section>Bug Report</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.bugReport")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="openHelp('feature')">
-                <q-item-section>Feature Request</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.featureRequest")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="openHelp('discord')">
-                <q-item-section>Join Discord</q-item-section>
+                <q-item-section>{{
+                  $t("dashboard.fileBar.actions.joinDiscord")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -308,22 +409,23 @@ export default {
   },
   methods: {
     clearCache() {
-      this.$axios
-        .get("/core/clearcache/")
-        .then((r) => this.notifySuccess(r.data));
+      this.$axios.get("/core/clearcache/").then(() => {
+        this.notifySuccess(this.$t("dashboard.fileBar.notify.cacheCleared"));
+      });
     },
     bulkRecoverAgents() {
       this.$q
         .dialog({
-          title: "Bulk Recover All Agents?",
-          message:
-            "This will restart the Tactical and Mesh Agent services on all agents",
+          title: this.$t("dashboard.fileBar.dialog.bulkRecoverTitle"),
+          message: this.$t("dashboard.fileBar.dialog.bulkRecoverMessage"),
           cancel: true,
         })
         .onOk(() => {
-          this.$axios
-            .get("/agents/bulkrecovery/")
-            .then((r) => this.notifySuccess(r.data));
+          this.$axios.get("/agents/bulkrecovery/").then(() => {
+            this.notifySuccess(
+              this.$t("dashboard.fileBar.notify.agentsRecoveryStarted"),
+            );
+          });
         });
     },
     openHelp(mode) {

@@ -1,0 +1,34 @@
+{
+  "shared": {
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "search": "Поиск",
+    "name": "Название",
+    "uninstall": "Удалить",
+    "timeoutSeconds": "Таймаут (секунды)"
+  },
+  "softwareTab": {
+    "installSoftware": "Установить ПО",
+    "uninstall": "Удалить",
+    "columns": {
+      "name": "Название",
+      "publisher": "Издатель",
+      "installedOn": "Дата установки",
+      "size": "Размер",
+      "version": "Версия"
+    }
+  },
+  "installSoftware": {
+    "title": "Установка ПО",
+    "installTitle": "Установить {name}?",
+    "columns": {
+      "install": "Установить"
+    }
+  },
+  "uninstallSoftware": {
+    "uninstalling": "Удаление {name}",
+    "confirmOrEdit": "Подтвердите или измените команду удаления:",
+    "timeoutRequired": "Требуется таймаут",
+    "runAsUser": "Запуск от имени пользователя"
+  }
+}

@@ -2,7 +2,7 @@
   <div>
     <q-bar>
       <span class="text-caption">
-        TRMM Agent Status:
+        {{ $t("agents.takeControl.statusLabel") }}:
         <q-badge :color="statusColor" :label="status" />
       </span>
       <q-space />
@@ -10,14 +10,14 @@
         class="q-mr-md"
         color="primary"
         size="sm"
-        label="Restart Connection"
+        :label="$t('agents.takeControl.restartConnection')"
         icon="refresh"
         @click="restartMeshService"
       />
       <q-btn
         :color="dash_negative_color"
         size="sm"
-        label="Recover Connection"
+        :label="$t('agents.takeControl.recoverConnection')"
         icon="fas fa-first-aid"
         @click="repairMeshCentral"
       />
@@ -41,6 +41,7 @@ import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import { useMeta, useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { fetchAgentMeshCentralURLs, sendAgentRecoverMesh } from "@/api/agents";
 import { fetchDashboardInfo } from "@/api/core";
 import { sendAgentServiceAction } from "@/api/services";
@@ -49,6 +50,7 @@ import { notifySuccess } from "@/utils/notify";
 export default {
   name: "TakeControl",
   setup() {
+    const { t } = useI18n();
     // vue lifecycle hooks
     onMounted(() => {
       dashInfo();
@@ -93,7 +95,7 @@ export default {
         control.value = data.control;
         status.value = data.status;
         useMeta({
-          title: `${data.hostname} - ${data.client} - ${data.site} | Take Control`,
+          title: `${data.hostname} - ${data.client} - ${data.site} | ${t("agents.takeControl.metaTitle")}`,
         });
       } catch (e) {
         console.error(e);
@@ -109,7 +111,9 @@ export default {
 
     async function repairMeshCentral() {
       control.value = "";
-      $q.loading.show({ message: "Attempting to repair Mesh Agent" });
+      $q.loading.show({
+        message: t("agents.takeControl.loading.repairingMeshAgent"),
+      });
       try {
         const data = await sendAgentRecoverMesh(params.agent_id);
         await getMeshURLs();
@@ -123,7 +127,9 @@ export default {
     }
 
     async function restartMeshService() {
-      $q.loading.show({ message: "Restarting Mesh Agent" });
+      $q.loading.show({
+        message: t("agents.takeControl.loading.restartingMeshAgent"),
+      });
       const data = {
         sv_action: "restart",
       };
@@ -131,7 +137,9 @@ export default {
       try {
         await sendAgentServiceAction(params.agent_id, "mesh agent", data);
         setTimeout(() => {
-          notifySuccess("Mesh agent service was restarted");
+          notifySuccess(
+            t("agents.takeControl.notifications.meshAgentRestarted"),
+          );
         }, 500);
       } catch (e) {
         console.error(e);
@@ -146,6 +154,7 @@ export default {
       status,
       statusColor,
       dash_negative_color,
+      t,
 
       // methods
       repairMeshCentral,

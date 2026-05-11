@@ -1,6 +1,12 @@
 import type { AgentPlatformType } from "@/types/agents";
 
-export type ScriptShellType = "powershell" | "cmd" | "shell" | "python" | "nushell" | "deno";
+export type ScriptShellType =
+  | "powershell"
+  | "cmd"
+  | "shell"
+  | "python"
+  | "nushell"
+  | "deno";
 
 export interface Script {
   id?: number;

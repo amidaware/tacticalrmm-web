@@ -1,0 +1,246 @@
+{
+  "tree": {
+    "allClients": "All Clients",
+    "noClients": "No Clients",
+    "id": "ID",
+    "agentCount": "Agent Count"
+  },
+  "contextMenu": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "addSite": "Add Site",
+    "enableMaintenanceMode": "Enable Maintenance Mode",
+    "disableMaintenanceMode": "Disable Maintenance Mode",
+    "installAgent": "Install Agent",
+    "assignAutomationPolicy": "Assign Automation Policy",
+    "assignAlertTemplate": "Assign Alert Template",
+    "runUrlAction": "Run URL Action",
+    "runChecks": "Run Checks",
+    "reporting": "Reporting",
+    "close": "Close"
+  },
+  "tabs": {
+    "servers": "Servers",
+    "workstations": "Workstations",
+    "mixed": "Mixed"
+  },
+  "filters": {
+    "search": "Search",
+    "title": "Filter Agent Table",
+    "checksFailing": "Checks Failing",
+    "patchesPending": "Patches Pending",
+    "actionsPending": "Actions Pending",
+    "rebootNeeded": "Reboot Needed",
+    "availability": "Availability",
+    "showAllAgents": "Show All Agents",
+    "showOnlineOnly": "Show Online Only",
+    "showOfflineOnly": "Show Offline Only",
+    "showOverdueOnly": "Show Overdue Only",
+    "showOffline30Days": "Show Offline for over 30 days"
+  },
+  "table": {
+    "client": "Client",
+    "site": "Site",
+    "hostname": "Hostname",
+    "description": "Description",
+    "user": "User",
+    "lastResponse": "Last Response",
+    "bootTime": "Boot Time"
+  },
+  "dialog": {
+    "deleteTitle": "Are you sure?",
+    "deleteTarget": "Delete {type}: {name}."
+  },
+  "notify": {
+    "noUrlActions": "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+  },
+  "agentTable": {
+    "noAgents": "No Agents",
+    "checksStatus": "Checks Status",
+    "patchesPending": "Patches Pending",
+    "pendingActions": "Pending Actions",
+    "agentStatus": "Agent Status",
+    "reboot": "Reboot",
+    "settingOverriddenByTemplate": "Setting is overridden by alert template: {name}",
+    "platform": {
+      "windows": "Microsoft Windows",
+      "linux": "Linux",
+      "macos": "macOS"
+    },
+    "monitoringType": {
+      "server": "Server",
+      "workstation": "Workstation"
+    },
+    "status": {
+      "maintenanceModeEnabled": "Maintenance Mode Enabled",
+      "checksFailing": "Checks failing",
+      "checksWarning": "Checks warning",
+      "checksInfo": "Checks info",
+      "checksPassing": "Checks passing",
+      "rebootRequired": "Reboot required",
+      "agentOverdue": "Agent overdue",
+      "agentOffline": "Agent offline",
+      "agentOnline": "Agent online"
+    },
+    "pendingActionCount": "Pending Action Count: {count}",
+    "alerts": {
+      "dashboardOverdue": "Show a dashboard alert when agent is overdue",
+      "emailOverdue": "Send an email alert when agent is overdue",
+      "smsOverdue": "Send an SMS alert when agent is overdue",
+      "category": {
+        "email": "Email",
+        "text": "SMS",
+        "dashboard": "Dashboard"
+      },
+      "action": {
+        "enabled": "enabled",
+        "disabled": "disabled"
+      },
+      "updated": "{category} alerts will now be {action} when {hostname} is overdue."
+    }
+  },
+  "fileBar": {
+    "menu": {
+      "file": "File",
+      "view": "View",
+      "agents": "Agents",
+      "settings": "Settings",
+      "tools": "Tools",
+      "reporting": "Reporting",
+      "help": "Help"
+    },
+    "actions": {
+      "add": "Add",
+      "auditLog": "Audit Log",
+      "debugLog": "Debug Log",
+      "manageDeployments": "Manage Deployments",
+      "updateAgents": "Update Agents",
+      "clientsManager": "Clients Manager",
+      "scriptManager": "Script Manager",
+      "automationManager": "Automation Manager",
+      "alertsManager": "Alerts Manager",
+      "permissionsManager": "Permissions Manager",
+      "userAdministration": "User Administration",
+      "globalSettings": "Global Settings",
+      "codeSigning": "Code Signing",
+      "bulkCommand": "Bulk Command",
+      "bulkScript": "Bulk Script",
+      "bulkPatchManagement": "Bulk Patch Management",
+      "serverMaintenance": "Server Maintenance",
+      "clearCache": "Clear Cache",
+      "recoverAllAgents": "Recover All Agents",
+      "reportingManager": "Reporting Manager",
+      "documentation": "Documentation",
+      "githubRepo": "GitHub Repo",
+      "bugReport": "Bug Report",
+      "featureRequest": "Feature Request",
+      "joinDiscord": "Join Discord"
+    },
+    "notify": {
+      "reportingRequiresTier2": "Reporting feature requires a Tier 2 or higher sponsorship. Please check the docs for more info.",
+      "cacheCleared": "Cache was cleared!",
+      "agentsRecoveryStarted": "Agents will now be recovered"
+    },
+    "dialog": {
+      "bulkRecoverTitle": "Bulk Recover All Agents?",
+      "bulkRecoverMessage": "This will restart the Tactical and Mesh Agent services on all agents"
+    }
+  },
+  "subTableTabs": {
+    "summary": "Summary",
+    "checks": "Checks",
+    "tasks": "Tasks",
+    "patches": "Patches",
+    "software": "Software",
+    "history": "History",
+    "notes": "Notes",
+    "assets": "Assets",
+    "debug": "Debug",
+    "audit": "Audit"
+  },
+  "fileBrowser": {
+    "folderEmpty": "Folder is Empty",
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "size": "Size"
+    }
+  },
+  "preDialog": {
+    "copyToClipboard": "Copy to Clipboard"
+  },
+  "exportTableBtn": {
+    "exportAsCsv": "Export table as CSV"
+  },
+  "tacticalTable": {
+    "columnSelect": "Column Select"
+  },
+  "clients": {
+    "managerTitle": "Clients Manager",
+    "new": "New",
+    "noClients": "No Clients",
+    "noSites": "No Sites",
+    "showSites": "Show Sites ({count})",
+    "sitesFor": "Sites for {name}",
+    "columns": {
+      "name": "Name",
+      "sites": "Sites",
+      "totalAgents": "Total Agents"
+    },
+    "dialog": {
+      "deleteClient": "Delete client: {name}.",
+      "deleteSite": "Delete site: {name}."
+    },
+    "form": {
+      "editingClient": "Editing {name}",
+      "addingClient": "Adding Client",
+      "defaultFirstSite": "Default first site",
+      "customFields": "Custom Fields",
+      "editingSite": "Editing {name}",
+      "addingSite": "Adding Site",
+      "clientIsRequired": "Client is required",
+      "nameIsRequired": "Name is required"
+    },
+    "delete": {
+      "title": "Delete {name}",
+      "noValidSites": "There are no valid sites to move agents to. Add another site and try again",
+      "siteToMoveAgentsTo": "Site to move agents to",
+      "selectSiteValidation": "Select the site that the agents should be moved to",
+      "hint": "The client you are deleting has agents assigned to it. Select a Site below to move the agents to.",
+      "move": "Move",
+      "confirmMessage": "Deleting {type} {name}. {count} agents will be moved to the selected site",
+      "types": {
+        "client": "client",
+        "site": "site"
+      }
+    }
+  },
+  "deployments": {
+    "manageDeployments": "Manage Deployments",
+    "addDeployment": "Add Deployment",
+    "noDeployments": "No Deployments",
+    "viewFlags": "View Flags",
+    "copy": "Copy",
+    "agentType": "Agent Type",
+    "server": "Server",
+    "workstation": "Workstation",
+    "enableRdp": "Enable RDP",
+    "enablePing": "Enable Ping",
+    "disableSleepHibernate": "Disable sleep/hibernate",
+    "arch64": "64 bit",
+    "arch32": "32 bit",
+    "columns": {
+      "arch": "Arch",
+      "expiry": "Expiry",
+      "created": "Created",
+      "flags": "Flags",
+      "downloadLink": "Download Link"
+    },
+    "dialog": {
+      "deleteDeploymentTitle": "Delete deployment?"
+    },
+    "notify": {
+      "linkCopied": "Link copied to clipboard"
+    }
+  }
+}

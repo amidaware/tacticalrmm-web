@@ -41,28 +41,30 @@ export default defineComponent({
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { type QTableColumn } from "quasar";
+const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
     columns: QTableColumn[];
     columnSelect?: boolean;
     excludeColumns?: string[];
   }>(),
-  { columnSelect: false, excludeColumns: () => ["columnSelect"] }
+  { columnSelect: false, excludeColumns: () => ["columnSelect"] },
 );
 // save a non-reactive copy of columns to modify
 const localColumns: QTableColumn[] = Object.assign([], props.columns);
 if (props.columnSelect)
   localColumns.push({
     name: "columnSelect",
-    label: "Column Select",
+    label: t("dashboard.tacticalTable.columnSelect"),
     field: "columnSelect",
   });
 const visibleColumns = ref(localColumns.map((column) => column.name));
 const columnOptions = ref(
   localColumns
     .filter((column) => !props.excludeColumns.includes(column.name))
-    .map((column) => ({ label: column.label, value: column.name }))
+    .map((column) => ({ label: column.label, value: column.name })),
 );
 </script>
 
