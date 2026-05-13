@@ -153,12 +153,6 @@
           <div class="q-gutter-sm">
             <q-radio
               v-model="installMethod"
-              val="exe"
-              v-show="agentOS === 'windows'"
-              label="Dynamically generated exe"
-            />
-            <q-radio
-              v-model="installMethod"
               val="powershell"
               v-show="agentOS === 'windows'"
               label="Powershell"
@@ -167,7 +161,13 @@
               v-model="installMethod"
               val="manual"
               v-show="agentOS === 'windows'"
-              label="Manual"
+              label="Standard EXE"
+            />
+            <q-radio
+              v-model="installMethod"
+              val="exe"
+              v-show="agentOS === 'windows'"
+              label="Generated EXE"
             />
           </div>
         </q-card-section>
@@ -216,7 +216,7 @@ export default {
       ping: false,
       showAgentDownload: false,
       info: {},
-      installMethod: "exe",
+      installMethod: "powershell",
       goarch: GOARCH_AMD64,
       agentOS: "windows",
     };
@@ -286,23 +286,50 @@ export default {
           this.showAgentDownload = true;
         });
       } else if (this.installMethod === "exe") {
-        this.$q.loading.show({ message: "Generating executable..." });
-
-        this.$axios
-          .post("/agents/installer/", data, { responseType: "blob" })
-          .then((r) => {
-            this.$q.loading.hide();
-            const blob = new Blob([r.data], {
-              type: "application/vnd.microsoft.portable-executable",
-            });
-            let link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-            this.showDLMessage();
+        this.$q
+          .dialog({
+            title: "Warning",
+            style: {
+              width: "40vw",
+              maxWidth: "50vw",
+            },
+            message: `
+              This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings, <strong>even when code-signing is enabled</strong>.<br><br>
+              We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>
+              This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">this guidance</a> before continuing.<br><br>
+              Proceed only if you understand and accept these risks.
+              `,
+            color: "negative",
+            ok: {
+              label: "Yes, continue",
+              color: "negative",
+              unelevated: true,
+            },
+            cancel: {
+              label: "Cancel",
+              color: "grey",
+            },
+            persistent: true,
+            html: true,
           })
-          .catch(() => {
-            this.$q.loading.hide();
+          .onOk(() => {
+            this.$q.loading.show({ message: "Generating executable..." });
+            this.$axios
+              .post("/agents/installer/", data, { responseType: "blob" })
+              .then((r) => {
+                this.$q.loading.hide();
+                const blob = new Blob([r.data], {
+                  type: "application/vnd.microsoft.portable-executable",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                this.showDLMessage();
+              })
+              .catch(() => {
+                this.$q.loading.hide();
+              });
           });
       } else if (
         this.installMethod === "powershell" ||
@@ -348,7 +375,7 @@ export default {
           text = "Download powershell script";
           break;
         case "manual":
-          text = "Show manual installation instructions";
+          text = "Show installation instructions";
           break;
         case "bash":
           text = "Download linux install script";
