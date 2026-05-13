@@ -92,7 +92,14 @@
                         dense
                         outlined
                         placeholder="Enter custom shell path"
-                      />
+                        bottom-slots
+                      >
+                        <template v-slot:hint>
+                          <span style="font-size: 1.2em">
+                            {{ customShellPlaceholder }}
+                          </span>
+                        </template>
+                      </q-input>
                     </div>
                   </q-card-section>
                   <q-card-section class="row">
@@ -583,11 +590,20 @@ export default {
   },
   computed: {
     ...mapState(["dash_warning_color", "dash_negative_color"]),
+    customShellPlaceholder() {
+      const start = "Enter custom shell path (e.g. ";
+      if (this.agent?.plat === "windows")
+        return start + `C:\\ProgramFiles\\PowerShell\\7\\pwsh.exe)`;
+      else if (this.agent?.plat === "linux") return start + `/usr/bin/fish)`;
+      else if (this.agent?.plat === "darwin") return start + `/bin/zsh)`;
+      return "Enter custom shell path";
+    },
     defaultShellOptions() {
       if (!this.agent?.plat) return [];
+      const inheritText = "Inherit from Global Setting";
       if (this.agent.plat === "windows") {
         return [
-          { label: "Global", value: "use_global" },
+          { label: inheritText, value: "use_global" },
           { label: "CMD", value: "cmd" },
           { label: "PowerShell", value: "powershell" },
           { label: "Custom", value: "custom" },
@@ -596,7 +612,7 @@ export default {
 
       if (this.agent.plat === "linux") {
         return [
-          { label: "Global", value: "use_global" },
+          { label: inheritText, value: "use_global" },
           { label: "Bash", value: "bash" },
           { label: "Custom", value: "custom" },
         ];
@@ -604,7 +620,7 @@ export default {
 
       if (this.agent.plat === "darwin") {
         return [
-          { label: "Global", value: "use_global" },
+          { label: inheritText, value: "use_global" },
           { label: "Bash", value: "bash" },
           { label: "Custom", value: "custom" },
         ];

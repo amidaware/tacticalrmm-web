@@ -250,8 +250,16 @@
                       class="q-mt-md"
                       dense
                       outlined
-                      placeholder="Enter custom shell path (e.g. C:\Windows\System32\cmd.exe)"
-                    />
+                      placeholder="Enter custom shell path"
+                      bottom-slots
+                    >
+                      <template v-slot:hint>
+                        <span style="font-size: 1.2em">
+                          Enter custom shell path (e.g. C:\Program
+                          Files\PowerShell\7\pwsh.exe)
+                        </span>
+                      </template>
+                    </q-input>
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
@@ -276,7 +284,7 @@
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">Mac Default Terminal</div>
+                  <div class="col-6">macOS Default Terminal</div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
