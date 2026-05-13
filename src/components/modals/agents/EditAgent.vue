@@ -593,9 +593,10 @@ export default {
     customShellPlaceholder() {
       const start = "Enter custom shell path (e.g. ";
       if (this.agent?.plat === "windows")
-        return start + `C:\\ProgramFiles\\PowerShell\\7\\pwsh.exe)`;
-      else if (this.agent?.plat === "linux") return start + `/usr/bin/fish)`;
-      else if (this.agent?.plat === "darwin") return start + `/bin/zsh)`;
+        return start + `C:\\ProgramFiles\\PowerShell\\7\\pwsh.exe)`; // eslint-disable-line quotes
+      else if (this.agent?.plat === "linux")
+        return start + `/usr/bin/fish)`; // eslint-disable-line quotes
+      else if (this.agent?.plat === "darwin") return start + `/bin/zsh)`; // eslint-disable-line quotes
       return "Enter custom shell path";
     },
     defaultShellOptions() {
