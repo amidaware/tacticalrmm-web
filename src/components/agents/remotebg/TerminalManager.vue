@@ -251,6 +251,7 @@ function markSessionReadyAndResize() {
         cols: term.cols,
       }),
     );
+    term.focus();
   });
 }
 
@@ -534,6 +535,10 @@ async function setupXTerm() {
   term.loadAddon(fit);
   term.open(xtermContainer.value!);
   fit.fit();
+
+  requestAnimationFrame(() => {
+    term?.focus();
+  });
 }
 
 const resizeWindow = useDebounceFn(async () => {
