@@ -52,21 +52,25 @@
   </div>
   <q-dialog v-model="showCustomShellDialog" persistent>
     <q-card style="min-width: 400px">
-      <q-card-section class="text-h6"> Enter Custom Shell Path </q-card-section>
+      <q-form @submit.prevent="startCustomShell">
+        <q-card-section class="text-h6">
+          Enter Custom Shell Path
+        </q-card-section>
 
-      <q-card-section>
-        <q-input
-          v-model="customShellInput"
-          label="Shell Path"
-          dense
-          autofocus
-        />
-      </q-card-section>
+        <q-card-section>
+          <q-input
+            v-model="customShellInput"
+            label="Shell Path"
+            dense
+            autofocus
+          />
+        </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" @click="cancelCustomShell" />
-        <q-btn color="primary" label="Start" @click="startCustomShell" />
-      </q-card-actions>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" @click="cancelCustomShell" />
+          <q-btn color="primary" label="Start" type="submit" />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
