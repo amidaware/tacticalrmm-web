@@ -27,6 +27,17 @@
           class="q-px-sm q-ml-lg q-pb-0 text-caption text-capitalize"
           dense
         />
+        <q-btn
+          flat
+          dense
+          icon="content_copy"
+          label="Copy"
+          color="white"
+          @click="copyTerminalOutput"
+          class="q-ml-sm text-caption text-capitalize"
+        >
+          <q-tooltip>Copy terminal output</q-tooltip>
+        </q-btn>
       </div>
 
       <div v-if="isWindows" class="row items-center q-ml-lg">
@@ -87,7 +98,7 @@ import {
 } from "vue";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
-import { uid, useQuasar } from "quasar";
+import { uid, useQuasar, copyToClipboard } from "quasar";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
 import "@xterm/xterm/css/xterm.css";
@@ -651,6 +662,40 @@ async function onRunAsChange() {
       : selectedShell.value;
 
   initWS(shellToStart);
+}
+
+function getTerminalOutput() {
+  if (!term) return "";
+
+  const buffer = term.buffer.active;
+  const lines = [];
+
+  for (let i = 0; i < buffer.length; i++) {
+    const line = buffer.getLine(i);
+
+    if (line) {
+      lines.push(line.translateToString(true));
+    }
+  }
+
+  return lines.join("\n").trimEnd();
+}
+
+async function copyTerminalOutput() {
+  const output = getTerminalOutput();
+  try {
+    await copyToClipboard(output);
+
+    $q.notify({
+      type: "positive",
+      message: "Terminal output copied to clipboard.",
+    });
+  } catch {
+    $q.notify({
+      type: "negative",
+      message: "Failed to copy terminal output.",
+    });
+  }
 }
 
 onBeforeUnmount(() => {
