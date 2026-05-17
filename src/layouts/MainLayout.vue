@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-grey-9 text-white">
+    <q-header elevated class="bg-grey-9 text-white u-elevated glass-elevated" style="backdrop-filter: blur(20px) saturate(150%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
       <q-banner
         v-if="needRefresh"
         inline-actions
@@ -84,13 +84,8 @@
             >SSL certificate expires in {{ daysUntilCertExpires }} days</q-chip
           >
         </q-toolbar-title>
-        <!-- temp dark mode toggle -->
-        <q-toggle
-          v-model="darkMode"
-          class="q-mr-sm"
-          checked-icon="nights_stay"
-          unchecked-icon="wb_sunny"
-        />
+        <!-- theme toggle (centralized) -->
+        <ThemeToggle class="q-mr-sm" />
         <!-- web terminal button -->
         <q-btn
           v-if="!hosted"
@@ -227,6 +222,7 @@ import { storeToRefs } from "pinia";
 import { resetTwoFactor } from "@/api/accounts";
 import { notifyError, notifySuccess } from "@/utils/notify";
 import axios from "axios";
+import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 
 // webtermn
 import { checkWebTermPerms, openWebTerminal } from "@/api/core";
@@ -249,10 +245,10 @@ const {
 
 const { displayName } = storeToRefs(useAuthStore());
 
+// keep server preference API write; ThemeToggle will set $q.dark
+// when user toggles; we mirror updates here to persist
 const darkMode = computed({
-  get: () => {
-    return $q.dark.isActive;
-  },
+  get: () => $q.dark.isActive,
   set: (value) => {
     axios.patch("/accounts/users/ui/", { dark_mode: value });
     $q.dark.set(value);
