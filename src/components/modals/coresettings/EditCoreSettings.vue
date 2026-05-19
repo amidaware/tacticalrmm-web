@@ -220,6 +220,90 @@
                     :rules="[(val) => val >= 0 || 'Minimum is 0']"
                   />
                 </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Terminal Experience</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.terminal_mode"
+                      :options="terminalModeOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Windows Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_windows"
+                      :options="windowsShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_windows === 'custom'"
+                      v-model="settings.default_shell_windows_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path"
+                      bottom-slots
+                    >
+                      <template v-slot:hint>
+                        <span style="font-size: 1.2em">
+                          Enter custom shell path (e.g. C:\Program
+                          Files\PowerShell\7\pwsh.exe)
+                        </span>
+                      </template>
+                    </q-input>
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">Linux Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_linux"
+                      :options="linuxShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_linux === 'custom'"
+                      v-model="settings.default_shell_linux_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path (e.g. /usr/bin/fish)"
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">macOS Default Terminal</div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_darwin"
+                      :options="darwinShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_darwin === 'custom'"
+                      v-model="settings.default_shell_darwin_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      placeholder="Enter custom shell path (e.g. /bin/zsh)"
+                    />
+                  </div>
+                </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">Reset Patch Policy on Agents:</div>
                   <div class="col-2"></div>
@@ -796,6 +880,31 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    terminalModeOptions() {
+      return [
+        { label: "Use new terminal", value: "new" },
+        { label: "Use legacy terminal", value: "legacy" },
+      ];
+    },
+    windowsShellOptions() {
+      return [
+        { label: "CMD", value: "cmd" },
+        { label: "PowerShell", value: "powershell" },
+        { label: "Custom", value: "custom" },
+      ];
+    },
+    linuxShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: "Custom", value: "custom" },
+      ];
+    },
+    darwinShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: "Custom", value: "custom" },
+      ];
     },
   },
   watch: {
