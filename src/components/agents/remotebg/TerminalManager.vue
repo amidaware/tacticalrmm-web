@@ -54,6 +54,64 @@
           class="q-gutter-lg"
         />
       </div>
+      <q-space />
+
+      <q-btn flat round dense icon="keyboard" color="white" class="q-ml-md">
+        <q-tooltip
+          anchor="bottom right"
+          self="top right"
+          max-width="320px"
+          content-class="terminal-shortcuts-tooltip"
+        >
+          <div class="text-weight-medium q-mb-xs">Terminal shortcuts</div>
+
+          <div class="shortcut-row">
+            <span>Copy selected text</span>
+            <span class="shortcut-keys">
+              <kbd>Ctrl</kbd><span>+</span><kbd>Insert</kbd>
+            </span>
+          </div>
+
+          <div class="shortcut-row">
+            <span>Paste</span>
+            <span class="shortcut-keys">
+              <kbd>Shift</kbd><span>+</span><kbd>Insert</kbd>
+            </span>
+          </div>
+
+          <q-separator dark class="q-my-xs" />
+
+          <div class="shortcut-row">
+            <span>Interrupt command</span>
+            <span class="shortcut-keys">
+              <kbd>Ctrl</kbd><span>+</span><kbd>C</kbd>
+            </span>
+          </div>
+
+          <div class="shortcut-row">
+            <span>Previous command</span>
+            <span class="shortcut-keys">
+              <kbd>↑</kbd>
+            </span>
+          </div>
+
+          <div class="shortcut-row">
+            <span>Next command</span>
+            <span class="shortcut-keys">
+              <kbd>↓</kbd>
+            </span>
+          </div>
+
+          <div class="shortcut-row">
+            <span>Move by word</span>
+            <span class="shortcut-keys">
+              <kbd>Ctrl</kbd><span>+</span><kbd>←</kbd>
+              <span>/</span>
+              <kbd>Ctrl</kbd><span>+</span><kbd>→</kbd>
+            </span>
+          </div>
+        </q-tooltip>
+      </q-btn>
     </div>
 
     <div class="terminal-wrapper">
@@ -720,5 +778,38 @@ onBeforeUnmount(() => {
   flex-grow: 1;
   overflow: hidden;
   height: 100%;
+}
+
+.terminal-shortcuts-tooltip {
+  font-size: 20px;
+  line-height: 1.4;
+  padding: 10px 12px;
+}
+
+.shortcut-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  white-space: nowrap;
+}
+
+.shortcut-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shortcut-row kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: center;
 }
 </style>
