@@ -16,6 +16,7 @@
                 filled
                 v-model="credentials.username"
                 label="Username"
+                autocomplete="username"
                 lazy-rules
                 :rules="[
                   (val) => (val && val.length > 0) || 'This field is required',
@@ -26,6 +27,7 @@
                 filled
                 :type="showPassword ? 'password' : 'text'"
                 label="Password"
+                autocomplete="current-password"
                 lazy-rules
                 :rules="[
                   (val) => (val && val.length > 0) || 'This field is required',
@@ -91,6 +93,7 @@
                   outlined
                   autocomplete="one-time-code"
                   v-model="twofactor"
+                  inputmode="numeric"
                   :rules="[
                     (val) =>
                       (val && val.length > 0) || 'This field is required',
