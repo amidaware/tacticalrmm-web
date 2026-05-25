@@ -294,7 +294,7 @@ export default {
               maxWidth: "50vw",
             },
             message: `
-              This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings, <strong>even when code-signing is enabled</strong>.<br><br>
+              This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings.<br><br>
               We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>
               This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">this guidance</a> before continuing.<br><br>
               Proceed only if you understand and accept these risks.
