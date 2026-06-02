@@ -196,6 +196,13 @@ const props = defineProps<{
   terminalDefaults?: TerminalDefaults | null;
 }>();
 
+const BUILT_IN_SHELLS = ["cmd", "powershell", "bash"] as const;
+type BuiltInShell = (typeof BUILT_IN_SHELLS)[number];
+
+const isBuiltInShell = (shell: string): shell is BuiltInShell => {
+  return (BUILT_IN_SHELLS as readonly string[]).includes(shell);
+};
+
 const loading = ref(false);
 const customShellPath = ref<string | null>(null);
 const showCustomShellDialog = ref(false);
@@ -334,6 +341,8 @@ function initWS(shell: string) {
   const sessionId = uid();
   activeSessionId = sessionId;
 
+  const isCustomAttempt = !isBuiltInShell(shell);
+
   ({
     data: wsData,
     send: wsSend,
@@ -354,14 +363,16 @@ function initWS(shell: string) {
       loading.value = false;
       startRequested = false;
       started = false;
-      invalidCustomShell.value = true;
 
       $q.notify({
         type: "negative",
-        message: msg.error || msg.data?.error || "Shell path doesn't exist",
+        message: msg.error || msg.data?.error || "Failed to start terminal",
       });
 
-      showCustomShellDialog.value = true;
+      if (isCustomAttempt) {
+        invalidCustomShell.value = true;
+        showCustomShellDialog.value = true;
+      }
       pendingCustomShell.value = null;
       return;
     }
@@ -652,13 +663,6 @@ function cancelCustomShell() {
   fit.fit();
   initWS(lastSelectedShell.value);
 }
-
-const BUILT_IN_SHELLS = ["cmd", "powershell", "bash"] as const;
-type BuiltInShell = (typeof BUILT_IN_SHELLS)[number];
-
-const isBuiltInShell = (shell: string): shell is BuiltInShell => {
-  return (BUILT_IN_SHELLS as readonly string[]).includes(shell);
-};
 
 watch(terminalTheme, (newTheme) => {
   if (term) {
