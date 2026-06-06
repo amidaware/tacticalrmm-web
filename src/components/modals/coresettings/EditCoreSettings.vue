@@ -77,7 +77,28 @@
                   </q-checkbox>
                   <q-btn
                     size="sm"
-                    roundenable_server_webterminal
+                    round
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.enable_ssh_gateway"
+                    label="Enable SSH gateway"
+                  >
+                    <q-tooltip>Enable SSH gateway for remote terminal access</q-tooltip>
+                  </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    round
                     dense
                     flat
                     icon="warning"
