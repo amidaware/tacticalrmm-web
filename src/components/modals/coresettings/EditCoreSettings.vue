@@ -388,6 +388,18 @@
                     :rules="[(val) => val >= 0 || 'Minimum is 0']"
                   />
                 </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Max rate limit entries:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    hint="Maximum failed auth attempts before rate limiting kicks in"
+                    outlined
+                    dense
+                    v-model.number="settings.ssh_gateway_rate_limit_max_entries"
+                    class="col-6"
+                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
+                  />
+                </q-card-section>
               </q-tab-panel>
               <!-- email alerts -->
               <q-tab-panel name="emailalerts">
