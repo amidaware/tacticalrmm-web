@@ -587,6 +587,14 @@ export default {
           name: "agentstatus",
           field: "status",
           align: "left",
+          sort: (a, b) => {
+            const statusRank = {
+              online: 0,
+              offline: 1,
+              overdue: 2,
+            };
+            return (statusRank[a] ?? 3) - (statusRank[b] ?? 3);
+          },
           sortable: true,
         },
         {

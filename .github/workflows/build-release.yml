@@ -15,11 +15,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.5"
+          node-version: "20.20.2"
 
       - run: touch env-config.js
 
-      - run: sudo npm install -g npm@11.6.1
+      - run: sudo npm install -g npm@11.14.0
 
       - name: Install
         run: npm install

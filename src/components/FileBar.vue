@@ -317,7 +317,7 @@ export default {
         .dialog({
           title: "Bulk Recover All Agents?",
           message:
-            "This will restart the Tactical and Mesh Agent services on all agents",
+            "This will attempt to reinstall/repair the Tactical and Mesh Agents on all endpoints.",
           cancel: true,
         })
         .onOk(() => {
