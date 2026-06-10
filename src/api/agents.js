@@ -60,20 +60,6 @@ export function runRemoteProxy(agent_id) {
   });
 }
 
-export function runRemoteTerminal(agent_id) {
-  const url = router.resolve(`/remoteterminal/${agent_id}`).href;
-  openURL(url, null, {
-    popup: true,
-    scrollbars: false,
-    location: false,
-    status: false,
-    toolbar: false,
-    menubar: false,
-    width: 1100,
-    height: 700,
-  });
-}
-
 export async function createWebProxySession(agent_id, payload) {
   const { data } = await axios.post(`${baseUrl}/${agent_id}/webproxy/`, payload);
   return data;
