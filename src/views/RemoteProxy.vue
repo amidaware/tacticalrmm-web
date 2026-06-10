@@ -184,7 +184,6 @@ import { useMeta } from "quasar";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
-import { getBaseUrl } from "@/boot/axios";
 import { getWSUrl } from "@/websocket/websocket";
 import { useAuthStore } from "@/stores/auth";
 import { createWebProxySession } from "@/api/agents";
@@ -271,7 +270,10 @@ async function connectWeb() {
       port: port.value,
     });
     hostname.value = data.hostname;
-    iframeSrc.value = `${getBaseUrl()}${data.url}`;
+    // serve the device from the SAME origin as this popup so the proxied page
+    // gets first-party cookies (e.g. Proxmox/pfSense login persists instead of
+    // being dropped as a third-party cookie)
+    iframeSrc.value = `${window.location.origin}${data.url}`;
     useMeta({ title: `${data.hostname} \u2192 ${data.target}` });
   } catch (e) {
     console.error(e);
