@@ -65,6 +65,14 @@ const routes = [
     },
   },
   {
+    path: "/remoteterminal/:agent_id",
+    name: "RemoteTerminal",
+    component: () => import("@/views/RemoteTerminal.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
     path: "/webterm",
     name: "WebTerm",
     component: () => import("@/views/WebTerminal.vue"),
