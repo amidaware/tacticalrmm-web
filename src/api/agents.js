@@ -46,6 +46,25 @@ export function openAgentWindow(agent_id) {
   });
 }
 
+export function runRemoteProxy(agent_id) {
+  const url = router.resolve(`/remoteproxy/${agent_id}`).href;
+  openURL(url, null, {
+    popup: true,
+    scrollbars: true,
+    location: false,
+    status: false,
+    toolbar: false,
+    menubar: false,
+    width: 1400,
+    height: 950,
+  });
+}
+
+export async function createWebProxySession(agent_id, payload) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/webproxy/`, payload);
+  return data;
+}
+
 export function runRemoteBackground(agent_id, agentPlatform) {
   const url = router.resolve(
     `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`,

@@ -57,6 +57,14 @@ const routes = [
     },
   },
   {
+    path: "/remoteproxy/:agent_id",
+    name: "RemoteProxy",
+    component: () => import("@/views/RemoteProxy.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
     path: "/webterm",
     name: "WebTerm",
     component: () => import("@/views/WebTerminal.vue"),

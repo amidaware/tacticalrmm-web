@@ -42,6 +42,19 @@
       <q-item-section>VNC</q-item-section>
     </q-item>
 
+    <!-- remote web proxy / tunnel -->
+    <q-item
+      clickable
+      v-ripple
+      v-close-popup
+      @click="launchRemoteProxy(agent.agent_id)"
+    >
+      <q-item-section side>
+        <q-icon size="xs" name="public" />
+      </q-item-section>
+      <q-item-section>Remote Proxy</q-item-section>
+    </q-item>
+
     <q-item clickable v-ripple :disable="urlActions.length === 0">
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
@@ -258,6 +271,7 @@ import {
   runRemoteBackground,
   runTakeControl,
   runWebVNC,
+  runRemoteProxy,
   wakeUpWOL,
 } from "@/api/agents";
 import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
@@ -430,6 +444,10 @@ export default {
       }).onOk(refreshDashboard);
     }
 
+    function launchRemoteProxy(agent_id) {
+      runRemoteProxy(agent_id);
+    }
+
     function launchWebVNC(agent_id) {
       $q.dialog({
         title: "VNC Server Port",
@@ -593,6 +611,7 @@ export default {
       pingAgent,
       wakeUp,
       launchWebVNC,
+      launchRemoteProxy,
     };
   },
 };
