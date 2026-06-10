@@ -46,8 +46,11 @@ export function openAgentWindow(agent_id) {
   });
 }
 
-export function runRemoteProxy(agent_id) {
-  const url = router.resolve(`/remoteproxy/${agent_id}`).href;
+export function runRemoteProxy(agent_id, query = {}) {
+  const url = router.resolve({
+    path: `/remoteproxy/${agent_id}`,
+    query,
+  }).href;
   openURL(url, null, {
     popup: true,
     scrollbars: true,
