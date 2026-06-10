@@ -183,7 +183,10 @@ export default {
     function addDevice() {
       $q.dialog({
         component: NetworkDeviceForm,
-        componentProps: { site: props.site ? Number(props.site) : null },
+        componentProps: {
+          site: props.site ? Number(props.site) : null,
+          client: props.client ? Number(props.client) : null,
+        },
       }).onOk(loadDevices);
     }
 

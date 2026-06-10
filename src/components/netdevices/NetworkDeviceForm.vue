@@ -167,6 +167,7 @@
 import { ref, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSiteDropdown } from "@/composables/clients";
+import { fetchClients } from "@/api/clients";
 import { fetchAgents } from "@/api/agents";
 import { saveNetworkDevice, editNetworkDevice } from "@/api/netdevices";
 import { notifySuccess } from "@/utils/notify";
@@ -181,6 +182,7 @@ export default {
   props: {
     device: Object,
     site: Number,
+    client: Number,
   },
   setup(props) {
     const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
@@ -303,7 +305,23 @@ export default {
       loading.value = false;
     }
 
-    onMounted(() => {
+    async function defaultSiteFromClient() {
+      // when adding from a Client scope, default to that client's first site
+      try {
+        const clients = await fetchClients();
+        const c = clients.find((x) => x.id === props.client);
+        if (c && c.sites && c.sites.length) {
+          state.value.site = c.sites[0].id;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    onMounted(async () => {
+      if (!props.device && !state.value.site && props.client) {
+        await defaultSiteFromClient();
+      }
       if (state.value.site) loadAgents(state.value.site);
     });
 
