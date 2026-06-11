@@ -24,7 +24,7 @@ export interface AlertTemplate {
   agent_always_email: boolean | null;
   agent_always_text: boolean | null;
   agent_always_alert: boolean | null;
-  agent_periodic_alert_days: number;
+  agent_periodic_alert_minutes: number;
   agent_script_actions: boolean;
   check_email_alert_severity: AlertSeverity[];
   check_text_alert_severity: AlertSeverity[];
@@ -34,7 +34,7 @@ export interface AlertTemplate {
   check_always_email: boolean | null;
   check_always_text: boolean | null;
   check_always_alert: boolean | null;
-  check_periodic_alert_days: number;
+  check_periodic_alert_minutes: number;
   check_script_actions: boolean;
   task_email_alert_severity: AlertSeverity[];
   task_text_alert_severity: AlertSeverity[];
@@ -44,6 +44,6 @@ export interface AlertTemplate {
   task_always_email: boolean | null;
   task_always_text: boolean | null;
   task_always_alert: boolean | null;
-  task_periodic_alert_days: number;
+  task_periodic_alert_minutes: number;
   task_script_actions: boolean;
 }

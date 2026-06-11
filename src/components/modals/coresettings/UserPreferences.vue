@@ -5,6 +5,7 @@
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
             <q-tab name="ui" label="User Interface" />
+            <q-tab name="sshkeys" label="SSH Keys" />
           </q-tabs>
         </template>
         <template v-slot:after>
@@ -217,6 +218,11 @@
                   />
                 </q-card-section>
               </q-tab-panel>
+
+              <!-- SSH Keys -->
+              <q-tab-panel name="sshkeys">
+                <SSHKeysTable />
+              </q-tab-panel>
             </q-tab-panels>
 
             <q-card-section class="row items-center">
@@ -233,10 +239,12 @@
 import { openURL } from "quasar";
 import { loadingBarColors } from "@/mixins/data";
 import mixins from "@/mixins/mixins";
+import SSHKeysTable from "@/components/core/SSHKeysTable.vue";
 
 export default {
   name: "UserPreferences",
   emits: ["hide", "ok", "cancel"],
+  components: { SSHKeysTable },
   mixins: [mixins],
   data() {
     return {

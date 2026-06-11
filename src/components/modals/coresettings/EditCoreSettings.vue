@@ -4,6 +4,7 @@
       <template v-slot:before>
         <q-tabs dense v-model="tab" vertical class="text-primary">
           <q-tab name="general" label="General" />
+          <q-tab name="sshgateway" label="SSH Gateway" />
           <q-tab name="emailalerts" label="Email Alerts" />
           <q-tab name="smsalerts" label="SMS Alerts" />
           <q-tab name="meshcentral" label="MeshCentral" />
@@ -77,7 +78,7 @@
                   </q-checkbox>
                   <q-btn
                     size="sm"
-                    roundenable_server_webterminal
+                    round
                     dense
                     flat
                     icon="warning"
@@ -311,6 +312,92 @@
                     color="negative"
                     label="Reset"
                     @click="showResetPatchPolicy"
+                  />
+                </q-card-section>
+              </q-tab-panel>
+              <!-- ssh gateway -->
+              <q-tab-panel name="sshgateway">
+                <div class="text-subtitle2">SSH Gateway Settings</div>
+                <q-separator />
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.enable_ssh_gateway"
+                    label="Enable SSH gateway"
+                  >
+                    <q-tooltip>Enable SSH gateway for remote terminal access</q-tooltip>
+                  </q-checkbox>
+                  <q-btn
+                    size="sm"
+                    round
+                    dense
+                    flat
+                    icon="warning"
+                    @click="
+                      openURL(
+                        'https://docs.tacticalrmm.com/functions/permissions/#permissions-with-extra-security-implications',
+                      )
+                    "
+                  >
+                  </q-btn>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.ssh_gateway_enable_menu"
+                    label="Enable menu (SSH menu@host)"
+                  >
+                    <q-tooltip>Allow users to access the agent menu via SSH</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.ssh_gateway_enable_exec"
+                    label="Enable exec (SSH host 'command')"
+                  >
+                    <q-tooltip>Allow users to run one-shot commands via SSH</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section v-if="!hosted" class="row">
+                  <q-checkbox
+                    v-model="settings.ssh_gateway_enable_terminal"
+                    label="Enable terminal (interactive shell)"
+                  >
+                    <q-tooltip>Allow users to open interactive shell sessions via SSH gateway</q-tooltip>
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Session timeout (seconds):</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    hint="Maximum time (in seconds) an SSH session can remain open"
+                    outlined
+                    dense
+                    v-model.number="settings.ssh_gateway_session_timeout"
+                    class="col-6"
+                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Max concurrent sessions:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    hint="Maximum number of concurrent SSH sessions per user"
+                    outlined
+                    dense
+                    v-model.number="settings.ssh_gateway_max_sessions"
+                    class="col-6"
+                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-4">Max rate limit entries:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    hint="Maximum failed auth attempts before rate limiting kicks in"
+                    outlined
+                    dense
+                    v-model.number="settings.ssh_gateway_rate_limit_max_entries"
+                    class="col-6"
+                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
                   />
                 </q-card-section>
               </q-tab-panel>
@@ -792,6 +879,7 @@
             <q-btn
               v-show="
                 tab === 'general' ||
+                tab === 'sshgateway' ||
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
                 tab === 'meshcentral' ||
