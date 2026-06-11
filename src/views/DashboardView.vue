@@ -257,6 +257,11 @@
                   label="Workstations"
                 />
                 <q-tab name="mixed" label="Mixed" />
+                <q-tab
+                  name="netdevice"
+                  icon="router"
+                  label="Network Devices"
+                />
               </q-tabs>
               <q-space />
               <q-input
@@ -410,7 +415,14 @@
                 </template>
               </q-input>
             </div>
+            <NetworkDevicesTable
+              v-if="tab === 'netdevice'"
+              :client="netDeviceScope.client"
+              :site="netDeviceScope.site"
+              :search="search"
+            />
             <AgentTable
+              v-else
               :agents="filteredAgents"
               :columns="columns"
               :search="search"
@@ -445,6 +457,7 @@ import { openURL } from "quasar";
 import { mapState } from "vuex";
 import FileBar from "@/components/FileBar.vue";
 import AgentTable from "@/components/AgentTable.vue";
+import NetworkDevicesTable from "@/components/netdevices/NetworkDevicesTable.vue";
 import SubTableTabs from "@/components/SubTableTabs.vue";
 import PolicyAdd from "@/components/automation/modals/PolicyAdd.vue";
 import ClientsForm from "@/components/clients/ClientsForm.vue";
@@ -461,6 +474,7 @@ export default {
   components: {
     FileBar,
     AgentTable,
+    NetworkDevicesTable,
     SubTableTabs,
     InstallAgent,
     IntegrationsContextMenu,
@@ -642,7 +656,7 @@ export default {
       if (this.clearSearchWhenSwitching) this.clearFilter();
     },
     tab() {
-      this.$store.dispatch("loadAgents");
+      if (this.tab !== "netdevice") this.$store.dispatch("loadAgents");
     },
   },
   methods: {
@@ -889,6 +903,15 @@ export default {
     },
     allClientsActive() {
       return this.selectedTree === "";
+    },
+    netDeviceScope() {
+      // derive client/site scope from the selected tree node
+      if (this.selectedTree.includes("Client")) {
+        return { client: this.selectedTree.split("|")[1], site: null };
+      } else if (this.selectedTree.includes("Site")) {
+        return { client: null, site: this.selectedTree.split("|")[1] };
+      }
+      return { client: null, site: null };
     },
     filteredAgents() {
       if (this.tab === "mixed") return this.agents;

@@ -26,6 +26,28 @@ export function openAgentWindow(agent_id) {
   });
 }
 
+export function runRemoteProxy(agent_id, query = {}) {
+  const url = router.resolve({
+    path: `/remoteproxy/${agent_id}`,
+    query,
+  }).href;
+  openURL(url, null, {
+    popup: true,
+    scrollbars: true,
+    location: false,
+    status: false,
+    toolbar: false,
+    menubar: false,
+    width: 1400,
+    height: 950,
+  });
+}
+
+export async function createWebProxySession(agent_id, payload) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/webproxy/`, payload);
+  return data;
+}
+
 export function runRemoteBackground(agent_id, agentPlatform) {
   const url = router.resolve(
     `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`,
@@ -175,6 +197,15 @@ export async function fetchAgentWebVNCUrl(agent_id, port) {
   } catch (e) {
     console.error(e);
   }
+}
+
+// VNC to a device on the agent's LAN (relayed through the agent via MeshCentral's
+// bundled noVNC viewer). addr = the LAN device IP.
+export async function fetchWebProxyVNCUrl(agent_id, addr, port) {
+  const { data } = await axios.get(`${baseUrl}/${agent_id}/${port}/webvnc/`, {
+    params: { addr },
+  });
+  return data;
 }
 
 export async function scheduleAgentReboot(agent_id, payload) {
