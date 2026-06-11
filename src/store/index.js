@@ -196,6 +196,15 @@ export default function () {
         dispatch("loadTree");
       },
       async loadAgents({ state, commit }) {
+        // The Network Devices tab is served by the /netdevices/ endpoint, not
+        // /agents/. "netdevice" is not a valid agent monitoring_type, so issuing
+        // an agents query here returns 400 (monitoring type does not exist).
+        // Skip it entirely on that tab (the agents table isn't shown there).
+        if (state.defaultAgentTblTab === "netdevice") {
+          commit("AGENT_TABLE_LOADING", false);
+          return;
+        }
+
         commit("AGENT_TABLE_LOADING", true);
 
         let localParams = null;
