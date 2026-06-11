@@ -20,13 +20,13 @@
         dense
         dark
         outlined
-        :placeholder="mode === 'web' ? '192.168.200.254' : '192.168.1.1'"
+        :placeholder="mode !== 'term' ? '192.168.200.254' : '192.168.1.1'"
         class="q-ml-sm col"
         :disable="connected"
         @keyup.enter="connect"
       >
         <template #prepend>
-          <q-icon size="xs" :name="mode === 'web' ? 'lan' : 'dns'" />
+          <q-icon size="xs" :name="mode !== 'term' ? 'lan' : 'dns'" />
         </template>
       </q-input>
       <q-input
@@ -85,7 +85,7 @@
         class="q-ml-sm"
         @click="disconnect"
       />
-      <template v-if="mode === 'web'">
+      <template v-if="mode === 'web' || mode === 'vnc'">
         <q-btn
           flat
           dense
@@ -114,7 +114,7 @@
     <!-- body: web iframe OR terminal -->
     <div class="proxy-body" :class="{ 'term-bg': mode === 'term' }">
       <iframe
-        v-if="mode === 'web' && iframeSrc"
+        v-if="(mode === 'web' || mode === 'vnc') && iframeSrc"
         ref="frame"
         :src="iframeSrc"
         class="proxy-frame"
@@ -186,7 +186,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { getWSUrl } from "@/websocket/websocket";
 import { useAuthStore } from "@/stores/auth";
-import { createWebProxySession } from "@/api/agents";
+import { createWebProxySession, fetchWebProxyVNCUrl } from "@/api/agents";
 import { notifyError } from "@/utils/notify";
 import "@xterm/xterm/css/xterm.css";
 
@@ -196,10 +196,11 @@ const auth = useAuthStore();
 const protocolOptions = [
   { label: "HTTPS", value: "https" },
   { label: "HTTP", value: "http" },
+  { label: "VNC", value: "vnc" },
   { label: "SSH", value: "ssh" },
   { label: "Telnet", value: "telnet" },
 ];
-const defaultPorts = { https: 443, http: 80, ssh: 22, telnet: 23 };
+const defaultPorts = { https: 443, http: 80, vnc: 5900, ssh: 22, telnet: 23 };
 
 const protocol = ref(query.protocol || "https");
 const address = ref(query.address || "");
@@ -222,11 +223,15 @@ const fit = new FitAddon();
 useMeta({ title: "Remote Proxy" });
 
 const mode = computed(() =>
-  protocol.value === "ssh" || protocol.value === "telnet" ? "term" : "web",
+  protocol.value === "vnc"
+    ? "vnc"
+    : protocol.value === "ssh" || protocol.value === "telnet"
+      ? "term"
+      : "web",
 );
 const hasContent = computed(
   () =>
-    (mode.value === "web" && !!iframeSrc.value) ||
+    ((mode.value === "web" || mode.value === "vnc") && !!iframeSrc.value) ||
     (mode.value === "term" && (connected.value || loading.value)),
 );
 
@@ -256,7 +261,32 @@ function connect() {
     return;
   }
   if (mode.value === "web") connectWeb();
+  else if (mode.value === "vnc") connectVNC();
   else connectTerm();
+}
+
+// ------------- vnc (MeshCentral noVNC viewer, relayed through the agent) -------------
+async function connectVNC() {
+  loading.value = true;
+  iframeSrc.value = "";
+  try {
+    const data = await fetchWebProxyVNCUrl(
+      params.agent_id,
+      address.value,
+      port.value,
+    );
+    if (!data || !data.vnc) {
+      notifyError("Could not start VNC session");
+      return;
+    }
+    iframeSrc.value = data.vnc;
+    useMeta({ title: `VNC ${address.value}:${port.value}` });
+  } catch (e) {
+    console.error(e);
+    notifyError("Could not start VNC session");
+  } finally {
+    loading.value = false;
+  }
 }
 
 // ---------------- web (http/https) ----------------

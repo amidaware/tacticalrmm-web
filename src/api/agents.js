@@ -226,6 +226,15 @@ export async function fetchAgentWebVNCUrl(agent_id, port) {
   }
 }
 
+// VNC to a device on the agent's LAN (relayed through the agent via MeshCentral's
+// bundled noVNC viewer). addr = the LAN device IP.
+export async function fetchWebProxyVNCUrl(agent_id, addr, port) {
+  const { data } = await axios.get(`${baseUrl}/${agent_id}/${port}/webvnc/`, {
+    params: { addr },
+  });
+  return data;
+}
+
 export async function scheduleAgentReboot(agent_id, payload) {
   const { data } = await axios.patch(`${baseUrl}/${agent_id}/reboot/`, payload);
   return data;
