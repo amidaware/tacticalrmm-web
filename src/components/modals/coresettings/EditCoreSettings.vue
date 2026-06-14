@@ -13,7 +13,7 @@
           <q-tab name="urlactions" label="URL Actions" />
           <q-tab name="webhooks" label="Web Hooks" />
           <q-tab name="retention" label="Retention" />
-          <q-tab name="apikeys" label="API Keys" />
+          <q-tab name="apikeys" label="API" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
@@ -818,6 +818,42 @@
               </q-tab-panel>
 
               <q-tab-panel name="apikeys">
+                <div class="text-subtitle2">Swagger API Documentation</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <q-checkbox
+                    v-model="settings.enable_swagger"
+                    label="Enable Swagger API Explorer"
+                  >
+                    <q-tooltip
+                      >Enable a browser interface for browsing and testing the
+                      API</q-tooltip
+                    >
+                  </q-checkbox>
+                </q-card-section>
+                <q-card-section
+                  v-if="settings.enable_swagger"
+                  class="row items-center"
+                >
+                  <div class="col-4">Swagger UI URL:</div>
+                  <div class="col-2"></div>
+                  <q-input
+                    dense
+                    outlined
+                    readonly
+                    :model-value="swaggerUrl"
+                    class="col-4"
+                  />
+                  <q-btn
+                    flat
+                    dense
+                    icon="open_in_new"
+                    @click="openURL(swaggerUrl)"
+                    class="q-ml-sm"
+                  />
+                </q-card-section>
+                <div class="text-subtitle2 q-mt-lg">API Keys</div>
+                <q-separator />
                 <APIKeysTable />
               </q-tab-panel>
 
@@ -883,7 +919,8 @@
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
                 tab === 'meshcentral' ||
-                tab === 'retention'
+                tab === 'retention' ||
+                tab === 'apikeys'
               "
               label="Save"
               color="primary"
@@ -993,6 +1030,13 @@ export default {
         { label: "Bash", value: "bash" },
         { label: "Custom", value: "custom" },
       ];
+    },
+    swaggerUrl() {
+      const base =
+        window._env_ && window._env_.PROD_URL
+          ? window._env_.PROD_URL
+          : "";
+      return `${base}/api/schema/swagger-ui/`;
     },
   },
   watch: {
