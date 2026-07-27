@@ -236,6 +236,7 @@ const agentActionOptions = [
   { value: "execute_command", label: "Execute Command" },
   { value: "execute_script", label: "Execute Script" },
   { value: "remote_session", label: "Remote Session" },
+  { value: "ai_session", label: "AI Assistant Session" },
   { value: "url_action", label: "URL Action" },
 ];
 

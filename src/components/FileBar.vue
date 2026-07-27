@@ -126,6 +126,18 @@
               <q-item clickable v-close-popup @click="showBulkAction('script')">
                 <q-item-section>Bulk Script</q-item-section>
               </q-item>
+              <!-- bulk AI command -->
+              <q-item clickable v-close-popup @click="showBulkAICommands">
+                <q-item-section>Bulk AI Command</q-item-section>
+              </q-item>
+              <!-- AI ticket console -->
+              <q-item clickable v-close-popup @click="openTicketConsole">
+                <q-item-section>AI Ticket Console</q-item-section>
+              </q-item>
+              <!-- AI procedures -->
+              <q-item clickable v-close-popup @click="openProcedures">
+                <q-item-section>AI Procedures</q-item-section>
+              </q-item>
               <!-- bulk patch management -->
               <q-item clickable v-close-popup @click="showBulkAction('patch')">
                 <q-item-section>Bulk Patch Management</q-item-section>
@@ -272,6 +284,7 @@ import AdminManager from "@/components/AdminManager.vue";
 import InstallAgent from "@/components/modals/agents/InstallAgent.vue";
 import AuditManager from "@/components/logs/AuditManager.vue";
 import BulkAction from "@/components/modals/agents/BulkAction.vue";
+import BulkAICommands from "@/components/agents/BulkAICommands.vue";
 import DeploymentTable from "@/components/clients/DeploymentTable.vue";
 import ServerMaintenance from "@/components/modals/core/ServerMaintenance.vue";
 import CodeSign from "@/components/modals/coresettings/CodeSign.vue";
@@ -406,6 +419,23 @@ export default {
       this.$q.dialog({
         component: ScriptManager,
       });
+    },
+    showBulkAICommands() {
+      this.$q.dialog({ component: BulkAICommands });
+    },
+    openTicketConsole() {
+      window.open(
+        "/ai-ticket-console",
+        "PiTicketConsole",
+        "width=1500,height=950,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes",
+      );
+    },
+    openProcedures() {
+      window.open(
+        "/ai-procedures",
+        "PiProcedures",
+        "width=1400,height=900,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes",
+      );
     },
     showBulkAction(mode) {
       this.$q.dialog({

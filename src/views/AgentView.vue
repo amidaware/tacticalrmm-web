@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="agent-page-scroll">
     <SummaryTab />
     <q-separator />
     <SubTableTabs
@@ -10,6 +10,8 @@
         'patches',
         'software',
         'history',
+        'aihistory',
+        'aitasks',
         'notes',
         'assets',
         'audit',
@@ -65,3 +67,15 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+/* The app disables body scrolling (App.vue: body overflow-y hidden), so on
+   info-heavy agents the summary + tabs can overflow the viewport with no way to
+   scroll. Make the agent page its own scroll region (viewport minus the 50px
+   header) so everything is reachable. */
+.agent-page-scroll {
+  height: calc(100vh - 50px) !important;
+  min-height: 0 !important;
+  overflow-y: auto;
+}
+</style>

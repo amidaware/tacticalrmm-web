@@ -139,6 +139,52 @@
               />
             </div>
           </q-card-section>
+          <div class="text-subtitle2">Pi.dev AI</div>
+          <q-separator />
+          <q-card-section class="row">
+            <div class="col-12 q-gutter-sm q-mb-sm">
+              <q-checkbox
+                v-model="localRole.can_use_ai"
+                label="Use Pi.dev AI Assistant"
+              />
+              <q-checkbox
+                v-model="localRole.can_use_ai_mutate"
+                label="Allow write (mutating) actions"
+              >
+                <q-tooltip>
+                  When off, the AI session is read-only: it can inspect devices
+                  but the write tools (run script, kill process, reboot) are
+                  removed and run_command refuses destructive commands.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_use_ai_autoapprove"
+                label="Allow auto-approve of device actions"
+              />
+              <q-checkbox
+                v-model="localRole.can_manage_all_ai_tasks"
+                label="Manage/delete all AI tasks & bulk commands (any owner)"
+              >
+                <q-tooltip>
+                  Allows editing/deleting scheduled AI tasks and bulk AI commands
+                  created by OTHER users, including on agents outside this role's
+                  normal scope. Superusers always have this.
+                </q-tooltip>
+              </q-checkbox>
+            </div>
+            <q-select
+              v-model="localRole.ai_allowed_models"
+              :options="aiModelOptions"
+              emit-value
+              map-options
+              multiple
+              outlined
+              dense
+              use-chips
+              label="Allowed AI models (empty = global default only)"
+              class="col-12"
+            />
+          </q-card-section>
           <div class="text-subtitle2">Core</div>
           <q-separator />
           <q-card-section class="row">
@@ -443,7 +489,8 @@
 
 <script>
 // composition imports
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
+import { fetchAIModels } from "@/api/core";
 import { useStore } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 import { saveRole, editRole } from "@/api/accounts";
@@ -470,6 +517,20 @@ export default {
     const { clientOptions } = useClientDropdown(true);
     const { siteOptions } = useSiteDropdown(true);
 
+    // AI model options for the allowed-models multiselect
+    const aiModelOptions = ref([]);
+    onMounted(async () => {
+      try {
+        const models = await fetchAIModels();
+        aiModelOptions.value = models.map((m) => ({
+          label: `${m.display_name} (${m.provider_name}/${m.model_id})`,
+          value: m.id,
+        }));
+      } catch (e) {
+        aiModelOptions.value = [];
+      }
+    });
+
     const role = props.role
       ? ref(Object.assign({}, props.role))
       : ref({
@@ -479,6 +540,11 @@ export default {
           can_list_agents: false,
           can_recover_agents: false,
           can_use_mesh: false,
+          can_use_ai: false,
+          can_use_ai_mutate: false,
+          can_use_ai_autoapprove: false,
+          can_manage_all_ai_tasks: false,
+          ai_allowed_models: [],
           can_uninstall_agents: false,
           can_update_agents: false,
           can_edit_agent: false,
@@ -598,6 +664,7 @@ export default {
       loading,
       clientOptions,
       siteOptions,
+      aiModelOptions,
       hosted,
 
       onSubmit,

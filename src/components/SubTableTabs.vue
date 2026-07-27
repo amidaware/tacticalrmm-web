@@ -58,6 +58,20 @@
           label="History"
         />
         <q-tab
+          v-if="activeTabs.includes('aihistory')"
+          content-class="min-width"
+          name="aihistory"
+          icon="smart_toy"
+          label="AI History"
+        />
+        <q-tab
+          v-if="activeTabs.includes('aitasks')"
+          content-class="min-width"
+          name="aitasks"
+          icon="schedule"
+          label="AI Tasks"
+        />
+        <q-tab
           v-if="activeTabs.includes('notes')"
           content-class="min-width"
           name="notes"
@@ -133,6 +147,20 @@
           <HistoryTab />
         </q-tab-panel>
         <q-tab-panel
+          v-if="activeTabs.includes('aihistory')"
+          name="aihistory"
+          class="q-pa-none"
+        >
+          <AIHistoryTab />
+        </q-tab-panel>
+        <q-tab-panel
+          v-if="activeTabs.includes('aitasks')"
+          name="aitasks"
+          class="q-pa-none"
+        >
+          <AITasksTab />
+        </q-tab-panel>
+        <q-tab-panel
           v-if="activeTabs.includes('notes')"
           name="notes"
           class="q-pa-none"
@@ -180,6 +208,8 @@ import AuditTab from "@/components/agents/AuditTab.vue";
 import DebugTab from "@/components/agents/DebugTab.vue";
 import AssetsTab from "@/components/agents/AssetsTab.vue";
 import NotesTab from "@/components/agents/NotesTab.vue";
+import AIHistoryTab from "@/components/agents/AIHistoryTab.vue";
+import AITasksTab from "@/components/agents/AITasksTab.vue";
 
 export default {
   name: "SubTableTabs",
@@ -194,6 +224,8 @@ export default {
     DebugTab,
     AssetsTab,
     NotesTab,
+    AIHistoryTab,
+    AITasksTab,
   },
   props: {
     activeTabs: {
@@ -205,6 +237,8 @@ export default {
         "patches",
         "software",
         "history",
+        "aihistory",
+        "aitasks",
         "notes",
         "assets",
         "debug",

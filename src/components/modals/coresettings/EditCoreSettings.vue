@@ -15,6 +15,7 @@
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
+          <q-tab name="ai" label="Pi.dev AI" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -744,6 +745,14 @@
                 <ScheduleTable />
               </q-tab-panel>
 
+              <q-tab-panel name="ai">
+                <AISettings
+                  v-if="ready"
+                  :settings="settings"
+                  @update="settings[$event.key] = $event.val"
+                />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -795,7 +804,8 @@
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
                 tab === 'meshcentral' ||
-                tab === 'retention'
+                tab === 'retention' ||
+                tab === 'ai'
               "
               label="Save"
               color="primary"
@@ -835,6 +845,7 @@ import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
+import AISettings from "@/components/modals/coresettings/AISettings.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -847,6 +858,7 @@ export default {
     SSOProvidersTable,
     TacticalDropdown,
     ScheduleTable,
+    AISettings,
   },
   mixins: [mixins],
   data() {
