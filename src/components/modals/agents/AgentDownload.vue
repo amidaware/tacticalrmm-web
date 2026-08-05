@@ -93,8 +93,12 @@
         </div>
       </q-expansion-item>
       <br />
-      <p class="text-italic">
-        {{ $t("agents.agentDownload.authTokenHours", { hours: info.expires }) }}
+      <p v-if="info.plat === 'windows'" class="text-italic">
+        {{
+          $t("agents.agentDownload.authTokenDetails", {
+            hours: info.expires,
+          })
+        }}
       </p>
       <q-btn
         v-if="info.plat === 'windows'"

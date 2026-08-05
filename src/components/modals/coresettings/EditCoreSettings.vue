@@ -332,6 +332,122 @@
                     ]"
                   />
                 </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">
+                    {{ $t("settings.editCoreSettings.terminal.experience") }}
+                  </div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.terminal_mode"
+                      :options="terminalModeOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">
+                    {{
+                      $t("settings.editCoreSettings.terminal.defaultTerminal", {
+                        platform: "Windows",
+                      })
+                    }}
+                  </div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_windows"
+                      :options="windowsShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_windows === 'custom'"
+                      v-model="settings.default_shell_windows_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      :placeholder="$t('agents.terminal.enterCustomShellPath')"
+                      bottom-slots
+                    >
+                      <template v-slot:hint>
+                        <span style="font-size: 1.2em">
+                          {{
+                            $t("agents.terminal.enterCustomShellPathExample", {
+                              example:
+                                "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                            })
+                          }}
+                        </span>
+                      </template>
+                    </q-input>
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">
+                    {{
+                      $t("settings.editCoreSettings.terminal.defaultTerminal", {
+                        platform: "Linux",
+                      })
+                    }}
+                  </div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_linux"
+                      :options="linuxShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_linux === 'custom'"
+                      v-model="settings.default_shell_linux_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      :placeholder="
+                        $t('agents.terminal.enterCustomShellPathExample', {
+                          example: '/usr/bin/fish',
+                        })
+                      "
+                    />
+                  </div>
+                </q-card-section>
+                <q-card-section class="row items-start content-between">
+                  <div class="col-6">
+                    {{
+                      $t("settings.editCoreSettings.terminal.defaultTerminal", {
+                        platform: "macOS",
+                      })
+                    }}
+                  </div>
+                  <div class="col-6">
+                    <q-option-group
+                      class="q-gutter-lg"
+                      v-model="settings.default_shell_darwin"
+                      :options="darwinShellOptions"
+                      type="radio"
+                      inline
+                      dense
+                    />
+                    <q-input
+                      v-if="settings.default_shell_darwin === 'custom'"
+                      v-model="settings.default_shell_darwin_custom"
+                      class="q-mt-md"
+                      dense
+                      outlined
+                      :placeholder="
+                        $t('agents.terminal.enterCustomShellPathExample', {
+                          example: '/bin/zsh',
+                        })
+                      "
+                    />
+                  </div>
+                </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">
                     {{
@@ -1011,6 +1127,37 @@ export default {
   computed: {
     hosted() {
       return this.$store.state.hosted;
+    },
+    terminalModeOptions() {
+      return [
+        {
+          label: this.$t("settings.editCoreSettings.terminal.useNew"),
+          value: "new",
+        },
+        {
+          label: this.$t("settings.editCoreSettings.terminal.useLegacy"),
+          value: "legacy",
+        },
+      ];
+    },
+    windowsShellOptions() {
+      return [
+        { label: "CMD", value: "cmd" },
+        { label: "PowerShell", value: "powershell" },
+        { label: this.$t("agents.terminal.custom"), value: "custom" },
+      ];
+    },
+    linuxShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: this.$t("agents.terminal.custom"), value: "custom" },
+      ];
+    },
+    darwinShellOptions() {
+      return [
+        { label: "Bash", value: "bash" },
+        { label: this.$t("agents.terminal.custom"), value: "custom" },
+      ];
     },
   },
   watch: {

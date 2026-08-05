@@ -197,6 +197,12 @@
     "minimumIsZero": "Минимум 0",
     "saveAndTestEmail": "Сохранить и проверить Email",
     "saveAndTestSms": "Сохранить и проверить SMS",
+    "terminal": {
+      "experience": "Режим терминала",
+      "defaultTerminal": "Терминал {platform} по умолчанию",
+      "useNew": "Использовать новый терминал",
+      "useLegacy": "Использовать устаревший терминал"
+    },
     "tabs": {
       "general": "Общие",
       "emailAlerts": "Email-оповещения",
@@ -487,6 +493,7 @@
       "manageProcesses": "Управлять процессами",
       "viewEventLogs": "Просматривать журналы событий",
       "sendCommand": "Отправлять команды",
+      "useTerminal": "Использовать терминал",
       "shutdownRebootAgents": "Выключать / перезагружать агентов",
       "wakeUpWolAgents": "Пробуждать агентов (WoL)",
       "installAgents": "Устанавливать агентов",

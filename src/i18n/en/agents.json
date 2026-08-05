@@ -13,6 +13,8 @@
     "required": "*Required"
   },
   "remoteBackground": {
+    "terminalUpgradeRequired": "New terminal mode requires agent version 2.11.0 or higher. Reverting to legacy terminal mode. Please update the agent to use the new terminal.",
+    "terminalSettingsFailed": "Failed to load terminal settings",
     "metaTitle": "Remote Background",
     "tabs": {
       "terminal": "Terminal",
@@ -21,7 +23,40 @@
       "processes": "Processes",
       "eventLog": "Event Log",
       "registry": "Registry"
+    },
+    "terminal": {
+      "shell": "Shell",
+      "editPath": "Edit Path",
+      "copyOutput": "Copy terminal output",
+      "runAs": "Run as",
+      "system": "System",
+      "user": "User",
+      "customShell": "Custom Shell",
+      "customShellLoading": "Custom (Shell loading...)",
+      "customShellInvalid": "Custom (Shell path doesn't exist)",
+      "customShellPath": "Custom ({path})",
+      "customShellTitle": "Enter Custom Shell Path",
+      "shellPath": "Shell Path",
+      "start": "Start",
+      "startFailed": "Failed to start terminal",
+      "copySuccess": "Terminal output copied to clipboard.",
+      "copyFailed": "Failed to copy terminal output.",
+      "shortcuts": {
+        "title": "Terminal shortcuts",
+        "copy": "Copy selected text",
+        "paste": "Paste",
+        "interrupt": "Interrupt command",
+        "previous": "Previous command",
+        "next": "Next command",
+        "moveByWord": "Move by word"
+      }
     }
+  },
+  "terminal": {
+    "custom": "Custom",
+    "enterCustomShellPath": "Enter custom shell path",
+    "enterCustomShellPathExample": "Enter custom shell path (e.g. {example})",
+    "inheritGlobalSetting": "Inherit from Global Setting"
   },
   "takeControl": {
     "metaTitle": "Take Control",
@@ -330,6 +365,7 @@
     "setAgentDescription": "Set agent description field during install",
     "useHttpProxy": "Use a http proxy",
     "authTokenHours": "Note: the auth token above will be valid for {hours} hours.",
+    "authTokenDetails": "Note: The auth token above is valid for {hours} hours. The installer executable itself is generic and can be reused for future installations. If the token expires, simply generate a new installation command rather than downloading the installer again.",
     "downloadAgent": "Download Agent"
   },
   "processManager": {
@@ -457,6 +493,7 @@
     }
   },
   "editAgent": {
+    "defaultTerminal": "Default Terminal",
     "tabs": {
       "general": "General",
       "customFields": "Custom Fields",
@@ -662,10 +699,13 @@
     "appleSilicon": "Apple Silicon (M-Series)",
     "arm32Bit": "ARM 32 bit",
     "installationMethod": "Installation Method",
-    "generatedExe": "Dynamically generated exe",
+    "standardExe": "Standard EXE",
+    "generatedExe": "Generated EXE",
     "powershell": "Powershell",
     "manual": "Manual",
     "generatingExecutable": "Generating executable...",
+    "generatedExeWarning": "This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings.<br><br>We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm\">this guidance</a> before continuing.<br><br>Proceed only if you understand and accept these risks.",
+    "continue": "Yes, continue",
     "installerWillDownload": "Installer for {client}, {site} ({agenttype}) will now be downloaded. You may reuse this installer for {expires} hours before it expires. No command line arguments are needed.",
     "installButton": {
       "generateAndDownloadExe": "Generate and download exe",

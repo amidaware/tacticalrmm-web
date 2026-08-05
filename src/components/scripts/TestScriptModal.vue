@@ -10,7 +10,7 @@
           }}</q-tooltip>
         </q-btn>
       </q-bar>
-      <q-card-section style="height: 70vh" class="scroll">
+      <q-card-section style="min-height: 70vh" class="q-pa-md">
         <div>
           {{ t("scripts.testScriptModal.runTime") }}:
           <code>{{
@@ -29,7 +29,7 @@
             :data="ret.stdout"
           />
           <q-separator />
-          <pre>{{ ret.stdout }}</pre>
+          <pre class="scroll" style="max-height: 65vh">{{ ret.stdout }}</pre>
         </div>
         <div v-if="ret.stderr">
           <script-output-copy-clip
@@ -37,7 +37,7 @@
             :data="ret.stderr"
           />
           <q-separator />
-          <pre>{{ ret.stderr }}</pre>
+          <pre class="scroll" style="max-height: 65vh">{{ ret.stderr }}</pre>
         </div>
         <q-inner-loading :showing="loading" />
       </q-card-section>

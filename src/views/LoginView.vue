@@ -16,6 +16,7 @@
                 filled
                 v-model="credentials.username"
                 :label="t('auth.login.username')"
+                autocomplete="username"
                 lazy-rules
                 :rules="[
                   (val) =>
@@ -27,6 +28,7 @@
                 filled
                 :type="showPassword ? 'password' : 'text'"
                 :label="t('auth.login.password')"
+                autocomplete="current-password"
                 lazy-rules
                 :rules="[
                   (val) =>
@@ -95,6 +97,7 @@
                   outlined
                   autocomplete="one-time-code"
                   v-model="twofactor"
+                  inputmode="numeric"
                   :rules="[
                     (val) =>
                       (val && val.length > 0) || t('auth.validation.required'),

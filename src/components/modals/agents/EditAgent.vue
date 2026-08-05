@@ -90,6 +90,37 @@
                       class="col-8"
                     />
                   </q-card-section>
+                  <q-card-section class="row items-start content-between">
+                    <div class="col-4">
+                      {{ $t("agents.editAgent.defaultTerminal") }}
+                    </div>
+                    <div class="col-8">
+                      <q-option-group
+                        v-if="agent && agent.plat"
+                        class="q-gutter-lg"
+                        v-model="agent.default_shell"
+                        :options="defaultShellOptions"
+                        type="radio"
+                        inline
+                        dense
+                      />
+                      <q-input
+                        v-if="agent.default_shell === 'custom'"
+                        v-model="agent.default_shell_custom"
+                        class="q-mt-md"
+                        dense
+                        outlined
+                        :placeholder="$t('agents.terminal.enterCustomShellPath')"
+                        bottom-slots
+                      >
+                        <template v-slot:hint>
+                          <span style="font-size: 1.2em">
+                            {{ customShellPlaceholder }}
+                          </span>
+                        </template>
+                      </q-input>
+                    </div>
+                  </q-card-section>
                   <q-card-section class="row">
                     <div class="col-10">
                       {{ $t("agents.editAgent.runChecksEvery") }}
@@ -581,20 +612,24 @@ export default {
         "client",
         "site_name",
       ];
+
+      // create shallow copy so we don't break UI when save fails
+      const payload = { ...this.agent };
+
       for (const elem of toRemove) {
-        delete this.agent[elem];
+        delete payload[elem];
       }
 
       // only send the timezone data if it has changed
       // this way django will keep the db column as null and inherit from the global setting
       // until we explicity change the agent's timezone
       if (this.timezone !== this.original_tz) {
-        this.agent.time_zone = this.timezone;
+        payload.time_zone = this.timezone;
       }
 
       this.$axios
         .put(`/agents/${this.agent_id}/`, {
-          ...this.agent,
+          ...payload,
           custom_fields: this.formatCustomFields(
             this.customFields,
             this.custom_fields,
@@ -641,7 +676,49 @@ export default {
       ];
     },
     ...mapState(["dash_warning_color", "dash_negative_color"]),
+    customShellPlaceholder() {
+      let example;
+      if (this.agent?.plat === "windows")
+        example = "C:\\Program Files\\PowerShell\\7\\pwsh.exe";
+      else if (this.agent?.plat === "linux") example = "/usr/bin/fish";
+      else if (this.agent?.plat === "darwin") example = "/bin/zsh";
+
+      return example
+        ? this.$t("agents.terminal.enterCustomShellPathExample", { example })
+        : this.$t("agents.terminal.enterCustomShellPath");
+    },
+    defaultShellOptions() {
+      if (!this.agent?.plat) return [];
+      const inheritText = this.$t("agents.terminal.inheritGlobalSetting");
+      const customText = this.$t("agents.terminal.custom");
+      if (this.agent.plat === "windows") {
+        return [
+          { label: inheritText, value: "use_global" },
+          { label: "CMD", value: "cmd" },
+          { label: "PowerShell", value: "powershell" },
+          { label: customText, value: "custom" },
+        ];
+      }
+
+      if (this.agent.plat === "linux") {
+        return [
+          { label: inheritText, value: "use_global" },
+          { label: "Bash", value: "bash" },
+          { label: customText, value: "custom" },
+        ];
+      }
+
+      if (this.agent.plat === "darwin") {
+        return [
+          { label: inheritText, value: "use_global" },
+          { label: "Bash", value: "bash" },
+          { label: customText, value: "custom" },
+        ];
+      }
+      return [];
+    },
   },
+
   mounted() {
     // Get custom fields
     this.getCustomFields("agent").then((r) => {

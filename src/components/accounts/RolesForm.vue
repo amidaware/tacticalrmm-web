@@ -137,6 +137,10 @@
                 :label="$t('settings.rolesForm.permissionLabels.sendCommand')"
               />
               <q-checkbox
+                v-model="localRole.can_use_terminal"
+                :label="$t('settings.rolesForm.permissionLabels.useTerminal')"
+              />
+              <q-checkbox
                 v-model="localRole.can_reboot_agents"
                 :label="
                   $t('settings.rolesForm.permissionLabels.shutdownRebootAgents')
@@ -597,6 +601,7 @@ export default {
           can_manage_procs: false,
           can_view_eventlogs: false,
           can_send_cmd: false,
+          can_use_terminal: false,
           can_reboot_agents: false,
           can_install_agents: false,
           can_run_scripts: false,

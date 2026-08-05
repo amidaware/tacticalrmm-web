@@ -197,6 +197,12 @@
     "minimumIsZero": "Minimum is 0",
     "saveAndTestEmail": "Save and Test Email",
     "saveAndTestSms": "Save and Test SMS",
+    "terminal": {
+      "experience": "Terminal Experience",
+      "defaultTerminal": "{platform} Default Terminal",
+      "useNew": "Use new terminal",
+      "useLegacy": "Use legacy terminal"
+    },
     "tabs": {
       "general": "General",
       "emailAlerts": "Email Alerts",
@@ -487,6 +493,7 @@
       "manageProcesses": "Manage Processes",
       "viewEventLogs": "View Event Logs",
       "sendCommand": "Send Command",
+      "useTerminal": "Use Terminal",
       "shutdownRebootAgents": "Shutdown / Reboot Agents",
       "wakeUpWolAgents": "Wake-Up (WoL) Agents",
       "installAgents": "Install Agents",

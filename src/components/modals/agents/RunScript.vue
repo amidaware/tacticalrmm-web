@@ -198,17 +198,21 @@
         </q-card-actions>
         <q-card-section
           v-if="ret !== null"
-          class="q-pl-md q-pr-md q-pt-none q-ma-none scroll"
-          style="max-height: 50vh"
+          class="q-pl-md q-pr-md q-pt-none q-ma-none"
         >
           <script-output-copy-clip
             v-if="!state.run_on_server"
             :label="$t('scripts.runScript.output')"
             :data="ret"
           />
-          <q-separator />
-          <pre v-if="!state.run_on_server">{{ ret }}</pre>
-          <q-card-section v-if="state.run_on_server" class="scroll">
+          <q-separator v-if="!state.run_on_server" />
+          <pre
+            v-if="!state.run_on_server"
+            class="scroll"
+            style="max-height: 45vh"
+            >{{ ret }}</pre
+          >
+          <q-card-section v-if="state.run_on_server" class="q-pa-none">
             <div>
               {{ $t("scripts.runScript.runTime") }}:
               <code>{{
@@ -227,7 +231,9 @@
                 :data="ret.stdout"
               />
               <q-separator />
-              <pre>{{ ret.stdout }}</pre>
+              <pre class="scroll" style="max-height: 30vh">{{
+                ret.stdout
+              }}</pre>
             </div>
             <div v-if="ret.stderr">
               <script-output-copy-clip
@@ -235,7 +241,9 @@
                 :data="ret.stderr"
               />
               <q-separator />
-              <pre>{{ ret.stderr }}</pre>
+              <pre class="scroll" style="max-height: 30vh">{{
+                ret.stderr
+              }}</pre>
             </div>
           </q-card-section>
         </q-card-section>

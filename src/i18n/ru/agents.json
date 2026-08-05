@@ -13,6 +13,8 @@
     "required": "*Обязательно"
   },
   "remoteBackground": {
+    "terminalUpgradeRequired": "Для нового режима терминала требуется агент версии 2.11.0 или выше. Выполнен возврат к устаревшему режиму. Обновите агент, чтобы использовать новый терминал.",
+    "terminalSettingsFailed": "Не удалось загрузить настройки терминала",
     "metaTitle": "Фоновое управление",
     "tabs": {
       "terminal": "Терминал",
@@ -21,7 +23,40 @@
       "processes": "Процессы",
       "eventLog": "Журнал событий",
       "registry": "Реестр"
+    },
+    "terminal": {
+      "shell": "Оболочка",
+      "editPath": "Изменить путь",
+      "copyOutput": "Копировать вывод терминала",
+      "runAs": "Запустить от имени",
+      "system": "Система",
+      "user": "Пользователь",
+      "customShell": "Другая оболочка",
+      "customShellLoading": "Другая (загрузка оболочки...)",
+      "customShellInvalid": "Другая (путь к оболочке не существует)",
+      "customShellPath": "Другая ({path})",
+      "customShellTitle": "Укажите путь к другой оболочке",
+      "shellPath": "Путь к оболочке",
+      "start": "Запустить",
+      "startFailed": "Не удалось запустить терминал",
+      "copySuccess": "Вывод терминала скопирован в буфер обмена.",
+      "copyFailed": "Не удалось скопировать вывод терминала.",
+      "shortcuts": {
+        "title": "Горячие клавиши терминала",
+        "copy": "Копировать выделенный текст",
+        "paste": "Вставить",
+        "interrupt": "Прервать команду",
+        "previous": "Предыдущая команда",
+        "next": "Следующая команда",
+        "moveByWord": "Перемещение по словам"
+      }
     }
+  },
+  "terminal": {
+    "custom": "Другая",
+    "enterCustomShellPath": "Укажите путь к оболочке",
+    "enterCustomShellPathExample": "Укажите путь к оболочке (например, {example})",
+    "inheritGlobalSetting": "Наследовать глобальную настройку"
   },
   "takeControl": {
     "metaTitle": "Удаленный доступ",
@@ -330,6 +365,7 @@
     "setAgentDescription": "Задать описание агента при установке",
     "useHttpProxy": "Использовать HTTP-прокси",
     "authTokenHours": "Примечание: токен авторизации выше будет действителен {hours} часов.",
+    "authTokenDetails": "Примечание: указанный выше токен авторизации действителен в течение {hours} ч. Сам файл установщика является универсальным и может использоваться повторно для последующих установок. Если срок действия токена истечет, создайте новую команду установки, не загружая установщик повторно.",
     "downloadAgent": "Скачать агент"
   },
   "processManager": {
@@ -457,6 +493,7 @@
     }
   },
   "editAgent": {
+    "defaultTerminal": "Терминал по умолчанию",
     "tabs": {
       "general": "Общие",
       "customFields": "Пользовательские поля",
@@ -662,10 +699,13 @@
     "appleSilicon": "Apple Silicon (M-Series)",
     "arm32Bit": "ARM 32 бит",
     "installationMethod": "Метод установки",
-    "generatedExe": "Динамически сгенерированный exe",
+    "standardExe": "Стандартный EXE",
+    "generatedExe": "Сгенерированный EXE",
     "powershell": "Powershell",
     "manual": "Вручную",
     "generatingExecutable": "Генерация исполняемого файла...",
+    "generatedExeWarning": "Этот метод установки может вызвать предупреждения антивируса, Windows SmartScreen или о недоверенном издателе.<br><br>Настоятельно рекомендуем использовать стандартный EXE или установщик PowerShell.<br><br>Этот метод также может создать риск появления неавторизованных или неожиданных агентов в вашей среде. Перед продолжением прочитайте <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm\">эти рекомендации</a>.<br><br>Продолжайте только в том случае, если понимаете и принимаете эти риски.",
+    "continue": "Да, продолжить",
     "installerWillDownload": "Установщик для {client}, {site} ({agenttype}) будет загружен сейчас. Вы можете повторно использовать этот установщик в течение {expires} часов до истечения срока. Аргументы командной строки не требуются.",
     "installButton": {
       "generateAndDownloadExe": "Сгенерировать и скачать exe",

@@ -9,13 +9,16 @@
         }}</q-tooltip>
       </q-btn>
     </q-bar>
+
     <q-separator />
+
     <q-banner class="bg-primary">
       <template v-slot:avatar>
         <q-icon name="info" />
       </template>
       {{ $t("agents.updateAgents.banner") }}
     </q-banner>
+
     <q-card-section>
       {{ $t("agents.updateAgents.selectVersion") }}
       <q-select
@@ -28,15 +31,32 @@
         :options="versions"
       />
     </q-card-section>
+
     <q-card-section v-show="version !== null">
       {{ $t("agents.updateAgents.selectAgent") }}
       <br />
       <q-separator />
+
+      <q-input
+        v-model="search"
+        dense
+        outlined
+        clearable
+        debounce="100"
+        :placeholder="$t('common.buttons.search')"
+        class="q-my-sm"
+      >
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+
       <q-checkbox
         v-model="selectAll"
         :label="$t('agents.updateAgents.selectAll')"
         @update:model-value="selectAllAction"
       />
+
       <q-btn
         v-show="group.length !== 0"
         :label="$t('common.buttons.update')"
@@ -44,7 +64,9 @@
         @click="update"
         class="q-ml-xl"
       />
+
       <q-separator />
+
       <q-option-group
         v-model="group"
         :options="agentOptions"
@@ -59,10 +81,12 @@
 
 <script>
 import mixins from "@/mixins/mixins";
+
 export default {
   name: "UpdateAgents",
   emits: ["close"],
   mixins: [mixins],
+
   data() {
     return {
       versions: [],
@@ -70,12 +94,15 @@ export default {
       agents: [],
       group: [],
       selectAll: false,
+      search: "",
     };
   },
+
   methods: {
     selectAllAction() {
-      this.selectAll ? (this.group = this.agentIds) : (this.group = []);
+      this.selectAll ? (this.group = this.filteredAgentIds) : (this.group = []);
     },
+
     getVersions() {
       this.$q.loading.show();
       this.$axios
@@ -90,6 +117,7 @@ export default {
           this.$q.loading.hide();
         });
     },
+
     update() {
       const data = { agent_ids: this.group };
       this.$axios.post("/agents/update/", data).then(() => {
@@ -98,21 +126,47 @@ export default {
       });
     },
   },
+
   computed: {
     agentIds() {
       return this.agents.map((k) => k.agent_id);
     },
-    agentOptions() {
-      const options = [];
-      for (let i of Object.values(this.agents)) {
-        let opt = {};
-        opt["label"] = `${i.hostname} (${i.client} > ${i.site})`;
-        opt["value"] = i.agent_id;
-        options.push(opt);
+
+    filteredAgents() {
+      const term = this.search?.toLowerCase().trim();
+
+      if (!term) {
+        return this.agents;
       }
-      return options.sort((a, b) => a.label.localeCompare(b.label));
+
+      return this.agents.filter((agent) => {
+        const searchableText = [
+          agent.hostname,
+          agent.client,
+          agent.site,
+          agent.agent_id,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(term);
+      });
+    },
+
+    filteredAgentIds() {
+      return this.filteredAgents.map((agent) => agent.agent_id);
+    },
+
+    agentOptions() {
+      return this.filteredAgents
+        .map((agent) => ({
+          label: `${agent.hostname} (${agent.client} > ${agent.site})`,
+          value: agent.agent_id,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
     },
   },
+
   mounted() {
     this.getVersions();
   },

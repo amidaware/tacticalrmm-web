@@ -89,7 +89,12 @@ export default function ({ app, router }) {
             text = error.response.data;
           } else if (typeof error.response.data === "object") {
             let [key, value] = Object.entries(error.response.data)[0];
-            text = key + ": " + value[0];
+
+            if (Array.isArray(value)) {
+              text = key + ": " + value[0];
+            } else {
+              text = key + ": " + value;
+            }
           }
         }
       }

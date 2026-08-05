@@ -39,7 +39,7 @@
               val="windows"
               :label="$t('agents.installAgent.windows')"
               @update:model-value="
-                installMethod = 'exe';
+                installMethod = 'manual';
                 goarch = GOARCH_AMD64;
               "
             />
@@ -161,9 +161,9 @@
           <div class="q-gutter-sm">
             <q-radio
               v-model="installMethod"
-              val="exe"
+              val="manual"
               v-show="agentOS === 'windows'"
-              :label="$t('agents.installAgent.generatedExe')"
+              :label="$t('agents.installAgent.standardExe')"
             />
             <q-radio
               v-model="installMethod"
@@ -173,9 +173,9 @@
             />
             <q-radio
               v-model="installMethod"
-              val="manual"
+              val="exe"
               v-show="agentOS === 'windows'"
-              :label="$t('agents.installAgent.manual')"
+              :label="$t('agents.installAgent.generatedExe')"
             />
           </div>
         </q-card-section>
@@ -224,7 +224,7 @@ export default {
       ping: false,
       showAgentDownload: false,
       info: {},
-      installMethod: "exe",
+      installMethod: "manual",
       goarch: GOARCH_AMD64,
       agentOS: "windows",
     };
@@ -294,25 +294,47 @@ export default {
           this.showAgentDownload = true;
         });
       } else if (this.installMethod === "exe") {
-        this.$q.loading.show({
-          message: this.$t("agents.installAgent.generatingExecutable"),
-        });
-
-        this.$axios
-          .post("/agents/installer/", data, { responseType: "blob" })
-          .then((r) => {
-            this.$q.loading.hide();
-            const blob = new Blob([r.data], {
-              type: "application/vnd.microsoft.portable-executable",
-            });
-            let link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-            this.showDLMessage();
+        this.$q
+          .dialog({
+            title: this.$t("common.status.warning"),
+            style: {
+              width: "40vw",
+              maxWidth: "50vw",
+            },
+            message: this.$t("agents.installAgent.generatedExeWarning"),
+            color: "negative",
+            ok: {
+              label: this.$t("agents.installAgent.continue"),
+              color: "negative",
+              unelevated: true,
+            },
+            cancel: {
+              label: this.$t("common.buttons.cancel"),
+              color: "grey",
+            },
+            persistent: true,
+            html: true,
           })
-          .catch(() => {
-            this.$q.loading.hide();
+          .onOk(() => {
+            this.$q.loading.show({
+              message: this.$t("agents.installAgent.generatingExecutable"),
+            });
+            this.$axios
+              .post("/agents/installer/", data, { responseType: "blob" })
+              .then((r) => {
+                this.$q.loading.hide();
+                const blob = new Blob([r.data], {
+                  type: "application/vnd.microsoft.portable-executable",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                this.showDLMessage();
+              })
+              .catch(() => {
+                this.$q.loading.hide();
+              });
           });
       } else if (
         this.installMethod === "powershell" ||
