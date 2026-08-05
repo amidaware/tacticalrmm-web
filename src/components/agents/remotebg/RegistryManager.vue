@@ -61,7 +61,7 @@
                 dense
                 size="sm"
                 color="primary"
-                label="Load More"
+                :label="$t('agents.registryManager.loadMore')"
                 class="q-px-xs q-py-xs fontt-weight-medium"
                 :loading="
                   loadingMoreNodes[getParentIdFromLoadNode(prop.node.id)]
@@ -77,7 +77,9 @@
             >
               <q-list dense style="min-width: 180px">
                 <q-item clickable style="padding-right: 4px !important">
-                  <q-item-section>New</q-item-section>
+                  <q-item-section>{{
+                    $t("agents.registryManager.new")
+                  }}</q-item-section>
                   <q-item-section side>
                     <q-icon name="chevron_right" />
                   </q-item-section>
@@ -109,13 +111,19 @@
                   v-close-popup
                   @click="refreshNode(prop.node.id)"
                 >
-                  <q-item-section>Refresh</q-item-section>
+                  <q-item-section>{{
+                    $t("common.actions.refresh")
+                  }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="renameKey(prop.node)">
-                  <q-item-section>Rename</q-item-section>
+                  <q-item-section>{{
+                    $t("agents.registryManager.rename")
+                  }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="deleteKey(prop.node)">
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{
+                    $t("common.buttons.delete")
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -137,7 +145,9 @@
                   clickable
                   style="padding-right: 3px; padding-left: 12px"
                 >
-                  <q-item-section>New</q-item-section>
+                  <q-item-section>{{
+                    $t("agents.registryManager.new")
+                  }}</q-item-section>
                   <q-item-section side>
                     <q-icon name="chevron_right" />
                   </q-item-section>
@@ -174,7 +184,7 @@
               flat
               dense
               hide-pagination
-              no-data-label="No values found"
+              :no-data-label="$t('agents.registryManager.noValuesFound')"
               :loading="loading"
               :pagination="{ rowsPerPage: 0 }"
             >
@@ -219,21 +229,27 @@
                         v-close-popup
                         @click="openModifyDialog(props.row)"
                       >
-                        <q-item-section>Modify</q-item-section>
+                        <q-item-section>{{
+                          $t("agents.registryManager.modify")
+                        }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
                         v-close-popup
                         @click="renameValue(props.row)"
                       >
-                        <q-item-section>Rename</q-item-section>
+                        <q-item-section>{{
+                          $t("agents.registryManager.rename")
+                        }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
                         v-close-popup
                         @click="deleteValue(props.row)"
                       >
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $t("common.buttons.delete")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -284,8 +300,8 @@
     <!-- Confirm Delete Key/Value Dialog -->
     <ConfirmDialog
       v-model="confirmDeleteKeyDialog"
-      title="Confirm Key Delete"
-      message="Are you sure you want to permanently delete this key and all of its subkeys?"
+      :title="$t('agents.registryManager.confirmKeyDelete')"
+      :message="$t('agents.registryManager.confirmKeyDeleteMessage')"
       @confirm="confirmDeleteKey"
       type="confirm"
       icon="warning"
@@ -293,8 +309,8 @@
     />
     <ConfirmDialog
       v-model="confirmDeleteValueDialog"
-      title="Confirm Value Delete"
-      message="Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?"
+      :title="$t('agents.registryManager.confirmValueDelete')"
+      :message="$t('agents.registryManager.confirmValueDeleteMessage')"
       @confirm="confirmDeleteValue"
       type="confirm"
       icon="warning"
@@ -302,8 +318,8 @@
     />
     <ConfirmDialog
       v-model="warningDialog"
-      title="Selection Required"
-      message="Please select a hive or key before creating a new key."
+      :title="$t('agents.registryManager.selectionRequired')"
+      :message="$t('agents.registryManager.selectHiveOrKey')"
       :showConfirm="false"
       icon="warning"
       iconColor="orange"
@@ -317,14 +333,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from "vue";
-import { QInput, useQuasar } from "quasar";
+import { ref, computed, onMounted, nextTick } from "vue";
+import { QInput, useQuasar, type QTableColumn } from "quasar";
 import { watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { AxiosError } from "axios";
-import {
-  registryTableColumns,
-  registryValueTypes,
-} from "@/constants/constants";
 import { RegistryNode, RegistryValue } from "@/types/agents";
 import {
   createRegistryKey,
@@ -350,7 +363,6 @@ const loading = ref(false);
 const selectedKey = ref<string | null>(null);
 const currentPath = ref<string>();
 const registryNodes = ref<RegistryNode[]>([]);
-const columns = registryTableColumns;
 const tableRows = ref<RegistryValue[]>([]);
 const editingNodeId = ref<string | null>(null);
 const pendingNodes = ref<Record<string, RegistryNode[]>>({});
@@ -370,6 +382,55 @@ const isFinishingValueRename = ref(false);
 const modifyDialog = ref(false);
 const modifyRow = ref({} as RegistryValue);
 const $q = useQuasar();
+const { t } = useI18n();
+const columns = computed<QTableColumn[]>(() => [
+  {
+    name: "name",
+    label: t("agents.registryManager.columns.name"),
+    field: "name",
+    align: "left",
+    style:
+      "width: 240px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+    headerStyle: "width: 240px; max-width: 240px;",
+  },
+  {
+    name: "type",
+    label: t("agents.registryManager.columns.type"),
+    field: "type",
+    align: "left",
+    style: "width: 160px; max-width: 160px; white-space: nowrap;",
+    headerStyle: "width: 160px; max-width: 160px;",
+  },
+  {
+    name: "data",
+    label: t("agents.registryManager.columns.data"),
+    field: "data",
+    align: "left",
+    style:
+      "min-width: 300px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;",
+    headerStyle: "min-width: 300px; max-width: 300px;",
+  },
+]);
+const registryValueTypes = computed(() => [
+  { label: t("agents.registryManager.valueTypes.key"), type: "KEY" },
+  { label: t("agents.registryManager.valueTypes.string"), type: "REG_SZ" },
+  {
+    label: t("agents.registryManager.valueTypes.dword"),
+    type: "REG_DWORD",
+  },
+  {
+    label: t("agents.registryManager.valueTypes.qword"),
+    type: "REG_QWORD",
+  },
+  {
+    label: t("agents.registryManager.valueTypes.multiString"),
+    type: "REG_MULTI_SZ",
+  },
+  {
+    label: t("agents.registryManager.valueTypes.expandableString"),
+    type: "REG_EXPAND_SZ",
+  },
+]);
 const nodePage = ref<Record<string, number>>({});
 const nodeHasMore = ref<Record<string, boolean>>({});
 const loadingMoreNodes = ref<Record<string, boolean>>({});
@@ -410,7 +471,7 @@ onMounted(async () => {
         timeout: 2500,
       });
     }
-    console.error("Failed to fetch root registry nodes:", err);
+    console.error(t("agents.registryManager.errors.fetchRootNodes"), err);
   } finally {
     loading.value = false;
   }
@@ -468,7 +529,7 @@ async function loadChildren({
       const placeholderId = makeLoadMoreId(node.id);
       children.push({
         id: placeholderId,
-        label: "Load More",
+        label: t("agents.registryManager.loadMore"),
         isLoadMore: true,
         lazy: false,
       } as RegistryNode);
@@ -481,7 +542,7 @@ async function loadChildren({
     const queue = inFlightLoads[node.id] || [];
     queue.forEach((cb) => cb(children));
   } catch (err) {
-    console.error("Failed to load registry children:", err);
+    console.error(t("agents.registryManager.errors.loadChildren"), err);
     const fallback = pendingNodes.value[node.id] || [];
     const queue = inFlightLoads[node.id] || [];
     queue.forEach((cb) => cb(fallback));
@@ -547,14 +608,14 @@ async function loadMoreSubkeys(parent: RegistryNode) {
     if (nodeHasMore.value[parentId]) {
       parent.children.push({
         id: makeLoadMoreId(parentId),
-        label: "Load More",
+        label: t("agents.registryManager.loadMore"),
         isLoadMore: true,
         lazy: false,
       } as RegistryNode);
     }
     registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
   } catch (err) {
-    console.error("Failed to load more subkeys:", err);
+    console.error(t("agents.registryManager.errors.loadMoreSubkeys"), err);
   } finally {
     loadingMoreNodes.value[parentId] = false;
   }
@@ -580,7 +641,7 @@ async function onKeySelect(nodeId: string) {
     tableRows.value = data?.values || [];
     currentPath.value = nodeId || currentPath.value;
   } catch (err) {
-    console.error("Failed to load registry values:", err);
+    console.error(t("agents.registryManager.errors.loadValues"), err);
     tableRows.value = [];
   } finally {
     loading.value = false;
@@ -612,7 +673,7 @@ async function confirmDeleteKey() {
       onKeySelect(parentId);
     }
   } catch (err) {
-    console.error("Failed to delete key:", err);
+    console.error(t("agents.registryManager.errors.deleteKey"), err);
   } finally {
     confirmDeleteKeyDialog.value = false;
     nodeToDelete.value = null;
@@ -637,7 +698,10 @@ async function createKey(parentNode: RegistryNode) {
       },
     );
   } catch (err) {
-    console.error("Failed to load children before creating key:", err);
+    console.error(
+      t("agents.registryManager.errors.loadChildrenBeforeCreate"),
+      err,
+    );
     parentNode.children = [];
     return;
   }
@@ -647,7 +711,7 @@ async function createKey(parentNode: RegistryNode) {
   const tempId = parentNode.id + "__temp_new_key__";
   const newNode: RegistryNode = {
     id: tempId,
-    label: "New_Key",
+    label: t("agents.registryManager.newKey"),
     lazy: false,
   };
   parentNode.children.unshift(newNode);
@@ -657,7 +721,7 @@ async function createKey(parentNode: RegistryNode) {
   selectedKey.value = parentNode.id;
   registryNodes.value = JSON.parse(JSON.stringify(registryNodes.value));
   await nextTick();
-  editLabel.value = "New_Key";
+  editLabel.value = t("agents.registryManager.newKey");
   editingNodeId.value = tempId;
   registryTree.value.setExpanded(parentNode.id, true);
 }
@@ -691,7 +755,7 @@ async function finishRename(
     return;
   }
   let newName = editLabel.value ? editLabel.value.trim() : "";
-  if (!newName) newName = "New_Key";
+  if (!newName) newName = t("agents.registryManager.newKey");
   const originalId = node.id;
   const parts = originalId.split("\\").filter(Boolean);
   const parentPath = parts.slice(0, -1).join("\\") + "\\";
@@ -721,7 +785,7 @@ async function finishRename(
     }
     refreshNode(newId);
   } catch (err) {
-    console.error("Failed to rename/create registry key:", err);
+    console.error(t("agents.registryManager.errors.renameOrCreateKey"), err);
     if (isTempNode) {
       removeTempNode(node);
     } else {
@@ -788,7 +852,7 @@ async function confirmDeleteValue() {
       (r) => r.name !== valueToDelete.value!.name,
     );
   } catch (err) {
-    console.error("Failed to delete registry value:", err);
+    console.error(t("agents.registryManager.errors.deleteValue"), err);
   } finally {
     confirmDeleteValueDialog.value = false;
     valueToDelete.value = null;
@@ -844,7 +908,7 @@ async function finishRenameValue(
     const index = tableRows.value.findIndex((r) => r.name === row.name);
     if (index !== -1) tableRows.value[index].name = newName;
   } catch (err) {
-    console.error("Failed to rename value:", err);
+    console.error(t("agents.registryManager.errors.renameValue"), err);
   } finally {
     editingValueName.value = null;
     loading.value = false;
@@ -856,7 +920,7 @@ function openModifyDialog(row: RegistryValue) {
   if (row.type === "REG_BINARY") {
     $q.notify({
       type: "warning",
-      message: "Modifying REG_BINARY values access denied.",
+      message: t("agents.registryManager.modifyRegBinaryDenied"),
       position: "top",
     });
     return;
@@ -890,7 +954,7 @@ async function saveModify(row: RegistryValue) {
     }
     modifyDialog.value = false;
   } catch (err) {
-    console.error("Failed to save value:", err);
+    console.error(t("agents.registryManager.errors.saveValue"), err);
   } finally {
     loading.value = false;
   }
@@ -938,7 +1002,7 @@ async function navigateToPath() {
     tableRows.value = data.values || [];
     await expandTreeToPath(`${inputPath}`);
   } catch (err) {
-    console.error("Invalid path:", err);
+    console.error(t("agents.registryManager.errors.invalidPath"), err);
   } finally {
     loading.value = false;
     searchKeys.value = false;

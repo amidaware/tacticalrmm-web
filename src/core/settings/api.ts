@@ -4,6 +4,7 @@ import axios from "axios";
 import { Schedule } from "./types";
 
 import { notifySuccess } from "@/utils/notify";
+import { i18n } from "@/i18n";
 
 const baseUrl = "/core";
 
@@ -34,7 +35,7 @@ export function useSchedule() {
       .post(`${baseUrl}/schedules/`, schedule)
       .then(({ data }: { data: Schedule }) => {
         schedules.value.push(data);
-        notifySuccess("Schedule was added successfully.");
+        notifySuccess(i18n.global.t("settings.scheduleApi.added"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -53,7 +54,7 @@ export function useSchedule() {
         if (index !== -1) {
           schedules.value[index] = data;
         }
-        notifySuccess("Schedule was modified successfully.");
+        notifySuccess(i18n.global.t("settings.scheduleApi.updated"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -69,7 +70,7 @@ export function useSchedule() {
         schedules.value = schedules.value.filter(
           (schedule) => schedule.id !== id,
         );
-        notifySuccess("Schedule successfully deleted.");
+        notifySuccess(i18n.global.t("settings.scheduleApi.deleted"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));

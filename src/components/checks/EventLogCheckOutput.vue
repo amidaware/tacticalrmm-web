@@ -5,7 +5,9 @@
         {{ evtLogData.readable_desc }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("checks.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div v-if="evtLogData.check_result.extra_details !== null">
@@ -25,14 +27,14 @@
           binary-state-sort
           virtual-scroll
           :rows-per-page-options="[0]"
-          no-data-label="No event logs"
+          :no-data-label="$t('checks.eventLogOutput.noEventLogs')"
         >
           <template v-slot:top>
             <q-space />
             <q-input
               v-model="filter"
               outlined
-              label="Search"
+              :label="$t('checks.eventLogOutput.search')"
               dense
               clearable
               class="q-pr-sm"
@@ -48,15 +50,16 @@
           </template>
         </q-table>
       </div>
-      <div v-else>Check has not run yet</div>
+      <div v-else>{{ $t("checks.eventLogOutput.notRunYet") }}</div>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
 // composition imports
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 
 //ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
@@ -65,29 +68,35 @@ import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 const columns = [
   {
     name: "eventType",
-    label: "Type",
+    label: "checks.eventLogOutput.columns.type",
     field: "eventType",
     align: "left",
     sortable: true,
   },
   {
     name: "source",
-    label: "Source",
+    label: "checks.eventLogOutput.columns.source",
     field: "source",
     align: "left",
     sortable: true,
   },
   {
     name: "eventID",
-    label: "Event ID",
+    label: "checks.eventLogOutput.columns.eventId",
     field: "eventID",
     align: "left",
     sortable: true,
   },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
+  {
+    name: "time",
+    label: "checks.eventLogOutput.columns.time",
+    field: "time",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "message",
-    label: "Message",
+    label: "checks.eventLogOutput.columns.message",
     field: "message",
     align: "left",
     sortable: true,
@@ -101,6 +110,7 @@ export default {
   setup() {
     // setup quasar
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
+    const { t } = useI18n();
 
     const filter = ref("");
     const pagination = ref({
@@ -109,13 +119,17 @@ export default {
       descending: true,
     });
 
+    const localizedColumns = computed(() =>
+      columns.map((column) => ({ ...column, label: t(column.label) })),
+    );
+
     return {
       // reactive data
       filter,
       pagination,
 
       // non-reactive data
-      columns,
+      columns: localizedColumns,
 
       // quasar dialog
       dialogRef,

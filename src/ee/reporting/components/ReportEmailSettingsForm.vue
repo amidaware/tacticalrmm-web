@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        Customize Email Options
+        {{ t("reporting.emailSettingsForm.customizeEmailOptions") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -16,10 +16,10 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section class="q-pa-md">
         <q-input
           v-model="localEmailSettings.subject"
-          label="Subject"
+          :label="t('reporting.emailSettingsForm.subject')"
           dense
           filled
-          hint="Default if left blank: 'Scheduled Report: <report name>'"
+          :hint="t('reporting.emailSettingsForm.subjectHint')"
         />
       </q-card-section>
 
@@ -27,20 +27,20 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-input
           v-model="localEmailSettings.body"
           type="textarea"
-          label="Body"
+          :label="t('reporting.emailSettingsForm.body')"
           dense
           filled
-          hint="Default if blank: 'Your report is attached.'"
+          :hint="t('reporting.emailSettingsForm.bodyHint')"
         />
       </q-card-section>
 
       <q-card-section class="q-pa-md">
         <q-input
           v-model="localEmailSettings.attachment_name"
-          label="Attachment Name"
+          :label="t('reporting.emailSettingsForm.attachmentName')"
           dense
           filled
-          hint="Do not include the extension."
+          :hint="t('reporting.emailSettingsForm.attachmentNameHint')"
         />
       </q-card-section>
 
@@ -51,30 +51,30 @@ For details, see: https://license.tacticalrmm.com/ee
       >
         <q-input
           v-model="localEmailSettings.attachment_extension"
-          label="Attachment Extension"
+          :label="t('reporting.emailSettingsForm.attachmentExtension')"
           dense
           filled
           prefix="."
-          hint="Enter the desired extension without a dot (e.g., csv, json, txt). Defaults to 'txt' if blank."
+          :hint="t('reporting.emailSettingsForm.attachmentExtensionHint')"
         />
       </q-card-section>
 
       <q-card-section v-if="props.format === 'html'" class="q-pa-md">
         <q-checkbox
           v-model="localEmailSettings.include_report_link"
-          label="Include a direct link to view the report online (requires TRMM account authentication)."
+          :label="t('reporting.emailSettingsForm.includeReportLink')"
         >
           <q-tooltip class="text-caption">
-            The link will be automatically added at the end of the email body.
+            {{ t("reporting.emailSettingsForm.includeReportLinkTooltip") }}
           </q-tooltip>
         </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup dense />
+        <q-btn flat :label="t('reporting.common.cancel')" v-close-popup dense />
         <q-btn
           flat
-          label="Save"
+          :label="t('reporting.common.save')"
           color="primary"
           class="q-ml-sm"
           @click="submit"
@@ -87,6 +87,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script lang="ts" setup>
 import { reactive } from "vue";
 import { useDialogPluginComponent, extend } from "quasar";
+import { useI18n } from "vue-i18n";
 
 import { EmailSettings, ReportFormat } from "../types/reporting";
 
@@ -97,6 +98,7 @@ const props = defineProps<{
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 defineEmits(useDialogPluginComponent.emits);
+const { t } = useI18n();
 
 const localEmailSettings = reactive<EmailSettings>(
   props.emailSettings

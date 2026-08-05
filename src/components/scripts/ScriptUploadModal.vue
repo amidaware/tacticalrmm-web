@@ -2,26 +2,28 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 40vw">
       <q-bar>
-        Add Script
+        {{ t("scripts.scriptUploadModal.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("scripts.shared.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form id="scriptUploadForm" @submit="submitForm">
         <q-card-section>
           <q-input
-            label="Name"
+            :label="t('scripts.shared.name')"
             outlined
             dense
             v-model="script.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || t('scripts.shared.required')]"
           />
         </q-card-section>
 
         <q-card-section>
           <q-input
-            label="Description"
+            :label="t('scripts.shared.description')"
             outlined
             dense
             v-model="script.description"
@@ -32,8 +34,8 @@
           <tactical-dropdown
             v-model="script.category"
             :options="categories"
-            label="Category"
-            hint="Press Enter or Tab when adding a new value"
+            :label="t('scripts.shared.category')"
+            :hint="t('scripts.shared.addValueHint')"
             outlined
             filterable
             clearable
@@ -42,7 +44,13 @@
         </q-card-section>
 
         <q-card-section>
-          <q-file label="Script Upload" v-model="file" filled dense counter>
+          <q-file
+            :label="t('scripts.scriptUploadModal.scriptUpload')"
+            v-model="file"
+            filled
+            dense
+            counter
+          >
             <template v-slot:prepend>
               <q-icon name="attach_file" />
             </template>
@@ -53,7 +61,7 @@
           <tactical-dropdown
             v-model="script.shell"
             :options="shellOptions"
-            label="Type"
+            :label="t('scripts.scriptUploadModal.type')"
             outlined
             mapOptions
           />
@@ -63,7 +71,7 @@
           <tactical-dropdown
             v-model="script.supported_platforms"
             :options="agentPlatformOptions"
-            label="Supported Platforms (All supported if blank)"
+            :label="t('scripts.shared.supportedPlatforms')"
             clearable
             mapOptions
             filled
@@ -74,8 +82,8 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.args"
-            label="Script Arguments"
-            placeholder="(press Enter after typing each argument)"
+            :label="t('scripts.shared.scriptArguments')"
+            :placeholder="t('scripts.shared.scriptArgumentsPlaceholder')"
             filled
             use-input
             multiple
@@ -88,8 +96,8 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.env_vars"
-            label="Environment Variables"
-            placeholder="(press Enter after typing each key=value pair)"
+            :label="t('scripts.shared.environmentVariables')"
+            :placeholder="t('scripts.shared.envVarsPlaceholder')"
             filled
             use-input
             multiple
@@ -101,23 +109,26 @@
 
         <q-card-section>
           <q-input
-            label="Default Timeout"
+            :label="t('scripts.shared.defaultTimeout')"
             type="number"
             outlined
             dense
             v-model.number="script.default_timeout"
-            :rules="[(val) => val >= 5 || 'Minimum is 5']"
+            :rules="[
+              (val) =>
+                val >= 5 || t('scripts.shared.minimumSeconds', { min: 5 }),
+            ]"
           />
         </q-card-section>
 
         <q-card-actions>
           <q-space />
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="t('scripts.shared.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Add"
+            :label="t('scripts.shared.add')"
             color="primary"
             type="submit"
           />
@@ -131,6 +142,7 @@
 // composition imports
 import { ref, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { saveScript } from "@/api/scripts";
 import { agentPlatformOptions } from "@/composables/agents";
 import { notifySuccess } from "@/utils/notify";
@@ -150,6 +162,7 @@ export default {
   setup() {
     // setup quasar plugins
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+    const { t } = useI18n();
 
     // script upload logic
     const script = ref({});
@@ -196,6 +209,7 @@ export default {
 
       // methods
       submitForm,
+      t,
 
       // quasar dialog
       dialogRef,

@@ -14,16 +14,22 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        {{ props.dataQuery ? "Edit Data Query" : "New Data Query" }}
+        {{
+          props.dataQuery
+            ? t("reporting.dataQueryForm.editTitle")
+            : t("reporting.dataQueryForm.newTitle")
+        }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="Data Query Name"
+          :label="t('reporting.dataQueryForm.name')"
           filled
           dense
           style="width: 400px"
@@ -37,12 +43,12 @@ For details, see: https://license.tacticalrmm.com/ee
       ></div>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="t('reporting.common.cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="t('reporting.common.save')"
           color="primary"
           @click="submit"
         />
@@ -59,8 +65,10 @@ import { useSharedReportDataQueries } from "../api/reporting";
 import { until } from "@vueuse/shared";
 import * as monaco from "monaco-editor";
 import axios from "axios";
+import { useI18n } from "vue-i18n";
 
 const $q = useQuasar();
+const { t } = useI18n();
 
 // type imports
 import { type ReportDataQuery } from "../types/reporting";
@@ -96,7 +104,9 @@ async function submit() {
   try {
     state.json_query = JSON.parse(json_string.value);
   } catch (e) {
-    notifyError(`There was an error parsing the json: ${e}`);
+    notifyError(
+      t("reporting.dataQueryForm.jsonParseError", { error: String(e) }),
+    );
     return;
   }
 

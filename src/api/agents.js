@@ -1,6 +1,7 @@
 import axios from "axios";
 import { openURL } from "quasar";
 import { router } from "@/router";
+import { i18n } from "@/i18n";
 import { getCenteredWindowOptions } from "@/utils/helpers";
 
 const baseUrl = "/agents";
@@ -306,7 +307,10 @@ export async function deleteRegistryValue(agent_id, path, name) {
     );
     return data;
   } catch (e) {
-    console.error("Failed to delete value:", e);
+    console.error(
+      i18n.global.t("agents.registryManager.errors.deleteValue"),
+      e,
+    );
     throw e;
   }
 }
@@ -323,7 +327,10 @@ export async function renameRegistryValue(agentId, path, oldName, newName) {
     );
     return data;
   } catch (e) {
-    console.error("Failed to rename value:", e);
+    console.error(
+      i18n.global.t("agents.registryManager.errors.renameValue"),
+      e,
+    );
     throw e;
   }
 }
@@ -347,7 +354,10 @@ export async function modifyRegistryValue(
     );
     return data;
   } catch (e) {
-    console.error("Failed to modify registry value:", e);
+    console.error(
+      i18n.global.t("agents.registryManager.errors.modifyValue"),
+      e,
+    );
     throw e;
   }
 }
@@ -365,7 +375,10 @@ export async function createRegistryValue(agentId, path, name, type, data) {
     );
     return data;
   } catch (e) {
-    console.error("Failed to create registry value:", e);
+    console.error(
+      i18n.global.t("agents.registryManager.errors.createValue"),
+      e,
+    );
     throw e;
   }
 }

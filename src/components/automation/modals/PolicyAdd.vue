@@ -2,10 +2,16 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        Edit policies assigned to {{ type }}
+        {{
+          $t("settings.policyAdd.title", {
+            type: $t(`settings.policyAdd.types.${type}`),
+          })
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
@@ -15,7 +21,7 @@
             class="q-mb-md"
             v-model="selectedServerPolicy"
             :options="options"
-            label="Server Policy"
+            :label="$t('settings.policyAdd.serverPolicy')"
             outlined
             clearable
             mapOptions
@@ -25,7 +31,7 @@
             v-if="type === 'client' || type === 'site'"
             v-model="selectedWorkstationPolicy"
             :options="options"
-            label="Workstation Policy"
+            :label="$t('settings.policyAdd.workstationPolicy')"
             outlined
             clearable
             mapOptions
@@ -35,7 +41,7 @@
             v-if="type === 'agent'"
             v-model="selectedAgentPolicy"
             :options="options"
-            label="Policy"
+            :label="$t('settings.policyAdd.policy')"
             outlined
             clearable
             mapOptions
@@ -43,25 +49,31 @@
           />
 
           <q-checkbox
-            label="Block policy inheritance"
+            :label="$t('settings.policyAdd.blockPolicyInheritance')"
             v-model="blockInheritance"
           >
-            <q-tooltip
-              >This {{ type }} will not inherit from higher policies</q-tooltip
-            >
+            <q-tooltip>{{
+              $t("settings.policyAdd.blockPolicyInheritanceHint", {
+                type: $t(`settings.policyAdd.types.${type}`),
+              })
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
         <q-card-section v-else>
-          No Automation Policies have been setup. Go to Settings > Automation
-          Manager
+          {{ $t("settings.policyAdd.noPolicies") }}
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn
+            dense
+            flat
+            :label="$t('common.buttons.cancel')"
+            v-close-popup
+          />
           <q-btn
             v-if="options.length > 0"
             dense
             flat
-            label="Submit"
+            :label="$t('common.actions.submit')"
             color="primary"
             type="submit"
           />
@@ -158,7 +170,7 @@ export default {
         .then(() => {
           this.$q.loading.hide();
           this.onOk();
-          this.notifySuccess("Policies Updated Successfully!");
+          this.notifySuccess(this.$t("settings.policyAdd.notify.updated"));
         })
         .catch(() => {
           this.$q.loading.hide();

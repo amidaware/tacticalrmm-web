@@ -2,41 +2,48 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <q-bar>
-        Delete {{ object.name }}
+        {{ t("dashboard.clients.delete.title", { name: object.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <q-card-section v-if="siteOptions.length === 0">
-          There are no valid sites to move agents to. Add another site and try
-          again
+          {{ t("dashboard.clients.delete.noValidSites") }}
         </q-card-section>
         <q-card-section v-if="siteOptions.length > 0">
           <tactical-dropdown
-            label="Site to move agents to"
+            :label="t('dashboard.clients.delete.siteToMoveAgentsTo')"
             outlined
             v-model="site"
             :options="siteOptions"
             mapOptions
             :rules="[
               (val) =>
-                !!val || 'Select the site that the agents should be moved to',
+                !!val || t('dashboard.clients.delete.selectSiteValidation'),
             ]"
-            hint="The client you are deleting has agents assigned to it. Select a Site below to move the agents to."
+            :hint="t('dashboard.clients.delete.hint')"
             filterable
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat push label="Cancel" v-close-popup />
+          <q-btn
+            dense
+            flat
+            push
+            :label="t('common.buttons.cancel')"
+            v-close-popup
+          />
           <q-btn
             :loading="loading"
             :disable="siteOptions.length === 0"
             dense
             flat
             push
-            label="Move"
+            :label="t('dashboard.clients.delete.move')"
             color="primary"
             type="submit"
           />
@@ -50,6 +57,7 @@
 // composition imports
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { notifySuccess } from "@/utils/notify";
 import { fetchClients, removeClient, removeSite } from "@/api/clients";
 import { formatSiteOptions } from "@/utils/format";
@@ -70,6 +78,7 @@ export default {
   setup(props) {
     // setup quasar dialog
     const $q = useQuasar();
+    const { t } = useI18n();
     const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
 
     // delete client logic
@@ -79,10 +88,14 @@ export default {
 
     function submit() {
       $q.dialog({
-        title: "Are you sure?",
-        message: `Deleting ${props.type} ${props.object.name}. ${props.object.agent_count} agents will be moved to the selected site`,
+        title: t("dashboard.dialog.deleteTitle"),
+        message: t("dashboard.clients.delete.confirmMessage", {
+          type: t(`dashboard.clients.delete.types.${props.type}`),
+          name: props.object.name,
+          count: props.object.agent_count,
+        }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.buttons.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {
@@ -110,16 +123,16 @@ export default {
         // filter out client that is being deleted
         siteOptions.value = Object.freeze(
           formatSiteOptions(
-            clients.filter((client) => client.id !== props.object.id)
-          )
+            clients.filter((client) => client.id !== props.object.id),
+          ),
         );
       } else {
         // filter out site that is being dleted
         clients.forEach(
           (client) =>
             (client.sites = client.sites.filter(
-              (site) => site.id !== props.object.id
-            ))
+              (site) => site.id !== props.object.id,
+            )),
         );
         siteOptions.value = Object.freeze(formatSiteOptions(clients));
       }
@@ -131,6 +144,7 @@ export default {
       site,
       loading,
       siteOptions,
+      t,
 
       // methods
       submit,

@@ -1,0 +1,154 @@
+{
+  "shared": {
+    "close": "Закрыть",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "add": "Добавить",
+    "new": "Новый",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "clone": "Клонировать",
+    "search": "Поиск",
+    "all": "Все",
+    "name": "Название",
+    "description": "Описание",
+    "category": "Категория",
+    "shell": "Оболочка",
+    "shellType": "Тип оболочки",
+    "supportedPlatforms": "Поддерживаемые платформы (если пусто - все)",
+    "scriptArguments": "Аргументы скрипта (нажимайте Enter после каждого)",
+    "addValueHint": "Нажимайте Enter или Tab при добавлении нового значения",
+    "scriptArgumentsPlaceholder": "(нажимайте Enter после каждого аргумента)",
+    "environmentVariables": "Переменные окружения",
+    "envVarsPlaceholder": "(нажимайте Enter после каждой пары key=value)",
+    "defaultTimeout": "Таймаут по умолчанию",
+    "defaultTimeoutSeconds": "Таймаут по умолчанию (секунды)",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "required": "*Обязательно",
+    "minimumSeconds": "Минимум {min}",
+    "generateScript": "Сгенерировать скрипт",
+    "askChatGpt": "Спросите ChatGPT, что вам нужно!",
+    "example": "Пример",
+    "or": "или",
+    "shellLabels": {
+      "powershell": "Powershell",
+      "python": "Python",
+      "batch": "Batch",
+      "shell": "Shell",
+      "nushell": "Nushell",
+      "deno": "Deno"
+    }
+  },
+  "runScript": {
+    "title": "Запустить скрипт на {hostname}",
+    "minimize": "Свернуть",
+    "maximize": "Развернуть",
+    "selectScript": "Выберите скрипт",
+    "scriptArguments": "Аргументы скрипта (нажимайте Enter после каждого)",
+    "useGlobalEmails": "Использовать адреса из глобальных настроек",
+    "customEmails": "Свои email",
+    "emailRecipients": "Получатели email (нажимайте Enter после каждого)",
+    "selectCustomField": "Выберите пользовательское поле",
+    "saveAllOutput": "Сохранять весь вывод",
+    "runAsUser": "Запуск от имени пользователя",
+    "runAsUserTooltip": "Запуск в контексте вошедшего пользователя. Если пользователь не вошел, скрипт будет запущен как SYSTEM",
+    "runOnServer": "Запуск на сервере",
+    "enableServerScriptsHint": "Включите server side scripts глобально для активации этой функции.",
+    "runOnServerHint": "Запустить скрипт на сервере Tactical RMM в контексте этого агента.",
+    "timeoutSeconds": "Таймаут (секунды)",
+    "minimumSeconds": "Минимум {min} секунд",
+    "run": "Запустить",
+    "output": "Вывод",
+    "runTime": "Время выполнения",
+    "returnCode": "Код возврата",
+    "secondsValue": "{value} секунд",
+    "standardOutput": "Стандартный вывод",
+    "standardError": "Стандартная ошибка",
+    "outputOptions": {
+      "wait": "Ожидать вывод",
+      "forget": "Запустить и не ждать",
+      "email": "Отправить результат на email",
+      "collector": "Сохранить результат в пользовательское поле",
+      "note": "Сохранить результат в заметки агента"
+    }
+  },
+  "testScriptModal": {
+    "title": "Тест скрипта",
+    "runTime": "Время выполнения",
+    "returnCode": "Код возврата",
+    "secondsValue": "{value} секунд",
+    "standardOutput": "Стандартный вывод",
+    "standardError": "Стандартная ошибка"
+  },
+  "scriptUploadModal": {
+    "title": "Добавить скрипт",
+    "scriptUpload": "Загрузка скрипта",
+    "type": "Тип"
+  },
+  "scriptOutputCopyClip": {
+    "copyToClipboard": "Копировать в буфер обмена"
+  },
+  "scriptSnippets": {
+    "title": "Сниппеты скриптов",
+    "deleteSnippetTitle": "Удалить сниппет скрипта: {name}?"
+  },
+  "scriptSnippetFormModal": {
+    "editing": "Редактирование {name}",
+    "addingNewScriptSnippet": "Добавление нового сниппета скрипта"
+  },
+  "scriptFormModal": {
+    "copyNamePrefix": "(Копия) {name}",
+    "viewing": "Просмотр {name}",
+    "copying": "Копирование {name}",
+    "editing": "Редактирование {name}",
+    "addingNewScript": "Добавление нового скрипта",
+    "shebangWarning": "Shell/Python скриптам на Linux/Mac нужен shebang в начале, например",
+    "shebangWarningHint": "Добавьте его, чтобы убрать это предупреждение. Игнорируйте для Windows.",
+    "syntax": "Синтаксис",
+    "runAsUserWindowsOnly": "Запуск от имени пользователя (только Windows)",
+    "runAsUserTooltip": "Это значение в модели скрипта всегда переопределяет любые чекбоксы 'Run As User' в UI и принудительно запускает скрипт в контексте вошедшего пользователя. Если пользователь не вошел, скрипт будет запущен как SYSTEM.",
+    "agentToRunTestScriptOn": "Агент для тестового запуска скрипта",
+    "testScript": "Тест скрипта",
+    "testOnServer": "Тест на сервере Tactical",
+    "testOnServerTooltip": {
+      "title": "Запускается на локальном Linux-сервере Tactical RMM.",
+      "body": "Будут использоваться только доступные интерпретаторы или фреймворки.",
+      "example": "Например: для PowerShell-скриптов PowerShell должен быть установлен в системе."
+    },
+    "shebangRequiredError": "В начале скрипта обязателен shebang для указания пути к интерпретатору. Убедитесь, что ваш скрипт начинается со строки shebang.",
+    "unsavedChangesConfirm": "У вас есть несохраненные изменения. Вы уверены, что хотите закрыть?"
+  },
+  "scriptManager": {
+    "title": "Менеджер скриптов",
+    "newScript": "Новый скрипт",
+    "uploadScript": "Загрузить скрипт",
+    "scriptSnippets": "Сниппеты скриптов",
+    "folderView": "Вид папок",
+    "tableView": "Табличный вид",
+    "hideCommunityScripts": "Скрыть community-скрипты",
+    "showCommunityScripts": "Показать community-скрипты",
+    "hideHiddenScripts": "Скрыть скрытые скрипты",
+    "showHiddenScripts": "Показать скрытые скрипты",
+    "noScriptsFound": "Скрипты не найдены",
+    "viewCode": "Просмотр кода",
+    "addAsFavorite": "Добавить в избранное",
+    "removeAsFavorite": "Убрать из избранного",
+    "downloadScript": "Скачать скрипт",
+    "showScript": "Показать скрипт",
+    "hideScript": "Скрыть скрипт",
+    "idValue": "ID: {id}",
+    "unassigned": "Без категории",
+    "deleteScriptTitle": "Удалить скрипт: {name}?",
+    "columns": {
+      "favorites": "Избранное",
+      "platforms": "Платформы",
+      "defaultArgs": "Аргументы по умолчанию"
+    },
+    "notifications": {
+      "scriptFavorited": "Скрипт добавлен в избранное!",
+      "scriptUnfavorited": "Скрипт удален из избранного!",
+      "scriptHidden": "Скрипт скрыт!",
+      "scriptUnhidden": "Скрипт снова показан!"
+    }
+  }
+}

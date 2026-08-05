@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agents.shared.noAgentSelected") }}
+  </div>
   <div v-else>
     <q-table
       :table-class="{
@@ -23,7 +25,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.buttons.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -49,7 +51,7 @@
                 ? showCommandOutput(props.row.command, props.row.results)
                 : showScriptOutput(props.row.script_results)
             "
-            >Output
+            >{{ $t("agents.historyTab.output") }}
           </span>
         </q-td>
       </template>
@@ -68,6 +70,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, Notify } from "quasar";
+import { useI18n } from "vue-i18n";
 import { formatTableColumnText, truncateText } from "@/utils/format";
 import { fetchAgentHistory } from "@/api/agents";
 
@@ -76,55 +79,6 @@ import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
 
-// static data
-const columns = [
-  {
-    name: "time",
-    label: "Time",
-    field: "time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "type",
-    label: "Action",
-    field: "type",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  /* {
-    name: "status",
-    label: "Status",
-    field: "status",
-    align: "left",
-    sortable: true,
-    format: (val, row) => formatTableColumnText(val),
-  }, */
-  {
-    name: "command",
-    label: "Script/Command",
-    field: (row) => (row.type === "script_run" ? row.script_name : row.command),
-    align: "left",
-    sortable: true,
-    format: (val) => truncateText(val, 30),
-  },
-  {
-    name: "username",
-    label: "Initiated By",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "output",
-    label: "Output",
-    field: "output",
-    align: "left",
-    sortable: true,
-  },
-];
-
 export default {
   name: "HistoryTab",
   components: {
@@ -132,6 +86,7 @@ export default {
   },
   setup() {
     const $q = useQuasar();
+    const { t } = useI18n();
 
     const store = useStore();
     const selectedAgent = computed(() => store.state.selectedRow);
@@ -143,10 +98,59 @@ export default {
     const loading = ref(false);
     const filter = ref("");
 
+    const columns = computed(() => [
+      {
+        name: "time",
+        label: t("agents.historyTab.columns.time"),
+        field: "time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "type",
+        label: t("agents.historyTab.columns.action"),
+        field: "type",
+        align: "left",
+        sortable: true,
+        format: (val) => getHistoryActionLabel(val),
+      },
+      {
+        name: "command",
+        label: t("agents.historyTab.columns.scriptCommand"),
+        field: (row) =>
+          row.type === "script_run" ? row.script_name : row.command,
+        align: "left",
+        sortable: true,
+        format: (val) => truncateText(val, 30),
+      },
+      {
+        name: "username",
+        label: t("agents.historyTab.columns.initiatedBy"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "output",
+        label: t("agents.historyTab.columns.output"),
+        field: "output",
+        align: "left",
+        sortable: true,
+      },
+    ]);
+
     async function getHistory() {
       loading.value = true;
       history.value = await fetchAgentHistory(selectedAgent.value);
       loading.value = false;
+    }
+
+    function getHistoryActionLabel(actionType) {
+      if (!actionType) return actionType;
+      const actionKey = `agents.historyTab.actions.${actionType}`;
+      return t(actionKey) !== actionKey
+        ? t(actionKey)
+        : formatTableColumnText(actionType);
     }
 
     watch(selectedAgent, (newValue) => {
@@ -159,7 +163,7 @@ export default {
     function showScriptOutput(output) {
       if (!output) {
         Notify.create({
-          message: "No output is available yet",
+          message: t("agents.historyTab.noOutputYet"),
           type: "negative",
         });
         return;

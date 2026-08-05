@@ -8,14 +8,21 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="unloadEditor" @show="loadEditor">
     <q-card style="width: 600px">
       <q-bar>
-        Add Chart
+        {{ t("reporting.chartSelect.addChart") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
-        <q-input v-model="chartName" outlined dense label="Chart Name" />
+        <q-input
+          v-model="chartName"
+          outlined
+          dense
+          :label="t('reporting.chartSelect.chartName')"
+        />
       </q-card-section>
       <q-card-section>
         <q-select
@@ -23,7 +30,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="chartOptions"
           outlined
           dense
-          label="Chart Type"
+          :label="t('reporting.chartSelect.chartType')"
           map-options
           emit-value
         />
@@ -44,8 +51,14 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
       <q-card-actions>
         <q-space />
-        <q-btn dense flat label="Cancel" v-close-popup />
-        <q-btn @click="submit" dense flat label="Select" color="primary" />
+        <q-btn dense flat :label="t('reporting.common.cancel')" v-close-popup />
+        <q-btn
+          @click="submit"
+          dense
+          flat
+          :label="t('reporting.common.select')"
+          color="primary"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -55,9 +68,11 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, computed } from "vue";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
+import { useI18n } from "vue-i18n";
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -66,14 +81,14 @@ defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 const chartOptions = [
-  { value: "bar", label: "Bar" },
-  { value: "pie", label: "Pie" },
-  { value: "line", label: "Line" },
+  { value: "bar", label: t("reporting.chartSelect.bar") },
+  { value: "pie", label: t("reporting.chartSelect.pie") },
+  { value: "line", label: t("reporting.chartSelect.line") },
 ];
 
 const outputOptions = [
-  { value: "image", label: "Image" },
-  { value: "html", label: "Html" },
+  { value: "image", label: t("reporting.chartSelect.image") },
+  { value: "html", label: t("reporting.common.html") },
 ];
 
 const chartName = ref("");

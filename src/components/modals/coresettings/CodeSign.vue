@@ -1,23 +1,22 @@
 <template>
   <q-card style="min-width: 85vh">
     <q-card-section class="row items-center">
-      <div class="text-h6">Code Signing</div>
+      <div class="text-h6">{{ t("settings.codeSign.title") }}</div>
       <q-space />
       <q-btn icon="close" flat round dense v-close-popup />
     </q-card-section>
     <q-card-section class="row">
       <q-btn
         :disable="!settings.token"
-        label="Code sign all agents"
+        :label="t('settings.codeSign.codeSignAllAgents')"
         color="positive"
         class="full-width"
         @click="doCodeSign"
         :loading="loading"
       >
-        <q-tooltip
-          >Force all existing agents to be updated to the code-signed
-          version</q-tooltip
-        >
+        <q-tooltip>{{
+          t("settings.codeSign.codeSignAllAgentsTooltip")
+        }}</q-tooltip>
         <template v-slot:loading>
           <q-spinner-facebook />
         </template>
@@ -25,20 +24,28 @@
     </q-card-section>
     <q-form @submit.prevent="editToken">
       <q-card-section class="row">
-        <div class="col-2">Token:</div>
+        <div class="col-2">{{ t("settings.codeSign.token") }}:</div>
         <div class="col-1"></div>
         <q-input
           outlined
           dense
           v-model="settings.token"
           class="col-9 q-pa-none"
-          :rules="[(val) => !!val || 'Token is required']"
+          :rules="[(val) => !!val || t('settings.codeSign.tokenRequired')]"
         />
       </q-card-section>
       <q-card-section class="row items-center">
-        <q-btn label="Save" color="primary" type="submit" />
+        <q-btn
+          :label="t('settings.common.save')"
+          color="primary"
+          type="submit"
+        />
         <q-space />
-        <q-btn label="Delete" color="negative" @click="confirmDelete" />
+        <q-btn
+          :label="t('settings.common.delete')"
+          color="negative"
+          @click="confirmDelete"
+        />
       </q-card-section>
     </q-form>
   </q-card>
@@ -49,6 +56,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
 import { notifySuccess } from "@/utils/notify";
+import { useI18n } from "vue-i18n";
 
 const endpoint = "/core/codesign/";
 
@@ -56,6 +64,7 @@ export default {
   name: "CodeSign",
   setup() {
     const $q = useQuasar();
+    const { t } = useI18n();
     const settings = ref({ token: "" });
     const loading = ref(false);
 
@@ -71,7 +80,7 @@ export default {
     async function deleteToken() {
       try {
         await axios.delete(endpoint);
-        notifySuccess("Token was deleted!");
+        notifySuccess(t("settings.codeSign.notify.tokenDeleted"));
         await getToken();
       } catch (e) {
         console.error(e);
@@ -80,7 +89,7 @@ export default {
 
     function confirmDelete() {
       $q.dialog({
-        title: "Delete token?",
+        title: t("settings.codeSign.deleteTokenTitle"),
         cancel: true,
         persistent: true,
       }).onOk(() => {
@@ -119,6 +128,7 @@ export default {
     return {
       settings,
       loading,
+      t,
       confirmDelete,
       doCodeSign,
       editToken,

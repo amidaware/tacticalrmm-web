@@ -5,26 +5,23 @@
       <div class="col">
         <q-card>
           <q-card-section class="row items-center">
-            <div class="text-h6">Setup 2-Factor</div>
+            <div class="text-h6">{{ t("auth.totpSetup.title") }}</div>
           </q-card-section>
           <q-card-section v-if="qrUrl">
             <p>
-              Scan the QR Code with your authenticator app and then click Finish
-              to be redirected back to the signin page. If you navigate away
-              from this page you 2FA signin will need to be reset!
+              {{ t("auth.totpSetup.instructions") }}
             </p>
-            <img :src="qrCode" alt="QR Code" />
+            <img :src="qrCode" :alt="t('auth.totpSetup.qrCodeAlt')" />
           </q-card-section>
           <q-card-section v-if="totpKey">
             <p>
-              You can also use the below code to configure the authenticator
-              manually.
+              {{ t("auth.totpSetup.manualSetup") }}
             </p>
             <p>{{ totpKey }}</p>
           </q-card-section>
           <q-card-actions align="center">
             <q-btn
-              label="Finish"
+              :label="t('common.buttons.finish')"
               color="primary"
               class="full-width"
               @click="logout"
@@ -41,6 +38,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
@@ -54,6 +52,7 @@ const auth = useAuthStore();
 
 // setup router
 const router = useRouter();
+const { t } = useI18n();
 
 const totpKey = ref("");
 const qrUrl = ref("");

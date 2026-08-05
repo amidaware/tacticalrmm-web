@@ -1,0 +1,46 @@
+{
+  "banner": {
+    "outdated": "You are viewing an outdated version of this page.",
+    "license": {
+      "line1": "Your license is currently inactive, usually due to a payment issue.",
+      "line2": "To restore access, please update your payment method.",
+      "line3": "If you intentionally cancelled your sponsorship, you can remove your license key to stop seeing this message.",
+      "line4": "If you need help, please contact our support team at"
+    }
+  },
+  "tooltip": {
+    "backToDashboard": "Back to Dashboard",
+    "agentCount": "Agent Count"
+  },
+  "release": {
+    "available": "v{version} available"
+  },
+  "certificate": {
+    "expiresInDays": "SSL certificate expires in {days} days"
+  },
+  "counts": {
+    "servers": "Servers",
+    "workstations": "Workstations",
+    "total": "Total: {count}",
+    "offline": "Offline: {count}"
+  },
+  "menu": {
+    "preferences": "Preferences",
+    "account": "Account",
+    "resetPassword": "Reset Password",
+    "reset2fa": "Reset 2FA",
+    "logout": "Logout"
+  },
+  "dialog": {
+    "reset2faTitle": "Reset 2FA",
+    "reset2faMessage": "Are you sure you would like to reset your 2FA token?"
+  },
+  "webTerminal": {
+    "featureDisabled": "This feature is disabled. It can be enabled in Global Settings."
+  },
+  "notFound": {
+    "message": "Sorry, nothing here...",
+    "code": "(404)",
+    "goBack": "Go back"
+  }
+}

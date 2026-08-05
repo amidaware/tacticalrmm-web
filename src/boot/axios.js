@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { Notify } from "quasar";
+import { i18n } from "@/i18n";
 
 export const getBaseUrl = () => {
   if (process.env.NODE_ENV === "production") {
@@ -46,9 +47,8 @@ export default function ({ app, router }) {
       if (error.code && error.code === "ERR_NETWORK") {
         Notify.create({
           color: "negative",
-          message: "Backend is offline (network error)",
-          caption:
-            "Open your browser's dev tools and check the console tab for more detailed error messages",
+          message: i18n.global.t("notifications.network.backendOffline"),
+          caption: i18n.global.t("notifications.network.backendOfflineHelp"),
           timeout: 5000,
         });
         return Promise.reject({ ...error });

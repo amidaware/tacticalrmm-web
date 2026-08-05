@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        Select Report Dependencies
+        {{ t("reporting.dependencyPrompt.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -56,12 +58,12 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="t('reporting.common.cancel')" />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Submit"
+          :label="t('reporting.common.submit')"
           color="primary"
           @click="submit"
         />
@@ -77,6 +79,7 @@ import { notifyError } from "@/utils/notify";
 import { capitalize } from "@/utils/format";
 import { useAgentDropdown } from "@/composables/agents";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
+import { useI18n } from "vue-i18n";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -93,6 +96,7 @@ const props = defineProps<{
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const { t } = useI18n();
 
 // setup dropdown options
 const { agentOptions, getAgentOptions } = useAgentDropdown();
@@ -121,7 +125,7 @@ function validate() {
 
 function submit() {
   if (validate()) onDialogOK(dependencies);
-  else notifyError("All fields must have a value");
+  else notifyError(t("reporting.dependencyPrompt.allFieldsRequired"));
 }
 
 onBeforeMount(() => {

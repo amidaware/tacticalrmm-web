@@ -7,20 +7,22 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">SSO Providers</div>
+      <div class="text-subtitle2">
+        {{ t("reporting.sso.providersTable.title") }}
+      </div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add OIDC Provider"
+        :label="t('reporting.sso.providersTable.addOidcProvider')"
         @click="addSSOProvider"
         :disable="!ssoSettings.sso_enabled"
       >
-        <q-tooltip v-if="!ssoSettings.sso_enabled" class="text-caption"
-          >Enable SSO in the settings to allow adding a provider.</q-tooltip
-        >
+        <q-tooltip v-if="!ssoSettings.sso_enabled" class="text-caption">{{
+          t("reporting.sso.providersTable.enableSsoToAddProvider")
+        }}</q-tooltip>
       </q-btn>
     </div>
     <q-separator />
@@ -35,13 +37,13 @@ For details, see: https://license.tacticalrmm.com/ee
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No OIDC Providers added yet"
+      :no-data-label="t('reporting.sso.providersTable.noProviders')"
       :loading="loading"
     >
       <template v-slot:top>
         <q-btn
           @click="openSSOSettings"
-          label="SSO Settings"
+          :label="t('reporting.sso.providersTable.ssoSettings')"
           no-caps
           color="primary"
           size="md"
@@ -65,7 +67,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{
+                  t("reporting.common.edit")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -75,7 +79,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{
+                  t("reporting.common.delete")
+                }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
@@ -89,7 +95,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="description" />
                 </q-item-section>
-                <q-item-section>Copy Callback URL</q-item-section>
+                <q-item-section>{{
+                  t("reporting.sso.providersTable.copyCallbackUrl")
+                }}</q-item-section>
               </q-item>
 
               <!-- javascript origin url (used by google oauth) -->
@@ -101,15 +109,19 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="description" />
                 </q-item-section>
-                <q-item-section
-                  >Copy Authorized JavaScript origin</q-item-section
-                >
+                <q-item-section>{{
+                  t(
+                    "reporting.sso.providersTable.copyAuthorizedJavascriptOrigin",
+                  )
+                }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{
+                  t("reporting.common.close")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -134,7 +146,9 @@ For details, see: https://license.tacticalrmm.com/ee
               name="content_copy"
               @click="getCallbackURL(props.row.callback_url)"
             >
-              <q-tooltip>Copy Callback URL to Clipboard</q-tooltip>
+              <q-tooltip>{{
+                t("reporting.sso.providersTable.copyCallbackUrlToClipboard")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
         </q-tr>
@@ -148,6 +162,7 @@ For details, see: https://license.tacticalrmm.com/ee
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { QTableColumn, useQuasar, copyToClipboard } from "quasar";
+import { useI18n } from "vue-i18n";
 import {
   fetchSSOProviders,
   removeSSOProvider,
@@ -165,6 +180,7 @@ import SSOSettings from "@/ee/sso/components/SSOSettings.vue";
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 // setup vuew store
 const store = useStore();
@@ -176,35 +192,35 @@ const ssoSettings = ref({} as SSOSettingsType);
 const columns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("reporting.common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "server_url",
-    label: "Server Url",
+    label: t("reporting.sso.providersTable.serverUrl"),
     field: "server_url",
     align: "left",
     sortable: true,
   },
   {
     name: "client_id",
-    label: "Client ID",
+    label: t("reporting.sso.providersTable.clientId"),
     field: "client_id",
     align: "left",
     sortable: true,
   },
   {
     name: "callback_url",
-    label: "Callback URL",
+    label: t("reporting.sso.providersTable.callbackUrl"),
     field: "callback_url",
     align: "left",
     sortable: false,
   },
   {
     name: "javascript_origin_url",
-    label: "Javascript Origin URL",
+    label: t("reporting.sso.providersTable.javascriptOriginUrl"),
     field: "javascript_origin_url",
     align: "left",
     sortable: false,
@@ -252,15 +268,21 @@ function editSSOProvider(provider: SSOProvider) {
 
 function deleteSSOProvider(provider: SSOProvider) {
   $q.dialog({
-    title: `Delete SSO Provider: ${provider.name}?`,
+    title: t("reporting.sso.providersTable.deleteProviderTitle", {
+      name: provider.name,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("reporting.common.delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await removeSSOProvider(provider.id);
       await getSSOProviders();
-      notifySuccess(`SSO Provider: ${provider.name} was deleted!`);
+      notifySuccess(
+        t("reporting.sso.providersTable.providerDeleted", {
+          name: provider.name,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }
@@ -270,7 +292,7 @@ function deleteSSOProvider(provider: SSOProvider) {
 
 function getCallbackURL(url: string) {
   copyToClipboard(url).then(() => {
-    notifySuccess("URL copied!");
+    notifySuccess(t("reporting.sso.providersTable.urlCopied"));
   });
 }
 

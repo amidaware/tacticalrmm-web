@@ -1,0 +1,6 @@
+{
+  "network": {
+    "backendOffline": "Backend is offline (network error)",
+    "backendOfflineHelp": "Open your browser's dev tools and check the console tab for more detailed error messages"
+  }
+}

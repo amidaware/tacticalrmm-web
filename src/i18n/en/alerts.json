@@ -1,0 +1,253 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "snoozeAlert": "Snooze alert",
+    "resolveAlert": "Resolve alert"
+  },
+  "validation": {
+    "required": "*Required"
+  },
+  "dialog": {
+    "snoozeTitle": "Snooze Alert",
+    "snoozeMessage": "How many days to snooze alert?"
+  },
+  "notify": {
+    "snoozedForDays": "The alert has been snoozed for {days} days",
+    "unsnoozed": "The alert has been unsnoozed",
+    "resolved": "The alert has been resolved",
+    "bulkResolved": "Alerts were resolved",
+    "bulkSnoozedForDays": "Alerts were snoozed for {days} days"
+  },
+  "icon": {
+    "noNewAlerts": "No New Alerts",
+    "viewAllAlerts": "View All Alerts ({count})"
+  },
+  "manager": {
+    "title": "Alerts Manager",
+    "new": "New",
+    "noTemplates": "No Alert Templates",
+    "default": "Default",
+    "columns": {
+      "active": "Active",
+      "agentSettings": "Agent Settings",
+      "checkSettings": "Check Settings",
+      "taskSettings": "Task Settings",
+      "name": "Name",
+      "appliedTo": "Applied To",
+      "alertExclusions": "Alert Exclusions",
+      "failureAction": "Failure Action",
+      "resolvedAction": "Resolved Action"
+    },
+    "menu": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "alertExclusions": "Alert Exclusions"
+    },
+    "tooltips": {
+      "enableTemplate": "Enable Template",
+      "hasAgentSettings": "Has agent alert settings",
+      "hasCheckSettings": "Has check alert settings",
+      "hasTaskSettings": "Has task alert settings",
+      "templateHasAgentSettings": "Alert template has agent alert settings",
+      "templateHasCheckSettings": "Alert template has check alert settings",
+      "templateHasTaskSettings": "Alert template has task alert settings"
+    },
+    "dialog": {
+      "deleteTemplateTitle": "Delete alert template {name}?"
+    },
+    "notify": {
+      "deleted": "Alert template {name} was deleted!",
+      "templateEnabled": "Template enabled successfully",
+      "templateDisabled": "Template disabled successfully"
+    },
+    "showAppliedCount": "Show where template is applied ({count})",
+    "showExclusionsCount": "Alert Exclusions ({count})"
+  },
+  "overview": {
+    "title": "Alerts Overview",
+    "filter": "Filter",
+    "clients": "Clients",
+    "severity": "Severity",
+    "time": "Time",
+    "includeSnoozed": "Include snoozed",
+    "includeResolved": "Include resolved",
+    "searchButton": "Search",
+    "alerts": "Alerts",
+    "bulkActions": "Bulk Actions",
+    "snoozeAlerts": "Snooze alerts",
+    "resolveAlerts": "Resolve alerts",
+    "severityOptions": {
+      "informational": "Informational",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "timeOptions": {
+      "dayAgo": "1 Day Ago",
+      "weekAgo": "1 Week Ago",
+      "days30Ago": "30 Days Ago",
+      "months3Ago": "3 Months Ago",
+      "months6Ago": "6 Months Ago",
+      "yearAgo": "1 Year Ago",
+      "everything": "Everything"
+    },
+    "columns": {
+      "time": "Time",
+      "client": "Client",
+      "site": "Site",
+      "agent": "Agent",
+      "type": "Type",
+      "severity": "Severity",
+      "message": "Message",
+      "resolvedOn": "Resolved On",
+      "snoozedUntil": "Snoozed Until",
+      "actions": "Actions"
+    },
+    "noData": {
+      "initial": "Click search to find alerts",
+      "searched": "No data found. Try to refine your search"
+    },
+    "tooltips": {
+      "showFailureActionResults": "Show failure action run results",
+      "showResolvedActionResults": "Show resolved action run results",
+      "unsnoozeAlert": "Unsnooze alert"
+    },
+    "actionResults": {
+      "failure": "{type} failure action results",
+      "resolved": "{type} resolved action results"
+    }
+  },
+  "templateRelated": {
+    "assignedTo": "Assigned to {name}",
+    "tabs": {
+      "policies": "Policies",
+      "clients": "Clients",
+      "sites": "Sites"
+    }
+  },
+  "templateAdd": {
+    "title": "Edit Alert Template assigned to {type}",
+    "selectLabel": "{type} Alert Template",
+    "noTemplates": "No Alert Templates have been setup. Go to Settings > Alerts Manager",
+    "actions": {
+      "assigned": "assigned",
+      "removed": "removed"
+    },
+    "notify": {
+      "templateUpdated": "Alert Template {action} successfully!"
+    }
+  },
+  "exclusions": {
+    "title": "Alert Exclusions for {name}",
+    "fields": {
+      "excludedClients": "Excluded Clients",
+      "excludedSites": "Excluded Sites",
+      "excludedAgents": "Excluded Agents",
+      "excludeWorkstations": "Exclude Workstations",
+      "excludeServers": "Exclude Servers"
+    },
+    "notify": {
+      "saved": "Alert Template exclusions added"
+    }
+  },
+  "templateForm": {
+    "dialog": {
+      "addTitle": "Add Alert Template",
+      "editTitle": "Edit Alert Template",
+      "addEmailTitle": "Add email",
+      "addNumberTitle": "Add number",
+      "e164Message": "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>"
+    },
+    "steps": {
+      "generalSettings": "General Settings",
+      "alertActions": "Alert Actions",
+      "agentOverdueSettings": "Agent Overdue Settings",
+      "checkSettings": "Check Settings",
+      "automatedTaskSettings": "Automated Task Settings"
+    },
+    "sections": {
+      "emailSettings": "Email Settings (Overrides global email settings)",
+      "smsSettings": "SMS Settings (Overrides global SMS settings)",
+      "alertFailureSettings": "Alert Failure Settings",
+      "alertResolvedSettings": "Alert Resolved Settings",
+      "runActionsOnlyOn": "Run actions only on"
+    },
+    "fields": {
+      "name": "Name",
+      "enabled": "Enabled",
+      "emailFromAddress": "Email From address",
+      "emailRecipients": "Email recipients",
+      "smsRecipients": "SMS recipients",
+      "failureScript": "Failure script",
+      "failureWebhook": "Failure Web Hook",
+      "failureScriptArgs": "Failure script arguments (press Enter after typing each argument)",
+      "failureScriptEnvVars": "Failure script environment vars (press Enter after typing each key=value pair)",
+      "failureScriptTimeout": "Failure script timeout (seconds)",
+      "resolvedScript": "Resolved Script",
+      "resolvedWebhook": "Resolved Web Hook",
+      "resolvedScriptArgs": "Resolved script arguments (press Enter after typing each argument)",
+      "resolvedActionEnvVars": "Resolved action environment vars (press Enter after typing each key=value pair)",
+      "resolvedScriptTimeout": "Resolved script timeout (seconds)",
+      "alertAgainAfterDays": "Alert again if not resolved after (days)",
+      "onlyEmailOnSeverity": "Only email on alert severity",
+      "onlyTextOnSeverity": "Only text on alert severity",
+      "onlyDashboardOnSeverity": "Only show dashboard alert on severity",
+      "alertAgainIfNotResolvedDays": "Alert again if not resolved (days)"
+    },
+    "hints": {
+      "defaultErrorWarning": "Defaults to 'error' and 'warning'",
+      "defaultErrorWarningInfo": "Defaults to 'error', 'warning', and 'info'"
+    },
+    "channels": {
+      "email": "Email",
+      "text": "Text",
+      "dashboard": "Dashboard"
+    },
+    "targets": {
+      "agents": "Agents",
+      "checks": "Checks",
+      "tasks": "Tasks"
+    },
+    "actionTypes": {
+      "webhook": "Send a Web Hook",
+      "agentScript": "Run script on Agent",
+      "serverScript": "Run script on TRMM Server"
+    },
+    "severity": {
+      "error": "Error",
+      "warning": "Warning",
+      "informational": "Informational"
+    },
+    "actions": {
+      "add": "Add",
+      "addEmail": "Add email",
+      "addSmsNumber": "Add sms number",
+      "back": "Back",
+      "next": "Next"
+    },
+    "tooltips": {
+      "failureActionRuns": "The selected action will run when an alert is triggered.",
+      "resolvedActionRuns": "The selected action will run when an alert is resolved.",
+      "runActionsOnlyOn": "The selected action will only run on the following types of alerts",
+      "agentOverdueFailure": "Select what notifications should be sent when an agent is overdue. Enabled will override the agent notification settings and always notify. Not configured will use what notification settings are configured on the agent. Disabled will override the agent notification settings and never notify.",
+      "agentOverdueResolved": "Select what notifications should be sent when an overdue agent is back online.",
+      "checkFailure": "Select what notifications are sent when a check fails. Enabled will override the check notification settings and always notify. Not configured will use the notification settings configured on the check. Disabled will override the check notification settings and never notify.",
+      "checkResolved": "Select what notifications are sent when a failed check is resolved.",
+      "taskFailure": "Select what notifications are sent when an automated task fails. Enabled will override the task notification settings and always notify. Not configured will use the notification settings configured on the task. Disabled will override the task notification settings and never notify.",
+      "taskResolved": "Select what notifications are sent when a failed task is resolved."
+    },
+    "validation": {
+      "failureTimeoutRequired": "Failure script timeout is required",
+      "resolvedTimeoutRequired": "Resolved script timeout is required",
+      "periodicDaysMinZero": "Periodic days must be 0 or greater"
+    },
+    "noRecipients": "No recipients",
+    "notify": {
+      "nameRequired": "Name needs to be set",
+      "edited": "Alert Template edited!",
+      "created": "Alert Template created!"
+    }
+  }
+}

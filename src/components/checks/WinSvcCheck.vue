@@ -2,10 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? `Edit Service Check` : "Add Service Check" }}
+        {{
+          check
+            ? $t("checks.winSvc.dialog.editTitle")
+            : $t("checks.winSvc.dialog.addTitle")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("checks.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -17,54 +23,54 @@
               v-if="isPolicy && !check"
               v-model="state.svc_policy_mode"
               val="default"
-              label="Choose from defaults"
+              :label="$t('checks.winSvc.policyMode.chooseDefaults')"
             />
             <q-radio
               v-if="isPolicy && !check"
               v-model="state.svc_policy_mode"
               val="manual"
-              label="Enter manually"
+              :label="$t('checks.winSvc.policyMode.enterManually')"
             />
             <q-select
               v-if="isPolicy && state.svc_policy_mode === 'default' && !check"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('checks.validation.required')]"
               dense
               options-dense
               outlined
               v-model="state.svc_name"
               :options="serviceOptions"
-              label="Service"
+              :label="$t('checks.winSvc.fields.service')"
               map-options
               emit-value
               :disable="!!check"
             />
             <q-input
               v-if="isPolicy && state.svc_policy_mode === 'manual'"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('checks.validation.required')]"
               outlined
               dense
               v-model="state.svc_name"
-              label="Service Name"
+              :label="$t('checks.winSvc.fields.serviceName')"
             />
             <q-input
               v-if="isPolicy && state.svc_policy_mode === 'manual'"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('checks.validation.required')]"
               outlined
               dense
               v-model="state.svc_display_name"
-              label="Display Name"
+              :label="$t('checks.winSvc.fields.displayName')"
             />
             <!-- agent check -->
             <!-- disable selection if editing -->
             <q-select
               v-if="isAgent"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('checks.validation.required')]"
               dense
               options-dense
               outlined
               v-model="state.svc_name"
               :options="serviceOptions"
-              label="Service"
+              :label="$t('checks.winSvc.fields.service')"
               map-options
               emit-value
               :disable="!!check"
@@ -73,17 +79,17 @@
           <q-card-section>
             <q-checkbox
               v-model="state.pass_if_start_pending"
-              label="PASS if service is in 'Start Pending' mode"
+              :label="$t('checks.winSvc.options.passIfStartPending')"
             />
             <br />
             <q-checkbox
               v-model="state.pass_if_svc_not_exist"
-              label="PASS if service doesn't exist"
+              :label="$t('checks.winSvc.options.passIfNotExists')"
             />
             <br />
             <q-checkbox
               v-model="state.restart_if_stopped"
-              label="Restart service if it's stopped"
+              :label="$t('checks.winSvc.options.restartIfStopped')"
             />
           </q-card-section>
           <q-card-section>
@@ -95,7 +101,7 @@
               emit-value
               v-model="state.alert_severity"
               :options="severityOptions"
-              label="Alert Severity"
+              :label="$t('checks.common.fields.alertSeverity')"
             />
           </q-card-section>
           <q-card-section>
@@ -105,7 +111,7 @@
               options-dense
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$t('checks.common.fields.failuresBeforeAlert')"
             />
           </q-card-section>
           <q-card-section>
@@ -114,18 +120,18 @@
               outlined
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$t('checks.common.fields.runEverySeconds')"
+              :hint="$t('checks.common.hints.runEveryOverride')"
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('checks.common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$t('checks.common.save')"
             color="primary"
             type="submit"
           />
@@ -183,10 +189,10 @@ export default {
         // prevent error when in manual mode
         try {
           state.value.svc_display_name = serviceOptions.value.find(
-            (i) => i.value === state.value.svc_name
+            (i) => i.value === state.value.svc_name,
           ).label;
         } catch {}
-      }
+      },
     );
 
     watch(
@@ -194,7 +200,7 @@ export default {
       () => {
         state.value.svc_name = null;
         state.value.svc_display_name = null;
-      }
+      },
     );
 
     const isPolicy = computed(() => {

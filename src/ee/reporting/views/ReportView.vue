@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <div>
     <q-inner-loading
       :showing="isLoading"
-      label="Please wait..."
+      :label="t('reporting.common.pleaseWait')"
       label-class="text-teal"
       label-style="font-size: 1.1em"
     />
@@ -30,6 +30,7 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useReportTemplates } from "../api/reporting";
 
 // ui imports
@@ -51,6 +52,7 @@ const $route = useRoute();
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 // logic
 const dependsOn = props.dependsOn || [];

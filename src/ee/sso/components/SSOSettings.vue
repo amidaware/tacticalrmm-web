@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 50">
       <q-bar>
-        SSO Settings
+        {{ t("reporting.sso.settings.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -19,7 +21,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Enable SSO"
+          :label="t('reporting.sso.settings.enableSso')"
           v-model="ssoSettings.sso_enabled"
         />
       </q-card-section>
@@ -28,23 +30,22 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Block Local User Login"
+          :label="t('reporting.sso.settings.blockLocalUserLogin')"
           v-model="ssoSettings.block_local_user_logon"
           :disable="!ssoSettings.sso_enabled"
-          hint="When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts."
+          :hint="t('reporting.sso.settings.blockLocalUserLoginHint')"
         >
-          <q-tooltip class="text-caption"
-            >When enabled, only users with SSO accounts can log in, with the
-            exception of local superuser accounts.</q-tooltip
-          >
+          <q-tooltip class="text-caption">{{
+            t("reporting.sso.settings.blockLocalUserLoginHint")
+          }}</q-tooltip>
         </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="t('reporting.common.cancel')" v-close-popup />
         <q-btn
           flat
-          label="Submit"
+          :label="t('reporting.common.submit')"
           color="primary"
           :loading="loading"
           @click="submit"
@@ -58,6 +59,7 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, watch, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { notifySuccess, notifyWarning } from "@/utils/notify";
 import { fetchSSOSettings, updateSSOSettings } from "@/ee/sso/api/sso";
 
@@ -68,6 +70,7 @@ import { SSOSettingsType } from "../types/sso";
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const { t } = useI18n();
 
 const ssoSettings = ref({} as SSOSettingsType);
 const loading = ref(false);
@@ -86,7 +89,7 @@ async function submit() {
   loading.value = true;
   try {
     await updateSSOSettings(ssoSettings.value);
-    notifySuccess("Settings updated successfully");
+    notifySuccess(t("reporting.sso.settings.updatedSuccessfully"));
     onDialogOK(ssoSettings.value);
   } catch (e) {
     if (e.status === 423) {

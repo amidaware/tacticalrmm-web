@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agents.shared.noAgentSelected") }}
+  </div>
   <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("agents.shared.onlySupportedWindows") }}
   </div>
   <div v-else>
     <q-table
@@ -37,7 +39,7 @@
         />
         <q-btn
           icon="add"
-          label="Install Software"
+          :label="$t('software.softwareTab.installSoftware')"
           no-caps
           dense
           flat
@@ -50,7 +52,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.buttons.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -66,7 +68,7 @@
         <td>
           <q-btn
             v-if="props.row.uninstall"
-            label="Uninstall"
+            :label="$t('software.softwareTab.uninstall')"
             color="primary"
             dense
             size="sm"
@@ -83,6 +85,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import {
   fetchAgentSoftware,
   refreshAgentSoftware,
@@ -95,55 +98,6 @@ import UninstallSoftware from "@/components/software/UninstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import { notifySuccess } from "@/utils/notify";
 
-// static data
-const columns = [
-  {
-    name: "name",
-    align: "left",
-    label: "Name",
-    field: "name",
-    sortable: true,
-  },
-  {
-    name: "publisher",
-    align: "left",
-    label: "Publisher",
-    field: "publisher",
-    sortable: true,
-  },
-  {
-    name: "install_date",
-    align: "left",
-    label: "Installed On",
-    field: "install_date",
-    sortable: false,
-    format: (val) => {
-      return val === "01/01/1" || val === "01-1-01" ? "" : val;
-    },
-  },
-  {
-    name: "size",
-    align: "left",
-    label: "Size",
-    field: "size",
-    sortable: false,
-  },
-  {
-    name: "version",
-    align: "left",
-    label: "Version",
-    field: "version",
-    sortable: false,
-  },
-  {
-    name: "uninstall",
-    align: "left",
-    label: "",
-    field: "uninstall",
-    sortable: false,
-  },
-];
-
 export default {
   name: "SoftwareTab",
   components: {
@@ -152,6 +106,7 @@ export default {
   setup() {
     // setup quasar
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // setup vuex
     const store = useStore();
@@ -230,6 +185,54 @@ export default {
     onMounted(() => {
       if (selectedAgent.value) getSoftware();
     });
+
+    const columns = computed(() => [
+      {
+        name: "name",
+        align: "left",
+        label: t("software.softwareTab.columns.name"),
+        field: "name",
+        sortable: true,
+      },
+      {
+        name: "publisher",
+        align: "left",
+        label: t("software.softwareTab.columns.publisher"),
+        field: "publisher",
+        sortable: true,
+      },
+      {
+        name: "install_date",
+        align: "left",
+        label: t("software.softwareTab.columns.installedOn"),
+        field: "install_date",
+        sortable: false,
+        format: (val) => {
+          return val === "01/01/1" || val === "01-1-01" ? "" : val;
+        },
+      },
+      {
+        name: "size",
+        align: "left",
+        label: t("software.softwareTab.columns.size"),
+        field: "size",
+        sortable: false,
+      },
+      {
+        name: "version",
+        align: "left",
+        label: t("software.softwareTab.columns.version"),
+        field: "version",
+        sortable: false,
+      },
+      {
+        name: "uninstall",
+        align: "left",
+        label: "",
+        field: "uninstall",
+        sortable: false,
+      },
+    ]);
 
     return {
       // reactive data

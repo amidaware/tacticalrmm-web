@@ -31,7 +31,11 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-splitter v-if="debug" v-model="verticalSplitter">
         <template v-slot:before>
           <div class="q-pa-xs">
-            {{ previewFormat === "plaintext" ? "Text" : "HTML" }}
+            {{
+              previewFormat === "plaintext"
+                ? t("reporting.common.text")
+                : t("reporting.common.html")
+            }}
           </div>
           <div
             id="templateDiv"
@@ -39,7 +43,7 @@ For details, see: https://license.tacticalrmm.com/ee
           ></div>
         </template>
         <template v-slot:after>
-          <div class="q-pa-xs">Variables</div>
+          <div class="q-pa-xs">{{ t("reporting.common.variables") }}</div>
           <div
             id="variablesDiv"
             :style="{ height: `${splitterHeight - horizontalSplitter - 33}px` }"
@@ -55,6 +59,7 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, onUnmounted, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
+import { useI18n } from "vue-i18n";
 
 // types
 import type { ReportFormat } from "../types/reporting";
@@ -67,6 +72,7 @@ const props = defineProps<{
 }>();
 
 const $q = useQuasar();
+const { t } = useI18n();
 
 const splitterHeight = ref($q.screen.height - 82);
 

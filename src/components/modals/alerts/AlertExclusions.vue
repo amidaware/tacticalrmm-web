@@ -2,16 +2,18 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card style="width: 50vw; max-width: 50vw">
       <q-bar>
-        Alert Exclusions for {{ template.name }}
+        {{ $t("alerts.exclusions.title", { name: template.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("alerts.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form ref="form" @submit.prevent="onSubmit">
         <q-card-section>
           <tactical-dropdown
-            label="Excluded Clients"
+            :label="$t('alerts.exclusions.fields.excludedClients')"
             outlined
             multiple
             v-model="localTemplate.excluded_clients"
@@ -23,7 +25,7 @@
         </q-card-section>
         <q-card-section>
           <tactical-dropdown
-            label="Excluded Sites"
+            :label="$t('alerts.exclusions.fields.excludedSites')"
             outlined
             multiple
             v-model="localTemplate.excluded_sites"
@@ -35,7 +37,7 @@
         </q-card-section>
         <q-card-section>
           <tactical-dropdown
-            label="Excluded Agents"
+            :label="$t('alerts.exclusions.fields.excludedAgents')"
             outlined
             multiple
             v-model="localTemplate.excluded_agents"
@@ -49,17 +51,23 @@
         <q-card-section>
           <q-checkbox
             v-model="localTemplate.exclude_workstations"
-            label="Exclude Workstations"
+            :label="$t('alerts.exclusions.fields.excludeWorkstations')"
           />
           <q-checkbox
             v-model="localTemplate.exclude_servers"
-            label="Exclude Servers"
+            :label="$t('alerts.exclusions.fields.excludeServers')"
           />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
-          <q-btn dense flat label="Save" color="primary" type="submit" />
+          <q-btn dense flat :label="$t('alerts.common.cancel')" v-close-popup />
+          <q-btn
+            dense
+            flat
+            :label="$t('alerts.common.save')"
+            color="primary"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -99,7 +107,7 @@ export default {
         .then(() => {
           this.$q.loading.hide();
           this.onOk();
-          this.notifySuccess("Alert Template exclusions added");
+          this.notifySuccess(this.$t("alerts.exclusions.notify.saved"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -118,7 +126,7 @@ export default {
           r.data.forEach((client) => {
             this.siteOptions.push({ category: client.name });
             client.sites.forEach((site) =>
-              this.siteOptions.push({ label: site.name, value: site.id })
+              this.siteOptions.push({ label: site.name, value: site.id }),
             );
           });
           this.$q.loading.hide();
@@ -129,7 +137,7 @@ export default {
     },
     getOptions() {
       this.getAgentOptions("id").then(
-        (options) => (this.agentOptions = Object.freeze(options))
+        (options) => (this.agentOptions = Object.freeze(options)),
       );
       this.getClientsandSites();
     },

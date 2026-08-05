@@ -14,11 +14,26 @@
 
       <q-card-actions align="right">
         <template v-if="type === 'confirm'">
-          <q-btn flat label="Yes" color="primary" @click="confirmAction" />
-          <q-btn flat label="No" color="primary" v-close-popup />
+          <q-btn
+            flat
+            :label="t('common.system.yes')"
+            color="primary"
+            @click="confirmAction"
+          />
+          <q-btn
+            flat
+            :label="t('common.system.no')"
+            color="primary"
+            v-close-popup
+          />
         </template>
         <template v-else>
-          <q-btn flat label="OK" color="primary" @click="closeDialog" />
+          <q-btn
+            flat
+            :label="t('common.buttons.ok')"
+            color="primary"
+            @click="closeDialog"
+          />
         </template>
       </q-card-actions>
     </q-card>
@@ -27,6 +42,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   modelValue: boolean;

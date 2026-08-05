@@ -5,48 +5,61 @@
         {{ title }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <q-card-section v-if="copyPolicy">
           <div class="text-subtitle1">
-            You are copying checks and tasks from Policy:
-            <b>{{ copyPolicy.name }}</b> into a new policy.
+            {{ $t("settings.policyForm.copyingFromPolicy") }}
+            <b>{{ copyPolicy.name }}</b>
+            {{ $t("settings.policyForm.intoNewPolicy") }}
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Name:</div>
+          <div class="col-2">{{ $t("settings.common.name") }}:</div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="localPolicy.name"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('tasks.shared.required')]"
             />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Description:</div>
+          <div class="col-2">{{ $t("settings.policyForm.description") }}:</div>
           <div class="col-10">
             <q-input outlined dense v-model="localPolicy.desc" />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Active:</div>
+          <div class="col-2">{{ $t("settings.policyForm.active") }}:</div>
           <div class="col-10">
             <q-toggle v-model="localPolicy.active" color="green" />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Enforced:</div>
+          <div class="col-2">{{ $t("settings.policyForm.enforced") }}:</div>
           <div class="col-10">
             <q-toggle v-model="localPolicy.enforced" color="green" />
           </div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
-          <q-btn flat label="Submit" color="primary" type="submit" />
+          <q-btn
+            dense
+            flat
+            :label="$t('common.buttons.cancel')"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            :label="$t('common.actions.submit')"
+            color="primary"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -73,7 +86,9 @@ export default {
   },
   computed: {
     title() {
-      return this.editing ? "Edit Policy" : "Add Policy";
+      return this.editing
+        ? this.$t("settings.policyForm.editPolicy")
+        : this.$t("settings.policyForm.addPolicy");
     },
     editing() {
       return !!this.policy;
@@ -93,7 +108,7 @@ export default {
           .then(() => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess("Policy edited!");
+            this.notifySuccess(this.$t("settings.policyForm.notify.edited"));
           })
           .catch(() => {
             this.$q.loading.hide();
@@ -108,9 +123,7 @@ export default {
           .then(() => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess(
-              "Policy added. Now you can add Tasks and Checks!"
-            );
+            this.notifySuccess(this.$t("settings.policyForm.notify.added"));
           })
           .catch(() => {
             this.$q.loading.hide();

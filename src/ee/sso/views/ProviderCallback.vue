@@ -6,15 +6,18 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <template>
   <div class="fixed-center text-center" v-if="error">
-    <p class="text-faded">There was an error logging into your provider.</p>
-    <q-btn color="secondary" style="width: 200px" to="/login"
-      >Go back to Login</q-btn
-    >
+    <p class="text-faded">
+      {{ t("reporting.sso.providerCallback.loginError") }}
+    </p>
+    <q-btn color="secondary" style="width: 200px" to="/login">{{
+      t("reporting.sso.providerCallback.goBackToLogin")
+    }}</q-btn>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 
 const route = useRoute();
@@ -22,6 +25,7 @@ const error = route.query.error;
 
 const router = useRouter();
 const auth = useAuthStore();
+const { t } = useI18n();
 if (!error) {
   if (auth.loggedIn) {
     if (auth.next) {

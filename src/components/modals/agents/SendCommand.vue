@@ -10,22 +10,24 @@
       :style="{ 'min-width': ret || streamOutput ? '70vw' : '40vw' }"
     >
       <q-bar>
-        Send command on {{ agent.hostname }}
+        {{ $t("agents.sendCommand.title", { hostname: agent.hostname }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <q-card-section>
-          <p>Shell</p>
+          <p>{{ $t("agents.sendCommand.shell") }}</p>
           <div class="q-gutter-sm">
             <q-radio
               v-if="agent.plat !== 'windows'"
               dense
               v-model="state.shell"
               val="/bin/bash"
-              label="Bash"
+              :label="$t('agents.sendCommand.shells.bash')"
               @update:model-value="state.custom_shell = null"
             />
             <q-radio
@@ -33,37 +35,42 @@
               dense
               v-model="state.shell"
               val="custom"
-              label="Custom"
+              :label="$t('agents.sendCommand.shells.custom')"
             />
             <q-radio
               v-if="agent.plat === 'windows'"
               dense
               v-model="state.shell"
               val="cmd"
-              label="CMD"
+              :label="$t('agents.sendCommand.shells.cmd')"
             />
             <q-radio
               v-if="agent.plat === 'windows'"
               dense
               v-model="state.shell"
               val="powershell"
-              label="Powershell"
+              :label="$t('agents.sendCommand.shells.powershell')"
             />
           </div>
         </q-card-section>
         <q-card-section v-if="agent.plat === 'windows'">
-          <q-checkbox v-model="state.run_as_user" label="Run As User">
-            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          <q-checkbox
+            v-model="state.run_as_user"
+            :label="$t('agents.sendCommand.runAsUser')"
+          >
+            <q-tooltip>{{
+              $t("agents.sendCommand.runAsUserTooltip")
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
         <q-card-section v-if="state.shell === 'custom'">
           <q-input
             v-model="state.custom_shell"
             outlined
-            label="Custom shell"
+            :label="$t('agents.sendCommand.customShell')"
             stack-label
             placeholder="/usr/bin/python3"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agents.shared.required')]"
           />
         </q-card-section>
         <q-card-section>
@@ -73,12 +80,16 @@
             outlined
             type="number"
             style="max-width: 150px"
-            label="Timeout (seconds)"
+            :label="$t('agents.sendCommand.timeoutSeconds')"
             stack-label
             :rules="[
-              (val) => !!val || '*Required',
-              (val) => val >= 10 || 'Minimum is 10 seconds',
-              (val) => val <= 3600 || 'Maximum is 3600 seconds',
+              (val) => !!val || $t('agents.shared.required'),
+              (val) =>
+                val >= 10 ||
+                $t('agents.sendCommand.minimumSeconds', { min: 10 }),
+              (val) =>
+                val <= 3600 ||
+                $t('agents.sendCommand.maximumSeconds', { max: 3600 }),
             ]"
           />
         </q-card-section>
@@ -86,29 +97,41 @@
           <q-input
             v-model="state.cmd"
             outlined
-            label="Command"
+            :label="$t('agents.sendCommand.command')"
             stack-label
             :placeholder="cmdPlaceholder(state.shell)"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agents.shared.required')]"
           />
         </q-card-section>
         <q-card-actions align="between">
-          <q-toggle v-model="useStreaming" label="Stream Output" />
+          <q-toggle
+            v-model="useStreaming"
+            :label="$t('agents.sendCommand.streamOutput')"
+          />
           <div>
-            <q-btn flat dense push label="Cancel" v-close-popup />
+            <q-btn
+              flat
+              dense
+              push
+              :label="$t('common.buttons.cancel')"
+              v-close-popup
+            />
             <q-btn
               :loading="loading"
               flat
               dense
               push
-              label="Send"
+              :label="$t('agents.sendCommand.send')"
               color="primary"
               type="submit"
             />
           </div>
         </q-card-actions>
         <q-card-section v-if="ret !== null"
-          ><script-output-copy-clip label="Output" :data="ret" /> <q-separator
+          ><script-output-copy-clip
+            :label="$t('agents.sendCommand.output')"
+            :data="ret" />
+          <q-separator
         /></q-card-section>
         <q-card-section
           v-if="ret !== null"
@@ -142,7 +165,6 @@ import { ref, nextTick } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { sendAgentCommand } from "@/api/agents";
 import { cmdPlaceholder } from "@/composables/agents";
-import { runAsUserToolTip } from "@/constants/constants";
 
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
 import CommandStream from "@/components/agents/CommandStream.vue";
@@ -217,7 +239,6 @@ export default {
       streamTimeout,
       runId,
       submit,
-      runAsUserToolTip,
       cmdPlaceholder,
     };
   },

@@ -1,4 +1,5 @@
 import { Notify } from "quasar";
+import { i18n } from "@/i18n";
 
 export function isValidThreshold(
   warning: number,
@@ -9,7 +10,7 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold or Error Threshold need to be set",
+      message: i18n.global.t("checks.validation.thresholdRequired"),
     });
     return false;
   }
@@ -18,7 +19,7 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold must be less than Error Threshold",
+      message: i18n.global.t("checks.validation.warningLessThanError"),
     });
     return false;
   }
@@ -27,7 +28,7 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold must be more than Error Threshold",
+      message: i18n.global.t("checks.validation.warningMoreThanError"),
     });
     return false;
   }

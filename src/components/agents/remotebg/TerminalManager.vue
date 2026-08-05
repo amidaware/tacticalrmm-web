@@ -8,7 +8,9 @@
       class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
     >
       <div class="row items-center">
-        <div class="text-subtitle1 text-body2 q-mr-md">Shell:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md">
+          {{ t("agents.remoteBackground.terminal.shell") }}:
+        </div>
         <q-option-group
           dense
           v-model="selectedShell"
@@ -21,7 +23,7 @@
         />
 
         <q-btn
-          label="Edit Path"
+          :label="t('agents.remoteBackground.terminal.editPath')"
           color="primary"
           @click="handleCustomEdit"
           class="q-px-sm q-ml-lg q-pb-0 text-caption text-capitalize"
@@ -31,17 +33,21 @@
           flat
           dense
           icon="content_copy"
-          label="Copy"
+          :label="t('common.buttons.copy')"
           color="white"
           @click="copyTerminalOutput"
           class="q-ml-sm text-caption text-capitalize"
         >
-          <q-tooltip>Copy terminal output</q-tooltip>
+          <q-tooltip>{{
+            t("agents.remoteBackground.terminal.copyOutput")
+          }}</q-tooltip>
         </q-btn>
       </div>
 
       <div v-if="isWindows" class="row items-center q-ml-lg">
-        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">Run as:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">
+          {{ t("agents.remoteBackground.terminal.runAs") }}:
+        </div>
 
         <q-option-group
           dense
@@ -63,17 +69,19 @@
           max-width="320px"
           content-class="terminal-shortcuts-tooltip"
         >
-          <div class="text-weight-medium q-mb-xs">Terminal shortcuts</div>
+          <div class="text-weight-medium q-mb-xs">
+            {{ t("agents.remoteBackground.terminal.shortcuts.title") }}
+          </div>
 
           <div class="shortcut-row">
-            <span>Copy selected text</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.copy") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>Insert</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Paste</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.paste") }}</span>
             <span class="shortcut-keys">
               <kbd>Shift</kbd><span>+</span><kbd>Insert</kbd>
             </span>
@@ -82,28 +90,28 @@
           <q-separator dark class="q-my-xs" />
 
           <div class="shortcut-row">
-            <span>Interrupt command</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.interrupt") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>C</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Previous command</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.previous") }}</span>
             <span class="shortcut-keys">
               <kbd>↑</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Next command</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.next") }}</span>
             <span class="shortcut-keys">
               <kbd>↓</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Move by word</span>
+            <span>{{ t("agents.remoteBackground.terminal.shortcuts.moveByWord") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>←</kbd>
               <span>/</span>
@@ -123,21 +131,29 @@
     <q-card style="min-width: 400px">
       <q-form @submit.prevent="startCustomShell">
         <q-card-section class="text-h6">
-          Enter Custom Shell Path
+          {{ t("agents.remoteBackground.terminal.customShellTitle") }}
         </q-card-section>
 
         <q-card-section>
           <q-input
             v-model="customShellInput"
-            label="Shell Path"
+            :label="t('agents.remoteBackground.terminal.shellPath')"
             dense
             autofocus
           />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" @click="cancelCustomShell" />
-          <q-btn color="primary" label="Start" type="submit" />
+          <q-btn
+            flat
+            :label="t('common.buttons.cancel')"
+            @click="cancelCustomShell"
+          />
+          <q-btn
+            color="primary"
+            :label="t('agents.remoteBackground.terminal.start')"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -159,6 +175,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { uid, useQuasar, copyToClipboard } from "quasar";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
+import { useI18n } from "vue-i18n";
 import "@xterm/xterm/css/xterm.css";
 
 interface TerminalWSMessage {
@@ -190,6 +207,7 @@ interface TerminalDefaults {
 }
 
 const $q = useQuasar();
+const { t } = useI18n();
 const props = defineProps<{
   agent_id: string;
   agentPlatform: string;
@@ -212,10 +230,13 @@ const lastSelectedShell = ref<string>("");
 const pendingCustomShell = ref<string | null>(null);
 const runAsUser = ref(false);
 const isWindows = computed(() => props.agentPlatform === "windows");
-const runAsOptions = [
-  { label: "System", value: false },
-  { label: "User", value: true },
-];
+const runAsOptions = computed(() => [
+  {
+    label: t("agents.remoteBackground.terminal.system"),
+    value: false,
+  },
+  { label: t("agents.remoteBackground.terminal.user"), value: true },
+]);
 
 const shellOptions = computed<ShellOption[]>(() => {
   const isWindows = props.agentPlatform === "windows";
@@ -226,13 +247,15 @@ const shellOptions = computed<ShellOption[]>(() => {
       ]
     : [{ label: "Bash", value: "bash" }];
 
-  let customLabel = "Custom Shell";
+  let customLabel = t("agents.remoteBackground.terminal.customShell");
   if (loading.value && pendingCustomShell.value) {
-    customLabel = "Custom (Shell loading...)";
+    customLabel = t("agents.remoteBackground.terminal.customShellLoading");
   } else if (invalidCustomShell.value) {
-    customLabel = "Custom (Shell path doesn't exist)";
+    customLabel = t("agents.remoteBackground.terminal.customShellInvalid");
   } else if (customShellPath.value) {
-    customLabel = `Custom (${customShellPath.value})`;
+    customLabel = t("agents.remoteBackground.terminal.customShellPath", {
+      path: customShellPath.value,
+    });
   }
 
   base.push({
@@ -366,7 +389,10 @@ function initWS(shell: string) {
 
       $q.notify({
         type: "negative",
-        message: msg.error || msg.data?.error || "Failed to start terminal",
+        message:
+          msg.error ||
+          msg.data?.error ||
+          t("agents.remoteBackground.terminal.startFailed"),
       });
 
       if (isCustomAttempt) {
@@ -750,12 +776,12 @@ async function copyTerminalOutput() {
 
     $q.notify({
       type: "positive",
-      message: "Terminal output copied to clipboard.",
+      message: t("agents.remoteBackground.terminal.copySuccess"),
     });
   } catch {
     $q.notify({
       type: "negative",
-      message: "Failed to copy terminal output.",
+      message: t("agents.remoteBackground.terminal.copyFailed"),
     });
   }
 }

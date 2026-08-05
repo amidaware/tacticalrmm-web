@@ -14,22 +14,24 @@
           :disable="loading"
           dense
           size="xs"
-          label="Generate Script"
+          :label="t('scripts.shared.generateScript')"
           color="primary"
           no-caps
           @click="generateScriptOpenAI"
         />
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("scripts.shared.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row">
         <q-input
-          :rules="[(val: string) => !!val || '*Required']"
+          :rules="[(val: string) => !!val || t('scripts.shared.required')]"
           class="q-pa-sm col-4"
           v-model="snippet.name"
-          label="Name"
+          :label="t('scripts.shared.name')"
           filled
           dense
         />
@@ -37,7 +39,7 @@
           v-model="snippet.shell"
           :options="shellOptions"
           class="q-pa-sm col-2"
-          label="Shell Type"
+          :label="t('scripts.shared.shellType')"
           options-dense
           filled
           dense
@@ -49,7 +51,7 @@
           filled
           dense
           v-model="snippet.desc"
-          label="Description"
+          :label="t('scripts.shared.description')"
         />
       </div>
 
@@ -59,12 +61,12 @@
       ></div>
 
       <q-card-actions align="right">
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat :label="t('scripts.shared.cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Save"
+          :label="t('scripts.shared.save')"
           color="primary"
           @click="submit"
         />
@@ -78,6 +80,7 @@
 import { ref, watch, reactive, computed } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { generateScript } from "@/api/core";
 import { useDialogPluginComponent } from "quasar";
 import { saveScriptSnippet, editScriptSnippet } from "@/api/scripts";
@@ -132,6 +135,7 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 // setup store
 const store = useStore();
@@ -145,9 +149,9 @@ const loading = ref(false);
 
 const title = computed(() => {
   if (props.snippet) {
-    return `Editing ${snippet.name}`;
+    return t("scripts.scriptSnippetFormModal.editing", { name: snippet.name });
   } else {
-    return "Adding New Script Snippet";
+    return t("scripts.scriptSnippetFormModal.addingNewScriptSnippet");
   }
 });
 
@@ -218,7 +222,7 @@ function unloadEditor() {
 
 function generateScriptOpenAI() {
   $q.dialog({
-    title: "Ask ChatGPT what you need!",
+    title: t("scripts.shared.askChatGpt"),
     prompt: {
       model: `${lang.value} code that `,
       type: "text",

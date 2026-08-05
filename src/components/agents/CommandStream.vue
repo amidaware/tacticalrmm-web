@@ -1,6 +1,9 @@
 <template>
   <q-card-section class="q-px-xs q-pb-md q-pt-xs" v-if="hasText">
-    <script-output-copy-clip label="Live Output" :data="outputText" />
+    <script-output-copy-clip
+      :label="t('agents.commandStream.liveOutput')"
+      :data="outputText"
+    />
     <q-separator class="q-my-sm" />
   </q-card-section>
   <div class="command-stream" ref="streamContainer" v-if="hasText">
@@ -20,6 +23,7 @@ import {
   computed,
 } from "vue";
 import { useTemplateRef } from "vue";
+import { useI18n } from "vue-i18n";
 import { useAgentCmdWSConnection } from "@/websocket/agent";
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
 import { uid } from "quasar";
@@ -35,6 +39,7 @@ const props = defineProps({
 
 // emits
 const emit = defineEmits(["updateOutput", "streamLoaded", "streamClosed"]);
+const { t } = useI18n();
 
 const cmdId = uid();
 const { send, data, reset, close, status } = useAgentCmdWSConnection(

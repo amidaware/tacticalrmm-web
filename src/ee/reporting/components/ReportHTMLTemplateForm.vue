@@ -14,16 +14,18 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        New Base Template
+        {{ t("reporting.htmlTemplateForm.newBaseTemplate") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            t("reporting.common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="HTML Template Name"
+          :label="t('reporting.htmlTemplateForm.templateName')"
           filled
           dense
           style="width: 400px"
@@ -37,12 +39,12 @@ For details, see: https://license.tacticalrmm.com/ee
       ></div>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="t('reporting.common.cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="t('reporting.common.save')"
           color="primary"
           @click="submit"
         />
@@ -58,8 +60,10 @@ import { useDialogPluginComponent, extend, useQuasar } from "quasar";
 import { useSharedReportHTMLTemplates } from "../api/reporting";
 import { until } from "@vueuse/shared";
 import * as monaco from "monaco-editor";
+import { useI18n } from "vue-i18n";
 
 const $q = useQuasar();
+const { t } = useI18n();
 
 // type imports
 import { type ReportHTMLTemplate } from "../types/reporting";

@@ -5,7 +5,9 @@
     }}</q-badge>
     <q-menu :style="{ 'max-height': `${$q.screen.height - 100}px` }">
       <q-list separator>
-        <q-item v-if="alertsCount === 0">No New Alerts</q-item>
+        <q-item v-if="alertsCount === 0">{{
+          $t("alerts.icon.noNewAlerts")
+        }}</q-item>
         <q-item v-for="alert in topAlerts" :key="alert.id">
           <q-item-section>
             <q-item-label overline
@@ -36,7 +38,7 @@
                 @click="snoozeAlert(alert)"
                 v-close-popup
               >
-                <q-tooltip>Snooze alert</q-tooltip>
+                <q-tooltip>{{ $t("alerts.common.snoozeAlert") }}</q-tooltip>
               </q-icon>
               <q-icon
                 name="flag"
@@ -45,14 +47,14 @@
                 @click="resolveAlert(alert)"
                 v-close-popup
               >
-                <q-tooltip>Resolve alert</q-tooltip>
+                <q-tooltip>{{ $t("alerts.common.resolveAlert") }}</q-tooltip>
               </q-icon>
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup @click="showOverview"
-          >View All Alerts ({{ alertsCount }})</q-item
-        >
+        <q-item clickable v-close-popup @click="showOverview">{{
+          $t("alerts.icon.viewAllAlerts", { count: alertsCount })
+        }}</q-item>
       </q-list>
     </q-menu>
   </q-btn>
@@ -112,8 +114,8 @@ export default {
     snoozeAlert(alert) {
       this.$q
         .dialog({
-          title: "Snooze Alert",
-          message: "How many days to snooze alert?",
+          title: this.$t("alerts.dialog.snoozeTitle"),
+          message: this.$t("alerts.dialog.snoozeMessage"),
           prompt: {
             model: "",
             type: "number",
@@ -135,7 +137,9 @@ export default {
             .then(() => {
               this.getAlerts();
               this.$q.loading.hide();
-              this.notifySuccess(`The alert has been snoozed for ${days} days`);
+              this.notifySuccess(
+                this.$t("alerts.notify.snoozedForDays", { days: days }),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -155,7 +159,7 @@ export default {
         .then(() => {
           this.getAlerts();
           this.$q.loading.hide();
-          this.notifySuccess("The alert has been resolved");
+          this.notifySuccess(this.$t("alerts.notify.resolved"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -171,9 +175,12 @@ export default {
       else return this.alertsCount;
     },
     pollAlerts() {
-      this.poll = setInterval(() => {
-        this.getAlerts();
-      }, 60 * 1 * 1000);
+      this.poll = setInterval(
+        () => {
+          this.getAlerts();
+        },
+        60 * 1 * 1000,
+      );
     },
   },
   mounted() {

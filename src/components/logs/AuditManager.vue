@@ -2,15 +2,17 @@
   <q-card>
     <q-bar v-if="modal">
       <q-btn @click="search" class="q-mr-sm" dense flat push icon="refresh" />
-      <q-space />Audit Manager
+      <q-space />{{ $t("settings.auditManager.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $t("common.buttons.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-table
       @request="onRequest"
-      :title="modal ? 'Audit Logs' : ''"
+      :title="modal ? $t('settings.auditManager.auditLogs') : ''"
       :rows="auditLogs"
       :columns="columns"
       class="tabs-tbl-sticky"
@@ -54,7 +56,7 @@
           style="width: 200px"
           v-model="agentFilter"
           :options="agentOptions"
-          label="Agent"
+          :label="$t('settings.auditManager.agent')"
           clearable
           mapOptions
           multiple
@@ -67,7 +69,7 @@
           style="width: 200px"
           v-model="clientFilter"
           :options="clientOptions"
-          label="Clients"
+          :label="$t('settings.auditManager.clients')"
           clearable
           multiple
           filled
@@ -79,7 +81,7 @@
           style="width: 200px"
           v-model="userFilter"
           :options="userOptions"
-          label="Users"
+          :label="$t('settings.auditManager.users')"
           clearable
           filled
           multiple
@@ -89,7 +91,7 @@
           style="width: 200px"
           v-model="actionFilter"
           :options="actionOptions"
-          label="Action"
+          :label="$t('settings.auditManager.action')"
           clearable
           filled
           multiple
@@ -101,7 +103,7 @@
           v-if="!agent"
           v-model="objectFilter"
           :options="objectOptions"
-          label="Object"
+          :label="$t('settings.auditManager.object')"
           clearable
           filled
           multiple
@@ -112,11 +114,16 @@
           style="width: 200px"
           v-model="timeFilter"
           :options="timeOptions"
-          label="Time"
+          :label="$t('settings.auditManager.time')"
           filled
           mapOptions
         />
-        <q-btn v-if="!agent" color="primary" label="Search" @click="search" />
+        <q-btn
+          v-if="!agent"
+          color="primary"
+          :label="$t('common.buttons.search')"
+          @click="search"
+        />
 
         <q-space />
         <export-table-btn :data="auditLogs" :columns="columns" />
@@ -125,8 +132,8 @@
         <q-td :props="props">
           <div>
             <q-badge
-              :color="formatActionColor(props.value)"
-              :label="props.value"
+              :color="formatActionColor(props.row.action)"
+              :label="getAuditActionLabel(props.row.action)"
             />
           </div>
         </q-td>
@@ -155,6 +162,7 @@
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import { useClientDropdown } from "@/composables/clients";
 import { useAgentDropdown } from "@/composables/agents";
 import { useUserDropdown } from "@/composables/accounts";
@@ -166,130 +174,6 @@ import { formatTableColumnText } from "@/utils/format";
 import AuditLogDetailModal from "@/components/logs/AuditLogDetailModal.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
-
-// static data
-const columns = [
-  {
-    name: "entry_time",
-    label: "Time",
-    field: "entry_time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "Username",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "agent",
-    label: "Agent",
-    field: "agent",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "client",
-    label: "Client",
-    field: "site",
-    align: "left",
-    sortable: true,
-  },
-  { name: "site", label: "Site", field: "site", align: "left", sortable: true },
-  {
-    name: "action",
-    label: "Action",
-    field: "action",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  {
-    name: "object_type",
-    label: "Object",
-    field: "object_type",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  {
-    name: "message",
-    label: "Message",
-    field: "message",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "client_ip",
-    label: "Client IP",
-    field: "ip_address",
-    align: "left",
-    sortable: true,
-  },
-];
-
-const agentActionOptions = [
-  { value: "add", label: "Add Object" },
-  { value: "modify", label: "Modify Object" },
-  { value: "execute_command", label: "Execute Command" },
-  { value: "execute_script", label: "Execute Script" },
-  { value: "remote_session", label: "Remote Session" },
-  { value: "url_action", label: "URL Action" },
-];
-
-const actionOptions = [
-  { value: "agent_install", label: "Agent Installs" },
-  { value: "bulk_action", label: "Bulk Actions" },
-  { value: "delete", label: "Delete Object" },
-  { value: "failed_login", label: "Failed User login" },
-  { value: "login", label: "User Login" },
-  { value: "modify", label: "Modify Object" },
-  { value: "task_run", label: "Task Run Results" },
-];
-
-const objectOptions = [
-  { value: "agent", label: "Agent" },
-  { value: "automatedtask", label: "Automated Task" },
-  { value: "bulk", label: "Bulk Actions" },
-  { value: "coresettings", label: "Core Settings" },
-  { value: "check", label: "Check" },
-  { value: "client", label: "Client" },
-  { value: "policy", label: "Policy" },
-  { value: "site", label: "Site" },
-  { value: "script", label: "Script" },
-  { value: "user", label: "User" },
-  { value: "winupdatepolicy", label: "Patch Policy" },
-  { value: "alerttemplate", label: "Alert Template" },
-  { value: "role", label: "Role" },
-  { value: "urlaction", label: "URL Action" },
-  { value: "keystore", label: "Global Key Store" },
-  { value: "customfield", label: "Custom Field" },
-  { value: "schedule", label: "Schedule" },
-  { value: "reportschedule", label: "Report Schedule" },
-];
-
-const timeOptions = [
-  { value: 1, label: "1 Day Ago" },
-  { value: 7, label: "1 Week Ago" },
-  { value: 30, label: "30 Days Ago" },
-  { value: 90, label: "3 Months Ago" },
-  { value: 180, label: "6 Months Ago" },
-  { value: 365, label: "1 Year Ago" },
-  { value: 0, label: "Everything" },
-];
-
-const filterTypeOptions = [
-  {
-    label: "Clients",
-    value: "clients",
-  },
-  {
-    label: "Agents",
-    value: "agents",
-  },
-];
 
 export default {
   name: "AuditManager",
@@ -303,6 +187,7 @@ export default {
     },
   },
   setup(props) {
+    const { t } = useI18n();
     // setup vuex
     const store = useStore();
     const formatDate = computed(() => store.getters.formatDate);
@@ -334,6 +219,185 @@ export default {
       descending: true,
       page: 1,
     });
+
+    const columns = [
+      {
+        name: "entry_time",
+        label: t("settings.auditManager.columns.time"),
+        field: "entry_time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: t("settings.auditManager.columns.username"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "agent",
+        label: t("settings.auditManager.columns.agent"),
+        field: "agent",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "client",
+        label: t("settings.auditManager.columns.client"),
+        field: "client",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "site",
+        label: t("settings.auditManager.columns.site"),
+        field: "site",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "action",
+        label: t("settings.auditManager.columns.action"),
+        field: "action",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "object_type",
+        label: t("settings.auditManager.columns.object"),
+        field: "object_type",
+        align: "left",
+        sortable: true,
+        format: (val) => formatTableColumnText(val),
+      },
+      {
+        name: "message",
+        label: t("settings.auditManager.columns.message"),
+        field: "message",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "client_ip",
+        label: t("settings.auditManager.columns.clientIp"),
+        field: "ip_address",
+        align: "left",
+        sortable: true,
+      },
+    ];
+
+    const agentActionOptions = [
+      { value: "add", label: t("settings.auditManager.options.addObject") },
+      {
+        value: "modify",
+        label: t("settings.auditManager.options.modifyObject"),
+      },
+      {
+        value: "execute_command",
+        label: t("settings.auditManager.options.executeCommand"),
+      },
+      {
+        value: "execute_script",
+        label: t("settings.auditManager.options.executeScript"),
+      },
+      {
+        value: "remote_session",
+        label: t("settings.auditManager.options.remoteSession"),
+      },
+      {
+        value: "url_action",
+        label: t("settings.auditManager.options.urlAction"),
+      },
+    ];
+
+    const actionOptions = [
+      {
+        value: "agent_install",
+        label: t("settings.auditManager.options.agentInstalls"),
+      },
+      {
+        value: "bulk_action",
+        label: t("settings.auditManager.options.bulkActions"),
+      },
+      {
+        value: "delete",
+        label: t("settings.auditManager.options.deleteObject"),
+      },
+      {
+        value: "failed_login",
+        label: t("settings.auditManager.options.failedUserLogin"),
+      },
+      { value: "login", label: t("settings.auditManager.options.userLogin") },
+      {
+        value: "modify",
+        label: t("settings.auditManager.options.modifyObject"),
+      },
+      {
+        value: "task_run",
+        label: t("settings.auditManager.options.taskRunResults"),
+      },
+    ];
+
+    const objectOptions = [
+      { value: "agent", label: t("settings.auditManager.objects.agent") },
+      {
+        value: "automatedtask",
+        label: t("settings.auditManager.objects.automatedTask"),
+      },
+      { value: "bulk", label: t("settings.auditManager.objects.bulkActions") },
+      {
+        value: "coresettings",
+        label: t("settings.auditManager.objects.coreSettings"),
+      },
+      { value: "check", label: t("settings.auditManager.objects.check") },
+      { value: "client", label: t("settings.auditManager.objects.client") },
+      { value: "policy", label: t("settings.auditManager.objects.policy") },
+      { value: "site", label: t("settings.auditManager.objects.site") },
+      { value: "script", label: t("settings.auditManager.objects.script") },
+      { value: "user", label: t("settings.auditManager.objects.user") },
+      {
+        value: "winupdatepolicy",
+        label: t("settings.auditManager.objects.patchPolicy"),
+      },
+      {
+        value: "alerttemplate",
+        label: t("settings.auditManager.objects.alertTemplate"),
+      },
+      { value: "role", label: t("settings.auditManager.objects.role") },
+      {
+        value: "urlaction",
+        label: t("settings.auditManager.objects.urlAction"),
+      },
+      {
+        value: "keystore",
+        label: t("settings.auditManager.objects.globalKeyStore"),
+      },
+      {
+        value: "customfield",
+        label: t("settings.auditManager.objects.customField"),
+      },
+      { value: "schedule", label: t("settings.auditManager.objects.schedule") },
+      {
+        value: "reportschedule",
+        label: t("settings.auditManager.objects.reportSchedule"),
+      },
+    ];
+
+    const timeOptions = [
+      { value: 1, label: t("alerts.overview.timeOptions.dayAgo") },
+      { value: 7, label: t("alerts.overview.timeOptions.weekAgo") },
+      { value: 30, label: t("alerts.overview.timeOptions.days30Ago") },
+      { value: 90, label: t("alerts.overview.timeOptions.months3Ago") },
+      { value: 180, label: t("alerts.overview.timeOptions.months6Ago") },
+      { value: 365, label: t("alerts.overview.timeOptions.yearAgo") },
+      { value: 0, label: t("alerts.overview.timeOptions.everything") },
+    ];
+
+    const filterTypeOptions = [
+      { label: t("settings.auditManager.clients"), value: "clients" },
+      { label: t("settings.auditManager.agents"), value: "agents" },
+    ];
 
     async function search() {
       loading.value = true;
@@ -386,7 +450,7 @@ export default {
     }
 
     function formatActionColor(action) {
-      switch (action.toLowerCase()) {
+      switch (normalizeActionKey(action)) {
         case "modify":
           return dash_warning_color.value;
         case "add":
@@ -398,6 +462,20 @@ export default {
         default:
           return "primary";
       }
+    }
+
+    function normalizeActionKey(action) {
+      if (!action) return "";
+      return action.toString().trim().toLowerCase().replace(/\s+/g, "_");
+    }
+
+    function getAuditActionLabel(action) {
+      if (!action) return action;
+      const normalized = normalizeActionKey(action);
+      const translationKey = `settings.auditManager.actions.${normalized}`;
+      return t(translationKey) !== translationKey
+        ? t(translationKey)
+        : formatTableColumnText(normalized);
     }
 
     // watchers
@@ -461,8 +539,8 @@ export default {
       //computed
       tableNoDataText: computed(() =>
         searched.value
-          ? "No data found. Try to refine you search"
-          : "Click search to find audit logs",
+          ? t("settings.auditManager.noDataSearched")
+          : t("settings.auditManager.noDataInitial"),
       ),
 
       // methods
@@ -470,6 +548,7 @@ export default {
       onRequest,
       openAuditDetail,
       formatActionColor,
+      getAuditActionLabel,
       formatDate,
     };
   },

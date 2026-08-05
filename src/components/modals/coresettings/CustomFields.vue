@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">Custom Fields</div>
+      <div class="text-subtitle2">{{ $t("settings.customFields.title") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add custom field"
+        :label="$t('settings.customFields.addCustomField')"
         @click="addCustomField"
       />
     </div>
@@ -25,9 +25,9 @@
         narrow-indicator
         no-caps
       >
-        <q-tab name="client" label="Clients" />
-        <q-tab name="site" label="Sites" />
-        <q-tab name="agent" label="Agents" />
+        <q-tab name="client" :label="$t('settings.customFields.clients')" />
+        <q-tab name="site" :label="$t('settings.customFields.sites')" />
+        <q-tab name="agent" :label="$t('settings.customFields.agents')" />
       </q-tabs>
 
       <q-separator />

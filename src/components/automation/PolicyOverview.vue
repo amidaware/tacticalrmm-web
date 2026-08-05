@@ -9,10 +9,12 @@
           flat
           push
           icon="refresh"
-        />Policy Overview
+        />{{ $t("settings.automationManager.policyOverview") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.buttons.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-splitter v-model="splitterModel" style="height: 600px">
@@ -40,8 +42,16 @@
             narrow-indicator
             no-caps
           >
-            <q-tab name="checks" icon="fas fa-check-double" label="Checks" />
-            <q-tab name="tasks" icon="fas fa-tasks" label="Tasks" />
+            <q-tab
+              name="checks"
+              icon="fas fa-check-double"
+              :label="$t('settings.rolesForm.sections.checks')"
+            />
+            <q-tab
+              name="tasks"
+              icon="fas fa-tasks"
+              :label="$t('settings.rolesForm.sections.tasks')"
+            />
           </q-tabs>
           <q-tab-panels
             v-model="selectedTab"
@@ -143,10 +153,13 @@ export default {
 
           // Indicate if the policy is active or not
           if (!client.server_policy.active) {
-            disabled = " (disabled)";
+            disabled = this.$t("settings.policyOverview.disabledSuffix");
           }
 
-          const label = client.server_policy.name + " (Servers)" + disabled;
+          const label = this.$t("settings.policyOverview.policyLabelServers", {
+            name: client.server_policy.name,
+            disabled,
+          });
           client_temp["children"].push({
             label: label,
             icon: "policy",
@@ -161,11 +174,16 @@ export default {
 
           // Indicate if the policy is active or not
           if (!client.workstation_policy.active) {
-            disabled = " (disabled)";
+            disabled = this.$t("settings.policyOverview.disabledSuffix");
           }
 
-          const label =
-            client.workstation_policy.name + " (Workstations)" + disabled;
+          const label = this.$t(
+            "settings.policyOverview.policyLabelWorkstations",
+            {
+              name: client.workstation_policy.name,
+              disabled,
+            },
+          );
           client_temp["children"].push({
             label: label,
             icon: "policy",
@@ -192,10 +210,16 @@ export default {
             // Indicate if the policy is active or not
             let disabled = "";
             if (!site.server_policy.active) {
-              disabled = " (disabled)";
+              disabled = this.$t("settings.policyOverview.disabledSuffix");
             }
 
-            const label = site.server_policy.name + " (Servers)" + disabled;
+            const label = this.$t(
+              "settings.policyOverview.policyLabelServers",
+              {
+                name: site.server_policy.name,
+                disabled,
+              },
+            );
             site_temp["children"].push({
               label: label,
               icon: "policy",
@@ -211,11 +235,16 @@ export default {
             // Indicate if the policy is active or not
             let disabled = "";
             if (!site.workstation_policy.active) {
-              disabled = " (disabled)";
+              disabled = this.$t("settings.policyOverview.disabledSuffix");
             }
 
-            const label =
-              site.workstation_policy.name + " (Workstations)" + disabled;
+            const label = this.$t(
+              "settings.policyOverview.policyLabelWorkstations",
+              {
+                name: site.workstation_policy.name,
+                disabled,
+              },
+            );
             site_temp["children"].push({
               label: label,
               icon: "policy",

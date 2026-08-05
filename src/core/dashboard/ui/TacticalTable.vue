@@ -43,7 +43,9 @@ export default defineComponent({
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useStorage } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 import type { QTableColumn } from "quasar";
+const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -57,7 +59,7 @@ const props = withDefaults(
 
 const columnSelectCol = {
   name: "columnSelect",
-  label: "Column Select",
+  label: t("dashboard.tacticalTable.columnSelect"),
   field: "columnSelect",
 };
 

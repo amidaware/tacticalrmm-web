@@ -9,17 +9,19 @@
         flat
         push
         icon="refresh"
-      />User Administration
+      />{{ $t("settings.adminManager.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $t("common.buttons.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <div class="q-pa-md">
       <div class="q-gutter-sm">
         <q-btn
           ref="new"
-          label="New"
+          :label="$t('settings.adminManager.new')"
           dense
           flat
           push
@@ -43,7 +45,9 @@
         <template v-slot:header-cell-is_active="props">
           <q-th :props="props" auto-width>
             <q-icon name="power_settings_new" size="1.5em">
-              <q-tooltip>Enable User</q-tooltip>
+              <q-tooltip>{{
+                $t("settings.adminManager.enableUser")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -55,7 +59,9 @@
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
-            <span v-if="users.length === 0">No Users</span>
+            <span v-if="users.length === 0">{{
+              $t("settings.adminManager.noUsers")
+            }}</span>
           </div>
         </template>
 
@@ -77,7 +83,9 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $t("common.buttons.edit")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -88,7 +96,9 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{
+                    $t("common.buttons.delete")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -103,7 +113,9 @@
                   <q-item-section side>
                     <q-icon name="autorenew" />
                   </q-item-section>
-                  <q-item-section>Reset Password</q-item-section>
+                  <q-item-section>{{
+                    $t("settings.adminManager.resetPassword")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -116,7 +128,9 @@
                   <q-item-section side>
                     <q-icon name="autorenew" />
                   </q-item-section>
-                  <q-item-section>Reset Two-Factor Auth</q-item-section>
+                  <q-item-section>{{
+                    $t("settings.adminManager.resetTwoFactorAuth")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -131,7 +145,9 @@
                   <q-item-section side>
                     <q-icon name="groups" />
                   </q-item-section>
-                  <q-item-section>Show Connected SSO Accounts</q-item-section>
+                  <q-item-section>{{
+                    $t("settings.adminManager.showConnectedSsoAccounts")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -143,13 +159,17 @@
                   <q-item-section side>
                     <q-icon name="groups" />
                   </q-item-section>
-                  <q-item-section>Show Active Sessions</q-item-section>
+                  <q-item-section>{{
+                    $t("settings.adminManager.showActiveSessions")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{
+                    $t("common.buttons.close")
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -167,7 +187,7 @@
                 v-if="props.row.social_accounts.length > 0"
                 color="primary"
                 dense
-                >SSO</q-chip
+                >{{ $t("settings.adminManager.sso") }}</q-chip
               >
             </q-td>
             <q-td>{{ props.row.username }}</q-td>
@@ -176,7 +196,7 @@
             <q-td v-if="props.row.last_login">{{
               formatDate(props.row.last_login)
             }}</q-td>
-            <q-td v-else>Never</q-td>
+            <q-td v-else>{{ $t("agents.shared.never") }}</q-td>
             <q-td>{{ props.row.last_login_ip }}</q-td>
           </q-tr>
         </template>
@@ -238,7 +258,7 @@ export default {
       columns: [
         {
           name: "is_active",
-          label: "Active",
+          label: this.$t("settings.adminManager.columns.active"),
           field: "is_active",
           align: "left",
         },
@@ -251,35 +271,35 @@ export default {
         },
         {
           name: "username",
-          label: "Username",
+          label: this.$t("settings.adminManager.columns.username"),
           field: "username",
           align: "left",
           sortable: true,
         },
         {
           name: "name",
-          label: "Name",
+          label: this.$t("settings.common.name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "email",
-          label: "Email",
+          label: this.$t("settings.adminManager.columns.email"),
           field: "email",
           align: "left",
           sortable: true,
         },
         {
           name: "last_login",
-          label: "Last Login",
+          label: this.$t("settings.adminManager.columns.lastLogin"),
           field: "last_login",
           align: "left",
           sortable: true,
         },
         {
           name: "last_login_ip",
-          label: "Last Logon From",
+          label: this.$t("settings.adminManager.columns.lastLogonFrom"),
           field: "last_login_ip",
           align: "left",
           sortable: true,
@@ -308,14 +328,20 @@ export default {
     deleteUser(user) {
       this.$q
         .dialog({
-          title: `Delete user ${user.username}?`,
+          title: this.$t("settings.adminManager.deleteUserTitle", {
+            username: user.username,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.buttons.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$axios.delete(`/accounts/${user.id}/users/`).then(() => {
             this.getUsers();
-            this.notifySuccess(`User ${user.username} was deleted!`);
+            this.notifySuccess(
+              this.$t("settings.adminManager.notify.userDeleted", {
+                username: user.username,
+              }),
+            );
           });
         });
     },
@@ -345,8 +371,8 @@ export default {
         return;
       }
       let text = !user.is_active
-        ? "User enabled successfully"
-        : "User disabled successfully";
+        ? this.$t("settings.adminManager.notify.userEnabled")
+        : this.$t("settings.adminManager.notify.userDisabled");
 
       const data = {
         id: user.id,
@@ -376,9 +402,11 @@ export default {
 
       this.$q
         .dialog({
-          title: `Reset 2FA for ${user.username}?`,
+          title: this.$t("settings.adminManager.reset2faTitle", {
+            username: user.username,
+          }),
           cancel: true,
-          ok: { label: "Reset", color: "positive" },
+          ok: { label: this.$t("common.actions.reset"), color: "positive" },
         })
         .onOk(() => {
           this.$axios

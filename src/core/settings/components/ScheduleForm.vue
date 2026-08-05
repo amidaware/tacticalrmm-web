@@ -2,7 +2,11 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        {{ schedule ? "Edit" : "Add" }} Schedule
+        {{
+          schedule
+            ? t("settings.scheduleForm.editSchedule")
+            : t("settings.scheduleForm.addSchedule")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -14,9 +18,9 @@
             v-model="localSchedule.name"
             class="q-pa-sm"
             dense
-            label="Name"
+            :label="t('settings.common.name')"
             filled
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || t('settings.common.required')]"
           />
         </q-card-section>
 
@@ -24,7 +28,7 @@
           <q-option-group
             v-model="localSchedule.schedule_type"
             class="q-pa-sm"
-            label="Task run type"
+            :label="t('settings.scheduleForm.taskRunType')"
             :options="taskTypeOptions"
             dense
             inline
@@ -37,21 +41,21 @@
             class="q-pa-sm"
             type="time"
             dense
-            label="Hour:Minute"
+            :label="t('settings.scheduleForm.hourMinute')"
             stack-label
             filled
             v-model="localSchedule.run_time"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || t('settings.common.required')]"
           />
         </q-card-section>
 
         <!-- weekly options -->
         <q-card-section v-if="localSchedule.schedule_type === 'weekly'">
           <!-- day of week input -->
-          Run on Days:
-          <span v-if="dayOfWeekValidationError" class="text-negative"
-            >*Required</span
-          >
+          {{ t("settings.scheduleForm.runOnDays") }}:
+          <span v-if="dayOfWeekValidationError" class="text-negative">{{
+            t("settings.common.required")
+          }}</span>
           <q-option-group
             inline
             dense
@@ -72,21 +76,21 @@
             v-model="localSchedule.monthly_type"
             inline
             :options="[
-              { label: 'On Days', value: 'days' },
-              { label: 'On Weeks', value: 'weeks' },
+              { label: t('settings.scheduleForm.onDays'), value: 'days' },
+              { label: t('settings.scheduleForm.onWeeks'), value: 'weeks' },
             ]"
           />
 
           <!-- month select input -->
           <q-select
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || t('settings.common.required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_months_of_year"
             :options="monthOptions"
-            label="Run on Months"
+            :label="t('settings.scheduleForm.runOnMonths')"
             multiple
             emit-value
             map-options
@@ -94,7 +98,9 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All months</q-item-label>
+                  <q-item-label>{{
+                    t("settings.scheduleForm.allMonths")
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -130,14 +136,14 @@
           <!-- days of month select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'days'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || t('settings.common.required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_days_of_month"
             :options="dayOfMonthOptions"
-            label="Run on Days"
+            :label="t('settings.scheduleForm.runOnDays')"
             multiple
             emit-value
             map-options
@@ -145,7 +151,9 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All days</q-item-label>
+                  <q-item-label>{{
+                    t("settings.scheduleForm.allDays")
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -183,14 +191,14 @@
           <!-- week of month select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'weeks'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || t('settings.common.required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_weeks_of_month"
             :options="weekOptions"
-            label="Run on weeks"
+            :label="t('settings.scheduleForm.runOnWeeks')"
             multiple
             emit-value
             map-options
@@ -216,14 +224,14 @@
           <!-- day of week select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'weeks'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || t('settings.common.required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.run_time_weekdays"
             :options="dayOfWeekOptions"
-            label="Run on days"
+            :label="t('settings.scheduleForm.runOnDays')"
             multiple
             emit-value
             map-options
@@ -231,7 +239,9 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All days</q-item-label>
+                  <q-item-label>{{
+                    t("settings.scheduleForm.allDays")
+                  }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -266,12 +276,17 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn
+            dense
+            flat
+            :label="t('settings.common.cancel')"
+            v-close-popup
+          />
           <q-btn
             :loading="isLoading"
             dense
             flat
-            label="Save"
+            :label="t('settings.common.save')"
             color="primary"
             type="submit"
           />
@@ -285,26 +300,29 @@
 import { ref, reactive, watch } from "vue";
 import { until } from "@vueuse/shared";
 import { useDialogPluginComponent, date } from "quasar";
+import { useI18n } from "vue-i18n";
 
 import { useScheduleShared } from "../api";
 
 import type { Schedule } from "../types";
 
 // static data
+const { t } = useI18n();
+
 const taskTypeOptions = [
-  { label: "Daily", value: "daily" },
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
+  { label: t("settings.scheduleForm.frequency.daily"), value: "daily" },
+  { label: t("settings.scheduleForm.frequency.weekly"), value: "weekly" },
+  { label: t("settings.scheduleForm.frequency.monthly"), value: "monthly" },
 ];
 
 const dayOfWeekOptions = [
-  { label: "Monday", value: 0 },
-  { label: "Tuesday", value: 1 },
-  { label: "Wednesday", value: 2 },
-  { label: "Thursday", value: 3 },
-  { label: "Friday", value: 4 },
-  { label: "Saturday", value: 5 },
-  { label: "Sunday", value: 6 },
+  { label: t("settings.shared.weekday.monday"), value: 0 },
+  { label: t("settings.shared.weekday.tuesday"), value: 1 },
+  { label: t("settings.shared.weekday.wednesday"), value: 2 },
+  { label: t("settings.shared.weekday.thursday"), value: 3 },
+  { label: t("settings.shared.weekday.friday"), value: 4 },
+  { label: t("settings.shared.weekday.saturday"), value: 5 },
+  { label: t("settings.shared.weekday.sunday"), value: 6 },
 ];
 
 const dayOfMonthOptions = (() => {
@@ -314,31 +332,31 @@ const dayOfMonthOptions = (() => {
     result.push({ label: `${i}`, value: day });
     day = day + 1;
   }
-  result.push({ label: "Last Day", value: 32 });
+  result.push({ label: t("settings.scheduleForm.lastDay"), value: 32 });
   return result;
 })();
 
 const monthOptions = [
-  { label: "January", value: 1 },
-  { label: "February", value: 2 },
-  { label: "March", value: 3 },
-  { label: "April", value: 4 },
-  { label: "May", value: 5 },
-  { label: "June", value: 6 },
-  { label: "July", value: 7 },
-  { label: "August", value: 8 },
-  { label: "September", value: 9 },
-  { label: "October", value: 10 },
-  { label: "November", value: 11 },
-  { label: "December", value: 12 },
+  { label: t("settings.shared.month.january"), value: 1 },
+  { label: t("settings.shared.month.february"), value: 2 },
+  { label: t("settings.shared.month.march"), value: 3 },
+  { label: t("settings.shared.month.april"), value: 4 },
+  { label: t("settings.shared.month.may"), value: 5 },
+  { label: t("settings.shared.month.june"), value: 6 },
+  { label: t("settings.shared.month.july"), value: 7 },
+  { label: t("settings.shared.month.august"), value: 8 },
+  { label: t("settings.shared.month.september"), value: 9 },
+  { label: t("settings.shared.month.october"), value: 10 },
+  { label: t("settings.shared.month.november"), value: 11 },
+  { label: t("settings.shared.month.december"), value: 12 },
 ];
 
 const weekOptions = [
-  { label: "First Week", value: 1 },
-  { label: "Second Week", value: 2 },
-  { label: "Third Week", value: 3 },
-  { label: "Fourth Week", value: 4 },
-  { label: "Last Week", value: 5 },
+  { label: t("settings.scheduleForm.week.first"), value: 1 },
+  { label: t("settings.scheduleForm.week.second"), value: 2 },
+  { label: t("settings.scheduleForm.week.third"), value: 3 },
+  { label: t("settings.scheduleForm.week.fourth"), value: 4 },
+  { label: t("settings.scheduleForm.week.last"), value: 5 },
 ];
 
 const props = defineProps<{

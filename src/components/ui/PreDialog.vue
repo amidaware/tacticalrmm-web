@@ -9,7 +9,9 @@
           size="md"
           icon="content_copy"
           @click="copyOutput(message)"
-          ><q-tooltip>Copy to Clipboard</q-tooltip></q-btn
+          ><q-tooltip>{{
+            t("dashboard.preDialog.copyToClipboard")
+          }}</q-tooltip></q-btn
         >
       </q-card-section>
 
@@ -18,7 +20,7 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn label="OK" @click="onOKClick" />
+        <q-btn :label="t('common.buttons.ok')" @click="onOKClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -26,6 +28,7 @@
 
 <script setup>
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { copyOutput } from "@/utils/helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,6 +52,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
+const { t } = useI18n();
 
 function onOKClick() {
   onDialogOK();

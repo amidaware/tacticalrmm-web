@@ -24,3 +24,6 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint -- --max-warnings=0
+
+      - name: Check i18n key parity and placeholders
+        run: npm run i18n:check
