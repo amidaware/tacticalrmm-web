@@ -675,8 +675,19 @@ export function useReportingSchedules() {
     isError.value = false;
 
     axios
-      .post(`${baseUrl}/schedules/${id}/run/`)
-      .then(() => {
+      .post<{
+        status: string;
+        reason?: string;
+        index?: number;
+        message?: string;
+      }>(`${baseUrl}/schedules/${id}/run/`)
+      .then((response) => {
+        if (response.data?.status === "skipped") {
+          notifySuccess(
+            response.data.message || "Skipped. A condition was not true.",
+          );
+          return;
+        }
         notifySuccess(
           "Report Schedule was run. Check the Report History for the status.",
         );

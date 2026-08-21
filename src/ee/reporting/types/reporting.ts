@@ -77,10 +77,14 @@ export interface ReportSchedule {
   report_template_name?: string;
   format: ReportFormat;
   schedule?: number;
+  schedule_name?: string;
   email_recipients: string[];
   send_report_email: boolean;
   last_run?: string;
+  last_run_status?: "" | "success" | "skipped" | "error";
+  last_run_message?: string;
   dependencies: ReportDependencies;
+  conditions: string[];
   email_settings: EmailSettings;
   timezone: string | null;
 }

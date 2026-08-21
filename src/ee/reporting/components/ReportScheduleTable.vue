@@ -196,6 +196,34 @@ const columns: QTableColumn[] = [
     sortable: true,
     format: (val: string) => (val ? formatDate(val) : "Never"),
   },
+  {
+    name: "last_run_status",
+    label: "Last Status",
+    field: (row: ReportSchedule) => {
+      const val = row.last_run_status;
+      if (!val) return "None";
+      const label = capitalize(val);
+      if (
+        (val === "skipped" || val === "error") &&
+        row.last_run_message
+      ) {
+        return `${label}: ${row.last_run_message}`;
+      }
+      return label;
+    },
+    align: "center",
+    sortable: true,
+  },
+  {
+    name: "conditions",
+    label: "Conditions",
+    field: (row: ReportSchedule) =>
+      row.conditions && row.conditions.length > 0
+        ? String(row.conditions.length)
+        : "None",
+    align: "center",
+    sortable: false,
+  },
 ];
 
 // emits
