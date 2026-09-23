@@ -34,6 +34,16 @@
         />
       </q-card-section>
       <q-card-section>
+        <div class="q-pl-sm">Platform</div>
+        <q-radio
+          v-for="opt in agentPlatOptions"
+          :key="opt.value"
+          v-model="state.plat"
+          :val="opt.value"
+          :label="opt.label"
+        />
+      </q-card-section>
+      <q-card-section>
         <q-input
           type="datetime-local"
           dense
@@ -84,7 +94,12 @@ import {
   formatDateInputField,
   formatDateStringwithTimezone,
 } from "@/utils/format";
-import { GOARCH_AMD64, GOARCH_i386 } from "@/constants/constants";
+import {
+  GOARCH_AMD64,
+  GOARCH_i386,
+  AGENT_PLAT_WINDOWS,
+  agentPlatOptions,
+} from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -106,6 +121,7 @@ export default {
       site: null,
       expires: formatDateInputField(date.addToDate(Date.now(), { days: 30 })),
       agenttype: "server",
+      plat: AGENT_PLAT_WINDOWS,
       power: false,
       rdp: false,
       ping: false,
@@ -150,6 +166,7 @@ export default {
       // constants
       GOARCH_AMD64,
       GOARCH_i386,
+      agentPlatOptions,
     };
   },
 };
