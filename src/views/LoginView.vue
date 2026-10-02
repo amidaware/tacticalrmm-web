@@ -7,7 +7,13 @@
         >
           <q-card-section>
             <div class="text-center q-pt-lg">
-              <div class="col text-h4 ellipsis">Tactical RMM</div>
+              <img
+                :src="$q.dark.isActive ? BRAND.logoReverse : BRAND.logoDark"
+                :alt="BRAND.company"
+                style="height: 56px"
+                class="q-mb-sm"
+              />
+              <div class="col text-h4 ellipsis">{{ BRAND.name }}</div>
             </div>
           </q-card-section>
           <q-card-section>
@@ -114,6 +120,9 @@
 </template>
 
 <script setup lang="ts">
+// Product name and logos come from the branding module, never inline.
+import { BRAND } from "@/branding";
+
 import { ref, reactive, onMounted } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";

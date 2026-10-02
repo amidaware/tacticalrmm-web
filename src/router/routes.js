@@ -1,4 +1,9 @@
+import { useStorage } from "@vueuse/core";
 import { useAuthStore } from "@/stores/auth";
+import {
+  getSSOProviderToken,
+  openSSOProviderRedirect,
+} from "@/ee/sso/api/sso";
 
 const routes = [
   {
@@ -57,6 +62,60 @@ const routes = [
     },
   },
   {
+    path: "/remoteproxy/:agent_id",
+    name: "RemoteProxy",
+    component: () => import("@/views/RemoteProxy.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    // The phone app's home screen (installable PWA; see public/manifest.webmanifest).
+    path: "/m",
+    name: "PiMobile",
+    component: () => import("@/views/PiMobile.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    path: "/pichat/:agent_id",
+    name: "PiChat",
+    component: () => import("@/views/PiChat.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+
+  {
+    path: "/ai-decision/:token",
+    name: "AIDecision",
+    // Stateful, streaming ticket chat - reuses the device-chat UI (PiChat).
+    component: () => import("@/views/PiChat.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+
+  {
+    path: "/ai-procedures",
+    name: "AIProcedures",
+    component: () => import("@/views/AIProcedures.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+
+  {
+    path: "/ai-ticket-console",
+    name: "AITicketConsole",
+    component: () => import("@/views/AITicketConsole.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+
+  {
     path: "/webterm",
     name: "WebTerm",
     component: () => import("@/views/WebTerminal.vue"),
@@ -87,6 +146,35 @@ const routes = [
     beforeEnter: (_, from) => {
       const auth = useAuthStore();
       auth.next = from.fullPath;
+    },
+  },
+  {
+    // SSO (allauth) redirects the browser back here after provider login.
+    // Faithful reproduction of the route the official/paid build injects so a
+    // local build keeps SSO working. Matches callback_url in src/ee/sso/api/sso.ts.
+    path: "/account/provider/callback",
+    name: "ProviderCallback",
+    component: () => import("@/ee/sso/views/ProviderCallback.vue"),
+    beforeEnter: async (to) => {
+      const auth = useAuthStore();
+      if (auth.loggedIn) return true;
+      try {
+        const data = await getSSOProviderToken();
+        auth.token = data.token;
+        auth.username = data.username;
+        auth.ssoLoginProvider = data.provider;
+        auth.name = data.name;
+      } catch (err) {
+        if (err.response?.status === 403) {
+          const provider_id = useStorage("provider_id", null);
+          if (provider_id.value) {
+            openSSOProviderRedirect(provider_id.value);
+            provider_id.value = null;
+            return false;
+          }
+          to.query.error = "SSO Login not in progress";
+        }
+      }
     },
   },
   { path: "/:catchAll(.*)", component: () => import("@/views/NotFound.vue") },

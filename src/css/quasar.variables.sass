@@ -12,11 +12,9 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary   : #1976D2
-$secondary : #26A69A
-$accent    : #9C27B0
-
-$dark      : #1D1D1D
+// BlueCloud palette lives in the branding module so upstream releases do not
+// conflict over our colours. See src/branding/README.md.
+@import "../branding/brand.sass"
 
 $positive  : #21BA45
 $negative  : #C10015

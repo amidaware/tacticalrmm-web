@@ -3,7 +3,10 @@
     <script-output-copy-clip label="Live Output" :data="outputText" />
     <q-separator class="q-my-sm" />
   </q-card-section>
-  <div class="command-stream" ref="streamContainer" v-if="hasText">
+  <!-- Same scroll rule as the AI chat windows (PiChat.vue): live output follows the
+       bottom only while the reader is AT the bottom (within 1% of the scrolled area), so
+       scrolling up to read or copy a line is not undone by the next chunk. -->
+  <div class="command-stream" ref="streamContainer" v-if="hasText" @scroll.passive="onScroll">
     <div class="terminal">
       <pre class="mt-0">{{ outputText }}</pre>
     </div>
@@ -22,6 +25,7 @@ import {
 import { useTemplateRef } from "vue";
 import { useAgentCmdWSConnection } from "@/websocket/agent";
 import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue";
+import { isFollowingBottom } from "@/utils/scrollFollow";
 import { uid } from "quasar";
 
 const props = defineProps({
@@ -48,6 +52,15 @@ let firstChunk = false;
 
 const hasText = computed(() => outputText.value.trim() !== "");
 
+// Follow the output only while the view is within 1% of the bottom of the scrolled area
+// (utils/scrollFollow.js - the same rule as the AI chat windows). One long command's output
+// is exactly where someone scrolls up to copy an error out of.
+let following = true;
+
+function onScroll() {
+  following = isFollowingBottom(streamContainer.value);
+}
+
 watchEffect(() => {
   if (data.value.length) {
     outputText.value = data.value.map((msg) => msg.output).join("\n");
@@ -59,7 +72,7 @@ watchEffect(() => {
     }
 
     nextTick(() => {
-      if (streamContainer.value) {
+      if (streamContainer.value && following) {
         streamContainer.value.scrollTop = streamContainer.value.scrollHeight;
       }
     });

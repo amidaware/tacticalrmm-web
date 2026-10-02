@@ -26,6 +26,147 @@ export function openAgentWindow(agent_id) {
   });
 }
 
+export function runRemoteProxy(agent_id, query = {}) {
+  const url = router.resolve({
+    path: `/remoteproxy/${agent_id}`,
+    query,
+  }).href;
+  openURL(url, null, {
+    popup: true,
+    scrollbars: true,
+    location: false,
+    status: false,
+    toolbar: false,
+    menubar: false,
+    width: 1400,
+    height: 950,
+  });
+}
+
+export async function createWebProxySession(agent_id, payload) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/webproxy/`, payload);
+  return data;
+}
+
+// Remembered Auto-approve preference. Lives on the user (not the socket) so the choice
+// survives refreshes and applies to every AI chat window the tech opens.
+export async function saveAIAutoApprove(value) {
+  const { data } = await axios.patch("/accounts/users/ui/", {
+    ai_autoapprove_default: !!value,
+  });
+  return data;
+}
+
+// Remembered Auto-credential preference. Same reasoning as Auto-approve: the choice
+// belongs to the person, not to one socket, so it survives refreshes and second windows.
+// The PERMISSION is still the role's (can_use_ai_autocredential) and is re-checked on the
+// server every time - remembering a preference can never grant it.
+export async function saveAIAutoCredential(value) {
+  const { data } = await axios.patch("/accounts/users/ui/", {
+    ai_autocredential_default: !!value,
+  });
+  return data;
+}
+
+// Pi.dev AI assistant
+// Open a Pi chat popup at a GUARANTEED size.
+//
+// Why not Quasar's openURL(): it force-injects `noopener` (see quasar/src/utils/open-url),
+// which makes window.open() return null, so the caller can never correct the geometry
+// afterwards. That matters because Chrome REMEMBERS the bounds of the last popup a user
+// resized for an origin and silently ignores the width/height passed to window.open() for
+// later popups - so simply raising the number in the features string does nothing once
+// anyone has resized a Pi chat window. We open it directly (same-origin, so omitting
+// noopener is safe) and then resizeTo() to override the remembered bounds.
+function openPiWindow(url, width = 1500, height = 900) {
+  // Never ask for more than the screen actually has, or the window lands off-screen.
+  const scr = window.screen || {};
+  const w = Math.min(width, scr.availWidth || width);
+  const h = Math.min(height, scr.availHeight || height);
+  // Centring matters: Chrome is far more willing to honour width/height when an explicit
+  // position is supplied too, and without it a forced resize can push the window off-screen.
+  const left = Math.max(0, Math.round(((scr.availWidth || w) - w) / 2) + (scr.availLeft || 0));
+  const top = Math.max(0, Math.round(((scr.availHeight || h) - h) / 2) + (scr.availTop || 0));
+  const features =
+    "popup=yes,scrollbars=yes,location=no,status=no,toolbar=no,menubar=no," +
+    `width=${w},height=${h},left=${left},top=${top}`;
+
+  const win = window.open(url, "_blank", features);
+  if (!win) return null; // blocked by a popup blocker
+
+  // Chrome REMEMBERS the bounds of the last popup a user resized for an origin and
+  // re-applies them, sometimes AFTER the open call returns - so a single resizeTo() on the
+  // same tick can be silently undone. Reassert the geometry a few times: immediately, on
+  // load, and once more shortly after. Cheap, idempotent, and stops when it has taken.
+  const enforce = () => {
+    try {
+      if (win.closed) return;
+      if (Math.abs(win.outerWidth - w) > 20 || Math.abs(win.outerHeight - h) > 20) {
+        win.resizeTo(w, h);
+        win.moveTo(left, top);
+      }
+    } catch (e) {
+      /* browser refused; the features string above is the fallback */
+    }
+  };
+
+  enforce();
+  try {
+    win.addEventListener("load", enforce, { once: true });
+  } catch (e) { /* not yet navigable */ }
+  setTimeout(enforce, 150);
+  setTimeout(enforce, 600);
+  try { win.focus(); } catch (e) { /* ignore */ }
+  return win;
+}
+
+export function runPiChat(agent_id, query = {}) {
+  const url = router.resolve({
+    path: `/pichat/${agent_id}`,
+    query,
+  }).href;
+  openPiWindow(url);
+}
+
+export async function createPiSession(agent_id, payload = {}) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/pi/session/`, payload);
+  return data;
+}
+
+// Multi-machine Pi.dev session: machines = [{agent_id, role}]
+export async function createPiMultiSession(payload = {}) {
+  const { data } = await axios.post(`${baseUrl}/pi/multisession/`, payload);
+  return data;
+}
+
+export function encodePiMachines(machines) {
+  return btoa(unescape(encodeURIComponent(JSON.stringify(machines))));
+}
+
+export function decodePiMachines(encoded) {
+  return JSON.parse(decodeURIComponent(escape(atob(encoded))));
+}
+
+export function runPiMultiChat(machines, query = {}) {
+  const url = router.resolve({
+    path: "/pichat/multi",
+    query: { m: encodePiMachines(machines), ...query },
+  }).href;
+  openPiWindow(url);
+}
+
+export async function fetchPiHistory(agent_id) {
+  const { data } = await axios.get(`${baseUrl}/${agent_id}/pi/history/`);
+  return data;
+}
+
+export async function deletePiHistory(agent_id, session_id) {
+  const { data } = await axios.delete(`${baseUrl}/${agent_id}/pi/history/`, {
+    data: { session_id },
+  });
+  return data;
+}
+
 export function runRemoteBackground(agent_id, agentPlatform) {
   const url = router.resolve(
     `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`,
@@ -175,6 +316,15 @@ export async function fetchAgentWebVNCUrl(agent_id, port) {
   } catch (e) {
     console.error(e);
   }
+}
+
+// VNC to a device on the agent's LAN (relayed through the agent via MeshCentral's
+// bundled noVNC viewer). addr = the LAN device IP.
+export async function fetchWebProxyVNCUrl(agent_id, addr, port) {
+  const { data } = await axios.get(`${baseUrl}/${agent_id}/${port}/webvnc/`, {
+    params: { addr },
+  });
+  return data;
 }
 
 export async function scheduleAgentReboot(agent_id, payload) {

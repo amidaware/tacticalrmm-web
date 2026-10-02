@@ -1,0 +1,43 @@
+{
+  "name": "Pi.dev - BlueCloud AI",
+  "short_name": "Pi.dev",
+  "description": "Every AI Decision and Pi chat you can see, from your phone. The AI runs on the server; this is a view onto it.",
+  "id": "/m",
+  "start_url": "/m",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121212",
+  "theme_color": "#1a3c6e",
+  "icons": [
+    {
+      "src": "/icons/pi-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/pi-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Inbox",
+      "url": "/m",
+      "icons": [
+        {
+          "src": "/icons/pi-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "prefer_related_applications": false
+}

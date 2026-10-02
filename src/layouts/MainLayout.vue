@@ -60,7 +60,15 @@
           <q-tooltip>Back to Dashboard</q-tooltip>
         </q-btn>
         <q-toolbar-title>
-          Tactical RMM<span class="text-overline q-ml-sm"
+          <!-- Reverse (white) logo: this toolbar is dark, so the standard
+               dark-text logo would be invisible on it. -->
+          <img
+            :src="$q.dark.isActive ? BRAND.logoReverse : BRAND.logoDark"
+            :alt="BRAND.company"
+            style="height: 24px; vertical-align: middle"
+            class="q-mr-sm"
+          />
+          {{ BRAND.name }}<span class="text-overline q-ml-sm"
             >v{{ currentTRMMVersion }}</span
           >
           <!-- update check -->
@@ -217,6 +225,9 @@
   </q-layout>
 </template>
 <script setup lang="ts">
+// Product name and logos come from the branding module, never inline.
+import { BRAND } from "@/branding";
+
 // composition imports
 import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import { useQuasar } from "quasar";

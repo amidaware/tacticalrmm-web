@@ -42,6 +42,32 @@
       <q-item-section>VNC</q-item-section>
     </q-item>
 
+    <!-- remote web proxy / tunnel -->
+    <q-item
+      clickable
+      v-ripple
+      v-close-popup
+      @click="launchRemoteProxy(agent.agent_id)"
+    >
+      <q-item-section side>
+        <q-icon size="xs" name="public" />
+      </q-item-section>
+      <q-item-section>Remote Proxy</q-item-section>
+    </q-item>
+
+    <!-- Pi.dev AI assistant -->
+    <q-item
+      clickable
+      v-ripple
+      v-close-popup
+      @click="launchPiChat(agent.agent_id)"
+    >
+      <q-item-section side>
+        <q-icon size="xs" name="smart_toy" />
+      </q-item-section>
+      <q-item-section>Pi.dev</q-item-section>
+    </q-item>
+
     <q-item clickable v-ripple :disable="urlActions.length === 0">
       <q-item-section side>
         <q-icon size="xs" name="open_in_new" />
@@ -258,6 +284,8 @@ import {
   runRemoteBackground,
   runTakeControl,
   runWebVNC,
+  runRemoteProxy,
+  runPiChat,
   wakeUpWOL,
 } from "@/api/agents";
 import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
@@ -430,6 +458,17 @@ export default {
       }).onOk(refreshDashboard);
     }
 
+    function launchRemoteProxy(agent_id) {
+      runRemoteProxy(agent_id);
+    }
+
+    // Pi.dev from the agent (right-click) menu ALWAYS starts a brand new conversation.
+    // Carrying on an older one is done deliberately from the AI History tab ("Continue"),
+    // so this entry point never silently inherits whatever was last discussed.
+    function launchPiChat(agent_id) {
+      runPiChat(agent_id, { new: "1" });
+    }
+
     function launchWebVNC(agent_id) {
       $q.dialog({
         title: "VNC Server Port",
@@ -593,6 +632,8 @@ export default {
       pingAgent,
       wakeUp,
       launchWebVNC,
+      launchRemoteProxy,
+      launchPiChat,
     };
   },
 };

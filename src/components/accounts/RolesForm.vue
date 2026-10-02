@@ -139,6 +139,103 @@
               />
             </div>
           </q-card-section>
+          <div class="text-subtitle2">Pi.dev AI</div>
+          <q-separator />
+          <q-card-section class="row">
+            <div class="col-12 q-gutter-sm q-mb-sm">
+              <q-checkbox
+                v-model="localRole.can_use_ai"
+                label="Use Pi.dev AI Assistant"
+              />
+              <q-checkbox
+                v-model="localRole.can_use_ai_mutate"
+                label="Allow write (mutating) actions"
+              >
+                <q-tooltip>
+                  When off, the AI session is read-only: it can inspect devices
+                  but the write tools (run script, kill process, reboot) are
+                  removed and run_command refuses destructive commands.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_use_ai_autoapprove"
+                label="Allow auto-approve of device actions"
+              />
+              <q-checkbox
+                v-model="localRole.can_use_ai_autocredential"
+                label="Allow auto-credential (stored IT Notebook logins)"
+              >
+                <q-tooltip>
+                  Lets this role switch on Auto-credential in an AI window, so Pi can
+                  use a stored IT Notebook login without stopping to ask for each
+                  retrieval. Separate from auto-approve on purpose: approving a device
+                  change and handing over a live password are different decisions.
+                  PRIVILEGED rows are never covered &mdash; they ask a human every time
+                  &mdash; and every automatic read is still written to the audit log.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_take_over_ai_session"
+                label="Take over an AI session someone else is driving"
+              >
+                <q-tooltip>
+                  AI chats run on the server; anyone who opens one that another person is
+                  driving sees it read-only. This lets the role take the seat. If the current
+                  driver is a superuser they must agree first (no answer = no); otherwise the
+                  take-over is immediate and the previous driver keeps watching. Superusers
+                  always have this.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_use_ai_sales"
+                label="Use Sales / ERP quotation tools"
+              >
+                <q-tooltip>
+                  Lets this role create, read and amend Odoo QUOTATIONS from the AI
+                  Decision window. Without it the sales tool is never loaded, so the AI
+                  cannot touch the ERP or even offer to. With it, quotation changes
+                  behave like device changes: they need Write mode, and Auto-approve
+                  skips the per-call prompt. Quotes stay drafts &mdash; the AI never
+                  confirms a Sales Order and never sends one to a customer by itself.
+                  Also requires the ERP to be wired up in Global Settings &rarr; Pi.dev
+                  AI &rarr; Sales.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_manage_all_ai_tasks"
+                label="Manage/delete all AI tasks & bulk commands (any owner)"
+              >
+                <q-tooltip>
+                  Allows editing/deleting scheduled AI tasks and bulk AI commands
+                  created by OTHER users, including on agents outside this role's
+                  normal scope. Superusers always have this.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
+                v-model="localRole.can_view_ai_cost"
+                label="View AI cost meter (token & spend)"
+              >
+                <q-tooltip>
+                  Shows the live cost meter in Pi Chat and the AI Decision window:
+                  what the current conversation has spent, tokens used, and how full
+                  the model's context is. Visibility only &mdash; it grants no AI
+                  capability. Superusers always have this.
+                </q-tooltip>
+              </q-checkbox>
+            </div>
+            <q-select
+              v-model="localRole.ai_allowed_models"
+              :options="aiModelOptions"
+              emit-value
+              map-options
+              multiple
+              outlined
+              dense
+              use-chips
+              label="Allowed AI models (empty = global default only)"
+              class="col-12"
+            />
+          </q-card-section>
           <div class="text-subtitle2">Core</div>
           <q-separator />
           <q-card-section class="row">
@@ -443,7 +540,8 @@
 
 <script>
 // composition imports
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
+import { fetchAIModels } from "@/api/core";
 import { useStore } from "vuex";
 import { useDialogPluginComponent } from "quasar";
 import { saveRole, editRole } from "@/api/accounts";
@@ -470,6 +568,20 @@ export default {
     const { clientOptions } = useClientDropdown(true);
     const { siteOptions } = useSiteDropdown(true);
 
+    // AI model options for the allowed-models multiselect
+    const aiModelOptions = ref([]);
+    onMounted(async () => {
+      try {
+        const models = await fetchAIModels();
+        aiModelOptions.value = models.map((m) => ({
+          label: `${m.display_name} (${m.provider_name}/${m.model_id})`,
+          value: m.id,
+        }));
+      } catch (e) {
+        aiModelOptions.value = [];
+      }
+    });
+
     const role = props.role
       ? ref(Object.assign({}, props.role))
       : ref({
@@ -479,6 +591,15 @@ export default {
           can_list_agents: false,
           can_recover_agents: false,
           can_use_mesh: false,
+          can_use_ai: false,
+          can_use_ai_mutate: false,
+          can_use_ai_autoapprove: false,
+          can_use_ai_autocredential: false,
+          can_take_over_ai_session: false,
+          can_use_ai_sales: false,
+          can_manage_all_ai_tasks: false,
+          can_view_ai_cost: false,
+          ai_allowed_models: [],
           can_uninstall_agents: false,
           can_update_agents: false,
           can_edit_agent: false,
@@ -598,6 +719,7 @@ export default {
       loading,
       clientOptions,
       siteOptions,
+      aiModelOptions,
       hosted,
 
       onSubmit,

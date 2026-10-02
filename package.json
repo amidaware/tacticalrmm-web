@@ -2,12 +2,13 @@
   "name": "web",
   "version": "0.101.64",
   "private": true,
-  "productName": "Tactical RMM",
+  "productName": "BlueCloud RMM",
   "scripts": {
     "serve": "quasar dev",
     "build": "quasar build",
     "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore",
+    "brand:sync": "cp src/branding/assets/favicon.ico public/favicon.ico"
   },
   "dependencies": {
     "@quasar/extras": "1.16.17",
