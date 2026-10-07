@@ -1,28 +1,28 @@
 import axios from "axios";
 import { openURL } from "quasar";
 import { router } from "@/router";
-import { getCenteredWindowOptions } from "@/utils/helpers";
+import { getRemoteWindowOptions } from "@/utils/helpers";
 
 const baseUrl = "/agents";
 
 export function runTakeControl(agent_id) {
   const url = router.resolve(`/takecontrol/${agent_id}`).href;
   openURL(url, null, {
-    ...getCenteredWindowOptions(1600, 900),
+    ...getRemoteWindowOptions(1600, 900),
   });
 }
 
 export function runWebVNC(agent_id, port) {
   const url = router.resolve(`/webvnc/${agent_id}/${port}`).href;
   openURL(url, null, {
-    ...getCenteredWindowOptions(1600, 900),
+    ...getRemoteWindowOptions(1600, 900),
   });
 }
 
 export function openAgentWindow(agent_id) {
   const url = router.resolve(`/agents/${agent_id}`).href;
   openURL(url, null, {
-    ...getCenteredWindowOptions(1600, 900),
+    ...getRemoteWindowOptions(1600, 900),
   });
 }
 
@@ -31,7 +31,7 @@ export function runRemoteBackground(agent_id, agentPlatform) {
     `/remotebackground/${agent_id}?agentPlatform=${agentPlatform}`,
   ).href;
   openURL(url, null, {
-    ...getCenteredWindowOptions(1280, 900),
+    ...getRemoteWindowOptions(1280, 900),
   });
 }
 
