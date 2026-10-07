@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import { Screen, Dark, LoadingBar } from "quasar";
 import axios from "axios";
 import { formatDate } from "@/utils/format";
+import { setRemoteOpenMode } from "@/utils/helpers";
 
 export default function () {
   const Store = new createStore({
@@ -246,6 +247,7 @@ export default function () {
         commit("setLatestTRMMVersion", data.latest_trmm_ver);
         commit("SET_AGENT_DBLCLICK_ACTION", data.dbl_click_action);
         commit("SET_URL_ACTION", data.url_action);
+        setRemoteOpenMode(data.remote_open_mode);
         commit("setShowCommunityScripts", data.show_community_scripts);
         commit("SET_HOSTED", data.hosted);
         commit("SET_TOKEN_EXPIRED", data.token_is_expired);
