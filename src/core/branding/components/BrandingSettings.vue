@@ -1,7 +1,11 @@
 <template>
-  <div>
+  <!-- Enter must not submit the surrounding Global Settings form -->
+  <div @keydown.enter="onEnter">
     <div class="text-subtitle2">Branding</div>
     <q-separator />
+    <q-banner v-if="!branding.config" dense class="bg-warning text-black">
+      Branding settings could not be loaded. Reload the page to edit them.
+    </q-banner>
     <q-card-section class="row items-center">
       <div class="col-4">Product name:</div>
       <q-input
@@ -56,7 +60,13 @@
       </q-input>
     </q-card-section>
     <q-card-section>
-      <q-btn label="Save" color="primary" :loading="saving" @click="save" />
+      <q-btn
+        label="Save"
+        color="primary"
+        :loading="saving"
+        :disable="!branding.config"
+        @click="save"
+      />
     </q-card-section>
 
     <q-separator />
@@ -176,7 +186,15 @@ function loadForm() {
   for (const field of colorFields) form[field.key] = c[field.key];
 }
 
+function onEnter(e: KeyboardEvent) {
+  if ((e.target as HTMLElement).tagName !== "INPUT") return;
+  e.preventDefault();
+  save();
+}
+
 async function save() {
+  // without the current config the form would overwrite saved values with ""
+  if (!branding.config) return;
   if (colorFields.some((field) => validHex(form[field.key]) !== true)) {
     notifyError("Fix the invalid colors first");
     return;

@@ -32,7 +32,10 @@ export const useBrandingStore = defineStore("branding", () => {
   }
 
   async function refresh() {
-    config.value = await fetchBranding();
+    // keep the last known config if a refresh fails, so a network blip
+    // neither resets the UI to defaults nor empties the settings form
+    const fresh = await fetchBranding();
+    if (fresh) config.value = fresh;
     applyBranding(config.value, productName.value, imageUrl("favicon"));
   }
 
