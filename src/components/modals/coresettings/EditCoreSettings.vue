@@ -15,6 +15,7 @@
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
+          <q-tab name="agentmenu" label="Agent Menu" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -744,6 +745,21 @@
                 <ScheduleTable />
               </q-tab-panel>
 
+              <!-- agent menu: part of settings, saved with the shared Save button -->
+              <q-tab-panel name="agentmenu">
+                <div class="text-subtitle2">Agent Menu</div>
+                <q-separator />
+                <q-card-section>
+                  <q-toggle
+                    v-model="settings.agent_menu_allow_user"
+                    label="Allow users to customize the agent menu"
+                  />
+                </q-card-section>
+                <q-card-section>
+                  <AgentMenuLayoutEditor v-model="settings.agent_menu_layout" />
+                </q-card-section>
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -795,7 +811,8 @@
                 tab === 'emailalerts' ||
                 tab === 'smsalerts' ||
                 tab === 'meshcentral' ||
-                tab === 'retention'
+                tab === 'retention' ||
+                tab === 'agentmenu'
               "
               label="Save"
               color="primary"
@@ -835,6 +852,7 @@ import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
+import AgentMenuLayoutEditor from "@/core/agentmenu/components/AgentMenuLayoutEditor.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -847,6 +865,7 @@ export default {
     SSOProvidersTable,
     TacticalDropdown,
     ScheduleTable,
+    AgentMenuLayoutEditor,
   },
   mixins: [mixins],
   data() {
