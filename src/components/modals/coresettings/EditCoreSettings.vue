@@ -15,6 +15,7 @@
           <q-tab name="apikeys" label="API Keys" />
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
+          <q-tab name="branding" label="Branding" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -744,6 +745,11 @@
                 <ScheduleTable />
               </q-tab-panel>
 
+              <!-- branding -->
+              <q-tab-panel name="branding">
+                <BrandingSettings />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -835,6 +841,7 @@ import APIKeysTable from "@/components/core/APIKeysTable.vue";
 import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
+import BrandingSettings from "@/core/branding/components/BrandingSettings.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -847,6 +854,7 @@ export default {
     SSOProvidersTable,
     TacticalDropdown,
     ScheduleTable,
+    BrandingSettings,
   },
   mixins: [mixins],
   data() {
