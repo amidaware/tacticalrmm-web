@@ -226,13 +226,13 @@
                 <div class="text-subtitle2">Agent Menu</div>
                 <q-separator />
                 <q-card-section>
-                  <!-- starts from the effective layout, but nothing is stored
-                       for the user until they change something -->
+                  <!-- without an own layout the user follows the company layout;
+                       nothing is stored until they change something -->
                   <AgentMenuLayoutEditor
                     :model-value="
                       Object.keys(agentMenuLayout).length
                         ? agentMenuLayout
-                        : $store.state.agentMenuLayout
+                        : $store.state.agentMenuCompanyLayout
                     "
                     @update:model-value="agentMenuLayout = $event"
                   />
