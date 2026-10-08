@@ -1,240 +1,313 @@
 <template>
   <q-list dense style="min-width: 200px">
-    <!-- edit agent -->
-    <q-item clickable v-close-popup @click="showEditAgent(agent.agent_id)">
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-edit" />
-      </q-item-section>
-      <q-item-section>Edit {{ agent.hostname }}</q-item-section>
-    </q-item>
-    <!-- agent pending actions -->
-    <q-item clickable v-close-popup @click="showPendingActionsModal(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="far fa-clock" />
-      </q-item-section>
-      <q-item-section>Pending Agent Actions</q-item-section>
-    </q-item>
-    <!-- take control -->
-    <q-item
-      clickable
-      v-ripple
-      v-close-popup
-      @click="runTakeControl(agent.agent_id)"
-    >
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-desktop" />
-      </q-item-section>
+    <template v-for="id in menuIds" :key="id">
+      <!-- edit agent -->
+      <q-item
+        v-if="id === 'edit_agent'"
+        clickable
+        v-close-popup
+        @click="showEditAgent(agent.agent_id)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-edit" />
+        </q-item-section>
+        <q-item-section>Edit {{ agent.hostname }}</q-item-section>
+      </q-item>
+      <!-- agent pending actions -->
+      <q-item
+        v-if="id === 'pending_actions'"
+        clickable
+        v-close-popup
+        @click="showPendingActionsModal(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="far fa-clock" />
+        </q-item-section>
+        <q-item-section>Pending Agent Actions</q-item-section>
+      </q-item>
+      <!-- take control -->
+      <q-item
+        v-if="id === 'take_control'"
+        clickable
+        v-ripple
+        v-close-popup
+        @click="runTakeControl(agent.agent_id)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-desktop" />
+        </q-item-section>
 
-      <q-item-section>Take Control</q-item-section>
-    </q-item>
+        <q-item-section>Take Control</q-item-section>
+      </q-item>
 
-    <!-- vnc -->
-    <q-item
-      clickable
-      v-ripple
-      v-close-popup
-      @click="launchWebVNC(agent.agent_id)"
-    >
-      <q-item-section side>
-        <q-icon size="xs" name="screen_share" />
-      </q-item-section>
+      <!-- vnc -->
+      <q-item
+        v-if="id === 'vnc'"
+        clickable
+        v-ripple
+        v-close-popup
+        @click="launchWebVNC(agent.agent_id)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="screen_share" />
+        </q-item-section>
 
-      <q-item-section>VNC</q-item-section>
-    </q-item>
+        <q-item-section>VNC</q-item-section>
+      </q-item>
 
-    <q-item clickable v-ripple :disable="urlActions.length === 0">
-      <q-item-section side>
-        <q-icon size="xs" name="open_in_new" />
-      </q-item-section>
-      <q-item-section>Run URL Action</q-item-section>
-      <q-item-section side>
-        <q-icon name="keyboard_arrow_right" />
-      </q-item-section>
-      <q-menu auto-close anchor="top end" self="top start">
-        <q-list>
-          <q-item
-            v-for="action in urlActions"
-            :key="action.id"
-            dense
-            clickable
-            v-close-popup
-            @click="
-              runURLAction({ agent_id: agent.agent_id, action: action.id })
-            "
-          >
-            <q-item-section>{{ action.name }}</q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-item>
+      <q-item
+        v-if="id === 'run_url_action'"
+        clickable
+        v-ripple
+        :disable="urlActions.length === 0"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="open_in_new" />
+        </q-item-section>
+        <q-item-section>Run URL Action</q-item-section>
+        <q-item-section side>
+          <q-icon name="keyboard_arrow_right" />
+        </q-item-section>
+        <q-menu auto-close anchor="top end" self="top start">
+          <q-list>
+            <q-item
+              v-for="action in urlActions"
+              :key="action.id"
+              dense
+              clickable
+              v-close-popup
+              @click="
+                runURLAction({ agent_id: agent.agent_id, action: action.id })
+              "
+            >
+              <q-item-section>{{ action.name }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-item>
 
-    <q-item clickable v-ripple v-close-popup @click="showSendCommand(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-terminal" />
-      </q-item-section>
-      <q-item-section>Send Command</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'send_command'"
+        clickable
+        v-ripple
+        v-close-popup
+        @click="showSendCommand(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-terminal" />
+        </q-item-section>
+        <q-item-section>Send Command</q-item-section>
+      </q-item>
 
-    <q-item clickable v-ripple v-close-popup @click="showRunScript(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-terminal" />
-      </q-item-section>
-      <q-item-section>Run Script</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'run_script'"
+        clickable
+        v-ripple
+        v-close-popup
+        @click="showRunScript(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-terminal" />
+        </q-item-section>
+        <q-item-section>Run Script</q-item-section>
+      </q-item>
 
-    <q-item clickable v-ripple :disable="favoriteScripts.length === 0">
-      <q-item-section side>
-        <q-icon size="xs" name="star" />
-      </q-item-section>
-      <q-item-section>Run Favorited Script</q-item-section>
-      <q-item-section side>
-        <q-icon name="keyboard_arrow_right" />
-      </q-item-section>
-      <q-menu auto-close anchor="top end" self="top start">
-        <q-list>
-          <q-item
-            v-for="script in favoriteScripts"
-            :key="script.value"
-            dense
-            clickable
-            v-close-popup
-            @click="showRunScript(agent, script.value)"
-          >
-            <q-item-section>{{ script.label }}</q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-item>
+      <q-item
+        v-if="id === 'run_favorited_script'"
+        clickable
+        v-ripple
+        :disable="favoriteScripts.length === 0"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="star" />
+        </q-item-section>
+        <q-item-section>Run Favorited Script</q-item-section>
+        <q-item-section side>
+          <q-icon name="keyboard_arrow_right" />
+        </q-item-section>
+        <q-menu auto-close anchor="top end" self="top start">
+          <q-list>
+            <q-item
+              v-for="script in favoriteScripts"
+              :key="script.value"
+              dense
+              clickable
+              v-close-popup
+              @click="showRunScript(agent, script.value)"
+            >
+              <q-item-section>{{ script.label }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-item>
 
-    <q-item
-      clickable
-      v-close-popup
-      @click="runRemoteBackground(agent.agent_id, agent.plat)"
-    >
-      <q-item-section side>
-        <q-icon size="xs" name="terminal" />
-      </q-item-section>
-      <q-item-section>Remote Background</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'remote_background'"
+        clickable
+        v-close-popup
+        @click="runRemoteBackground(agent.agent_id, agent.plat)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="terminal" />
+        </q-item-section>
+        <q-item-section>Remote Background</q-item-section>
+      </q-item>
 
-    <!-- maintenance mode -->
-    <q-item clickable v-close-popup @click="toggleMaintenance(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="construction" />
-      </q-item-section>
-      <q-item-section>
-        {{
-          agent.maintenance_mode
-            ? "Disable Maintenance Mode"
-            : "Enable Maintenance Mode"
-        }}
-      </q-item-section>
-    </q-item>
+      <!-- maintenance mode -->
+      <q-item
+        v-if="id === 'maintenance_mode'"
+        clickable
+        v-close-popup
+        @click="toggleMaintenance(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="construction" />
+        </q-item-section>
+        <q-item-section>
+          {{
+            agent.maintenance_mode
+              ? "Disable Maintenance Mode"
+              : "Enable Maintenance Mode"
+          }}
+        </q-item-section>
+      </q-item>
 
-    <!-- patch management -->
-    <q-item clickable>
-      <q-item-section side>
-        <q-icon size="xs" name="system_update" />
-      </q-item-section>
-      <q-item-section>Patch Management</q-item-section>
-      <q-item-section side>
-        <q-icon name="keyboard_arrow_right" />
-      </q-item-section>
+      <!-- patch management -->
+      <q-item v-if="id === 'patch_management'" clickable>
+        <q-item-section side>
+          <q-icon size="xs" name="system_update" />
+        </q-item-section>
+        <q-item-section>Patch Management</q-item-section>
+        <q-item-section side>
+          <q-icon name="keyboard_arrow_right" />
+        </q-item-section>
 
-      <q-menu auto-close anchor="top right" self="top left">
-        <q-list dense style="min-width: 100px">
-          <q-item clickable v-ripple @click="runPatchStatusScan(agent)">
-            <q-item-section>Run Patch Status Scan</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="installPatches(agent)">
-            <q-item-section>Install Patches Now</q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-item>
+        <q-menu auto-close anchor="top right" self="top left">
+          <q-list dense style="min-width: 100px">
+            <q-item clickable v-ripple @click="runPatchStatusScan(agent)">
+              <q-item-section>Run Patch Status Scan</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="installPatches(agent)">
+              <q-item-section>Install Patches Now</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-item>
 
-    <q-item clickable v-close-popup @click="runChecks(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-check-double" />
-      </q-item-section>
-      <q-item-section>Run Checks</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'run_checks'"
+        clickable
+        v-close-popup
+        @click="runChecks(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-check-double" />
+        </q-item-section>
+        <q-item-section>Run Checks</q-item-section>
+      </q-item>
 
-    <q-item clickable v-close-popup @click="wakeUp(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="offline_bolt" />
-      </q-item-section>
-      <q-item-section>Wake-Up (WoL)</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'wake_up'"
+        clickable
+        v-close-popup
+        @click="wakeUp(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="offline_bolt" />
+        </q-item-section>
+        <q-item-section>Wake-Up (WoL)</q-item-section>
+      </q-item>
 
-    <q-item clickable>
-      <q-item-section side>
-        <q-icon size="xs" name="power_settings_new" />
-      </q-item-section>
-      <q-item-section>Reboot</q-item-section>
-      <q-item-section side>
-        <q-icon name="keyboard_arrow_right" />
-      </q-item-section>
+      <q-item v-if="id === 'reboot'" clickable>
+        <q-item-section side>
+          <q-icon size="xs" name="power_settings_new" />
+        </q-item-section>
+        <q-item-section>Reboot</q-item-section>
+        <q-item-section side>
+          <q-icon name="keyboard_arrow_right" />
+        </q-item-section>
 
-      <q-menu auto-close anchor="top right" self="top left">
-        <q-list dense style="min-width: 100px">
-          <!-- reboot now -->
-          <q-item clickable v-ripple @click="rebootNow(agent)">
-            <q-item-section>Now</q-item-section>
-          </q-item>
-          <!-- reboot later -->
-          <q-item clickable v-ripple @click="showRebootLaterModal(agent)">
-            <q-item-section>Later</q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-item>
+        <q-menu auto-close anchor="top right" self="top left">
+          <q-list dense style="min-width: 100px">
+            <!-- reboot now -->
+            <q-item clickable v-ripple @click="rebootNow(agent)">
+              <q-item-section>Now</q-item-section>
+            </q-item>
+            <!-- reboot later -->
+            <q-item clickable v-ripple @click="showRebootLaterModal(agent)">
+              <q-item-section>Later</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-item>
 
-    <q-item clickable v-close-popup @click="shutdown(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="power" />
-      </q-item-section>
-      <q-item-section>Shutdown</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'shutdown'"
+        clickable
+        v-close-popup
+        @click="shutdown(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="power" />
+        </q-item-section>
+        <q-item-section>Shutdown</q-item-section>
+      </q-item>
 
-    <q-item clickable v-close-popup @click="showPolicyAdd(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="policy" />
-      </q-item-section>
-      <q-item-section>Assign Automation Policy</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'assign_policy'"
+        clickable
+        v-close-popup
+        @click="showPolicyAdd(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="policy" />
+        </q-item-section>
+        <q-item-section>Assign Automation Policy</q-item-section>
+      </q-item>
 
-    <q-item
-      clickable
-      v-if="
-        $integrations &&
-        $integrations.agentMenuIntegrations &&
-        $integrations.agentMenuIntegrations.length > 0
-      "
-    >
-      <q-item-section side>
-        <q-icon size="xs" name="analytics" />
-      </q-item-section>
-      <q-item-section>Reporting</q-item-section>
-      <q-item-section side>
-        <q-icon name="keyboard_arrow_right" />
-      </q-item-section>
-      <integrations-context-menu type="agent" :id="agent.agent_id" />
-    </q-item>
+      <q-item
+        clickable
+        v-if="
+          id === 'reporting' &&
+          $integrations &&
+          $integrations.agentMenuIntegrations &&
+          $integrations.agentMenuIntegrations.length > 0
+        "
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="analytics" />
+        </q-item-section>
+        <q-item-section>Reporting</q-item-section>
+        <q-item-section side>
+          <q-icon name="keyboard_arrow_right" />
+        </q-item-section>
+        <integrations-context-menu type="agent" :id="agent.agent_id" />
+      </q-item>
 
-    <q-item clickable v-close-popup @click="showAgentRecovery(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="fas fa-first-aid" />
-      </q-item-section>
-      <q-item-section>Agent Recovery</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'agent_recovery'"
+        clickable
+        v-close-popup
+        @click="showAgentRecovery(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="fas fa-first-aid" />
+        </q-item-section>
+        <q-item-section>Agent Recovery</q-item-section>
+      </q-item>
 
-    <q-item clickable v-close-popup @click="pingAgent(agent)">
-      <q-item-section side>
-        <q-icon size="xs" name="delete" />
-      </q-item-section>
-      <q-item-section>Remove Agent</q-item-section>
-    </q-item>
+      <q-item
+        v-if="id === 'remove_agent'"
+        clickable
+        v-close-popup
+        @click="pingAgent(agent)"
+      >
+        <q-item-section side>
+          <q-icon size="xs" name="delete" />
+        </q-item-section>
+        <q-item-section>Remove Agent</q-item-section>
+      </q-item>
+    </template>
 
     <q-separator />
     <q-item clickable v-close-popup>
@@ -245,7 +318,7 @@
 
 <script>
 // composition imports
-import { ref, inject, onMounted } from "vue";
+import { ref, inject, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useQuasar } from "quasar";
 import { fetchURLActions, runURLAction } from "@/api/core";
@@ -264,6 +337,8 @@ import { runAgentUpdateScan, runAgentUpdateInstall } from "@/api/winupdates";
 import { runAgentChecks } from "@/api/checks";
 import { fetchScripts } from "@/api/scripts";
 import { notifySuccess, notifyError } from "@/utils/notify";
+import { AGENT_MENU_ITEM_IDS } from "@/core/agentmenu/items";
+import { visibleIds } from "@/core/agentmenu/resolve";
 
 // ui imports
 import PendingActions from "@/components/logs/PendingActions.vue";
@@ -290,6 +365,11 @@ export default {
 
     // setup vuex
     const store = useStore();
+
+    // order and visibility come from the company/user agent menu layout
+    const menuIds = computed(() =>
+      visibleIds(store.state.agentMenuLayout || {}, AGENT_MENU_ITEM_IDS),
+    );
 
     const refreshDashboard = inject("refreshDashboard");
 
@@ -568,6 +648,7 @@ export default {
 
     return {
       // reactive data
+      menuIds,
       urlActions,
       favoriteScripts,
 
