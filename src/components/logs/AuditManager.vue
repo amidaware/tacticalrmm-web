@@ -268,6 +268,7 @@ const objectOptions = [
   { value: "customfield", label: "Custom Field" },
   { value: "schedule", label: "Schedule" },
   { value: "reportschedule", label: "Report Schedule" },
+  { value: "brandingsettings", label: "Branding" },
 ];
 
 const timeOptions = [

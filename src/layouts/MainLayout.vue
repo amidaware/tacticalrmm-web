@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-grey-9 text-white">
+    <q-header elevated :class="headerClass" :style="headerStyle">
       <q-banner
         v-if="needRefresh"
         inline-actions
@@ -60,9 +60,9 @@
           <q-tooltip>Back to Dashboard</q-tooltip>
         </q-btn>
         <q-toolbar-title>
-          Tactical RMM<span class="text-overline q-ml-sm"
-            >v{{ currentTRMMVersion }}</span
-          >
+          <img v-if="logoUrl" :src="logoUrl" alt="" class="trmm-header-logo" />
+          {{ productName
+          }}<span class="text-overline q-ml-sm">v{{ currentTRMMVersion }}</span>
           <!-- update check -->
           <q-chip
             v-if="updateAvailable"
@@ -224,6 +224,7 @@ import { useStore } from "vuex";
 import { useDashboardStore } from "@/stores/dashboard";
 import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from "pinia";
+import { useBrandingStore } from "@/core/branding/store";
 import { resetTwoFactor } from "@/api/accounts";
 import { notifyError, notifySuccess } from "@/utils/notify";
 import axios from "axios";
@@ -237,6 +238,22 @@ import UserPreferences from "@/components/modals/coresettings/UserPreferences.vu
 import ResetPass from "@/components/accounts/ResetPass.vue";
 
 const store = useStore();
+
+// branding
+const branding = useBrandingStore();
+const { productName } = storeToRefs(branding);
+const logoUrl = computed(() => branding.imageUrl("logo"));
+const headerClass = computed(() =>
+  branding.config?.header ? "" : "bg-grey-9 text-white",
+);
+const headerStyle = computed(() =>
+  branding.config?.header
+    ? {
+        backgroundColor: "var(--trmm-header)",
+        color: "var(--trmm-header-text)",
+      }
+    : {},
+);
 const $q = useQuasar();
 
 const {
@@ -344,3 +361,11 @@ onBeforeUnmount(() => {
   clearInterval(poll.value);
 });
 </script>
+
+<style scoped>
+.trmm-header-logo {
+  height: 32px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
