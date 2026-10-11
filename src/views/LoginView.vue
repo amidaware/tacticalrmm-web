@@ -103,6 +103,13 @@
 
               <q-card-actions align="right" class="text-primary">
                 <q-btn flat label="Cancel" v-close-popup />
+                <q-btn
+                  v-if="hasPasskey"
+                  flat
+                  label="Use Passkey"
+                  type="button"
+                  @click="onPasskeySubmit"
+                />
                 <q-btn flat label="Submit" type="submit" />
               </q-card-actions>
             </q-form>
@@ -118,6 +125,12 @@ import { ref, reactive, onMounted } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import {
+  beginPasskeyLogin,
+  credentialToJSON,
+  getPasskeyAssertion,
+} from "@/api/webauthn";
+import { notifyError } from "@/utils/notify";
 import {
   openSSOProviderRedirect,
   getSSOConfig,
@@ -141,35 +154,76 @@ const formToken = ref<QForm | null>(null);
 const credentials = reactive({ username: "", password: "" });
 const twofactor = ref("");
 const prompt = ref(false);
+const hasTotp = ref(false);
+const hasPasskey = ref(false);
 const showPassword = ref(true);
 const ssoProviders = ref([] as SSOProviderConfig[]);
 
+function errorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback;
+}
+
 async function checkCreds() {
   try {
-    const { totp } = await auth.checkCredentials(credentials);
+    const { totp, passkey } = await auth.checkCredentials(credentials);
+    hasTotp.value = !!totp;
+    hasPasskey.value = !!passkey;
 
-    if (!totp) {
-      router.push({ name: "TOTPSetup" });
-    } else {
+    if (passkey) {
+      await onPasskeySubmit();
+    } else if (totp) {
       twofactor.value = "";
       prompt.value = true;
+    } else {
+      router.push({ name: "TOTPSetup" });
     }
   } catch (err) {
-    console.error(err);
+    notifyError(errorMessage(err, "Login failed"), 3500);
+  }
+}
+
+async function routeAfterLogin() {
+  if (auth.next) {
+    router.push(auth.next);
+    auth.next = null;
+  } else {
+    router.push({ name: "Dashboard" });
+  }
+}
+
+async function onPasskeySubmit() {
+  prompt.value = false;
+  $q.loading.show();
+  try {
+    const options = await beginPasskeyLogin();
+    const credential = await getPasskeyAssertion(options);
+    await auth.loginWithPasskey(credentialToJSON(credential));
+    form.value?.reset();
+    formToken.value?.reset();
+    await routeAfterLogin();
+  } catch (err) {
+    if (hasTotp.value) {
+      twofactor.value = "";
+      prompt.value = true;
+    } else {
+      const message =
+        err instanceof Error ? err.message : "Passkey verification failed";
+      notifyError(message, 3500);
+    }
+  } finally {
+    $q.loading.hide();
   }
 }
 
 async function onSubmit() {
   try {
     await auth.login({ ...credentials, twofactor: twofactor.value });
-    if (auth.next) {
-      router.push(auth.next);
-      auth.next = null;
-    } else {
-      router.push({ name: "Dashboard" });
+    if (!hasPasskey.value) {
+      auth.requestPasskeyEnrollmentPrompt();
     }
+    await routeAfterLogin();
   } catch (err) {
-    console.error(err);
+    notifyError(errorMessage(err, "Login failed"), 3500);
   } finally {
     form.value?.reset();
     formToken.value?.reset();
@@ -181,8 +235,8 @@ onMounted(async () => {
   try {
     const result = await getSSOConfig();
     ssoProviders.value = result.data.socialaccount.providers;
-  } catch (e) {
-    console.error(e);
+  } catch {
+    ssoProviders.value = [];
   }
 });
 </script>
