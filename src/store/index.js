@@ -43,6 +43,7 @@ export default function () {
         },
         server_scripts_enabled: true,
         web_terminal_enabled: true,
+        ssh_gateway_enabled: false,
         sso_enabled: false,
         block_local_user_logon: false,
       };
@@ -161,6 +162,9 @@ export default function () {
       setWebTerminalEnabled(state, obj) {
         state.web_terminal_enabled = obj;
       },
+      setSshGatewayEnabled(state, obj) {
+        state.ssh_gateway_enabled = obj;
+      },
       setSSOEnabled(state, obj) {
         state.sso_enabled = obj;
       },
@@ -253,6 +257,7 @@ export default function () {
         commit("setRunCmdPlaceholders", data.run_cmd_placeholder_text);
         commit("setServerScriptsEnabled", data.server_scripts_enabled);
         commit("setWebTerminalEnabled", data.web_terminal_enabled);
+        commit("setSshGatewayEnabled", data.ssh_gateway_enabled);
         commit("setBlockLocalUserLogon", data.block_local_user_logon);
 
         if (data?.date_format !== "") commit("setDateFormat", data.date_format);
