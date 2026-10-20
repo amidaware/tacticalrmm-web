@@ -111,7 +111,7 @@
             >
               <q-item v-bind="itemProps">
                 <q-item-section>
-                  <q-item-label v-html="opt.label" />
+                  <q-item-label>{{ opt.label }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -162,7 +162,7 @@
             >
               <q-item v-bind="itemProps">
                 <q-item-section>
-                  <q-item-label v-html="opt.label" />
+                  <q-item-label>{{ opt.label }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -200,7 +200,7 @@
             >
               <q-item v-bind="itemProps">
                 <q-item-section>
-                  <q-item-label v-html="opt.label" />
+                  <q-item-label>{{ opt.label }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -248,7 +248,7 @@
             >
               <q-item v-bind="itemProps">
                 <q-item-section>
-                  <q-item-label v-html="opt.label" />
+                  <q-item-label>{{ opt.label }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox

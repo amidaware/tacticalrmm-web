@@ -68,7 +68,7 @@ export async function removeAgent(agent_id) {
 
 export async function fetchAgentHistory(agent_id, params = {}) {
   try {
-    const { data } = await axios.get(`${baseUrl}/${agent_id}/history/`, {
+    const { data } = await axios.get(`${baseUrl}/v2/${agent_id}/history/`, {
       params: params,
     });
     return data;

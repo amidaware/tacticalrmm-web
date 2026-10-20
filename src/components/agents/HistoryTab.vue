@@ -6,16 +6,16 @@
         'table-bgcolor': !$q.dark.isActive,
         'table-bgcolor-dark': $q.dark.isActive,
       }"
-      :rows="history"
+      :rows="filteredHistory"
       :columns="columns"
-      :pagination="{ sortBy: 'time', descending: true, rowsPerPage: 0 }"
+      v-model:pagination="pagination"
       :style="{ 'max-height': tabHeight }"
       :loading="loading"
-      :rows-per-page-options="[0]"
-      :filter="filter"
+      :rows-per-page-options="[25, 50, 100, 250, 500, 1000]"
       virtual-scroll
       dense
       binary-state-sort
+      @request="onRequest"
     >
       <template v-slot:top>
         <q-btn dense flat push @click="getHistory" icon="refresh" />
@@ -32,7 +32,7 @@
             <q-icon name="search" color="primary" />
           </template>
         </q-input>
-        <export-table-btn :data="history" :columns="columns" />
+        <export-table-btn :data="filteredHistory" :columns="columns" />
       </template>
 
       <template v-slot:loading>
@@ -121,7 +121,7 @@ const columns = [
     label: "Output",
     field: "output",
     align: "left",
-    sortable: true,
+    sortable: false,
   },
 ];
 
@@ -142,15 +142,55 @@ export default {
     const history = ref([]);
     const loading = ref(false);
     const filter = ref("");
+    const pagination = ref({
+      sortBy: "time",
+      descending: true,
+      page: 1,
+      rowsPerPage: 100,
+      rowsNumber: 0,
+    });
 
-    async function getHistory() {
+    const filteredHistory = computed(() => {
+      if (!filter.value) return history.value;
+      const needle = filter.value.toLowerCase();
+      return history.value.filter((row) =>
+        [
+          formatDate.value(row.time),
+          formatTableColumnText(row.type),
+          row.type === "script_run" ? row.script_name : row.command,
+          row.username,
+        ].some((val) => val && String(val).toLowerCase().includes(needle)),
+      );
+    });
+
+    async function onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
       loading.value = true;
-      history.value = await fetchAgentHistory(selectedAgent.value);
+      const data = await fetchAgentHistory(selectedAgent.value, {
+        page: page,
+        page_size: rowsPerPage,
+        ordering: `${descending ? "-" : ""}${sortBy || "time"}`,
+      });
+      if (data) {
+        history.value = data.results;
+        pagination.value = {
+          page,
+          rowsPerPage,
+          sortBy,
+          descending,
+          rowsNumber: data.count,
+        };
+      }
       loading.value = false;
+    }
+
+    function getHistory() {
+      onRequest({ pagination: pagination.value });
     }
 
     watch(selectedAgent, (newValue) => {
       if (newValue) {
+        pagination.value.page = 1;
         getHistory();
       }
     });
@@ -191,9 +231,11 @@ export default {
     return {
       // reactive
       history,
+      filteredHistory,
       loading,
       tabHeight,
       filter,
+      pagination,
 
       // non-reactive data
       columns,
@@ -203,6 +245,7 @@ export default {
       showScriptOutput,
       showCommandOutput,
       getHistory,
+      onRequest,
       truncateText,
 
       // computed
