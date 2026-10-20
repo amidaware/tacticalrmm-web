@@ -69,9 +69,25 @@ export interface FileTransferDownloadStatusResponse {
   error: string;
 }
 
+export interface FileExtractStatusResponse {
+  session_id: string;
+  status: string;
+  filename: string;
+  source_path: string;
+  destination_path: string;
+  conflict_policy: "skip" | "replace";
+  total_size: number;
+  committed_offset: number;
+  files_done: number;
+  files_total: number;
+  files_skipped: number;
+  warnings: string[];
+  error: string;
+}
+
 export interface ResumableFileTransfer {
   session_id: string;
-  operation: "upload" | "download";
+  operation: "upload" | "download" | "extract";
   filename: string;
   destination_path: string;
   total_size: number;
@@ -82,6 +98,10 @@ export interface ResumableFileTransfer {
   is_archive: boolean;
   warnings?: string[];
   conflict_policy?: "skip" | "replace";
+  source_path?: string;
+  files_done?: number;
+  files_total?: number;
+  files_skipped?: number;
 }
 
 export interface ResumableFileTransfersResponse {

@@ -172,3 +172,15 @@ export interface DownloadQueueItem {
 }
 
 export type DownloadSelectionMode = "none" | "single" | "sequential" | "zip";
+
+export interface ExtractJob {
+  sessionId: string;
+  name: string;
+  destination: string;
+  status: string;
+  written: number;
+  total: number;
+  filesDone: number;
+  filesTotal: number;
+  cancelling?: boolean;
+}

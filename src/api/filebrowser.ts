@@ -11,6 +11,7 @@ import {
 import type {
   FileTransferCompleteDownloadResponse,
   FileTransferCompleteUploadResponse,
+  FileExtractStatusResponse,
   FileTransferDownloadStatusResponse,
   FileTransferInitDownloadResponse,
   FileTransferInitUploadResponse,
@@ -308,6 +309,52 @@ export async function cancelAgentFileUpload(
     { reason },
     { timeout: 30_000, ...transferRequestConfig },
   );
+}
+
+export interface InitFileExtractPayload {
+  source_path: string;
+  destination_path: string;
+  conflict_policy: "skip" | "replace";
+}
+
+export async function initAgentFileExtract(
+  agentId: string,
+  payload: InitFileExtractPayload,
+): Promise<{ session_id: string; status: string }> {
+  const { data } = await axios.post<{ session_id: string; status: string }>(
+    `${baseUrl}/${agentId}/files/extract/`,
+    payload,
+    { timeout: 60_000, ...transferRequestConfig },
+  );
+  return data;
+}
+
+export async function getAgentFileExtractStatus(
+  agentId: string,
+  sessionId: string,
+  signal?: AbortSignal,
+): Promise<FileExtractStatusResponse> {
+  const { data } = await axios.get<FileExtractStatusResponse>(
+    `${baseUrl}/${agentId}/files/extract/${sessionId}/`,
+    { timeout: 30_000, signal, ...transferRequestConfig },
+  );
+  return data;
+}
+
+export async function cancelAgentFileExtract(
+  agentId: string,
+  sessionId: string,
+): Promise<{ status: string; files_done: number; files_skipped: number }> {
+  const { data } = await axios.post<{
+    status: string;
+    files_done: number;
+    files_skipped: number;
+  }>(
+    `${baseUrl}/${agentId}/files/extract/${sessionId}/cancel/`,
+    {},
+    { timeout: 30_000, ...transferRequestConfig },
+  );
+  return data;
 }
 
 export async function listAgentFileTransfers(

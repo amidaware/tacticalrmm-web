@@ -178,6 +178,18 @@
             <q-item-section>Download</q-item-section>
           </q-item>
 
+          <q-item
+            v-if="isZipFileItem(menuRow)"
+            clickable
+            v-close-popup
+            @click="emit('extract', menuRow!)"
+          >
+            <q-item-section avatar>
+              <q-icon name="unarchive" size="18px" />
+            </q-item-section>
+            <q-item-section>Extract to…</q-item-section>
+          </q-item>
+
           <q-item clickable v-close-popup @click="emit('rename', menuRow!)">
             <q-item-section avatar>
               <q-icon name="edit" size="18px" />
@@ -298,6 +310,7 @@ import {
   getFileBrowserNameHighlightParts,
   inspectFileDrag,
   isFileDrag,
+  isZipFileItem,
   resolveDropOverlayReject,
   sortFileBrowserRows,
   truncatePathMiddle,
@@ -404,6 +417,7 @@ const emit = defineEmits<{
   (e: "row-dblclick", row: FileBrowserItem): void;
   (e: "open-folder", row: FileBrowserItem): void;
   (e: "download", row: FileBrowserItem): void;
+  (e: "extract", row: FileBrowserItem): void;
   (e: "rename", row: FileBrowserItem): void;
   (e: "delete", row: FileBrowserItem): void;
   (e: "properties", row: FileBrowserItem): void;

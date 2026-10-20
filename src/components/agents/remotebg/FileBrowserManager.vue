@@ -41,6 +41,7 @@
       :listing-loading="listingBusy"
       :filter-searching="filterSearching"
       :show-transfers="showTransfersIndicator"
+      :can-extract="selectedRows.length === 1 && isZipFileItem(selectedRows[0])"
       :transfers-label="transfersIndicatorLabel"
       :paused-count="pausedTransferCount"
       @upload="openFilePicker"
@@ -50,6 +51,7 @@
       @rename="openRenameDialog()"
       @properties="showPropertiesFromToolbar"
       @copy-path="copySelectedPathsToClipboard"
+      @extract="openExtractDialog()"
       @refresh="refresh"
       @open-transfers="revealTransfers"
       @update:search="search = $event"
@@ -102,6 +104,12 @@
       @hide="hideDownloadItem"
     />
 
+    <FileBrowserExtractProgress
+      v-if="extractJobs.length"
+      :jobs="extractJobs"
+      @cancel="cancelExtractJob"
+    />
+
     <FileBrowserTable
       v-model:selected="selectedRows"
       :rows="filteredRows"
@@ -122,6 +130,7 @@
       @row-dblclick="onRowDoubleClick"
       @open-folder="openFolder"
       @download="downloadFromContext"
+      @extract="openExtractDialog"
       @rename="openRenameDialog"
       @delete="openDeleteDialogFromContext"
       @properties="showProperties"
@@ -145,6 +154,16 @@
       :saving="mutationSaving"
       :platform="agentPlatform"
       @save="confirmNewFolder"
+    />
+
+    <FileBrowserExtractDialog
+      v-model="extractDialog"
+      :item="extractItem"
+      :folder="currentPath"
+      :saving="extractStarting"
+      :platform="agentPlatform"
+      @save="confirmExtract"
+      @hide="extractItem = null"
     />
 
     <FileBrowserRenameModal
@@ -181,6 +200,7 @@ import {
 } from "vue";
 import { useQuasar } from "quasar";
 import { useTimeoutFn } from "@vueuse/core";
+import { isAxiosError } from "axios";
 
 import {
   createAgentFileFolder,
@@ -192,12 +212,17 @@ import {
 } from "@/api/agents";
 import {
   cancelAgentFileDownload,
+  cancelAgentFileExtract,
   cancelAgentFileUpload,
   checkAgentExistingNames,
+  getAgentFileExtractStatus,
+  initAgentFileExtract,
   listAgentFileTransfers,
 } from "@/api/filebrowser";
 import FileBrowserDownloadProgress from "@/components/agents/remotebg/FileBrowserDownloadProgress.vue";
 import FileBrowserDownloadQueue from "@/components/agents/remotebg/FileBrowserDownloadQueue.vue";
+import FileBrowserExtractDialog from "@/components/agents/remotebg/FileBrowserExtractDialog.vue";
+import FileBrowserExtractProgress from "@/components/agents/remotebg/FileBrowserExtractProgress.vue";
 import FileBrowserNewFolderModal from "@/components/agents/remotebg/FileBrowserNewFolderModal.vue";
 import FileBrowserPathBar from "@/components/agents/remotebg/FileBrowserPathBar.vue";
 import FileBrowserPropertiesDialog from "@/components/agents/remotebg/FileBrowserPropertiesDialog.vue";
@@ -232,10 +257,15 @@ import {
 } from "@/constants/fileTransfer";
 import type {
   DownloadQueueItem,
+  ExtractJob,
   FileBrowserDeleteResult,
   FileBrowserItem,
   UploadQueueItem,
 } from "@/types/filebrowser";
+import type {
+  FileExtractStatusResponse,
+  ResumableFileTransfer,
+} from "@/types/fileTransfer";
 import {
   isAbortError as isDownloadAbortError,
   runArchiveDownloadTransfer,
@@ -317,6 +347,7 @@ import {
   isDownloadQueueItemTerminal,
   isUploadQueueItemActive,
   isUploadQueueItemTerminal,
+  isZipFileItem,
   listUploadNameConflicts,
   filesMatchingExistingNames,
   nameSegmentBaseRule,
@@ -347,7 +378,8 @@ const props = withDefaults(
 const agentPlatform = toRef(props, "agentPlatform");
 
 const $q = useQuasar();
-const { normalizeNavPath, pathsEqual } = useFileBrowser(agentPlatform);
+const { normalizeNavPath, pathKeyForCompare, pathSeparator, pathsEqual } =
+  useFileBrowser(agentPlatform);
 
 const loading = ref(false);
 const listError = ref<string | null>(null);
@@ -483,7 +515,7 @@ const activeTransferCount = computed(() => {
   const activeUploads = uploadQueue.value.filter((item) =>
     isUploadQueueItemActive(item.status),
   ).length;
-  return activeDownloads + activeUploads;
+  return activeDownloads + activeUploads + extractJobs.value.length;
 });
 
 const showTransfersIndicator = computed(
@@ -858,6 +890,13 @@ function pauseInFlightTransfersForUnload(
 
 function onPageHidePause(): void {
   pauseInFlightTransfersForUnload();
+  stopExtractPolling();
+}
+
+function onPageShow(e: PageTransitionEvent): void {
+  // back from the bfcache: pagehide stopped the extract polls
+  if (!e.persisted) return;
+  for (const job of extractJobs.value) scheduleExtractPoll(job.sessionId, 0);
 }
 
 let findShortcutAttached = false;
@@ -888,6 +927,7 @@ onMounted(() => {
   startOwnershipRefreshTimer();
   attachFindShortcut();
   window.addEventListener("pagehide", onPageHidePause);
+  window.addEventListener("pageshow", onPageShow);
 });
 
 onBeforeUnmount(() => {
@@ -896,6 +936,8 @@ onBeforeUnmount(() => {
   cancelFilterDebounce();
   detachFindShortcut();
   window.removeEventListener("pagehide", onPageHidePause);
+  window.removeEventListener("pageshow", onPageShow);
+  stopExtractPolling();
   stopOwnershipRefreshTimer();
   tabSyncHandler = null;
   tabSync?.close();
@@ -915,6 +957,8 @@ watch(
     uploadQueue.value = [];
     downloadQueue.value = [];
     downloadQueueSummary.value = null;
+    stopExtractPolling();
+    extractJobs.value = [];
     void restoreResumableTransfers(seq);
     getTabSync().query();
   },
@@ -1191,6 +1235,240 @@ function resetDownloadUiState() {
   downloadQueue.value = [];
   downloadQueueSummary.value = null;
   downloadBatchIsSingle.value = false;
+}
+
+const EXTRACT_POLL_MS = 1000;
+const EXTRACT_POLL_HIDDEN_MS = 3000;
+const EXTRACT_TERMINAL_STATUSES = new Set([
+  "completed",
+  "failed",
+  "cancelled",
+  "expired",
+]);
+
+const extractDialog = ref(false);
+const extractItem = ref<FileBrowserItem | null>(null);
+const extractStarting = ref(false);
+const extractJobs = ref<ExtractJob[]>([]);
+const extractPollTimers = new Map<string, number>();
+const extractPollAborts = new Map<string, AbortController>();
+// Bumped to drop polls that belong to a previous agent or an unloaded page.
+let extractPollSeq = 0;
+
+function openExtractDialog(item?: FileBrowserItem) {
+  const target = item ?? selectedRows.value[0];
+  if (selectedRows.value.length > 1 && !item) {
+    notifyWarning("Select a single .zip file to extract.");
+    return;
+  }
+  if (!isZipFileItem(target)) {
+    notifyWarning("Select a single .zip file to extract.");
+    return;
+  }
+  extractItem.value = target;
+  extractDialog.value = true;
+}
+
+async function confirmExtract(value: {
+  destination: string;
+  conflictPolicy: "skip" | "replace";
+}) {
+  const item = extractItem.value;
+  if (!item) return;
+  extractStarting.value = true;
+  try {
+    const data = await initAgentFileExtract(props.agent_id, {
+      source_path: item.path,
+      destination_path: value.destination,
+      conflict_policy: value.conflictPolicy,
+    });
+    extractDialog.value = false;
+    trackExtractJob({
+      sessionId: data.session_id,
+      name: item.name,
+      destination: value.destination,
+      status: data.status,
+      written: 0,
+      total: 0,
+      filesDone: 0,
+      filesTotal: 0,
+    });
+  } catch (err: unknown) {
+    notifyError(
+      getFileBrowserErrorMessage(err, "Unable to start the extraction."),
+    );
+  } finally {
+    extractStarting.value = false;
+  }
+}
+
+function extractJobFromTransfer(transfer: ResumableFileTransfer): ExtractJob {
+  return {
+    sessionId: transfer.session_id,
+    name: transfer.filename,
+    destination: transfer.destination_path,
+    status: transfer.status,
+    written: transfer.committed_offset,
+    total: transfer.total_size,
+    filesDone: transfer.files_done ?? 0,
+    filesTotal: transfer.files_total ?? 0,
+  };
+}
+
+function trackExtractJob(job: ExtractJob) {
+  if (extractJobs.value.some((j) => j.sessionId === job.sessionId)) return;
+  extractJobs.value.push(job);
+  scheduleExtractPoll(job.sessionId, 0);
+}
+
+function scheduleExtractPoll(sessionId: string, delay: number) {
+  window.clearTimeout(extractPollTimers.get(sessionId));
+  const seq = extractPollSeq;
+  extractPollTimers.set(
+    sessionId,
+    window.setTimeout(() => void pollExtract(sessionId, seq), delay),
+  );
+}
+
+function stopExtractPolling() {
+  extractPollSeq++;
+  for (const timer of extractPollTimers.values()) window.clearTimeout(timer);
+  extractPollTimers.clear();
+  for (const controller of extractPollAborts.values()) controller.abort();
+  extractPollAborts.clear();
+}
+
+async function pollExtract(sessionId: string, seq: number) {
+  extractPollTimers.delete(sessionId);
+  if (seq !== extractPollSeq) return;
+  const controller = new AbortController();
+  extractPollAborts.set(sessionId, controller);
+  let data: FileExtractStatusResponse;
+  try {
+    data = await getAgentFileExtractStatus(
+      props.agent_id,
+      sessionId,
+      controller.signal,
+    );
+  } catch (err: unknown) {
+    if (seq !== extractPollSeq || controller.signal.aborted) return;
+    const code = isAxiosError(err) ? err.response?.status : undefined;
+    // a 4xx won't fix itself (e.g. the permission was removed); stop polling
+    if (code && code >= 400 && code < 500 && code !== 408 && code !== 429) {
+      removeExtractJob(sessionId);
+      if (code !== 404) {
+        notifyError(
+          getFileBrowserErrorMessage(err, "Unable to check the extraction."),
+        );
+      }
+      return;
+    }
+    // e.g. a server restart: keep trying, the agent keeps extracting
+    scheduleExtractPoll(sessionId, EXTRACT_POLL_HIDDEN_MS);
+    return;
+  } finally {
+    extractPollAborts.delete(sessionId);
+  }
+  if (seq !== extractPollSeq) return;
+
+  const job = extractJobs.value.find((j) => j.sessionId === sessionId);
+  if (!job) return;
+  Object.assign(job, {
+    status: data.status,
+    written: data.committed_offset,
+    total: data.total_size,
+    filesDone: data.files_done,
+    filesTotal: data.files_total,
+  });
+  if (EXTRACT_TERMINAL_STATUSES.has(data.status)) {
+    finishExtractJob(job, data);
+    return;
+  }
+  scheduleExtractPoll(
+    sessionId,
+    document.hidden ? EXTRACT_POLL_HIDDEN_MS : EXTRACT_POLL_MS,
+  );
+}
+
+function removeExtractJob(sessionId: string) {
+  window.clearTimeout(extractPollTimers.get(sessionId));
+  extractPollTimers.delete(sessionId);
+  extractJobs.value = extractJobs.value.filter(
+    (j) => j.sessionId !== sessionId,
+  );
+}
+
+function fileCountLabel(n: number): string {
+  return n === 1 ? "1 file" : `${n.toLocaleString()} files`;
+}
+
+function finishExtractJob(job: ExtractJob, data: FileExtractStatusResponse) {
+  removeExtractJob(job.sessionId);
+  const files = fileCountLabel(data.files_done);
+  if (data.status === "completed") {
+    let message = `Extracted ${files} from "${job.name}"`;
+    if (data.files_skipped > 0) {
+      message += ` · ${data.files_skipped.toLocaleString()} skipped (already existed)`;
+    }
+    const warnings = data.warnings ?? [];
+    if (warnings.length > 0) {
+      const shown = warnings.slice(0, 5).join("; ");
+      const extra =
+        warnings.length > 5 ? ` (+${warnings.length - 5} more)` : "";
+      notifyWarning(
+        `${message}. Some items were not extracted: ${shown}${extra}`,
+      );
+    } else {
+      notifySuccess(message);
+    }
+  } else if (data.status === "cancelled") {
+    notifyInfo(`Extraction cancelled. ${files} extracted before cancel.`);
+  } else {
+    const kept =
+      data.files_done > 0
+        ? ` ${files} ${data.files_done === 1 ? "was" : "were"} extracted before it stopped.`
+        : "";
+    notifyError(
+      `Extracting "${job.name}" failed: ${data.error || "unknown error"}${kept}`,
+    );
+  }
+  if (extractAffectsListing(job.destination)) {
+    void refresh({ preserveSelection: true });
+  }
+}
+
+function isPathInside(child: string, parent: string): boolean {
+  const c = pathKeyForCompare(child);
+  const p = pathKeyForCompare(parent);
+  const prefix = p.endsWith(pathSeparator.value) ? p : p + pathSeparator.value;
+  return c !== p && c.startsWith(prefix);
+}
+
+// The destination is this folder, inside it, or one of its parents.
+function extractAffectsListing(destination: string): boolean {
+  const current = currentPath.value;
+  if (!current) return false;
+  return (
+    pathsEqual(destination, current) ||
+    isPathInside(destination, current) ||
+    isPathInside(current, destination)
+  );
+}
+
+async function cancelExtractJob(sessionId: string) {
+  const job = extractJobs.value.find((j) => j.sessionId === sessionId);
+  if (!job || job.cancelling) return;
+  job.cancelling = true;
+  try {
+    await cancelAgentFileExtract(props.agent_id, sessionId);
+    // the next poll reports the final status and counts
+    scheduleExtractPoll(sessionId, 0);
+  } catch (err: unknown) {
+    job.cancelling = false;
+    notifyError(
+      getFileBrowserErrorMessage(err, "Unable to cancel the extraction."),
+    );
+  }
 }
 
 function revealTransfers() {
@@ -1492,9 +1770,15 @@ async function restoreResumableTransfers(seq: number): Promise<void> {
     const data = await listAgentFileTransfers(props.agent_id);
     if (seq !== restoreSeq) return;
 
+    const transfers = data.transfers ?? [];
+    for (const transfer of transfers) {
+      if (transfer.operation === "extract") {
+        trackExtractJob(extractJobFromTransfer(transfer));
+      }
+    }
     const { uploads, downloads } = await reconcileResumableTransfers(
       props.agent_id,
-      data.transfers ?? [],
+      transfers.filter((t) => t.operation !== "extract"),
     );
     if (seq !== restoreSeq) return;
 

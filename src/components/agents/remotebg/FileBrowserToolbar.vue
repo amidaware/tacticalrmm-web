@@ -75,6 +75,18 @@
             </q-item>
 
             <q-item
+              v-if="canExtract"
+              clickable
+              v-close-popup
+              @click="emit('extract')"
+            >
+              <q-item-section avatar>
+                <q-icon name="unarchive" size="18px" />
+              </q-item-section>
+              <q-item-section>Extract to…</q-item-section>
+            </q-item>
+
+            <q-item
               clickable
               v-close-popup
               :disable="selectedCount === 0"
@@ -179,6 +191,7 @@ const props = withDefaults(
     selectedCount: number;
     search: string;
     showTransfers?: boolean;
+    canExtract?: boolean;
     transfersLabel?: string;
     pausedCount?: number;
     filterMatchCount?: number;
@@ -188,6 +201,7 @@ const props = withDefaults(
   }>(),
   {
     showTransfers: false,
+    canExtract: false,
     transfersLabel: "Transfers",
     pausedCount: 0,
     filterMatchCount: 0,
@@ -205,6 +219,7 @@ const emit = defineEmits<{
   (e: "rename"): void;
   (e: "properties"): void;
   (e: "copy-path"): void;
+  (e: "extract"): void;
   (e: "refresh"): void;
   (e: "open-transfers"): void;
   (e: "update:search", value: string): void;

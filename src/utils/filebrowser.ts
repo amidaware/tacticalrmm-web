@@ -146,6 +146,44 @@ export function normalizeAgentListPath(
   return normalized || "/";
 }
 
+export function isZipFileItem(
+  item: FileBrowserItem | null | undefined,
+): boolean {
+  return !!item && item.type === "file" && /\.zip$/i.test(item.name);
+}
+
+
+export function extractDestinationRule(
+  value: string | number | null | undefined,
+  platform?: string,
+): true | string {
+  const path = String(value ?? "").trim();
+  if (!path) return "Enter a destination folder";
+  const windows = (platform || "").toLowerCase() === "windows";
+  const absolute = windows
+    ? /^(?:[A-Za-z]:[\\/]|[\\/]{2}[^\\/]+[\\/][^\\/]+)/.test(path)
+    : path.startsWith("/");
+  if (!absolute) {
+    return windows
+      ? "Enter a full path, for example C:\\Folder"
+      : "Enter a full path starting with /";
+  }
+  if (path.split(windows ? /[\\/]+/ : "/").includes("..")) {
+    return "The path cannot contain ..";
+  }
+  return true;
+}
+
+export function defaultExtractDestination(
+  folder: string,
+  zipName: string,
+  platform?: string,
+): string {
+  const sep = (platform || "").toLowerCase() === "windows" ? "\\" : "/";
+  const base = zipName.replace(/\.zip$/i, "") || "extracted";
+  return folder.endsWith(sep) ? `${folder}${base}` : `${folder}${sep}${base}`;
+}
+
 export function formatFileBrowserTimestamp(iso?: string): string {
   if (!iso) return "";
   return formatDate(iso, "YYYY-MM-DD h:mm A");

@@ -59,6 +59,8 @@ export const TRANSFER_TOOLTIP_PAUSE_ALL =
 export const TRANSFER_TOOLTIP_PAUSE = "Pause this download.";
 export const TRANSFER_TOOLTIP_CANCEL =
   "Cancel download and release the transfer slot.";
+export const TRANSFER_TOOLTIP_CANCEL_EXTRACT =
+  "Cancel the extraction. Files already extracted are kept.";
 export const TRANSFER_TOOLTIP_PAUSE_UPLOAD = "Pause this upload.";
 export const TRANSFER_TOOLTIP_CANCEL_UPLOAD =
   "Cancel upload and release the transfer slot.";
