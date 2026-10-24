@@ -120,7 +120,7 @@
       :current-path="currentPath"
       :queue-room="uploadQueueRoom"
       :max-files-per-selection="MAX_UPLOAD_FILES_PER_SELECTION"
-      :max-file-size-bytes="MAX_UPLOAD_FILE_SIZE_BYTES"
+      :max-file-size-bytes="maxUploadFileSizeBytes"
       :filter-query="activeFilterQuery"
       :folder-item-count="rows.length"
       :list-total="listTotal"
@@ -238,7 +238,6 @@ import {
   MAX_DELETE_PATHS_PER_REQUEST,
   MAX_DOWNLOAD_QUEUE_ITEMS,
   MAX_SEQUENTIAL_DOWNLOAD_FILES,
-  MAX_UPLOAD_FILE_SIZE_BYTES,
   MAX_UPLOAD_FILES_PER_SELECTION,
   MAX_UPLOAD_QUEUE_ITEMS,
   FILE_BROWSER_MAX_LOADED_ITEMS,
@@ -369,9 +368,11 @@ const props = withDefaults(
   defineProps<{
     agent_id: string;
     agentPlatform?: string;
+    maxUploadFileSizeBytes?: number;
   }>(),
   {
     agentPlatform: "windows",
+    maxUploadFileSizeBytes: 0,
   },
 );
 
@@ -545,10 +546,13 @@ const uploadDestinationLabel = computed(() => {
   return allSame ? first : "Multiple folders";
 });
 
-const uploadLimitsCaption = computed(
-  () =>
-    `No file size limit · Up to ${MAX_UPLOAD_FILES_PER_SELECTION} files per selection`,
-);
+const uploadLimitsCaption = computed(() => {
+  const sizeLimit =
+    props.maxUploadFileSizeBytes > 0
+      ? `Up to ${bytes2Human(props.maxUploadFileSizeBytes)} per file`
+      : "No file size limit";
+  return `${sizeLimit} · Up to ${MAX_UPLOAD_FILES_PER_SELECTION} files per selection`;
+});
 
 const filteredRows = computed(() => rows.value);
 
@@ -2972,7 +2976,7 @@ async function queueFilesForUpload(
     (f) => nameSegmentBaseRule(f.name, agentPlatform.value) === true,
   );
 
-  const maxFileBytes = MAX_UPLOAD_FILE_SIZE_BYTES;
+  const maxFileBytes = props.maxUploadFileSizeBytes;
   const skippedOversized =
     maxFileBytes > 0 ? namedOk.filter((f) => f.size > maxFileBytes).length : 0;
   const sizeOk =

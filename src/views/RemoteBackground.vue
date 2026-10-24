@@ -91,6 +91,7 @@
       v-show="tab === 'filebrowser'"
       :agent_id="agent_id"
       :agent-platform="String($route.query.agentPlatform || 'windows')"
+      :max-upload-file-size-bytes="fileBrowserMaxUploadFileSizeBytes"
     />
     <iframe
       v-if="
@@ -186,6 +187,7 @@ export default {
     const fileBrowserMode = ref(null);
     const fileBrowserError = ref("");
     const fileBrowserDefaultsLoaded = ref(false);
+    const fileBrowserMaxUploadFileSizeBytes = ref(0);
     let fileBrowserDefaultsPromise = null;
 
     const agent_id = computed(() => params.agent_id);
@@ -259,6 +261,8 @@ export default {
           return;
         }
 
+        fileBrowserMaxUploadFileSizeBytes.value =
+          Number(data?.max_upload_file_size_bytes) || 0;
         fileBrowserMode.value = wantsNewFileBrowser ? "new" : "legacy";
       } catch (e) {
         const status = e?.response?.status;
@@ -329,6 +333,7 @@ export default {
       fileBrowserMode,
       fileBrowserError,
       fileBrowserDefaultsLoaded,
+      fileBrowserMaxUploadFileSizeBytes,
       retryFileBrowserDefaults,
     };
   },
