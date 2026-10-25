@@ -434,18 +434,6 @@ export async function hasStoredDownloadHandle(
   }
 }
 
-export async function requestStoredDownloadHandlePermission(
-  agentId: string,
-  item: {
-    sourcePath: string;
-    kind?: "file" | "archive";
-    archivePaths?: string[];
-    handleKey?: string;
-  },
-): Promise<boolean> {
-  return (await requestStoredDownloadHandle(agentId, item)) !== null;
-}
-
 function downloadRecoveryErrorMessage(
   recoveryHint: TransferRecoveryHint,
 ): string | undefined {

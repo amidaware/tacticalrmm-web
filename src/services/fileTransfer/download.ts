@@ -458,7 +458,7 @@ async function createDownloadSink(
     const sessionBytesKey = queuedSessionId
       ? downloadBytesSessionKey(queuedSessionId)
       : null;
-    const stored =
+    let stored =
       (sessionBytesKey
         ? await idbGetDownloadBytes(sessionBytesKey)
         : undefined) || (await idbGetDownloadBytes(pathBytesKey));
@@ -492,7 +492,14 @@ async function createDownloadSink(
         rethrowSavePickerError(err, signal, abortIntent);
       }
     } else {
-      buffers = stored?.buffers || [];
+      // nothing to resume, so stored bytes are from an abandoned download
+      if (stored) {
+        for (const key of persistKeys) {
+          await idbDeleteDownloadBytes(key).catch(() => {});
+        }
+        stored = undefined;
+      }
+      buffers = [];
     }
 
     const chunksId = stored?.chunksId || newDownloadChunksId();

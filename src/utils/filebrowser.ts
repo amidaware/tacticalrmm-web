@@ -152,7 +152,6 @@ export function isZipFileItem(
   return !!item && item.type === "file" && /\.zip$/i.test(item.name);
 }
 
-
 export function extractDestinationRule(
   value: string | number | null | undefined,
   platform?: string,
@@ -521,15 +520,6 @@ export function normalizeFileBrowserFilterQuery(
   query: string | null | undefined,
 ): string {
   return (query ?? "").trim();
-}
-
-export function filterFileBrowserRowsByName(
-  rows: FileBrowserItem[],
-  query: string | null | undefined,
-): FileBrowserItem[] {
-  const q = normalizeFileBrowserFilterQuery(query).toLowerCase();
-  if (!q) return rows;
-  return rows.filter((row) => row.name.toLowerCase().includes(q));
 }
 
 export function getFileBrowserNameHighlightParts(

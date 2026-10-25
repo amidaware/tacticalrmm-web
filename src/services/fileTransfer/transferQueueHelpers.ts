@@ -77,12 +77,6 @@ export function setTransferAbortMode(
   controllers.get(id)?.abort();
 }
 
-export function abortReleaseReason(
-  mode: TransferAbortIntent["mode"],
-): Extract<TransferReleaseReason, "pause" | "cancel"> {
-  return mode === "cancel" ? "cancel" : "pause";
-}
-
 export function isTransferIntegrityError(err: unknown): boolean {
   return err instanceof Error && INTEGRITY_ERROR_RE.test(err.message);
 }

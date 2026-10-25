@@ -1944,7 +1944,6 @@ function offerZipDownloadDialog(selection: {
     $q.dialog({
       title: "Download as ZIP?",
       message: `${summary} selected. ${reason}`,
-      cancel: true,
       persistent: true,
       ok: { label: "Download ZIP", color: "primary" },
       cancel: { label: "Cancel", flat: true, color: "primary" },
@@ -2034,7 +2033,6 @@ async function confirmContinueAfterDownloadFailure(
     $q.dialog({
       title: "Download failed",
       message: `${detail}\n\nContinue with the remaining ${remaining} file(s)?`,
-      cancel: true,
       persistent: true,
       ok: { label: "Continue", color: "primary" },
       cancel: { label: "Pause remaining", flat: true, color: "negative" },

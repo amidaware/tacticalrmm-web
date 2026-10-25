@@ -129,11 +129,3 @@ export function getAxiosErrorDetail(
   }
   return undefined;
 }
-
-export function getAxiosErrorMessage(
-  err: unknown,
-  fallback: string,
-  options?: { keys?: readonly string[] },
-): string {
-  return getAxiosErrorDetail(err, options) ?? fallback;
-}

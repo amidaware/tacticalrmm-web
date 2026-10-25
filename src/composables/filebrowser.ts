@@ -4,7 +4,6 @@ import { uid } from "quasar";
 import type { QTreeFileNode } from "../types/filebrowser";
 import type { BreadcrumbSegment } from "../types/filebrowser";
 import {
-  fileBrowserPathLeaf,
   normalizeAgentListPath,
   normalizeFileBrowserPathSlashes,
 } from "../utils/filebrowser";
@@ -55,22 +54,15 @@ export function useFileBrowser(platform: MaybeRef<string> = "windows") {
     };
   }
 
-  function getFile(path: string, separator?: "/" | "\\"): string {
-    if (separator != null) {
-      const file = path.split(separator).pop();
-      return file ? file : "";
-    }
-    return fileBrowserPathLeaf(path, {
-      emptyFallback: "",
-      platform: resolvedPlatform.value,
-    });
+  function getFile(path: string, separator: "/" | "\\" = "/"): string {
+    const file = path.split(separator).pop();
+    return file ? file : "";
   }
 
-  function getPath(path: string, separator?: "/" | "\\"): string {
-    const sep = separator ?? pathSeparator.value;
-    const pathArray = path.split(sep);
+  function getPath(path: string, separator: "/" | "\\" = "/"): string {
+    const pathArray = path.split(separator);
     pathArray.pop();
-    return pathArray.join(sep);
+    return pathArray.join(separator);
   }
 
   function normalizePathSlashes(p: string): string {
@@ -82,14 +74,11 @@ export function useFileBrowser(platform: MaybeRef<string> = "windows") {
     if (isWindows.value) {
       const driveOnly = /^([A-Za-z]:)\\*$/.exec(s);
       if (driveOnly) return `${driveOnly[1].toLowerCase()}\\`;
-      if (s.startsWith("\\\\")) {
-        return s.replace(/\\+$/, "").toLowerCase();
-      }
       return s.replace(/\\+$/, "").toLowerCase();
     }
 
     if (s === "/") return "/";
-    return s.replace(/\/+$/, "").toLowerCase();
+    return s.replace(/\/+$/, "");
   }
 
   function pathsEqual(a: string, b: string): boolean {
@@ -153,34 +142,11 @@ export function useFileBrowser(platform: MaybeRef<string> = "windows") {
     return parseUnixPathToBreadcrumbs(raw);
   }
 
-  function joinRemotePathSegment(basePath: string, segment: string): string {
-    const sep = pathSeparator.value;
-    const base = basePath.replace(sep === "\\" ? /[\\/]+$/ : /[/\\]+$/, "");
-    return `${base}${sep}${segment}`;
-  }
-
-  function getParentRemotePath(fullPath: string): string {
-    const trimmed = fullPath.trim().replace(/[/\\]+$/, "");
-    const lastBack = trimmed.lastIndexOf("\\");
-    const lastFwd = trimmed.lastIndexOf("/");
-    const lastSep = Math.max(lastBack, lastFwd);
-    if (lastSep <= 0) return trimmed;
-    return trimmed.slice(0, lastSep);
-  }
-
-  function replacePathLastSegment(
-    fullPath: string,
-    newLastSegment: string,
-  ): string {
-    return joinRemotePathSegment(getParentRemotePath(fullPath), newLastSegment);
-  }
-
   function normalizeNavPath(path: string): string {
     return normalizeAgentListPath(path, resolvedPlatform.value);
   }
 
   return {
-    isWindows,
     pathSeparator,
     createFolderNode,
     createFileNode,
@@ -190,9 +156,6 @@ export function useFileBrowser(platform: MaybeRef<string> = "windows") {
     pathKeyForCompare,
     pathsEqual,
     parsePathToBreadcrumbs,
-    joinRemotePathSegment,
-    getParentRemotePath,
-    replacePathLastSegment,
     normalizeNavPath,
   };
 }
