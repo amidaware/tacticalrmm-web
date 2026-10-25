@@ -19,6 +19,7 @@
     "apexcharts": "3.54.1",
     "axios": "1.12.2",
     "dotenv": "16.4.5",
+    "js-sha256": "1.0.0",
     "monaco-editor": "0.50.0",
     "pinia": "2.2.6",
     "qrcode": "1.5.4",

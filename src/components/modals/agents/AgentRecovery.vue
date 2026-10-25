@@ -21,8 +21,7 @@
           </div>
         </q-card-section>
         <q-card-section v-if="state.mode === 'mesh'">
-          Fix issues with the Mesh Agent which handles take control and file
-          browser.
+          Fix issues with the Mesh Agent which handles take control.
         </q-card-section>
         <q-card-section v-else-if="state.mode === 'tacagent'">
           Fix issues with the Tactical RMM Agent service.
