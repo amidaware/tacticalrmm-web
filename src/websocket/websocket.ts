@@ -1,9 +1,16 @@
-import { ref, watch } from "vue";
+import { computed, effectScope, ref, watch } from "vue";
 import { UseWebSocketReturn, useWebSocket } from "@vueuse/core";
 import { getBaseUrl } from "@/boot/axios";
 import { useAuthStore } from "@/stores/auth";
 
-export function getWSUrl(path: string, token: string | null) {
+export function getWSUrl(
+  path: string,
+  token: string | null,
+): string | undefined {
+  // no token means not logged in; returning undefined prevents
+  // useWebSocket from opening a connection that would just 401
+  if (!token) return undefined;
+
   const url = getBaseUrl().split("://")[1];
 
   const proto =
@@ -21,13 +28,20 @@ interface WSReturn {
 
 let WSConnection: UseWebSocketReturn<string> | undefined = undefined;
 export function useDashWSConnection() {
-  const auth = useAuthStore();
-
   if (WSConnection === undefined) {
-    const url = getWSUrl("dashinfo", auth.token);
-    WSConnection = useWebSocket(url, {
-      autoReconnect: true,
-    });
+    // create the connection in a detached scope so it survives the
+    // unmount of whichever component happened to create it, with a
+    // reactive url so it automatically disconnects on logout (token
+    // becomes null -> url undefined) and reconnects with the fresh
+    // token on the next login without needing a page reload
+    const scope = effectScope(true);
+    WSConnection = scope.run(() => {
+      const auth = useAuthStore();
+      const url = computed(() => getWSUrl("dashinfo", auth.token));
+      return useWebSocket(url, {
+        autoReconnect: true,
+      });
+    }) as UseWebSocketReturn<string>;
   }
 
   const { status, data, send, open, close } = WSConnection;
@@ -38,7 +52,6 @@ export function useDashWSConnection() {
   });
 
   function closeConnection() {
-    WSConnection = undefined;
     close();
   }
 

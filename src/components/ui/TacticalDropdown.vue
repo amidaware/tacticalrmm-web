@@ -35,7 +35,9 @@
         :key="mapOptions ? scope.opt.value : scope.opt"
       >
         <q-item-section>
-          <q-item-label v-html="mapOptions ? scope.opt.label : scope.opt" />
+          <q-item-label>{{
+            mapOptions ? scope.opt.label : scope.opt
+          }}</q-item-label>
         </q-item-section>
         <q-item-section
           v-if="

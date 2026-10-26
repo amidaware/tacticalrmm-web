@@ -8,7 +8,7 @@
           <q-tooltip class="bg-white text-primary">Close</q-tooltip>
         </q-btn>
       </q-bar>
-      <q-card-section style="height: 70vh" class="scroll">
+      <q-card-section style="min-height: 70vh" class="q-pa-md">
         <div>
           Run Time:
           <code>{{ ret.execution_time }} seconds</code>
@@ -20,12 +20,12 @@
         <div v-if="ret.stdout">
           <script-output-copy-clip label="Standard Output" :data="ret.stdout" />
           <q-separator />
-          <pre>{{ ret.stdout }}</pre>
+          <pre class="scroll" style="max-height: 65vh">{{ ret.stdout }}</pre>
         </div>
         <div v-if="ret.stderr">
           <script-output-copy-clip label="Standard Error" :data="ret.stderr" />
           <q-separator />
-          <pre>{{ ret.stderr }}</pre>
+          <pre class="scroll" style="max-height: 65vh">{{ ret.stderr }}</pre>
         </div>
         <q-inner-loading :showing="loading" />
       </q-card-section>

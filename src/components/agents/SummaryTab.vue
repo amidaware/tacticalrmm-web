@@ -295,14 +295,12 @@ export default {
       if (!summary.value.disks) {
         return [];
       }
-
-      const entries = Object.entries(summary.value.disks);
-      const ret = [];
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (let [k, v] of entries) {
-        ret.push(v);
-      }
-      return ret;
+      const seen = new Set();
+      return summary.value.disks.filter((disk) => {
+        if (seen.has(disk.device)) return false;
+        seen.add(disk.device);
+        return true;
+      });
     });
 
     const customFields = computed(() => {

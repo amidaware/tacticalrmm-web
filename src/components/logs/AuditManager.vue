@@ -236,6 +236,7 @@ const agentActionOptions = [
   { value: "execute_command", label: "Execute Command" },
   { value: "execute_script", label: "Execute Script" },
   { value: "remote_session", label: "Remote Session" },
+  { value: "file_transfer", label: "File Transfer" },
   { value: "url_action", label: "URL Action" },
 ];
 
@@ -391,6 +392,7 @@ export default {
           return dash_warning_color.value;
         case "add":
         case "agent_install":
+        case "file_transfer":
           return dash_positive_color.value;
         case "delete":
         case "failed_login":
