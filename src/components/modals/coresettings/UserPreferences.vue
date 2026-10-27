@@ -5,6 +5,11 @@
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
             <q-tab name="ui" label="User Interface" />
+            <q-tab
+              v-if="agentMenuAllowUser"
+              name="agentmenu"
+              label="Agent Menu"
+            />
           </q-tabs>
         </template>
         <template v-slot:after>
@@ -217,6 +222,31 @@
                   />
                 </q-card-section>
               </q-tab-panel>
+              <q-tab-panel name="agentmenu">
+                <div class="text-subtitle2">Agent Menu</div>
+                <q-separator />
+                <q-card-section>
+                  <!-- without an own layout the user follows the company layout;
+                       nothing is stored until they change something -->
+                  <AgentMenuLayoutEditor
+                    :model-value="
+                      Object.keys(agentMenuLayout).length
+                        ? agentMenuLayout
+                        : $store.state.agentMenuCompanyLayout
+                    "
+                    @update:model-value="agentMenuLayout = $event"
+                  />
+                  <q-btn
+                    class="q-mt-sm"
+                    flat
+                    dense
+                    no-caps
+                    icon="business"
+                    label="Use company default"
+                    @click="agentMenuLayout = {}"
+                  />
+                </q-card-section>
+              </q-tab-panel>
             </q-tab-panels>
 
             <q-card-section class="row items-center">
@@ -233,10 +263,12 @@
 import { openURL } from "quasar";
 import { loadingBarColors } from "@/mixins/data";
 import mixins from "@/mixins/mixins";
+import AgentMenuLayoutEditor from "@/core/agentmenu/components/AgentMenuLayoutEditor.vue";
 
 export default {
   name: "UserPreferences",
   emits: ["hide", "ok", "cancel"],
+  components: { AgentMenuLayoutEditor },
   mixins: [mixins],
   data() {
     return {
@@ -254,6 +286,7 @@ export default {
       dash_warning_color: "",
       urlActions: [],
       clear_search_when_switching: true,
+      agentMenuLayout: {},
       date_format: "",
       quasar_color_url: "https://quasar.dev/style/color-palette",
       clientTreeSortOptions: [
@@ -300,6 +333,11 @@ export default {
       ],
     };
   },
+  computed: {
+    agentMenuAllowUser() {
+      return this.$store.state.agentMenuAllowUser;
+    },
+  },
   watch: {
     agentDblClickAction(new_value) {
       if (new_value === "urlaction") {
@@ -341,6 +379,8 @@ export default {
         this.dash_warning_color = r.data.dash_warning_color;
         this.clear_search_when_switching = r.data.clear_search_when_switching;
         this.date_format = r.data.date_format;
+        // keep {} for untouched users so later company changes still reach them
+        this.agentMenuLayout = r.data.agent_menu_user_layout || {};
       });
     },
     editUserPrefs() {
@@ -363,10 +403,13 @@ export default {
         dash_warning_color: this.dash_warning_color,
         clear_search_when_switching: this.clear_search_when_switching,
         date_format: this.date_format,
+        agent_menu_layout: this.agentMenuLayout,
       };
+      if (!this.agentMenuAllowUser) delete data.agent_menu_layout;
       this.$axios.patch("/accounts/users/ui/", data).then(() => {
         this.notifySuccess("Preferences were saved!");
         this.$store.dispatch("loadTree");
+        this.$store.dispatch("getDashInfo", false);
         this.onOk();
       });
     },
