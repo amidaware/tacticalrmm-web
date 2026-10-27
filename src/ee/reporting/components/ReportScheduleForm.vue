@@ -171,6 +171,56 @@ For details, see: https://license.tacticalrmm.com/ee
             class="q-pt-md"
             dense
           />
+
+          <div
+            v-if="!emailOnly && localSchedule.report_template"
+            class="q-pt-md"
+          >
+            <div class="row items-center q-mb-xs">
+              <div class="col text-weight-medium">Conditions</div>
+              <div class="col-auto">
+                <q-btn
+                  no-caps
+                  dense
+                  flat
+                  icon="fas fa-plus"
+                  color="primary"
+                  label="Add condition"
+                  @click="addCondition"
+                />
+              </div>
+            </div>
+            <div class="text-caption text-grey-7 q-mb-sm">
+              If any expression is not true, this schedule skips the report and
+              the email. Same variables as the template. Leave empty to always
+              run. Example: data_sources.some_list|length &gt; 0
+            </div>
+            <div
+              v-for="(_, index) in localSchedule.conditions"
+              :key="index"
+              class="row q-col-gutter-sm q-mb-sm items-start"
+            >
+              <div class="col">
+                <q-input
+                  v-model="localSchedule.conditions[index]"
+                  dense
+                  filled
+                  autogrow
+                  :label="`Condition ${index + 1}`"
+                  hint="Just the expression. No double curly braces."
+                />
+              </div>
+              <div class="col-auto">
+                <q-btn
+                  flat
+                  dense
+                  icon="delete"
+                  color="negative"
+                  @click="removeCondition(index)"
+                />
+              </div>
+            </div>
+          </div>
         </q-card-section>
         <q-card-section>
           <q-btn
@@ -255,7 +305,10 @@ const formatOptions: { label: string; value: ReportFormat }[] = [
 
 const localSchedule = reactive<ReportSchedule>(
   props.schedule
-    ? extend(true, {}, props.schedule)
+    ? {
+        ...extend(true, {}, props.schedule),
+        conditions: [...(props.schedule.conditions || [])],
+      }
     : {
         id: 0,
         name: "",
@@ -266,6 +319,7 @@ const localSchedule = reactive<ReportSchedule>(
         email_recipients: [],
         send_report_email: true,
         dependencies: {},
+        conditions: [],
         email_settings: {
           subject: "",
           body: "",
@@ -313,6 +367,7 @@ watch(
   () => localSchedule.report_template,
   (newValue) => {
     localSchedule.dependencies = {};
+    localSchedule.conditions = [];
     selectedTemplate.value = null;
 
     if (newValue) {
@@ -323,6 +378,14 @@ watch(
     }
   },
 );
+
+function addCondition() {
+  localSchedule.conditions.push("");
+}
+
+function removeCondition(index: number) {
+  localSchedule.conditions.splice(index, 1);
+}
 
 function openDependenciesForm() {
   $q.dialog({
@@ -382,6 +445,10 @@ async function submit() {
     );
     return;
   }
+
+  localSchedule.conditions = (localSchedule.conditions || []).filter(
+    (c) => c.trim().length > 0,
+  );
 
   if (props.emailOnly && props.reportTemplate) {
     if (props.reportTemplate)
