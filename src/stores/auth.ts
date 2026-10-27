@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 
 import axios from "axios";
+import { completePasskeyLogin } from "@/api/webauthn";
 
 interface CheckCredentialsRequest {
   username: string;
@@ -15,9 +16,11 @@ interface LoginRequest {
 }
 
 interface CheckCredentialsResponse {
-  token: string;
-  username: string;
+  token?: string;
+  username?: string;
+  name?: string | null;
   totp?: boolean;
+  passkey?: boolean;
 }
 
 interface TOTPSetupResponse {
@@ -33,6 +36,7 @@ export const useAuthStore = defineStore("auth", {
     ssoLoginProvider: useStorage("sso_provider", null),
     provider_id: useStorage("provider_id", null),
     next: useStorage("next", null),
+    passkeyEnrollmentPrompt: false,
   }),
   getters: {
     loggedIn: (state) => {
@@ -48,7 +52,7 @@ export const useAuthStore = defineStore("auth", {
     ): Promise<CheckCredentialsResponse> {
       const { data } = await axios.post("/v2/checkcreds/", credentials);
 
-      if (!data.totp) {
+      if (!data.totp && !data.passkey) {
         this.token = data.token;
         this.username = data.username;
         this.name = data.name;
@@ -64,6 +68,23 @@ export const useAuthStore = defineStore("auth", {
 
       return data;
     },
+    async loginWithPasskey(credential: Record<string, unknown>) {
+      const data = await completePasskeyLogin(credential);
+      this.username = data.username;
+      this.name = data.name;
+      this.token = data.token;
+      this.ssoLoginProvider = null;
+
+      return data;
+    },
+    requestPasskeyEnrollmentPrompt() {
+      this.passkeyEnrollmentPrompt = true;
+    },
+    consumePasskeyEnrollmentPrompt() {
+      const shouldPrompt = this.passkeyEnrollmentPrompt;
+      this.passkeyEnrollmentPrompt = false;
+      return shouldPrompt;
+    },
     async logout() {
       if (this.token !== null) {
         try {
@@ -75,6 +96,7 @@ export const useAuthStore = defineStore("auth", {
       this.name = null;
       this.ssoLoginProvider = null;
       this.provider_id = null;
+      this.passkeyEnrollmentPrompt = false;
     },
     async setupTotp(): Promise<TOTPSetupResponse | false> {
       const { data } = await axios.post("/accounts/users/setup_totp/");

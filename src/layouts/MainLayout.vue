@@ -169,11 +169,24 @@
             <q-item
               clickable
               v-ripple
-              @click="showUserPreferences"
+              @click="showUserPreferences()"
               v-close-popup
             >
               <q-item-section>
                 <q-item-label>Preferences</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
+              @click="showUserPreferences('security')"
+              v-close-popup
+            >
+              <q-item-section>
+                <q-item-label>Passkeys</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="vpn_key" />
               </q-item-section>
             </q-item>
             <q-item clickable>
@@ -194,9 +207,9 @@
                       <q-item-label>Reset Password</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-ripple @click="reset2FA" v-close-popup>
+                  <q-item clickable v-ripple @click="resetMFA" v-close-popup>
                     <q-item-section>
-                      <q-item-label>Reset 2FA</q-item-label>
+                      <q-item-label>Reset MFA</q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -235,9 +248,11 @@ import { checkWebTermPerms, openWebTerminal } from "@/api/core";
 import AlertsIcon from "@/components/AlertsIcon.vue";
 import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
 import ResetPass from "@/components/accounts/ResetPass.vue";
+import { fetchPasskeys, isWebAuthnSupported } from "@/api/webauthn";
 
 const store = useStore();
 const $q = useQuasar();
+const auth = useAuthStore();
 
 const {
   serverCount,
@@ -247,7 +262,7 @@ const {
   daysUntilCertExpires,
 } = storeToRefs(useDashboardStore());
 
-const { displayName } = storeToRefs(useAuthStore());
+const { displayName } = storeToRefs(auth);
 
 const darkMode = computed({
   get: () => {
@@ -273,9 +288,10 @@ const latestReleaseURL = computed(() => {
     : "";
 });
 
-function showUserPreferences() {
+function showUserPreferences(initialTab: "ui" | "security" = "ui") {
   $q.dialog({
     component: UserPreferences,
+    componentProps: { initialTab },
   }).onOk(() => store.dispatch("getDashInfo"));
 }
 
@@ -285,10 +301,10 @@ function resetPassword() {
   });
 }
 
-function reset2FA() {
+function resetMFA() {
   $q.dialog({
-    title: "Reset 2FA",
-    message: "Are you sure you would like to reset your 2FA token?",
+    title: "Reset MFA",
+    message: "This removes your TOTP secret and enrolled passkeys.",
     cancel: true,
     persistent: true,
   }).onOk(async () => {
@@ -296,6 +312,34 @@ function reset2FA() {
       const ret = await resetTwoFactor();
       notifySuccess(ret, 3000);
     } catch {}
+  });
+}
+
+async function maybePromptPasskeyEnrollment() {
+  if (!auth.consumePasskeyEnrollmentPrompt() || !isWebAuthnSupported()) return;
+
+  try {
+    const passkeys = await fetchPasskeys();
+    if (passkeys.length > 0) return;
+  } catch {
+    return;
+  }
+
+  $q.notify({
+    type: "info",
+    message: "Passkeys are now the preferred sign-in method.",
+    caption:
+      "You can enroll one now, or any time from Preferences > Security > Passkeys.",
+    timeout: 12000,
+    multiLine: true,
+    actions: [
+      {
+        label: "Open Security",
+        color: "white",
+        handler: () => showUserPreferences("security"),
+      },
+      { label: "Later", color: "white" },
+    ],
   });
 }
 
@@ -308,7 +352,7 @@ async function openWebTerm() {
       openWebTerminal();
     }
   } catch (e) {
-    console.error(e);
+    notifyError(e instanceof Error ? e.message : "Unable to open web terminal");
   }
 }
 
@@ -337,6 +381,7 @@ function livePoll() {
 onMounted(() => {
   store.dispatch("getDashInfo");
   store.dispatch("checkVer");
+  maybePromptPasskeyEnrollment();
   livePoll();
 });
 

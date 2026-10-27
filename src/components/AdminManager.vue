@@ -109,14 +109,49 @@
                 <q-item
                   clickable
                   v-close-popup
-                  @click="reset2FA(props.row)"
+                  @click="resetMFA(props.row)"
                   id="context-reset"
                   :disable="props.row.social_accounts.length !== 0"
                 >
                   <q-item-section side>
                     <q-icon name="autorenew" />
                   </q-item-section>
-                  <q-item-section>Reset Two-Factor Auth</q-item-section>
+                  <q-item-section>Reset MFA</q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="showPasskeys(props.row)"
+                >
+                  <q-item-section side>
+                    <q-icon name="vpn_key" />
+                  </q-item-section>
+                  <q-item-section>Show Passkeys</q-item-section>
+                </q-item>
+
+                <q-item
+                  v-if="props.row.username === logged_in_user"
+                  clickable
+                  v-close-popup
+                  @click="showMyPasskeyPreferences"
+                >
+                  <q-item-section side>
+                    <q-icon name="add" />
+                  </q-item-section>
+                  <q-item-section>Add My Passkey</q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="resetPasskeys(props.row)"
+                  :disable="props.row.passkey_count === 0"
+                >
+                  <q-item-section side>
+                    <q-icon name="delete" />
+                  </q-item-section>
+                  <q-item-section>Reset Passkeys</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -173,6 +208,26 @@
             <q-td>{{ props.row.username }}</q-td>
             <q-td>{{ props.row.first_name }} {{ props.row.last_name }}</q-td>
             <q-td>{{ props.row.email }}</q-td>
+            <q-td>
+              <q-chip
+                v-if="props.row.totp_enabled"
+                dense
+                square
+                class="mfa-chip"
+                color="secondary"
+                text-color="white"
+                >TOTP</q-chip
+              >
+              <q-chip
+                dense
+                square
+                class="mfa-chip"
+                :color="props.row.passkey_count > 0 ? 'positive' : 'grey-7'"
+                text-color="white"
+                icon-right="vpn_key"
+                >{{ props.row.passkey_count }}</q-chip
+              >
+            </q-td>
             <q-td v-if="props.row.last_login">{{
               formatDate(props.row.last_login)
             }}</q-td>
@@ -197,6 +252,9 @@ import UserForm from "@/components/modals/admin/UserForm.vue";
 import UserResetPasswordForm from "@/components/modals/admin/UserResetPasswordForm.vue";
 import SSOAccountsTable from "@/ee/sso/components/SSOAccountsTable.vue";
 import UserSessionsTable from "@/components/accounts/UserSessionsTable.vue";
+import UserPasskeysTable from "@/components/accounts/UserPasskeysTable.vue";
+import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
+import { resetUserPasskeys } from "@/api/webauthn";
 
 export default {
   name: "AdminManager",
@@ -267,6 +325,13 @@ export default {
           name: "email",
           label: "Email",
           field: "email",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "mfa",
+          label: "MFA",
+          field: "passkey_count",
           align: "left",
           sortable: true,
         },
@@ -369,14 +434,48 @@ export default {
           this.getUsers();
         });
     },
-    reset2FA(user) {
+    showPasskeys(user) {
+      this.$q
+        .dialog({
+          component: UserPasskeysTable,
+          componentProps: {
+            user: user,
+          },
+        })
+        .onOk(() => {
+          this.getUsers();
+        });
+    },
+    showMyPasskeyPreferences() {
+      this.$q.dialog({
+        component: UserPreferences,
+        componentProps: {
+          initialTab: "security",
+        },
+      });
+    },
+    resetPasskeys(user) {
+      this.$q
+        .dialog({
+          title: `Reset passkeys for ${user.username}?`,
+          cancel: true,
+          ok: { label: "Reset", color: "negative" },
+        })
+        .onOk(async () => {
+          const response = await resetUserPasskeys(user.id);
+          this.notifySuccess(`Removed ${response.deleted} passkey(s)`, 4000);
+          this.getUsers();
+        });
+    },
+    resetMFA(user) {
       const data = {
         id: user.id,
       };
 
       this.$q
         .dialog({
-          title: `Reset 2FA for ${user.username}?`,
+          title: `Reset MFA for ${user.username}?`,
+          message: "This removes the TOTP secret and all enrolled passkeys.",
           cancel: true,
           ok: { label: "Reset", color: "positive" },
         })
@@ -399,3 +498,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.mfa-chip {
+  border-radius: 6px;
+}
+</style>
