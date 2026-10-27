@@ -61,6 +61,9 @@
             <q-td key="client" :props="props">{{ props.row.client_name }}</q-td>
             <q-td key="site" :props="props">{{ props.row.site_name }}</q-td>
             <q-td key="mon_type" :props="props">{{ props.row.mon_type }}</q-td>
+            <q-td key="plat" :props="props">{{
+              platLabel(props.row.plat)
+            }}</q-td>
             <q-td key="goarch" :props="props">{{ props.row.goarch }}</q-td>
             <q-td key="expiry" :props="props">{{
               formatDate(props.row.expiry)
@@ -100,6 +103,7 @@ import { useQuasar, useDialogPluginComponent, copyToClipboard } from "quasar";
 import { fetchDeployments, removeDeployment } from "@/api/clients";
 import { notifySuccess } from "@/utils/notify";
 import { getBaseUrl } from "@/boot/axios";
+import { agentPlatOptions } from "@/constants/constants";
 
 // ui imports
 import NewDeployment from "@/components/clients/NewDeployment.vue";
@@ -124,6 +128,13 @@ const columns = [
     name: "mon_type",
     label: "Type",
     field: "mon_type",
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "plat",
+    label: "Platform",
+    field: "plat",
     align: "left",
     sortable: true,
   },
@@ -192,6 +203,10 @@ export default {
       });
     }
 
+    function platLabel(plat) {
+      return agentPlatOptions.find((opt) => opt.value === plat)?.label ?? plat;
+    }
+
     function copyLink(deployment) {
       const api = getBaseUrl();
       copyToClipboard(`${api}/clients/${deployment.uid}/deploy/`).then(() => {
@@ -220,6 +235,7 @@ export default {
       deleteDeployment,
       showAddDeployment,
       copyLink,
+      platLabel,
       formatDate,
 
       // quasar dialog
