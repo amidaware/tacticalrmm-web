@@ -466,6 +466,145 @@
                     </template>
                   </q-input>
                 </q-card-section>
+                <div class="text-subtitle2">Checks</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <div class="col-2">Subject template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{agent}</b>, <b>{client}</b>,
+                    <b>{site}</b>, <b>{site_id}</b>, <b>{policy}</b>, <b>{alert_name}</b>,
+                    <b>{check_name}</b>, <b>{check_description}</b>,
+                    <b>{alert_status}</b>, <b>{subject}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="settings.check_email_subject_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in check subject"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Body template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{details}</b>, <b>{more_info}</b>, <b>{stdout}</b>,
+                    <b>{stderr}</b>, <b>{retcode}</b>, <b>{body}</b>,
+                    <b>{subject}</b>, <b>{agent}</b>, <b>{client}</b>,
+                    <b>{site}</b>, <b>{site_id}</b>, <b>{policy}</b>, <b>{check_name}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    autogrow
+                    type="textarea"
+                    v-model="settings.check_email_body_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in check body"
+                  />
+                </q-card-section>
+                <div class="text-subtitle2">Tasks</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <div class="col-2">Subject template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{agent}</b>, <b>{client}</b>,
+                    <b>{site}</b>, <b>{site_id}</b>, <b>{policy}</b>, <b>{alert_name}</b>,
+                    <b>{task_name}</b>, <b>{alert_status}</b>, <b>{subject}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="settings.task_email_subject_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in task subject"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Body template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{details}</b>, <b>{stdout}</b>, <b>{stderr}</b>,
+                    <b>{retcode}</b>, <b>{body}</b>, <b>{subject}</b>,
+                    <b>{agent}</b>, <b>{client}</b>, <b>{site}</b>, <b>{site_id}</b>,
+                    <b>{policy}</b>, <b>{task_name}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    autogrow
+                    type="textarea"
+                    v-model="settings.task_email_body_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in task body"
+                  />
+                </q-card-section>
+                <div class="text-subtitle2">Agent Offline</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <div class="col-2">Subject template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{agent}</b>, <b>{client}</b>,
+                    <b>{site}</b>, <b>{site_id}</b>, <b>{policy}</b>, <b>{alert_name}</b>,
+                    <b>{alert_status}</b>, <b>{last_response}</b>, <b>{subject}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="settings.agent_outage_email_subject_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in offline subject"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Body template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{details}</b>, <b>{body}</b>, <b>{subject}</b>,
+                    <b>{agent}</b>, <b>{client}</b>, <b>{site}</b>,
+                    <b>{site_id}</b>, <b>{policy}</b>, <b>{last_response}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    autogrow
+                    type="textarea"
+                    v-model="settings.agent_outage_email_body_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in offline body"
+                  />
+                </q-card-section>
+                <div class="text-subtitle2">Agent Recovered</div>
+                <q-separator />
+                <q-card-section class="row">
+                  <div class="col-2">Subject template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{agent}</b>, <b>{client}</b>,
+                    <b>{site}</b>, <b>{site_id}</b>, <b>{policy}</b>, <b>{alert_name}</b>,
+                    <b>{alert_status}</b>, <b>{last_response}</b>, <b>{subject}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    v-model="settings.agent_recovery_email_subject_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in recovery subject"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">Body template:</div>
+                  <div class="col-4 text-caption text-grey-7 q-pr-lg">
+                    Available: <b>{details}</b>, <b>{body}</b>, <b>{subject}</b>,
+                    <b>{agent}</b>, <b>{client}</b>, <b>{site}</b>,
+                    <b>{site_id}</b>, <b>{policy}</b>, <b>{last_response}</b>.
+                  </div>
+                  <q-input
+                    outlined
+                    dense
+                    autogrow
+                    type="textarea"
+                    v-model="settings.agent_recovery_email_body_template"
+                    class="col-6 q-pa-none"
+                    placeholder="Leave blank to use the built-in recovery body"
+                  />
+                </q-card-section>
               </q-tab-panel>
               <!-- twilio sms alerts -->
               <q-tab-panel name="smsalerts">
