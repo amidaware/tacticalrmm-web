@@ -8,7 +8,7 @@ import type {
   TestRunURLActionResponse,
 } from "@/types/core/urlactions";
 
-import { getCenteredWindowOptions } from "@/utils/helpers";
+import { getRemoteWindowOptions } from "@/utils/helpers";
 
 import type { CoreSetting } from "@/types/core/settings";
 
@@ -87,7 +87,7 @@ export async function checkWebTermPerms(): Promise<{
 export function openWebTerminal(): void {
   const url: string = router.resolve("/webterm").href;
   openURL(url, undefined, {
-    ...getCenteredWindowOptions(1280, 720),
+    ...getRemoteWindowOptions(1280, 720),
   });
 }
 

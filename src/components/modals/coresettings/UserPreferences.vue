@@ -57,6 +57,22 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
+                  <div class="col-6">
+                    Open Take Control / Remote Background in:
+                  </div>
+                  <div class="col-2"></div>
+                  <q-select
+                    map-options
+                    emit-value
+                    outlined
+                    dense
+                    options-dense
+                    v-model="remoteOpenMode"
+                    :options="remoteOpenModeOptions"
+                    class="col-4"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
                   <div class="col-6">Agent table default tab:</div>
                   <div class="col-2"></div>
                   <q-select
@@ -243,6 +259,7 @@ export default {
       loadingBarColors,
       agentDblClickAction: "",
       defaultAgentTblTab: "",
+      remoteOpenMode: "window",
       clientTreeSort: "",
       url_action: null,
       tab: "ui",
@@ -282,6 +299,16 @@ export default {
         {
           label: "Run URL Action",
           value: "urlaction",
+        },
+      ],
+      remoteOpenModeOptions: [
+        {
+          label: "New Window",
+          value: "window",
+        },
+        {
+          label: "New Tab",
+          value: "tab",
         },
       ],
       defaultAgentTblTabOptions: [
@@ -333,6 +360,7 @@ export default {
         this.agentDblClickAction = r.data.dbl_click_action;
         this.url_action = r.data.url_action;
         this.defaultAgentTblTab = r.data.default_agent_tbl_tab;
+        this.remoteOpenMode = r.data.remote_open_mode;
         this.clientTreeSort = r.data.client_tree_sort;
         this.loading_bar_color = r.data.loading_bar_color;
         this.dash_info_color = r.data.dash_info_color;
@@ -355,6 +383,7 @@ export default {
         agent_dblclick_action: this.agentDblClickAction,
         url_action: this.url_action,
         default_agent_tbl_tab: this.defaultAgentTblTab,
+        remote_open_mode: this.remoteOpenMode,
         client_tree_sort: this.clientTreeSort,
         loading_bar_color: this.loading_bar_color,
         dash_info_color: this.dash_info_color,
