@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import { gettext } from "@/gettext";
 import { defineComponent } from "vue";
 export default defineComponent({
   inheritAttrs: false,
@@ -55,14 +56,16 @@ const props = withDefaults(
   { columnSelect: false, excludeColumns: () => [] },
 );
 
-const columnSelectCol = {
+const columnSelectCol = computed(() => ({
   name: "columnSelect",
-  label: "Column Select",
+  label: gettext.$gettext("Column Select"),
   field: "columnSelect",
-};
+}));
 
 const localColumns = computed(() =>
-  props.columnSelect ? [...props.columns, columnSelectCol] : [...props.columns],
+  props.columnSelect
+    ? [...props.columns, columnSelectCol.value]
+    : [...props.columns],
 );
 
 const defaultNames = computed(() =>

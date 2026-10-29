@@ -9,7 +9,7 @@
     hide-pagination
     virtual-scroll
     :rows-per-page-options="[0]"
-    no-data-label="No Custom Fields"
+    :no-data-label="$gettext('No Custom Fields')"
   >
     <!-- body slots -->
     <template v-slot:body="props">
@@ -25,7 +25,9 @@
               <q-item-section side>
                 <q-icon name="edit" />
               </q-item-section>
-              <q-item-section>Edit</q-item-section>
+              <q-item-section>{{
+                $pgettext("Settings actions", "Edit")
+              }}</q-item-section>
             </q-item>
             <q-item
               clickable
@@ -35,20 +37,24 @@
               <q-item-section side>
                 <q-icon name="delete" />
               </q-item-section>
-              <q-item-section>Delete</q-item-section>
+              <q-item-section>{{ $gettext("Delete") }}</q-item-section>
             </q-item>
 
             <q-separator></q-separator>
 
             <q-item clickable v-close-popup>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $gettext("Close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
         <!-- name -->
         <q-td>
           {{ props.row.name }}
-          <q-tooltip :delay="600">ID: {{ props.row.id }}</q-tooltip>
+          <q-tooltip :delay="600">{{
+            $pgettext("Custom field definitions", "ID: %{id}", {
+              id: props.row.id,
+            })
+          }}</q-tooltip>
         </q-td>
         <!-- type -->
         <q-td>
@@ -106,52 +112,57 @@ export default {
         sortBy: "name",
         descending: true,
       },
-      columns: [
+    };
+  },
+  computed: {
+    columns() {
+      return [
         {
           name: "name",
-          label: "Name",
+          label: this.$pgettext("Settings actions", "Name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "type",
-          label: "Field Type",
+          label: this.$gettext("Field Type"),
           field: "type",
           align: "left",
           sortable: true,
         },
         {
           name: "hide_in_ui",
-          label: "Hide in UI",
+          label: this.$gettext("Hide in UI"),
           field: "hide_in_ui",
           align: "left",
           sortable: true,
         },
         {
           name: "hide_in_summary",
-          label: "Hide in Summary Tab",
+          label: this.$gettext("Hide in Summary Tab"),
           field: "hide_in_summary",
           align: "left",
           sortable: true,
         },
         {
           name: "default_value",
-          label: "Default Value",
+          label: this.$gettext("Default Value"),
           field: "default_value",
           align: "left",
           sortable: true,
         },
         {
           name: "required",
-          label: "Required",
+          label: this.$gettext("Required"),
           field: "required",
           align: "left",
           sortable: true,
         },
-      ],
-    };
+      ];
+    },
   },
+
   methods: {
     editCustomField(field) {
       this.$q
@@ -168,9 +179,11 @@ export default {
     deleteCustomField(field) {
       this.$q
         .dialog({
-          title: `Delete custom field ${field.name}?`,
+          title: this.$gettext("Delete custom field %{name}?", {
+            name: field.name,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$gettext("Delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -179,7 +192,11 @@ export default {
             .then(() => {
               this.refresh();
               this.$q.loading.hide();
-              this.notifySuccess(`Custom Field ${field.name} was deleted!`);
+              this.notifySuccess(
+                this.$gettext("Custom Field %{name} was deleted!", {
+                  name: field.name,
+                }),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

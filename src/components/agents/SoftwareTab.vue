@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $gettext("No agent selected") }}
+  </div>
   <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $gettext("Only supported for Windows agents at this time") }}
   </div>
   <div v-else>
     <q-table
@@ -37,7 +39,7 @@
         />
         <q-btn
           icon="add"
-          label="Install Software"
+          :label="$pgettext('Installed software', 'Install Software')"
           no-caps
           dense
           flat
@@ -50,7 +52,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$pgettext('General actions', 'Search')"
           dense
           clearable
           class="q-pr-sm"
@@ -66,7 +68,7 @@
         <td>
           <q-btn
             v-if="props.row.uninstall"
-            label="Uninstall"
+            :label="$pgettext('Installed software', 'Uninstall')"
             color="primary"
             dense
             size="sm"
@@ -79,6 +81,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
@@ -94,55 +97,6 @@ import InstallSoftware from "@/components/software/InstallSoftware.vue";
 import UninstallSoftware from "@/components/software/UninstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import { notifySuccess } from "@/utils/notify";
-
-// static data
-const columns = [
-  {
-    name: "name",
-    align: "left",
-    label: "Name",
-    field: "name",
-    sortable: true,
-  },
-  {
-    name: "publisher",
-    align: "left",
-    label: "Publisher",
-    field: "publisher",
-    sortable: true,
-  },
-  {
-    name: "install_date",
-    align: "left",
-    label: "Installed On",
-    field: "install_date",
-    sortable: false,
-    format: (val) => {
-      return val === "01/01/1" || val === "01-1-01" ? "" : val;
-    },
-  },
-  {
-    name: "size",
-    align: "left",
-    label: "Size",
-    field: "size",
-    sortable: false,
-  },
-  {
-    name: "version",
-    align: "left",
-    label: "Version",
-    field: "version",
-    sortable: false,
-  },
-  {
-    name: "uninstall",
-    align: "left",
-    label: "",
-    field: "uninstall",
-    sortable: false,
-  },
-];
 
 export default {
   name: "SoftwareTab",
@@ -230,6 +184,54 @@ export default {
     onMounted(() => {
       if (selectedAgent.value) getSoftware();
     });
+
+    const columns = computed(() => [
+      {
+        name: "name",
+        align: "left",
+        label: gettext.$pgettext("Installed software", "Name"),
+        field: "name",
+        sortable: true,
+      },
+      {
+        name: "publisher",
+        align: "left",
+        label: gettext.$gettext("Publisher"),
+        field: "publisher",
+        sortable: true,
+      },
+      {
+        name: "install_date",
+        align: "left",
+        label: gettext.$pgettext("Installed software", "Installed On"),
+        field: "install_date",
+        sortable: false,
+        format: (val) => {
+          return val === "01/01/1" || val === "01-1-01" ? "" : val;
+        },
+      },
+      {
+        name: "size",
+        align: "left",
+        label: gettext.$pgettext("Installed software", "Size"),
+        field: "size",
+        sortable: false,
+      },
+      {
+        name: "version",
+        align: "left",
+        label: gettext.$gettext("Version"),
+        field: "version",
+        sortable: false,
+      },
+      {
+        name: "uninstall",
+        align: "left",
+        label: "",
+        field: "uninstall",
+        sortable: false,
+      },
+    ]);
 
     return {
       // reactive data

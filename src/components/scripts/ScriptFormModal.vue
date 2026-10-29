@@ -16,14 +16,16 @@
           size="xs"
           :disable="loading"
           dense
-          label="Generate Script"
+          :label="$gettext('Generate Script')"
           color="primary"
           no-caps
           @click="generateScriptOpenAI"
         />
         <q-space />
         <q-btn dense flat icon="close" @click="closeEditor">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-banner
@@ -34,9 +36,14 @@
       >
         <template v-slot:avatar>
           <q-icon class="text-center" name="warning" color="black" /> </template
-        >Shell/Python scripts on Linux/Mac need a shebang at the top of the
-        script e.g. <code>#!/bin/bash</code> or <code>#!/usr/bin/python3</code
-        ><br />Add one to get rid of this warning. Ignore if windows.
+        >{{
+          $gettext(
+            "Shell/Python scripts on Linux/Mac need a shebang at the top of the script e.g.",
+          )
+        }}
+        <code>#!/bin/bash</code> {{ $gettext("or") }}
+        <code>#!/usr/bin/python3</code><br />
+        {{ $gettext("Add one to get rid of this warning. Ignore if windows.") }}
       </q-banner>
       <div class="row q-pa-sm">
         <q-scroll-area
@@ -61,8 +68,8 @@
               dense
               :readonly="readonly"
               v-model="script.name"
-              label="Name"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$pgettext('Script configuration', 'Name')"
+              :rules="[(val) => !!val || $gettext('*Required')]"
               hide-bottom-space
             />
             <q-input
@@ -70,7 +77,7 @@
               dense
               :readonly="readonly"
               v-model="script.description"
-              label="Description"
+              :label="$pgettext('Script configuration', 'Description')"
               type="textarea"
               rows="2"
             />
@@ -83,12 +90,12 @@
               :options="shellOptions"
               emit-value
               map-options
-              label="Shell Type"
+              :label="$gettext('Shell Type')"
             />
             <tactical-dropdown
               v-model="script.supported_platforms"
               :options="agentPlatformOptions"
-              label="Supported Platforms (All supported if blank)"
+              :label="$gettext('Supported Platforms (All supported if blank)')"
               clearable
               mapOptions
               filled
@@ -103,13 +110,18 @@
               clearable
               new-value-mode="add-unique"
               filterable
-              label="Category"
+              :label="$gettext('Category')"
               :readonly="readonly"
               hide-bottom-space
             />
             <tactical-dropdown
               v-model="script.args"
-              label="Script Arguments (press Enter after typing each argument)"
+              :label="
+                $pgettext(
+                  'Script configuration',
+                  'Script Arguments (press Enter after typing each argument)',
+                )
+              "
               filled
               use-input
               multiple
@@ -120,7 +132,7 @@
             />
             <tactical-dropdown
               v-model="script.env_vars"
-              :label="envVarsLabel"
+              :label="$gettext('Environment Variables')"
               filled
               use-input
               multiple
@@ -135,12 +147,14 @@
               dense
               :readonly="readonly"
               v-model.number="script.default_timeout"
-              label="Timeout (seconds)"
-              :rules="[(val) => val >= 5 || 'Minimum is 5']"
+              :label="$gettext('Timeout (seconds)')"
+              :rules="[
+                (val) => val >= 5 || $gettext('Minimum is %{min}', { min: 5 }),
+              ]"
               hide-bottom-space
             />
             <q-input
-              label="Syntax"
+              :label="$pgettext('Script editor', 'Syntax')"
               v-model="script.syntax"
               dense
               filled
@@ -149,13 +163,14 @@
             />
             <q-checkbox
               v-model="script.run_as_user"
-              label="Run As User (Windows only)"
+              :label="$gettext('Run As User (Windows only)')"
             >
               <q-tooltip
-                >Setting this value on the script model will always override any
-                'Run As User' checkboxes in the UI and force this script to
-                always be run in the context of the logged in user. If no user
-                is logged in, the script will run as SYSTEM.
+                >{{
+                  $gettext(
+                    "Setting this value on the script model will always override any \u0027Run As User\u0027 checkboxes in the UI and force this script to always be run in the context of the logged in user. If no user is logged in, the script will run as SYSTEM.",
+                  )
+                }}
               </q-tooltip>
             </q-checkbox>
           </div>
@@ -174,7 +189,7 @@
           filled
           v-model="agent"
           :options="agentOptions"
-          label="Agent to run test script on"
+          :label="$gettext('Agent to run test script on')"
           mapOptions
           filterable
         >
@@ -184,7 +199,7 @@
               color="primary"
               dense
               flat
-              label="Test Script"
+              :label="$gettext('Test Script')"
               :disable="
                 !agent || !script.script_body || !script.default_timeout
               "
@@ -196,7 +211,7 @@
               color="secondary"
               dense
               flat
-              label="Test on Tactical's Server"
+              :label="$gettext('Test on Tactical\u0027s Server')"
               :disable="
                 !script.script_body ||
                 !script.default_timeout ||
@@ -211,24 +226,34 @@
                 transition-hide="fade"
               >
                 <div>
-                  <strong>Runs on Tactical RMM local Linux Server.</strong
+                  <strong>{{
+                    $gettext("Runs on Tactical RMM local Linux Server.")
+                  }}</strong
                   ><br />
-                  Only available interpreters or frameworks will be used.<br />
-                  <em>Example:</em> PowerShell scripts require PowerShell to be
-                  installed on the system.
+                  {{
+                    $gettext(
+                      "Only available interpreters or frameworks will be used.",
+                    )
+                  }}<br />
+                  <em>{{ $gettext("Example") }}:</em>
+                  {{
+                    $gettext(
+                      "PowerShell scripts require PowerShell to be installed on the system.",
+                    )
+                  }}
                 </div>
               </q-tooltip>
             </q-btn>
           </template>
         </tactical-dropdown>
         <q-space />
-        <q-btn dense flat label="Cancel" @click="closeEditor" />
+        <q-btn dense flat :label="$gettext('Cancel')" @click="closeEditor" />
         <q-btn
           v-if="!readonly"
           :loading="loading"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="submit"
         />
@@ -238,6 +263,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composable imports
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -286,7 +312,6 @@ import type { Script } from "@/types/scripts";
 
 // static data
 import { shellOptions } from "@/composables/scripts";
-import { envVarsLabel } from "@/constants/constants";
 
 // props
 const props = withDefaults(
@@ -333,7 +358,11 @@ const script: Script = props.script
       env_vars: [],
     });
 
-if (props.clone) script.name = `(Copy) ${script.name}`;
+if (props.clone) {
+  script.name = gettext.$gettext("(Copy) %{name}", {
+    name: script.name,
+  });
+}
 const loading = ref(false);
 const agentLoading = ref(false);
 
@@ -348,12 +377,12 @@ const missingShebang = computed(() => {
 const title = computed(() => {
   if (props.script) {
     return props.readonly
-      ? `Viewing ${script.name}`
+      ? gettext.$gettext("Viewing %{name}", { name: script.name })
       : props.clone
-        ? `Copying ${script.name}`
-        : `Editing ${script.name}`;
+        ? gettext.$gettext("Copying %{name}", { name: script.name })
+        : gettext.$gettext("Editing %{name}", { name: script.name });
   } else {
-    return "Adding new script";
+    return gettext.$gettext("Adding new script");
   }
 });
 
@@ -401,7 +430,9 @@ async function submit() {
 function openTestScriptModal(ctx: string) {
   if (ctx === "server" && !script.script_body.startsWith("#!")) {
     notifyError(
-      "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
+      gettext.$gettext(
+        "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
+      ),
       7000,
     );
     return;
@@ -473,7 +504,7 @@ function unloadEditor() {
 
 function generateScriptOpenAI() {
   $q.dialog({
-    title: "Ask ChatGPT what you need!",
+    title: gettext.$gettext("Ask ChatGPT what you need!"),
     prompt: {
       model: `${lang.value} code that `,
       type: "text",
@@ -494,7 +525,9 @@ const edited = ref(false);
 function closeEditor() {
   if (edited.value)
     $q.dialog({
-      title: "You have unsaved changes. Are you sure you want to close?",
+      title: gettext.$gettext(
+        "You have unsaved changes. Are you sure you want to close?",
+      ),
       cancel: true,
       ok: true,
     }).onOk(async () => {

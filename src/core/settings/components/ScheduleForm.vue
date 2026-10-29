@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        {{ schedule ? "Edit" : "Add" }} Schedule
+        {{ schedule ? $gettext("Edit Schedule") : $gettext("Add Schedule") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -14,9 +14,9 @@
             v-model="localSchedule.name"
             class="q-pa-sm"
             dense
-            label="Name"
+            :label="$pgettext('Settings actions', 'Name')"
             filled
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('Required')]"
           />
         </q-card-section>
 
@@ -24,7 +24,7 @@
           <q-option-group
             v-model="localSchedule.schedule_type"
             class="q-pa-sm"
-            label="Task run type"
+            :label="$gettext('Task run type')"
             :options="taskTypeOptions"
             dense
             inline
@@ -37,21 +37,21 @@
             class="q-pa-sm"
             type="time"
             dense
-            label="Hour:Minute"
+            :label="$gettext('Hour:Minute')"
             stack-label
             filled
             v-model="localSchedule.run_time"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('Required')]"
           />
         </q-card-section>
 
         <!-- weekly options -->
         <q-card-section v-if="localSchedule.schedule_type === 'weekly'">
           <!-- day of week input -->
-          Run on Days:
-          <span v-if="dayOfWeekValidationError" class="text-negative"
-            >*Required</span
-          >
+          {{ $pgettext("Maintenance scheduling", "Run on Days") }}:
+          <span v-if="dayOfWeekValidationError" class="text-negative">{{
+            $gettext("Required")
+          }}</span>
           <q-option-group
             inline
             dense
@@ -72,21 +72,21 @@
             v-model="localSchedule.monthly_type"
             inline
             :options="[
-              { label: 'On Days', value: 'days' },
-              { label: 'On Weeks', value: 'weeks' },
+              { label: $gettext('On Days'), value: 'days' },
+              { label: $gettext('On Weeks'), value: 'weeks' },
             ]"
           />
 
           <!-- month select input -->
           <q-select
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || $gettext('Required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_months_of_year"
             :options="monthOptions"
-            label="Run on Months"
+            :label="$pgettext('Maintenance scheduling', 'Run on Months')"
             multiple
             emit-value
             map-options
@@ -94,7 +94,7 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All months</q-item-label>
+                  <q-item-label>{{ $gettext("All months") }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -130,14 +130,14 @@
           <!-- days of month select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'days'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || $gettext('Required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_days_of_month"
             :options="dayOfMonthOptions"
-            label="Run on Days"
+            :label="$pgettext('Maintenance scheduling', 'Run on Days')"
             multiple
             emit-value
             map-options
@@ -145,7 +145,7 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All days</q-item-label>
+                  <q-item-label>{{ $gettext("All days") }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -183,14 +183,14 @@
           <!-- week of month select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'weeks'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || $gettext('Required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.monthly_weeks_of_month"
             :options="weekOptions"
-            label="Run on weeks"
+            :label="$pgettext('Maintenance scheduling', 'Run on weeks')"
             multiple
             emit-value
             map-options
@@ -216,14 +216,14 @@
           <!-- day of week select input -->
           <q-select
             v-if="localSchedule.monthly_type === 'weeks'"
-            :rules="[(val) => val.length > 0 || '*Required']"
+            :rules="[(val) => val.length > 0 || $gettext('Required')]"
             class="col-4 q-pa-sm"
             filled
             dense
             options-dense
             v-model="localSchedule.run_time_weekdays"
             :options="dayOfWeekOptions"
-            label="Run on days"
+            :label="$pgettext('Maintenance scheduling', 'Run on Days')"
             multiple
             emit-value
             map-options
@@ -231,7 +231,7 @@
             <template v-slot:before-options>
               <q-item>
                 <q-item-section>
-                  <q-item-label>All days</q-item-label>
+                  <q-item-label>{{ $gettext("All days") }}</q-item-label>
                 </q-item-section>
                 <q-item-section side>
                   <q-checkbox
@@ -266,12 +266,12 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="isLoading"
             dense
             flat
-            label="Save"
+            :label="$gettext('Save')"
             color="primary"
             type="submit"
           />
@@ -282,7 +282,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from "vue";
+import { gettext } from "@/gettext";
+import { computed, ref, reactive, watch } from "vue";
 import { until } from "@vueuse/shared";
 import { useDialogPluginComponent, date } from "quasar";
 
@@ -291,55 +292,58 @@ import { useScheduleShared } from "../api";
 import type { Schedule } from "../types";
 
 // static data
-const taskTypeOptions = [
-  { label: "Daily", value: "daily" },
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
-];
 
-const dayOfWeekOptions = [
-  { label: "Monday", value: 0 },
-  { label: "Tuesday", value: 1 },
-  { label: "Wednesday", value: 2 },
-  { label: "Thursday", value: 3 },
-  { label: "Friday", value: 4 },
-  { label: "Saturday", value: 5 },
-  { label: "Sunday", value: 6 },
-];
+const taskTypeOptions = computed(() => [
+  { label: gettext.$gettext("Daily"), value: "daily" },
+  { label: gettext.$gettext("Weekly"), value: "weekly" },
+  { label: gettext.$gettext("Monthly"), value: "monthly" },
+]);
 
-const dayOfMonthOptions = (() => {
-  let result = [];
-  let day = 1;
-  for (let i = 1; i <= 31; i++) {
-    result.push({ label: `${i}`, value: day });
-    day = day + 1;
-  }
-  result.push({ label: "Last Day", value: 32 });
-  return result;
-})();
+const dayOfWeekOptions = computed(() => [
+  { label: gettext.$gettext("Monday"), value: 0 },
+  { label: gettext.$gettext("Tuesday"), value: 1 },
+  { label: gettext.$gettext("Wednesday"), value: 2 },
+  { label: gettext.$gettext("Thursday"), value: 3 },
+  { label: gettext.$gettext("Friday"), value: 4 },
+  { label: gettext.$gettext("Saturday"), value: 5 },
+  { label: gettext.$gettext("Sunday"), value: 6 },
+]);
 
-const monthOptions = [
-  { label: "January", value: 1 },
-  { label: "February", value: 2 },
-  { label: "March", value: 3 },
-  { label: "April", value: 4 },
-  { label: "May", value: 5 },
-  { label: "June", value: 6 },
-  { label: "July", value: 7 },
-  { label: "August", value: 8 },
-  { label: "September", value: 9 },
-  { label: "October", value: 10 },
-  { label: "November", value: 11 },
-  { label: "December", value: 12 },
-];
+const dayOfMonthOptions = computed(() =>
+  (() => {
+    let result = [];
+    let day = 1;
+    for (let i = 1; i <= 31; i++) {
+      result.push({ label: `${i}`, value: day });
+      day = day + 1;
+    }
+    result.push({ label: gettext.$gettext("Last Day"), value: 32 });
+    return result;
+  })(),
+);
 
-const weekOptions = [
-  { label: "First Week", value: 1 },
-  { label: "Second Week", value: 2 },
-  { label: "Third Week", value: 3 },
-  { label: "Fourth Week", value: 4 },
-  { label: "Last Week", value: 5 },
-];
+const monthOptions = computed(() => [
+  { label: gettext.$gettext("January"), value: 1 },
+  { label: gettext.$gettext("February"), value: 2 },
+  { label: gettext.$gettext("March"), value: 3 },
+  { label: gettext.$gettext("April"), value: 4 },
+  { label: gettext.$gettext("May"), value: 5 },
+  { label: gettext.$gettext("June"), value: 6 },
+  { label: gettext.$gettext("July"), value: 7 },
+  { label: gettext.$gettext("August"), value: 8 },
+  { label: gettext.$gettext("September"), value: 9 },
+  { label: gettext.$gettext("October"), value: 10 },
+  { label: gettext.$gettext("November"), value: 11 },
+  { label: gettext.$gettext("December"), value: 12 },
+]);
+
+const weekOptions = computed(() => [
+  { label: gettext.$gettext("First Week"), value: 1 },
+  { label: gettext.$gettext("Second Week"), value: 2 },
+  { label: gettext.$gettext("Third Week"), value: 3 },
+  { label: gettext.$gettext("Fourth Week"), value: 4 },
+  { label: gettext.$gettext("Last Week"), value: 5 },
+]);
 
 const props = defineProps<{
   schedule?: Schedule;
@@ -370,21 +374,21 @@ const localSchedule = reactive<Schedule>(
 const allMonthsCheckbox = ref(false);
 function toggleMonths() {
   localSchedule.monthly_months_of_year = allMonthsCheckbox.value
-    ? monthOptions.map((month) => month.value)
+    ? monthOptions.value.map((month) => month.value)
     : [];
 }
 
 const allMonthDaysCheckbox = ref(false);
 function toggleMonthDays() {
   localSchedule.monthly_days_of_month = allMonthDaysCheckbox.value
-    ? dayOfMonthOptions.map((day) => day.value)
+    ? dayOfMonthOptions.value.map((day) => day.value)
     : [];
 }
 
 const allWeekDaysCheckbox = ref(false);
 function toggleWeekDays() {
   localSchedule.run_time_weekdays = allWeekDaysCheckbox.value
-    ? dayOfWeekOptions.map((day) => day.value)
+    ? dayOfWeekOptions.value.map((day) => day.value)
     : [];
 }
 

@@ -6,7 +6,7 @@
   >
     <q-card style="min-width: 420px; max-width: 560px">
       <q-card-section>
-        <div class="text-h6">Extract ZIP</div>
+        <div class="text-h6">{{ $gettext("Extract ZIP") }}</div>
         <div class="text-caption text-grey ellipsis">
           {{ item?.name }}<span v-if="item?.size"> · {{ item.size }}</span>
         </div>
@@ -21,12 +21,14 @@
           dense
           outlined
           autofocus
-          label="Extract to"
-          hint="The folder is created if it doesn't exist"
+          :label="$gettext('Extract to')"
+          :hint="$gettext('The folder is created if it doesn\u0027t exist')"
           :rules="destinationRules"
           @keyup.enter="onSubmit"
         />
-        <div class="text-body2 q-pt-sm">If a file already exists:</div>
+        <div class="text-body2 q-pt-sm">
+          {{ $gettext("If a file already exists:") }}
+        </div>
         <q-option-group
           v-model="conflictPolicy"
           dense
@@ -36,10 +38,10 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat :label="$gettext('Cancel')" color="primary" v-close-popup />
         <q-btn
           unelevated
-          label="Extract"
+          :label="$gettext('Extract')"
           color="primary"
           :loading="saving"
           :disable="saving || !destination.trim()"
@@ -51,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { computed, nextTick, ref, watch } from "vue";
 import { QInput } from "quasar";
 
@@ -77,10 +80,10 @@ const emit = defineEmits<{
   (e: "hide"): void;
 }>();
 
-const conflictOptions = [
-  { label: "Skip existing files", value: "skip" },
-  { label: "Replace existing files", value: "replace" },
-];
+const conflictOptions = computed(() => [
+  { label: gettext.$gettext("Skip existing files"), value: "skip" },
+  { label: gettext.$gettext("Replace existing files"), value: "replace" },
+]);
 
 const destInputRef = ref<InstanceType<typeof QInput> | null>(null);
 const destination = ref("");

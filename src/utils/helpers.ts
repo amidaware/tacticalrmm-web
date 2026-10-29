@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import { copyToClipboard } from "quasar";
 import { notifyError, notifySuccess } from "@/utils/notify";
 
@@ -15,18 +16,21 @@ export function copyOutput(
   const opts: CopyOutputOptions =
     typeof options === "string" ? { successMessage: options } : options;
 
-  const successMessage = opts.successMessage ?? "Copied to clipboard";
-  const errorMessage = opts.errorMessage ?? "Unable to copy to clipboard.";
   const notifyOnSuccess = opts.notifyOnSuccess !== false;
 
   return copyToClipboard(val)
     .then(() => {
       if (notifyOnSuccess) {
-        notifySuccess(successMessage, opts.successTimeout);
+        notifySuccess(
+          opts.successMessage ?? gettext.$gettext("Copied to clipboard"),
+          opts.successTimeout,
+        );
       }
     })
     .catch(() => {
-      notifyError(errorMessage);
+      notifyError(
+        opts.errorMessage ?? gettext.$gettext("Unable to copy to clipboard."),
+      );
     });
 }
 

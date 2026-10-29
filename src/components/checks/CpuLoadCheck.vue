@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? `Edit CPU Check` : "Add CPU Check" }}
+        {{ check ? $gettext("Edit CPU Check") : $gettext("Add CPU Check") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit.prevent="submit(onDialogOK)">
@@ -16,10 +18,14 @@
               outlined
               type="number"
               v-model.number="state.warning_threshold"
-              label="Warning Threshold (%)"
+              :label="$gettext('Warning Threshold (%)')"
               :rules="[
-                (val) => val >= 0 || 'Minimum threshold is 0',
-                (val) => val < 100 || 'Maximum threshold is 99',
+                (val) =>
+                  val >= 0 ||
+                  $gettext('Minimum threshold is %{min}', { min: 0 }),
+                (val) =>
+                  val < 100 ||
+                  $gettext('Maximum threshold is %{max}', { max: 99 }),
               ]"
             />
           </q-card-section>
@@ -29,10 +35,14 @@
               outlined
               type="number"
               v-model.number="state.error_threshold"
-              label="Error Threshold (%)"
+              :label="$gettext('Error Threshold (%)')"
               :rules="[
-                (val) => val >= 0 || 'Minimum threshold is 0',
-                (val) => val < 100 || 'Maximum threshold is 99',
+                (val) =>
+                  val >= 0 ||
+                  $gettext('Minimum threshold is %{min}', { min: 0 }),
+                (val) =>
+                  val < 100 ||
+                  $gettext('Maximum threshold is %{max}', { max: 99 }),
               ]"
             />
           </q-card-section>
@@ -43,7 +53,7 @@
               options-dense
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$gettext('Number of consecutive failures before alert')"
             />
           </q-card-section>
           <q-card-section>
@@ -52,18 +62,22 @@
               outlined
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$gettext('Run this check every (seconds)')"
+              :hint="
+                $gettext(
+                  'Setting this value to anything other than 0 will override the \u0027Run checks every\u0027 setting on the agent',
+                )
+              "
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$gettext('Save')"
             color="primary"
             type="submit"
           />

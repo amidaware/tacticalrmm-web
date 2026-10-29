@@ -1,12 +1,14 @@
-version: '3.7'
+version: "3.7"
 
 services:
   app-dev:
     container_name: trmm-app-dev
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
-    command: /bin/sh -c "npm install --cache ~/.npm && npm i -g @quasar/cli && npm run serve"
-    working_dir: /workspace/web
+    command: /bin/sh -c "npm ci --cache ~/.npm && npm run serve"
+    working_dir: /workspace
     volumes:
       - ..:/workspace:cached
     ports:

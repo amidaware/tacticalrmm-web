@@ -2,10 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? "Edit Event Log Check" : "Add Event Log Check" }}
+        {{
+          check
+            ? $gettext("Edit Event Log Check")
+            : $gettext("Add Event Log Check")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -16,8 +22,8 @@
               dense
               outlined
               v-model="state.name"
-              label="Descriptive Name"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$gettext('Descriptive Name')"
+              :rules="[(val) => !!val || $gettext('*Required')]"
             />
           </q-card-section>
           <q-card-section>
@@ -27,7 +33,7 @@
               outlined
               v-model="state.log_name"
               :options="logNameOptions"
-              label="Event log to query"
+              :label="$gettext('Event log to query')"
             />
           </q-card-section>
           <q-card-section>
@@ -37,7 +43,7 @@
               outlined
               v-model="state.fail_when"
               :options="failWhenOptions"
-              label="Fail When"
+              :label="$gettext('Fail When')"
               emit-value
               map-options
             />
@@ -47,12 +53,17 @@
               dense
               outlined
               v-model="state.event_id"
-              label="Event ID (Use * to match every event ID)"
-              :rules="[(val) => validateEventID(val) || 'Invalid Event ID']"
+              :label="$gettext('Event ID (Use * to match every event ID)')"
+              :rules="[
+                (val) => validateEventID(val) || $gettext('Invalid Event ID'),
+              ]"
             />
           </q-card-section>
           <q-card-section>
-            <q-checkbox v-model="eventSource" label="Event source" />
+            <q-checkbox
+              v-model="eventSource"
+              :label="$gettext('Event source')"
+            />
             <q-input
               dense
               outlined
@@ -63,7 +74,7 @@
           <q-card-section>
             <q-checkbox
               v-model="eventMessage"
-              label="Message contains string"
+              :label="$gettext('Message contains string')"
             />
             <q-input
               dense
@@ -77,46 +88,50 @@
               dense
               outlined
               v-model.number="state.search_last_days"
-              label="How many previous days to search (Enter 0 for the entire log)"
+              :label="
+                $gettext(
+                  'How many previous days to search (Enter 0 for the entire log)',
+                )
+              "
               :rules="[
-                (val) => !!val.toString() || '*Required',
-                (val) => val >= 0 || 'Min 0',
-                (val) => val <= 9999 || 'Max 9999',
+                (val) => !!val.toString() || $gettext('*Required'),
+                (val) => val >= 0 || $gettext('Min %{min}', { min: 0 }),
+                (val) => val <= 9999 || $gettext('Max %{max}', { max: 9999 }),
               ]"
             />
           </q-card-section>
           <q-card-section>
-            <span>Event Type:</span>
+            <span>{{ $gettext("Event Type") }}:</span>
             <div class="q-gutter-sm">
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="INFO"
-                label="Information"
+                :label="$gettext('Information')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="WARNING"
-                label="Warning"
+                :label="$pgettext('Event log checks', 'Warning')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="ERROR"
-                label="Error"
+                :label="$pgettext('Event log checks', 'Error')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="AUDIT_SUCCESS"
-                label="Success Audit"
+                :label="$gettext('Success Audit')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="AUDIT_FAILURE"
-                label="Failure Audit"
+                :label="$gettext('Failure Audit')"
               />
             </div>
           </q-card-section>
@@ -129,12 +144,14 @@
               emit-value
               v-model="state.alert_severity"
               :options="severityOptions"
-              label="Alert Severity"
+              :label="
+                $pgettext('Monitoring check configuration', 'Alert Severity')
+              "
             />
           </q-card-section>
           <q-card-section>
             <q-input
-              label="Number of events found before alert"
+              :label="$gettext('Number of events found before alert')"
               dense
               outlined
               type="number"
@@ -148,7 +165,7 @@
               options-dense
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$gettext('Number of consecutive failures before alert')"
             />
           </q-card-section>
           <q-card-section>
@@ -157,18 +174,22 @@
               dense
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$gettext('Run this check every (seconds)')"
+              :hint="
+                $gettext(
+                  'Setting this value to anything other than 0 will override the \u0027Run checks every\u0027 setting on the agent',
+                )
+              "
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$gettext('Save')"
             color="primary"
             type="submit"
           />

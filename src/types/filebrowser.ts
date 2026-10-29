@@ -105,7 +105,40 @@ export type UploadQueueStatus =
   | "paused"
   | "cancelled";
 
-export interface UploadQueueItem {
+export type TransferMessageCode =
+  | "waiting-slot"
+  | "waiting-agent"
+  | "reconnecting"
+  | "connection-lost"
+  | "file-permission"
+  | "select-upload-file"
+  | "download-integrity"
+  | "upload-integrity"
+  | "network"
+  | "request-cancelled"
+  | "forbidden"
+  | "rate-limit"
+  | "session-limit"
+  | "slot-timeout"
+  | "download-failed"
+  | "upload-failed"
+  | "backend"
+  | "fatal"
+  | "non-resumable"
+  | "needs-destination"
+  | "needs-permission"
+  | "archive-preparing";
+
+export interface TransferMessageState {
+  messageCode?: TransferMessageCode;
+  fault?: import("@/services/fileTransfer/transferFaults").TransferFault;
+  /** Original backend detail, never a translation key. */
+  errorDetail?: string;
+  /** Compatibility snapshot or opaque legacy message. */
+  errorMessage?: string;
+}
+
+export interface UploadQueueItem extends TransferMessageState {
   id: string;
   file?: File;
   name: string;
@@ -117,7 +150,6 @@ export interface UploadQueueItem {
   conflictPolicy?: "skip" | "replace";
   acceptedOffset?: number;
   committedOffset?: number;
-  errorMessage?: string;
   sessionId?: string;
   hidden?: boolean;
   expiresAt?: string;
@@ -150,7 +182,7 @@ export type DownloadQueueStatus =
   | "paused"
   | "cancelled";
 
-export interface DownloadQueueItem {
+export interface DownloadQueueItem extends TransferMessageState {
   id: string;
   name: string;
   sourcePath: string;
@@ -158,7 +190,6 @@ export interface DownloadQueueItem {
   archivePaths?: string[];
   status: DownloadQueueStatus;
   progress: number;
-  errorMessage?: string;
   sessionId?: string;
   hidden?: boolean;
   expiresAt?: string;

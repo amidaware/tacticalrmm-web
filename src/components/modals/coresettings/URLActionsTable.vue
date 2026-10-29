@@ -4,8 +4,8 @@
       <div class="text-subtitle2">
         {{
           props.type === "web"
-            ? "URL Actions"
-            : "Web Hooks for Alert Failure/Resolved Actions"
+            ? $gettext("URL Actions")
+            : $gettext("Web Hooks for Alert Failure/Resolved Actions")
         }}
       </div>
       <q-space />
@@ -14,7 +14,11 @@
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        :label="`Add ${props.type === 'web' ? 'URL Action' : 'Web Hook'}`"
+        :label="
+          props.type === 'web'
+            ? $gettext('Add URL Action')
+            : $gettext('Add Web Hook')
+        "
         @click="addURLAction"
       />
     </div>
@@ -29,7 +33,11 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      :no-data-label="`No ${props.type === 'web' ? 'URL Actions' : 'Web Hooks'} added yet`"
+      :no-data-label="
+        props.type === 'web'
+          ? $gettext('No URL Actions added yet')
+          : $gettext('No Web Hooks added yet')
+      "
       :loading="loading"
     >
       <!-- body slots -->
@@ -46,7 +54,9 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{
+                  $pgettext("Settings actions", "Edit")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -56,13 +66,13 @@
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $gettext("Delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $gettext("Close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -85,8 +95,9 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { QTableColumn, useQuasar } from "quasar";
 import { fetchURLActions, removeURLAction } from "@/api/core";
 import { notifySuccess } from "@/utils/notify";
@@ -108,29 +119,29 @@ const loading = ref(false);
 
 const actions = ref([] as URLAction[]);
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: gettext.$pgettext("Settings actions", "Name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "desc",
-    label: "Description",
+    label: gettext.$pgettext("HTTP actions", "Description"),
     field: "desc",
     align: "left",
     sortable: true,
   },
   {
     name: "pattern",
-    label: "URL Pattern",
+    label: gettext.$gettext("URL Pattern"),
     field: "pattern",
     align: "left",
     sortable: true,
   },
-];
+]);
 
 async function getURLActions() {
   $q.loading.show();
@@ -167,15 +178,21 @@ function editURLAction(action: URLAction) {
 
 function deleteURLAction(action: URLAction) {
   $q.dialog({
-    title: `Delete URL Action: ${action.name}?`,
+    title: gettext.$gettext("Delete URL Action: %{name}?", {
+      name: action.name,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await removeURLAction(action.id);
       await getURLActions();
-      notifySuccess(`URL Action: ${action.name} was deleted!`);
+      notifySuccess(
+        gettext.$gettext("URL Action: %{name} was deleted!", {
+          name: action.name,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }

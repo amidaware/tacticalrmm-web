@@ -2,41 +2,51 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <q-bar>
-        Delete {{ object.name }}
+        {{ $gettext("Delete %{name}", { name: object.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <q-card-section v-if="siteOptions.length === 0">
-          There are no valid sites to move agents to. Add another site and try
-          again
+          {{
+            $gettext(
+              "There are no valid sites to move agents to. Add another site and try again",
+            )
+          }}
         </q-card-section>
         <q-card-section v-if="siteOptions.length > 0">
           <tactical-dropdown
-            label="Site to move agents to"
+            :label="$gettext('Site to move agents to')"
             outlined
             v-model="site"
             :options="siteOptions"
             mapOptions
             :rules="[
               (val) =>
-                !!val || 'Select the site that the agents should be moved to',
+                !!val ||
+                $gettext('Select the site that the agents should be moved to'),
             ]"
-            hint="The client you are deleting has agents assigned to it. Select a Site below to move the agents to."
+            :hint="
+              $gettext(
+                'The client you are deleting has agents assigned to it. Select a Site below to move the agents to.',
+              )
+            "
             filterable
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat push label="Cancel" v-close-popup />
+          <q-btn dense flat push :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             :disable="siteOptions.length === 0"
             dense
             flat
             push
-            label="Move"
+            :label="$gettext('Move')"
             color="primary"
             type="submit"
           />
@@ -47,6 +57,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
@@ -70,6 +81,7 @@ export default {
   setup(props) {
     // setup quasar dialog
     const $q = useQuasar();
+
     const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
 
     // delete client logic
@@ -79,10 +91,34 @@ export default {
 
     function submit() {
       $q.dialog({
-        title: "Are you sure?",
-        message: `Deleting ${props.type} ${props.object.name}. ${props.object.agent_count} agents will be moved to the selected site`,
+        title: gettext.$gettext("Are you sure?"),
+        message: gettext.$ngettext(
+          "Deleting %{type} %{name}. %{count} agent will be moved to the selected site",
+          "Deleting %{type} %{name}. %{count} agents will be moved to the selected site",
+          props.object.agent_count,
+          {
+            type: ((value) => {
+              switch (value) {
+                case "client":
+                  return gettext.$pgettext(
+                    "Client deletion object (accusative)",
+                    "client",
+                  );
+                case "site":
+                  return gettext.$pgettext(
+                    "Site deletion object (accusative)",
+                    "site",
+                  );
+                default:
+                  return "dashboard.clients.delete.types." + value;
+              }
+            })(props.type),
+            name: props.object.name,
+            count: props.object.agent_count,
+          },
+        ),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {
@@ -110,16 +146,16 @@ export default {
         // filter out client that is being deleted
         siteOptions.value = Object.freeze(
           formatSiteOptions(
-            clients.filter((client) => client.id !== props.object.id)
-          )
+            clients.filter((client) => client.id !== props.object.id),
+          ),
         );
       } else {
         // filter out site that is being dleted
         clients.forEach(
           (client) =>
             (client.sites = client.sites.filter(
-              (site) => site.id !== props.object.id
-            ))
+              (site) => site.id !== props.object.id,
+            )),
         );
         siteOptions.value = Object.freeze(formatSiteOptions(clients));
       }

@@ -8,16 +8,18 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card>
       <q-bar>
-        File Upload
+        {{ $gettext("File Upload") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="q-pa-md column items-start q-gutter-y-md">
         <q-file
           v-model="files"
-          label="Select files"
+          :label="$gettext('Select files')"
           outlined
           multiple
           :clearable="!loading"
@@ -41,10 +43,10 @@ For details, see: https://license.tacticalrmm.com/ee
         </q-file>
       </div>
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
         <q-btn
           color="primary"
-          label="Upload"
+          :label="$gettext('Upload')"
           dense
           flat
           :loading="loading"
@@ -56,6 +58,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script lang="ts" setup>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -84,7 +87,7 @@ async function upload() {
 
   try {
     const result = await uploadAssets(formData, props.parentPath);
-    notifySuccess("Files uploaded successfully");
+    notifySuccess(gettext.$gettext("Files uploaded successfully"));
     onDialogOK({ files: files.value, response: result });
   } finally {
     loading.value = false;

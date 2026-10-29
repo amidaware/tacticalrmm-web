@@ -10,20 +10,24 @@
       <q-bar>
         <q-btn @click="search" class="q-mr-sm" dense flat push icon="refresh" />
         <q-space />
-        Alerts Overview
+        {{ $gettext("Alerts Overview") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
-      <div class="text-h6 q-pl-sm q-pt-sm">Filter</div>
+      <div class="text-h6 q-pl-sm q-pt-sm">
+        {{ $gettext("Filter") }}
+      </div>
       <div class="row">
         <div class="q-pa-sm col-3">
           <q-select
             v-model="clientFilter"
             :options="clientsOptions"
-            label="Clients"
+            :label="$pgettext('Alert history', 'Clients')"
             multiple
             outlined
             dense
@@ -36,7 +40,7 @@
           <q-select
             v-model="severityFilter"
             :options="severityOptions"
-            label="Severity"
+            :label="$pgettext('Alert history', 'Severity')"
             multiple
             outlined
             dense
@@ -50,7 +54,7 @@
             outlined
             dense
             v-model="timeFilter"
-            label="Time"
+            :label="$pgettext('Alert history', 'Time')"
             emit-value
             map-options
             :options="timeOptions"
@@ -61,17 +65,21 @@
             outlined
             dense
             v-model="includeSnoozed"
-            label="Include snoozed"
+            :label="$gettext('Include snoozed')"
           />
           <q-checkbox
             outlined
             dense
             v-model="includeResolved"
-            label="Include resolved"
+            :label="$gettext('Include resolved')"
           />
         </div>
         <div class="q-pa-sm col-2">
-          <q-btn color="primary" label="Search" @click="search" />
+          <q-btn
+            color="primary"
+            :label="$pgettext('Alert history', 'Search')"
+            @click="search"
+          />
         </div>
       </div>
 
@@ -98,11 +106,13 @@
           virtual-scroll
         >
           <template v-slot:top>
-            <div class="col-1 q-table__title">Alerts</div>
+            <div class="col-1 q-table__title">
+              {{ $pgettext("Alert history", "Alerts") }}
+            </div>
 
             <q-btn-dropdown
               flat
-              label="Bulk Actions"
+              :label="$pgettext('Alert history', 'Bulk Actions')"
               :disable="selectedAlerts.length === 0 || includeResolved"
             >
               <q-list dense>
@@ -115,7 +125,7 @@
                     <q-icon name="alarm_off" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>Snooze alerts</q-item-label>
+                    <q-item-label>{{ $gettext("Snooze alerts") }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-item
@@ -127,7 +137,9 @@
                     <q-icon name="flag" />
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>Resolve alerts</q-item-label>
+                    <q-item-label>{{
+                      $gettext("Resolve alerts")
+                    }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -143,7 +155,9 @@
                 class="cursor-pointer"
                 @click="showScriptOutput(props.row, true)"
               >
-                <q-tooltip>Show failure action run results</q-tooltip>
+                <q-tooltip>{{
+                  $gettext("Show failure action run results")
+                }}</q-tooltip>
               </q-icon>
               <q-icon
                 v-if="props.row.resolved_action_run"
@@ -152,7 +166,9 @@
                 class="cursor-pointer"
                 @click="showScriptOutput(props.row, false)"
               >
-                <q-tooltip>Show resolved action run results</q-tooltip>
+                <q-tooltip>{{
+                  $gettext("Show resolved action run results")
+                }}</q-tooltip>
               </q-icon>
               <q-icon
                 v-if="!props.row.resolved && !props.row.snoozed"
@@ -161,7 +177,7 @@
                 class="cursor-pointer"
                 @click="snoozeAlert(props.row)"
               >
-                <q-tooltip>Snooze alert</q-tooltip>
+                <q-tooltip>{{ $gettext("Snooze alert") }}</q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="!props.row.resolved && props.row.snoozed"
@@ -170,7 +186,7 @@
                 class="cursor-pointer"
                 @click="unsnoozeAlert(props.row)"
               >
-                <q-tooltip>Unsnooze alert</q-tooltip>
+                <q-tooltip>{{ $gettext("Unsnooze alert") }}</q-tooltip>
               </q-icon>
               <q-icon
                 v-if="!props.row.resolved"
@@ -179,7 +195,7 @@
                 class="cursor-pointer"
                 @click="resolveAlert(props.row)"
               >
-                <q-tooltip>Resolve alert</q-tooltip>
+                <q-tooltip>{{ $gettext("Resolve alert") }}</q-tooltip>
               </q-icon>
             </q-td>
           </template>
@@ -226,24 +242,50 @@ export default {
       includeSnoozed: false,
       searched: false,
       clientsOptions: [],
-      severityOptions: [
-        { label: "Informational", value: "info" },
-        { label: "Warning", value: "warning" },
-        { label: "Error", value: "error" },
-      ],
-      timeOptions: [
-        { value: 1, label: "1 Day Ago" },
-        { value: 7, label: "1 Week Ago" },
-        { value: 30, label: "30 Days Ago" },
-        { value: 90, label: "3 Months Ago" },
-        { value: 180, label: "6 Months Ago" },
-        { value: 365, label: "1 Year Ago" },
-        { value: 0, label: "Everything" },
-      ],
-      columns: [
+
+      pagination: {
+        rowsPerPage: 50,
+        sortBy: "alert_time",
+        descending: true,
+      },
+    };
+  },
+  computed: {
+    severityOptions() {
+      return [
+        {
+          label: this.$pgettext("Alert history", "Informational"),
+          value: "info",
+        },
+        {
+          label: this.$pgettext("Alert history", "Warning"),
+          value: "warning",
+        },
+        {
+          label: this.$pgettext("Alert history", "Error"),
+          value: "error",
+        },
+      ];
+    },
+    timeOptions() {
+      return [
+        { value: 1, label: this.$gettext("1 Day Ago") },
+        { value: 7, label: this.$gettext("1 Week Ago") },
+        { value: 30, label: this.$gettext("30 Days Ago") },
+        { value: 90, label: this.$gettext("3 Months Ago") },
+        {
+          value: 180,
+          label: this.$gettext("6 Months Ago"),
+        },
+        { value: 365, label: this.$gettext("1 Year Ago") },
+        { value: 0, label: this.$pgettext("Alert history", "Everything") },
+      ];
+    },
+    columns() {
+      return [
         {
           name: "alert_time",
-          label: "Time",
+          label: this.$pgettext("Alert history", "Time"),
           field: "alert_time",
           align: "left",
           sortable: true,
@@ -251,28 +293,28 @@ export default {
         },
         {
           name: "client",
-          label: "Client",
+          label: this.$pgettext("Alert history", "Client"),
           field: "client",
           align: "left",
           sortable: true,
         },
         {
           name: "site",
-          label: "Site",
+          label: this.$pgettext("Alert history", "Site"),
           field: "site",
           align: "left",
           sortable: true,
         },
         {
           name: "hostname",
-          label: "Agent",
+          label: this.$pgettext("Alert history", "Agent"),
           field: "hostname",
           align: "left",
           sortable: true,
         },
         {
           name: "alert_type",
-          label: "Type",
+          label: this.$pgettext("Alert history", "Type"),
           field: "alert_type",
           align: "left",
           sortable: true,
@@ -280,7 +322,7 @@ export default {
         },
         {
           name: "severity",
-          label: "Severity",
+          label: this.$pgettext("Alert history", "Severity"),
           field: "severity",
           align: "left",
           sort: (a, b) => {
@@ -295,14 +337,14 @@ export default {
         },
         {
           name: "message",
-          label: "Message",
+          label: this.$gettext("Message"),
           field: "message",
           align: "left",
           sortable: true,
         },
         {
           name: "resolved_on",
-          label: "Resolved On",
+          label: this.$gettext("Resolved On"),
           field: "resolved_on",
           align: "left",
           sortable: true,
@@ -310,26 +352,23 @@ export default {
         },
         {
           name: "snoozed_until",
-          label: "Snoozed Until",
+          label: this.$gettext("Snoozed Until"),
           field: "snoozed_until",
           align: "left",
           sortable: true,
           format: (a) => this.formatDate(a),
         },
-        { name: "actions", label: "Actions", align: "left" },
-      ],
-      pagination: {
-        rowsPerPage: 50,
-        sortBy: "alert_time",
-        descending: true,
-      },
-    };
-  },
-  computed: {
+        {
+          name: "actions",
+          label: this.$pgettext("Alert history", "Actions"),
+          align: "left",
+        },
+      ];
+    },
     noDataText() {
       return this.searched
-        ? "No data found. Try to refine you search"
-        : "Click search to find alerts";
+        ? this.$gettext("No data found. Try to refine your search")
+        : this.$gettext("Click search to find alerts");
     },
     visibleColumns() {
       return this.columns.map((column) => {
@@ -381,8 +420,8 @@ export default {
     snoozeAlert(alert) {
       this.$q
         .dialog({
-          title: "Snooze Alert",
-          message: "How many days to snooze alert?",
+          title: this.$gettext("Snooze Alert"),
+          message: this.$gettext("How many days to snooze alert?"),
           prompt: {
             model: "",
             type: "number",
@@ -404,7 +443,16 @@ export default {
             .then(() => {
               this.search();
               this.$q.loading.hide();
-              this.notifySuccess(`The alert has been snoozed for ${days} days`);
+              this.notifySuccess(
+                this.$ngettext(
+                  "The alert has been snoozed for %{days} day",
+                  "The alert has been snoozed for %{days} days",
+                  days,
+                  {
+                    days: days,
+                  },
+                ),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -424,7 +472,7 @@ export default {
         .then(() => {
           this.search();
           this.$q.loading.hide();
-          this.notifySuccess("The alert has been unsnoozed");
+          this.notifySuccess(this.$gettext("The alert has been unsnoozed"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -443,7 +491,7 @@ export default {
         .then(() => {
           this.search();
           this.$q.loading.hide();
-          this.notifySuccess("The alert has been resolved");
+          this.notifySuccess(this.$gettext("The alert has been resolved"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -462,7 +510,7 @@ export default {
         .then(() => {
           this.search();
           this.$q.loading.hide();
-          this.notifySuccess("Alerts were resolved");
+          this.notifySuccess(this.$gettext("Alerts were resolved"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -471,8 +519,8 @@ export default {
     snoozeAlertBulk(alerts) {
       this.$q
         .dialog({
-          title: "Snooze Alert",
-          message: "How many days to snooze alert?",
+          title: this.$gettext("Snooze Alert"),
+          message: this.$gettext("How many days to snooze alert?"),
           prompt: {
             model: "",
             type: "number",
@@ -494,7 +542,16 @@ export default {
             .then(() => {
               this.search();
               this.$q.loading.hide();
-              this.notifySuccess(`Alerts were snoozed for ${days} days`);
+              this.notifySuccess(
+                this.$ngettext(
+                  "Alerts were snoozed for %{days} day",
+                  "Alerts were snoozed for %{days} days",
+                  days,
+                  {
+                    days: days,
+                  },
+                ),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -504,14 +561,20 @@ export default {
     showScriptOutput(alert, failure = false) {
       let results = {};
       if (failure) {
-        results.readable_desc = `${alert.alert_type} failure action results`;
+        results.readable_desc = this.$gettext(
+          "%{type} failure action results",
+          { type: alert.alert_type },
+        );
         results.execution_time = alert.action_execution_time;
         results.retcode = alert.action_retcode;
         results.stdout = alert.action_stdout;
         results.errout = alert.action_errout;
         results.last_run = alert.action_run;
       } else {
-        results.readable_desc = `${alert.alert_type} resolved action results`;
+        results.readable_desc = this.$gettext(
+          "%{type} resolved action results",
+          { type: alert.alert_type },
+        );
         results.execution_time = alert.resolved_action_execution_time;
         results.retcode = alert.resolved_action_retcode;
         results.stdout = alert.resolved_action_stdout;

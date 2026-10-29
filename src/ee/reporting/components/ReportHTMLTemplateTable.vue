@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportHTMLTemplates"
-        />Base Templates
+        />{{ $gettext("Base Templates") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -43,7 +45,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             icon="add"
-            label="New"
+            :label="$pgettext('Report editing', 'New')"
             no-caps
             dense
             flat
@@ -53,7 +55,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$pgettext('Report editing', 'Search')"
             dense
             outlined
             clearable
@@ -79,7 +81,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditHTMLTemplate(props.row)"
                 >
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("Report edit action", "Edit")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -87,7 +91,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="cloneHTMLTemplate(props.row)"
                 >
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{ $gettext("Clone") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -95,13 +99,13 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteHTMLTemplate(props.row)"
                 >
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -116,8 +120,9 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { useSharedReportHTMLTemplates } from "../api/reporting";
 
@@ -127,15 +132,15 @@ import ReportHTMLTemplateForm from "./ReportHTMLTemplateForm.vue";
 // type imports
 import type { ReportHTMLTemplate } from "../types/reporting";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: gettext.$pgettext("Report editing", "Name"),
     field: "name",
     align: "left",
     sortable: true,
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -169,11 +174,14 @@ function openEditHTMLTemplate(template: ReportHTMLTemplate) {
 
 function deleteHTMLTemplate(template: ReportHTMLTemplate) {
   $q.dialog({
-    title: `Delete HTML Template: ${template.name}?`,
-    message:
+    title: gettext.$gettext("Delete HTML Template: %{name}?", {
+      name: template.name,
+    }),
+    message: gettext.$gettext(
       "If this template is in use you will need to change it in every report template",
+    ),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(() => {
     deleteReportHTMLTemplate(template.id);
   });

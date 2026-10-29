@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import { exportFile, Notify } from "quasar";
 
 function _wrapCsvValue(val, formatFn) {
@@ -28,11 +29,11 @@ export function exportTableToCSV(rows, columns) {
               typeof col.field === "function"
                 ? col.field(row)
                 : row[col.field === void 0 ? col.name : col.field],
-              col.format
-            )
+              col.format,
+            ),
           )
-          .join(",")
-      )
+          .join(","),
+      ),
     )
     .join("\r\n");
 
@@ -40,7 +41,7 @@ export function exportTableToCSV(rows, columns) {
 
   if (status !== true) {
     Notify({
-      message: "Browser denied file download...",
+      message: gettext.$gettext("Browser denied file download..."),
       color: "negative",
       icon: "warning",
     });

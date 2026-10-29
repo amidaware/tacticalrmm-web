@@ -1,4 +1,7 @@
+import { gettext } from "@/gettext";
 import { AxiosError } from "axios";
+import { TransferIntegrityError } from "./transferErrors";
+import { FatalTransferError, BackendTransferError } from "./transferFaults";
 
 import {
   FILE_TRANSFER_ACK_POLL_MAX_MS,
@@ -14,7 +17,6 @@ import {
   FILE_TRANSFER_TRANSIENT_RETRY_HARD_CAP,
   FILE_TRANSFER_TRANSIENT_RETRY_MAX_DURATION_MS,
   FILE_TRANSFER_TRANSIENT_RETRY_MAX_MS,
-  TRANSFER_SLOT_WAIT_TIMEOUT_MESSAGE,
 } from "@/constants/fileTransfer";
 import { getAxiosErrorDetail } from "@/utils/apiError";
 
@@ -34,8 +36,17 @@ export interface WithTransferSessionRetryOptions {
 }
 
 export class TransferSlotWaitTimeoutError extends Error {
-  constructor(message = TRANSFER_SLOT_WAIT_TIMEOUT_MESSAGE) {
-    super(message);
+  readonly defaultMessage: boolean;
+
+  constructor(message?: string) {
+    super(
+      message === undefined
+        ? gettext.$gettext(
+            "No transfer slot became available. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.",
+          )
+        : message,
+    );
+    this.defaultMessage = message === undefined;
     this.name = "TransferSlotWaitTimeoutError";
   }
 }
@@ -129,7 +140,9 @@ export class RetryableTransferError extends Error {
 }
 
 export class TransferStalledError extends RetryableTransferError {
-  constructor(message = "The agent stopped responding to this transfer") {
+  constructor(
+    message = gettext.$gettext("The agent stopped responding to this transfer"),
+  ) {
     super(message);
     this.name = "TransferStalledError";
   }
@@ -155,6 +168,12 @@ const TRANSIENT_NETWORK_MESSAGE =
 
 export function isRetryableTransferError(err: unknown): boolean {
   if (isAbortLikeError(err)) return false;
+  if (
+    err instanceof FatalTransferError ||
+    err instanceof BackendTransferError ||
+    err instanceof TransferIntegrityError
+  )
+    return false;
   if (err instanceof RetryableTransferError) return true;
 
   const detail = getAxiosErrorDetail(err);

@@ -8,10 +8,16 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 60vw; max-width: 90vw; min-height: 40vh">
       <q-bar>
-        Connected Social Accounts for {{ user.username }}
+        {{
+          $gettext("Connected Social Accounts for %{username}", {
+            username: user.username,
+          })
+        }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -42,7 +48,7 @@ For details, see: https://license.tacticalrmm.com/ee
               <q-btn
                 size="sm"
                 @click="removeSSOAccount(props.row)"
-                label="Disconnect"
+                :label="$gettext('Disconnect')"
                 color="negative"
               ></q-btn>
             </td>
@@ -54,8 +60,9 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useDialogPluginComponent, useQuasar, type QTableColumn } from "quasar";
 import { disconnectSSOAccount } from "@/ee/sso/api/sso";
 import { notifySuccess } from "@/utils/notify";
@@ -65,31 +72,31 @@ import { formatDate } from "@/utils/format";
 //types
 import type { SSOAccount, SSOUser } from "../types/sso";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "display",
-    label: "Display Name",
+    label: gettext.$pgettext("SSO accounts", "Display Name"),
     field: "display",
     align: "left",
     sortable: true,
   },
   {
     name: "provider",
-    label: "Provider",
+    label: gettext.$gettext("Provider"),
     field: "provider",
     align: "left",
     sortable: true,
   },
   {
     name: "last_login",
-    label: "Last Login",
+    label: gettext.$gettext("Last Login"),
     field: "last_login",
     align: "left",
     sortable: true,
   },
   {
     name: "date_joined",
-    label: "Date Joined",
+    label: gettext.$gettext("Date Joined"),
     field: "date_joined",
     align: "left",
     sortable: true,
@@ -101,7 +108,7 @@ const columns: QTableColumn[] = [
     align: "left",
     sortable: true,
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -119,14 +126,18 @@ const loading = ref(false);
 
 function removeSSOAccount(account: SSOAccount) {
   $q.dialog({
-    title: `Disconnect social account: ${account.display}?`,
+    title: gettext.$gettext("Disconnect social account: %{name}?", {
+      name: account.display,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await disconnectSSOAccount(account.provider, account.uid);
-      notifySuccess("Social account disconnected successfully");
+      notifySuccess(
+        gettext.$gettext("Social account disconnected successfully"),
+      );
       if (
         auth.username === props.user.username &&
         auth.ssoLoginProvider === account.provider

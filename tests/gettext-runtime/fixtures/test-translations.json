@@ -1,0 +1,193 @@
+{
+  "ru": {
+    "%{category} alerts will now be %{action} when %{hostname} is overdue.": "Оповещения типа «%{category}» теперь %{action}, когда агент %{hostname} просрочен.",
+    "%{count} day ago": [
+      "%{count} день назад",
+      "%{count} дня назад",
+      "%{count} дней назад"
+    ],
+    "%{count} hour ago": [
+      "%{count} час назад",
+      "%{count} часа назад",
+      "%{count} часов назад"
+    ],
+    "%{count} minute ago": [
+      "%{count} минуту назад",
+      "%{count} минуты назад",
+      "%{count} минут назад"
+    ],
+    "%{count} month ago": [
+      "%{count} месяц назад",
+      "%{count} месяца назад",
+      "%{count} месяцев назад"
+    ],
+    "%{count} second ago": [
+      "%{count} секунду назад",
+      "%{count} секунды назад",
+      "%{count} секунд назад"
+    ],
+    "%{count} year ago": [
+      "%{count} год назад",
+      "%{count} года назад",
+      "%{count} лет назад"
+    ],
+    "%{done} of %{total} file": [
+      "Файлов: %{done} из %{total}",
+      "Файлов: %{done} из %{total}",
+      "Файлов: %{done} из %{total}"
+    ],
+    "%{size} (%{bytes} byte)": [
+      "%{size} (%{bytes} байт)",
+      "%{size} (%{bytes} байта)",
+      "%{size} (%{bytes} байт)"
+    ],
+    "%{value} s": "%{value} с",
+    "Add Object": "Добавить объект",
+    "Agent Installs": "Установки агента",
+    "Agent Issues": "Проблемы агента",
+    "Agent Update": "Обновление агента",
+    "April": "Апрель",
+    "August": "Август",
+    "Bulk Actions": {
+      "Alert history": "Массовые действия",
+      "Audit log": "Массовые действия",
+      "Report resources": "Массовые действия",
+      "Role permissions": "Массовые действия"
+    },
+    "Check Run": "Запуск проверки",
+    "Cmd Run": "Запуск cmd",
+    "Critical": {
+      "Agent configuration": "Критично",
+      "Global settings": "Критично",
+      "Windows update policy": "Критично",
+      "Windows updates": "Критично"
+    },
+    "Daily": "Ежедневно",
+    "December": "Декабрь",
+    "Delete": "Удалить",
+    "Delete Object": "Удалить объект",
+    "Drop %{count} file to upload": [
+      "Перетащите %{count} файл для загрузки",
+      "Перетащите %{count} файла для загрузки",
+      "Перетащите %{count} файлов для загрузки"
+    ],
+    "Drop file to upload": "Перетащите файл для загрузки",
+    "Error": {
+      "": "Ошибка",
+      "Alert history": "Ошибка",
+      "Alert template configuration": "Ошибка",
+      "Automated task configuration": "Ошибка",
+      "Event log checks": "Ошибка",
+      "General status": "Ошибка",
+      "Global settings": "Ошибка"
+    },
+    "Execute Command": "Выполнить команду",
+    "Execute Script": "Выполнить скрипт",
+    "Failed User login": "Неудачный вход пользователя",
+    "February": "Февраль",
+    "File Transfer": "Передача файлов",
+    "First Week": "Первая неделя",
+    "Fourth Week": "Четвертая неделя",
+    "Friday": "Пятница",
+    "Ignore": {
+      "Automated task configuration": "Игнорировать",
+      "Windows update policy": "Игнорировать",
+      "Windows updates": "Игнорировать"
+    },
+    "Important": {
+      "Agent configuration": "Важно",
+      "Windows update policy": "Важно",
+      "Windows updates": "Важно"
+    },
+    "Info": {
+      "Global settings": "Инфо"
+    },
+    "Informational": {
+      "": "Информационный",
+      "Agent monitoring": "Информационно",
+      "Alert history": "Информационное",
+      "Alert template configuration": "Информационное",
+      "Automated task configuration": "Информационно"
+    },
+    "Installer for %{client}, %{site} (%{agenttype}) will now be downloaded. You may reuse this installer for %{expires} hour before it expires. No command line arguments are needed.": [
+      "Установщик для %{client}, %{site} (%{agenttype}) будет загружен сейчас. Вы можете повторно использовать этот установщик в течение %{expires} часа до истечения срока. Аргументы командной строки не требуются.",
+      "Установщик для %{client}, %{site} (%{agenttype}) будет загружен сейчас. Вы можете повторно использовать этот установщик в течение %{expires} часов до истечения срока. Аргументы командной строки не требуются.",
+      "Установщик для %{client}, %{site} (%{agenttype}) будет загружен сейчас. Вы можете повторно использовать этот установщик в течение %{expires} часов до истечения срока. Аргументы командной строки не требуются."
+    ],
+    "January": "Январь",
+    "July": "Июль",
+    "June": "Июнь",
+    "Last Day": "Последний день",
+    "Last Week": "Последняя неделя",
+    "Linux": "Linux",
+    "Low": {
+      "Agent configuration": "Низко",
+      "Windows update policy": "Низко",
+      "Windows updates": "Низко"
+    },
+    "Manual": "Вручную",
+    "March": "Март",
+    "May": "Май",
+    "Moderate": "Умеренно",
+    "Modify Object": "Изменить объект",
+    "Monday": "Понедельник",
+    "Monthly": "Ежемесячно",
+    "November": "Ноябрь",
+    "October": "Октябрь",
+    "On check failure": "При сбое проверки",
+    "Onboarding": "Онбординг",
+    "Other": {
+      "Agent configuration": "Другое",
+      "Windows update policy": "Другое",
+      "Windows updates": "Другое"
+    },
+    "Queue Task": "Ставить задачу в очередь",
+    "Remote Session": "Удаленная сессия",
+    "Run Once": "Один раз",
+    "Run in Parallel": "Запускать параллельно",
+    "Saturday": "Суббота",
+    "Script Run": "Запуск скрипта",
+    "Scripting": "Скриптинг",
+    "Second Week": "Вторая неделя",
+    "September": "Сентябрь",
+    "Stop Existing": "Остановить существующую",
+    "Sunday": "Воскресенье",
+    "System Issues": "Системные проблемы",
+    "Task Run": "Запуск задачи",
+    "Task Run Results": "Результаты запуска задач",
+    "Third Week": "Третья неделя",
+    "Thursday": "Четверг",
+    "Tuesday": "Вторник",
+    "URL Action": {
+      "Audit log": "URL Action",
+      "User preferences": "URL Action"
+    },
+    "Unassigned": "Без категории",
+    "User Login": "Вход пользователя",
+    "Waiting for slot…": "Ожидание слота…",
+    "Warning": {
+      "": "Предупреждение",
+      "Alert history": "Предупреждение",
+      "Alert template configuration": "Предупреждение",
+      "Automated task configuration": "Предупреждение",
+      "Event log checks": "Предупреждение",
+      "General status": "Предупреждение",
+      "Global settings": "Предупреждение"
+    },
+    "Wednesday": "Среда",
+    "Weekly": "Еженедельно",
+    "Windows": "Windows",
+    "Windows Updates": {
+      "Debug log": "Обновления Windows",
+      "Role permissions": "Обновления Windows"
+    },
+    "You are about to delete %{count} asset. This action isn't reversible": [
+      "Вы собираетесь удалить %{count} ресурс. Это действие необратимо",
+      "Вы собираетесь удалить %{count} ресурса. Это действие необратимо",
+      "Вы собираетесь удалить %{count} ресурсов. Это действие необратимо"
+    ],
+    "macOS": "macOS",
+    "Waiting for a free transfer slot. All slots are in use, possibly by other users; cancelling one of your paused transfers frees one.": "Ожидание свободного слота передачи. Все слоты заняты, возможно, другими пользователями. Чтобы освободить слот, отмените одну из своих приостановленных передач."
+  },
+  "it": {}
+}

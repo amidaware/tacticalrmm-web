@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $gettext("No agent selected") }}
+  </div>
   <div v-else>
     <q-table
       :table-class="{
@@ -23,7 +25,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$pgettext('General actions', 'Search')"
           dense
           clearable
           class="q-pr-sm"
@@ -49,7 +51,7 @@
                 ? showCommandOutput(props.row.command, props.row.results)
                 : showScriptOutput(props.row.script_results)
             "
-            >Output
+            >{{ $pgettext("Agent history", "Output") }}
           </span>
         </q-td>
       </template>
@@ -64,6 +66,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -75,55 +78,6 @@ import { fetchAgentHistory } from "@/api/agents";
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
-
-// static data
-const columns = [
-  {
-    name: "time",
-    label: "Time",
-    field: "time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "type",
-    label: "Action",
-    field: "type",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  /* {
-    name: "status",
-    label: "Status",
-    field: "status",
-    align: "left",
-    sortable: true,
-    format: (val, row) => formatTableColumnText(val),
-  }, */
-  {
-    name: "command",
-    label: "Script/Command",
-    field: (row) => (row.type === "script_run" ? row.script_name : row.command),
-    align: "left",
-    sortable: true,
-    format: (val) => truncateText(val, 30),
-  },
-  {
-    name: "username",
-    label: "Initiated By",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "output",
-    label: "Output",
-    field: "output",
-    align: "left",
-    sortable: false,
-  },
-];
 
 export default {
   name: "HistoryTab",
@@ -150,13 +104,54 @@ export default {
       rowsNumber: 0,
     });
 
+    const columns = computed(() => [
+      {
+        name: "time",
+        label: gettext.$pgettext("Agent history", "Time"),
+        field: "time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "type",
+        label: gettext.$pgettext("Agent history", "Action"),
+        field: "type",
+        align: "left",
+        sortable: true,
+        format: (val) => getHistoryActionLabel(val),
+      },
+      {
+        name: "command",
+        label: gettext.$gettext("Script/Command"),
+        field: (row) =>
+          row.type === "script_run" ? row.script_name : row.command,
+        align: "left",
+        sortable: true,
+        format: (val) => truncateText(val, 30),
+      },
+      {
+        name: "username",
+        label: gettext.$gettext("Initiated By"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "output",
+        label: gettext.$pgettext("Agent history", "Output"),
+        field: "output",
+        align: "left",
+        sortable: false,
+      },
+    ]);
+
     const filteredHistory = computed(() => {
       if (!filter.value) return history.value;
       const needle = filter.value.toLowerCase();
       return history.value.filter((row) =>
         [
           formatDate.value(row.time),
-          formatTableColumnText(row.type),
+          getHistoryActionLabel(row.type),
           row.type === "script_run" ? row.script_name : row.command,
           row.username,
         ].some((val) => val && String(val).toLowerCase().includes(needle)),
@@ -184,6 +179,22 @@ export default {
       loading.value = false;
     }
 
+    function getHistoryActionLabel(actionType) {
+      if (!actionType) return actionType;
+      switch (actionType) {
+        case "check_run":
+          return gettext.$gettext("Check Run");
+        case "cmd_run":
+          return gettext.$gettext("Cmd Run");
+        case "script_run":
+          return gettext.$gettext("Script Run");
+        case "task_run":
+          return gettext.$gettext("Task Run");
+        default:
+          return formatTableColumnText(actionType);
+      }
+    }
+
     function getHistory() {
       onRequest({ pagination: pagination.value });
     }
@@ -199,7 +210,7 @@ export default {
     function showScriptOutput(output) {
       if (!output) {
         Notify.create({
-          message: "No output is available yet",
+          message: gettext.$gettext("No output is available yet"),
           type: "negative",
         });
         return;

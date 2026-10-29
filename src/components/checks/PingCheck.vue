@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? `Edit Ping Check` : "Add Ping Check" }}
+        {{ check ? $gettext("Edit Ping Check") : $gettext("Add Ping Check") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -16,8 +18,8 @@
               outlined
               dense
               v-model="state.name"
-              label="Descriptive Name"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$gettext('Descriptive Name')"
+              :rules="[(val) => !!val || $gettext('*Required')]"
             />
           </q-card-section>
           <q-card-section>
@@ -25,8 +27,8 @@
               dense
               outlined
               v-model="state.ip"
-              label="Hostname or IP"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$gettext('Hostname or IP')"
+              :rules="[(val) => !!val || $gettext('*Required')]"
             />
           </q-card-section>
           <q-card-section>
@@ -38,7 +40,9 @@
               map-options
               v-model="state.alert_severity"
               :options="severityOptions"
-              label="Alert Severity"
+              :label="
+                $pgettext('Monitoring check configuration', 'Alert Severity')
+              "
             />
           </q-card-section>
           <q-card-section>
@@ -50,7 +54,7 @@
               emit-value
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$gettext('Number of consecutive failures before alert')"
             />
           </q-card-section>
           <q-card-section>
@@ -59,18 +63,22 @@
               dense
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$gettext('Run this check every (seconds)')"
+              :hint="
+                $gettext(
+                  'Setting this value to anything other than 0 will override the \u0027Run checks every\u0027 setting on the agent',
+                )
+              "
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$gettext('Save')"
             color="primary"
             type="submit"
           />

@@ -2,265 +2,284 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="min-width: 75vw; max-heigth: 75vh" class="q-dialog-plugin">
       <q-bar>
-        {{ localRole ? "Editing Role" : "Adding Role" }}
+        {{ localRole ? $gettext("Editing Role") : $gettext("Adding Role") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
       <q-form ref="form" @submit="onSubmit">
         <q-card-section class="row">
           <q-input
-            label="Role Name"
+            :label="$gettext('Role Name')"
             class="col-6"
             dense
             outlined
             v-model="localRole.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
           />
         </q-card-section>
         <q-card-section class="scroll" style="height: 70vh">
           <!-- Permissions -->
-          <div class="text-subtitle2">Super User</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Super User") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
-              <q-checkbox v-model="localRole.is_superuser" label="Super User" />
+              <q-checkbox
+                v-model="localRole.is_superuser"
+                :label="$gettext('Super User')"
+              />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Reporting</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Reporting") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_view_reports"
-                label="Reporting Viewer"
+                :label="$gettext('Reporting Viewer')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_reports"
-                label="Reporting Manager"
+                :label="
+                  $pgettext('Report management permission', 'Reporting Manager')
+                "
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Accounts</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Accounts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_accounts"
-                label="List User Accounts"
+                :label="$gettext('List User Accounts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_accounts"
-                label="Manage User Accounts"
+                :label="$gettext('Manage User Accounts')"
               />
               <q-checkbox
                 v-model="localRole.can_list_roles"
-                label="List Roles"
+                :label="$gettext('List Roles')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_roles"
-                label="Manage Roles"
+                :label="$gettext('Manage Roles')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Agents</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Agents") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_agents"
-                label="List Agents"
+                :label="$gettext('List Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_list_agent_history"
-                label="List Agent History"
+                :label="$gettext('List Agent History')"
               />
               <q-checkbox
                 v-model="localRole.can_use_mesh"
-                label="Use MeshCentral"
+                :label="$gettext('Use MeshCentral')"
               />
               <q-checkbox
                 v-model="localRole.can_uninstall_agents"
-                label="Uninstall Agents"
+                :label="$gettext('Uninstall Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_update_agents"
-                label="Update Agents"
+                :label="$pgettext('Role permissions', 'Update Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_agent"
-                label="Edit Agents"
+                :label="$gettext('Edit Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_procs"
-                label="Manage Processes"
+                :label="$gettext('Manage Processes')"
               />
               <q-checkbox
                 v-model="localRole.can_view_eventlogs"
-                label="View Event Logs"
+                :label="$gettext('View Event Logs')"
               />
               <q-checkbox
                 v-model="localRole.can_send_cmd"
-                label="Send Command"
+                :label="$pgettext('Role permissions', 'Send Command')"
               />
               <q-checkbox
                 v-model="localRole.can_use_terminal"
-                label="Use Terminal"
+                :label="$gettext('Use Terminal')"
               />
               <q-checkbox
                 v-model="localRole.can_reboot_agents"
-                label="Shutdown / Reboot Agents"
+                :label="$gettext('Shutdown / Reboot Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_send_wol"
-                label="Wake-Up (WoL) Agents"
+                :label="$gettext('Wake-Up (WoL) Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_install_agents"
-                label="Install Agents"
+                :label="$gettext('Install Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_run_scripts"
-                label="Run Script"
+                :label="$pgettext('Role permissions', 'Run Script')"
               />
               <q-checkbox
                 v-model="localRole.can_run_bulk"
-                label="Bulk Actions"
+                :label="$pgettext('Role permissions', 'Bulk Actions')"
               />
               <q-checkbox
                 v-model="localRole.can_recover_agents"
-                label="Recover Agents"
+                :label="$gettext('Recover Agents')"
               />
               <q-checkbox
                 v-model="localRole.can_use_registry"
-                label="Use Registry"
+                :label="$gettext('Use Registry')"
               />
               <q-checkbox
                 v-model="localRole.can_use_file_browser"
-                label="Use File Browser"
+                :label="$gettext('Use File Browser')"
               />
             </div>
           </q-card-section>
-          <div class="text-subtitle2">Core</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Core") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_notes"
-                label="List Notes"
+                :label="$gettext('List Notes')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_notes"
-                label="Manage Notes"
+                :label="$gettext('Manage Notes')"
               />
               <q-checkbox
                 v-model="localRole.can_view_core_settings"
-                label="View Global Settings"
+                :label="$gettext('View Global Settings')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_core_settings"
-                label="Edit Global Settings"
+                :label="$gettext('Edit Global Settings')"
               />
               <q-checkbox
                 v-model="localRole.can_view_global_keystore"
-                label="View Global Key Store"
+                :label="$gettext('View Global Key Store')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_global_keystore"
-                label="Edit Global Key Store"
+                :label="$gettext('Edit Global Key Store')"
               />
               <q-checkbox
                 v-model="localRole.can_do_server_maint"
-                label="Do Server Maintenance"
+                :label="$gettext('Do Server Maintenance')"
               />
               <q-checkbox
                 v-model="localRole.can_code_sign"
-                label="Manage Code Signing"
+                :label="$gettext('Manage Code Signing')"
               />
               <q-checkbox
                 v-model="localRole.can_list_api_keys"
-                label="List API Keys"
+                :label="$gettext('List API Keys')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_api_keys"
-                label="Manage API Keys"
+                :label="$gettext('Manage API Keys')"
               />
               <q-checkbox
                 v-model="localRole.can_run_urlactions"
-                label="Run URL Actions"
+                :label="$gettext('Run URL Actions')"
               />
               <q-checkbox
                 v-model="localRole.can_view_customfields"
-                label="View Custom Fields"
+                :label="$gettext('View Custom Fields')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_customfields"
-                label="Edit Custom Fields"
+                :label="$gettext('Edit Custom Fields')"
               />
               <q-checkbox
                 v-model="localRole.can_view_schedules"
-                label="List Schedules"
+                :label="$gettext('List Schedules')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_schedules"
-                label="Manage Schedules"
+                :label="$gettext('Manage Schedules')"
               />
               <q-checkbox
                 v-if="!hosted"
                 v-model="localRole.can_use_webterm"
-                label="Use TRMM Server Web Terminal"
+                :label="$gettext('Use TRMM Server Web Terminal')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Checks</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Checks") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_checks"
-                label="List Checks"
+                :label="$gettext('List Checks')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_checks"
-                label="Manage Checks"
+                :label="$gettext('Manage Checks')"
               />
               <q-checkbox
                 v-model="localRole.can_run_checks"
-                label="Run Checks"
+                :label="$pgettext('Role permissions', 'Run Checks')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Clients</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Clients") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_clients"
-                label="List Clients"
+                :label="$gettext('List Clients')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_clients"
-                label="Manage Clients"
+                :label="$gettext('Manage Clients')"
               />
               <q-checkbox
                 v-model="localRole.can_list_sites"
-                label="List Sites"
+                :label="$gettext('List Sites')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_sites"
-                label="Manage Sites"
+                :label="$gettext('Manage Sites')"
               />
               <q-checkbox
                 v-model="localRole.can_list_deployments"
-                label="List Deployments"
+                :label="$gettext('List Deployments')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_deployments"
-                label="Manage Deployments"
+                :label="$gettext('Manage Deployments')"
               />
             </div>
           </q-card-section>
@@ -268,10 +287,10 @@
           <q-card-section class="row">
             <tactical-dropdown
               class="col-6"
-              label="Allowed Clients"
+              :label="$gettext('Allowed Clients')"
               :options="clientOptions"
               v-model="localRole.can_view_clients"
-              hint="Empty means all clients are allowed"
+              :hint="$gettext('Empty means all clients are allowed')"
               outlined
               mapOptions
               multiple
@@ -281,10 +300,10 @@
           <q-card-section class="row">
             <tactical-dropdown
               class="col-6"
-              label="Allowed Sites"
+              :label="$gettext('Allowed Sites')"
               :options="siteOptions"
               v-model="localRole.can_view_sites"
-              hint="Empty means all sites are allowed"
+              :hint="$gettext('Empty means all sites are allowed')"
               outlined
               mapOptions
               multiple
@@ -292,150 +311,166 @@
             />
           </q-card-section>
 
-          <div class="text-subtitle2">Automation Policies</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Automation Policies") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_automation_policies"
-                label="List Automation Policies"
+                :label="$gettext('List Automation Policies')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_automation_policies"
-                label="Manage Automation Policies"
+                :label="$gettext('Manage Automation Policies')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Tasks</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Tasks") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_autotasks"
-                label="List Tasks"
+                :label="$gettext('List Tasks')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_autotasks"
-                label="Manage Tasks"
+                :label="$gettext('Manage Tasks')"
               />
               <q-checkbox
                 v-model="localRole.can_run_autotasks"
-                label="Run Tasks"
+                :label="$gettext('Run Tasks')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Logs</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Logs") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_view_auditlogs"
-                label="View Audit Logs"
+                :label="$gettext('View Audit Logs')"
               />
               <q-checkbox
                 v-model="localRole.can_view_debuglogs"
-                label="View Debug Logs"
+                :label="$gettext('View Debug Logs')"
               />
               <q-checkbox
                 v-model="localRole.can_list_pendingactions"
-                label="List Pending Actions"
+                :label="$gettext('List Pending Actions')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_pendingactions"
-                label="Manage Pending Actions"
+                :label="$gettext('Manage Pending Actions')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Scripts</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Scripts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_scripts"
-                label="List Scripts"
+                :label="$gettext('List Scripts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_scripts"
-                label="Manage Scripts"
+                :label="$gettext('Manage Scripts')"
               />
               <q-checkbox
                 v-if="!hosted"
                 v-model="localRole.can_run_server_scripts"
-                label="Run Scripts on TRMM Server"
+                :label="$gettext('Run Scripts on TRMM Server')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Alerts</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Alerts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_alerts"
-                label="List Alerts"
+                :label="$gettext('List Alerts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_alerts"
-                label="Manage Alerts"
+                :label="$gettext('Manage Alerts')"
               />
               <q-checkbox
                 v-model="localRole.can_list_alerttemplates"
-                label="List Alert Templates"
+                :label="$gettext('List Alert Templates')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_alerttemplates"
-                label="Manage Alert Templates"
+                :label="$gettext('Manage Alert Templates')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Windows Services</div>
+          <div class="text-subtitle2">
+            {{ $gettext("Windows Services") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_manage_winsvcs"
-                label="Manage Windows Services"
+                :label="$gettext('Manage Windows Services')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Software</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Software") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_software"
-                label="List Software"
+                :label="$gettext('List Software')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_software"
-                label="Manage Software"
+                :label="$gettext('Manage Software')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Windows Updates</div>
+          <div class="text-subtitle2">
+            {{ $pgettext("Role permissions", "Windows Updates") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_manage_winupdates"
-                label="Manage Windows Updates"
+                :label="$gettext('Manage Windows Updates')"
               />
             </div>
           </q-card-section>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$gettext('Save')"
             color="primary"
             type="submit"
           />

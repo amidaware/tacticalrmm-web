@@ -1,3 +1,4 @@
+import { FatalTransferError } from "@/services/fileTransfer/transferFaults";
 import axios from "axios";
 
 import {
@@ -136,7 +137,7 @@ export async function pickExistingDownloadHandle(): Promise<FileSystemFileHandle
     startIn: "downloads",
   });
   if (!(await requestFileHandlePermission(handle))) {
-    throw new Error("Write access to that file was denied.");
+    throw new FatalTransferError({ code: "write-permission" });
   }
   return handle;
 }

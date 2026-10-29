@@ -20,70 +20,70 @@
           name="summary"
           icon="fas fa-info-circle"
           size="xs"
-          label="Summary"
+          :label="$gettext('Summary')"
         />
         <q-tab
           v-if="activeTabs.includes('checks')"
           content-class="min-width"
           name="checks"
           icon="fas fa-check-double"
-          label="Checks"
+          :label="$pgettext('Agent navigation', 'Checks')"
         />
         <q-tab
           v-if="activeTabs.includes('tasks')"
           content-class="min-width"
           name="tasks"
           icon="fas fa-tasks"
-          label="Tasks"
+          :label="$gettext('Tasks')"
         />
         <q-tab
           v-if="activeTabs.includes('patches')"
           content-class="min-width"
           name="patches"
           icon="system_update"
-          label="Patches"
+          :label="$gettext('Patches')"
         />
         <q-tab
           v-if="activeTabs.includes('software')"
           content-class="min-width"
           name="software"
           icon="fab fa-windows"
-          label="Software"
+          :label="$pgettext('Agent navigation', 'Software')"
         />
         <q-tab
           v-if="activeTabs.includes('history')"
           content-class="min-width"
           name="history"
           icon="history"
-          label="History"
+          :label="$gettext('History')"
         />
         <q-tab
           v-if="activeTabs.includes('notes')"
           content-class="min-width"
           name="notes"
           icon="far fa-sticky-note"
-          label="Notes"
+          :label="$gettext('Notes')"
         />
         <q-tab
           v-if="activeTabs.includes('assets')"
           content-class="min-width"
           name="assets"
           icon="fas fa-barcode"
-          label="Assets"
+          :label="$pgettext('Agent navigation', 'Assets')"
         />
         <q-tab
           v-if="activeTabs.includes('debug')"
           content-class="min-width"
           name="debug"
           icon="bug_report"
-          label="Debug"
+          :label="$gettext('Debug')"
         />
         <q-tab
           v-if="activeTabs.includes('audit')"
           content-class="min-width"
           name="audit"
           icon="travel_explore"
-          label="Audit"
+          :label="$gettext('Audit')"
         />
       </q-tabs>
       <q-separator />

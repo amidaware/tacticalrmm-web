@@ -1,4 +1,10 @@
 import {
+  FatalTransferError,
+  BackendTransferError,
+} from "@/services/fileTransfer/transferFaults";
+import { TransferIntegrityError } from "./transferErrors";
+import { gettext } from "@/gettext";
+import {
   ackAgentFileDownloadChunk,
   assertDownloadChunkRange,
   cancelAgentFileDownload,
@@ -178,9 +184,12 @@ async function waitForArchiveReady(
         status.status === "cancelled" ||
         status.status === "expired"
       ) {
-        throw new Error(
-          status.error || `Archive preparation ${status.status}.`,
-        );
+        throw status.error
+          ? new BackendTransferError(status.error)
+          : new FatalTransferError({
+              code: "archive-preparation",
+              status: status.status,
+            });
       }
     } catch (err) {
       if (isAbortError(err) || !isRetryableTransferError(err)) {
@@ -197,9 +206,7 @@ async function waitForArchiveReady(
       });
     }
     if (Date.now() >= deadline) {
-      throw new Error(
-        "Timed out waiting for the archive to build on the agent.",
-      );
+      throw new FatalTransferError({ code: "archive-timeout" });
     }
     await sleepAbortable(ARCHIVE_STATUS_POLL_INTERVAL_MS, signal);
   }
@@ -211,16 +218,13 @@ function assertMemoryDownloadAllowed(
 ): void {
   if (usesMemoryBuffer && totalSize > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
     const limitMiB = Math.floor(MAX_IN_MEMORY_DOWNLOAD_BYTES / (1024 * 1024));
-    throw new Error(
-      `This download (${Math.ceil(totalSize / (1024 * 1024))} MiB) is too large ` +
-        `for this browser, which must buffer it in memory (limit ${limitMiB} MiB). ` +
-        "Use Chrome or Edge to stream large downloads directly to disk.",
-    );
+    throw new FatalTransferError({
+      code: "memory-limit",
+      size: Math.ceil(totalSize / (1024 * 1024)),
+      limit: limitMiB,
+    });
   }
 }
-
-const SAVE_PICKER_UNAVAILABLE_MESSAGE =
-  "Could not open the save dialog. Click download again and choose where to save the file.";
 
 function rethrowSavePickerError(
   err: unknown,
@@ -233,7 +237,7 @@ function rethrowSavePickerError(
     }
     throw err;
   }
-  throw new Error(SAVE_PICKER_UNAVAILABLE_MESSAGE);
+  throw new FatalTransferError({ code: "save-picker" });
 }
 
 const DOWNLOAD_CHUNKS_IN_FLIGHT = 2;
@@ -296,7 +300,13 @@ async function streamDownloadChunks(
         const expectedLen = range.end - range.start + 1;
         if (data.byteLength !== expectedLen) {
           throw new RetryableTransferError(
-            `Chunk size mismatch: received ${data.byteLength}, expected ${expectedLen}`,
+            gettext.$gettext(
+              "Chunk size mismatch: received %{receivedSize}, expected %{expectedSize}",
+              {
+                receivedSize: data.byteLength,
+                expectedSize: expectedLen,
+              },
+            ),
           );
         }
         return { data, newCommitted: range.end + 1 };
@@ -336,7 +346,9 @@ async function streamDownloadChunks(
         fetched = await fetchChunk(pending.offset, true);
       }
       if (!fetched) {
-        throw new RetryableTransferError("Download chunk was not received");
+        throw new RetryableTransferError(
+          gettext.$gettext("Download chunk was not received"),
+        );
       }
       const { data: chunkBuf, newCommitted } = fetched;
       if (queue.length && queue[0].offset !== newCommitted) {
@@ -434,9 +446,7 @@ async function createDownloadSink(
     } catch (err) {
       if (isAbortError(err)) throw err;
       console.warn("file browser: could not reopen the download file", err);
-      throw new Error(
-        "Could not reopen the saved download file. Click Resume and allow file access.",
-      );
+      throw new FatalTransferError({ code: "reopen-download" });
     }
   } else if (canFS) {
     try {
@@ -813,7 +823,7 @@ export async function runFileDownloadTransfer(
     const integrityOk = !agentSha || agentSha === localSha256;
 
     if (!integrityOk) {
-      throw new Error("Download integrity check failed (SHA-256 mismatch).");
+      throw new TransferIntegrityError();
     }
 
     clearDownloadResume(agentId, sourcePath);
@@ -1080,7 +1090,7 @@ export async function runArchiveDownloadTransfer(
     const integrityOk = !agentSha || agentSha === localSha256;
 
     if (!integrityOk) {
-      throw new Error("Download integrity check failed (SHA-256 mismatch).");
+      throw new TransferIntegrityError();
     }
 
     clearDownloadResume(agentId, resumeScopeKey);

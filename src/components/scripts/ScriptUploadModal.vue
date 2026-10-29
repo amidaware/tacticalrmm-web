@@ -2,26 +2,28 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 40vw">
       <q-bar>
-        Add Script
+        {{ $gettext("Add Script") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form id="scriptUploadForm" @submit="submitForm">
         <q-card-section>
           <q-input
-            label="Name"
+            :label="$pgettext('Script configuration', 'Name')"
             outlined
             dense
             v-model="script.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
           />
         </q-card-section>
 
         <q-card-section>
           <q-input
-            label="Description"
+            :label="$pgettext('Script configuration', 'Description')"
             outlined
             dense
             v-model="script.description"
@@ -32,8 +34,8 @@
           <tactical-dropdown
             v-model="script.category"
             :options="categories"
-            label="Category"
-            hint="Press Enter or Tab when adding a new value"
+            :label="$gettext('Category')"
+            :hint="$gettext('Press Enter or Tab when adding a new value')"
             outlined
             filterable
             clearable
@@ -42,7 +44,13 @@
         </q-card-section>
 
         <q-card-section>
-          <q-file label="Script Upload" v-model="file" filled dense counter>
+          <q-file
+            :label="$gettext('Script Upload')"
+            v-model="file"
+            filled
+            dense
+            counter
+          >
             <template v-slot:prepend>
               <q-icon name="attach_file" />
             </template>
@@ -53,7 +61,7 @@
           <tactical-dropdown
             v-model="script.shell"
             :options="shellOptions"
-            label="Type"
+            :label="$pgettext('Script upload', 'Type')"
             outlined
             mapOptions
           />
@@ -63,7 +71,7 @@
           <tactical-dropdown
             v-model="script.supported_platforms"
             :options="agentPlatformOptions"
-            label="Supported Platforms (All supported if blank)"
+            :label="$gettext('Supported Platforms (All supported if blank)')"
             clearable
             mapOptions
             filled
@@ -74,8 +82,13 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.args"
-            label="Script Arguments"
-            placeholder="(press Enter after typing each argument)"
+            :label="
+              $pgettext(
+                'Script configuration',
+                'Script Arguments (press Enter after typing each argument)',
+              )
+            "
+            :placeholder="$gettext('(press Enter after typing each argument)')"
             filled
             use-input
             multiple
@@ -88,8 +101,10 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.env_vars"
-            label="Environment Variables"
-            placeholder="(press Enter after typing each key=value pair)"
+            :label="$gettext('Environment Variables')"
+            :placeholder="
+              $gettext('(press Enter after typing each key=value pair)')
+            "
             filled
             use-input
             multiple
@@ -101,23 +116,25 @@
 
         <q-card-section>
           <q-input
-            label="Default Timeout"
+            :label="$gettext('Default Timeout')"
             type="number"
             outlined
             dense
             v-model.number="script.default_timeout"
-            :rules="[(val) => val >= 5 || 'Minimum is 5']"
+            :rules="[
+              (val) => val >= 5 || $gettext('Minimum is %{min}', { min: 5 }),
+            ]"
           />
         </q-card-section>
 
         <q-card-actions>
           <q-space />
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Add"
+            :label="$gettext('Add')"
             color="primary"
             type="submit"
           />

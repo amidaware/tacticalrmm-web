@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">Custom Fields</div>
+      <div class="text-subtitle2">{{ $gettext("Custom Fields") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add custom field"
+        :label="$gettext('Add custom field')"
         @click="addCustomField"
       />
     </div>
@@ -25,9 +25,9 @@
         narrow-indicator
         no-caps
       >
-        <q-tab name="client" label="Clients" />
-        <q-tab name="site" label="Sites" />
-        <q-tab name="agent" label="Agents" />
+        <q-tab name="client" :label="$pgettext('Custom fields', 'Clients')" />
+        <q-tab name="site" :label="$pgettext('Custom fields', 'Sites')" />
+        <q-tab name="agent" :label="$pgettext('Custom fields', 'Agents')" />
       </q-tabs>
 
       <q-separator />

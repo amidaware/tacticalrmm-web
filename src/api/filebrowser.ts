@@ -1,3 +1,5 @@
+import { FatalTransferError } from "@/services/fileTransfer/transferFaults";
+import { gettext } from "@/gettext";
 import axios from "axios";
 
 import { TransferNotReadyError } from "@/services/fileTransfer/sessionLimit";
@@ -197,7 +199,10 @@ export function parseContentRangeHeader(header: string | undefined): {
 } {
   const match = (header ?? "").match(/bytes (\d+)-(\d+)\/(\d+)/);
   if (!match) {
-    throw new Error(`Invalid Content-Range header: ${header ?? "(missing)"}`);
+    throw new FatalTransferError({
+      code: "invalid-content-range",
+      header: header ?? "(missing)",
+    });
   }
   return {
     start: parseInt(match[1], 10),
@@ -211,19 +216,25 @@ export function assertDownloadChunkRange(
   expected: { start: number; totalSize: number },
 ): void {
   if (range.start !== expected.start) {
-    throw new Error(
-      `Download chunk offset mismatch: expected ${expected.start}, received ${range.start}.`,
-    );
+    throw new FatalTransferError({
+      code: "chunk-offset",
+      expectedOffset: expected.start,
+      receivedOffset: range.start,
+    });
   }
   if (range.total !== expected.totalSize) {
-    throw new Error(
-      `Download chunk total mismatch: expected ${expected.totalSize}, received ${range.total}.`,
-    );
+    throw new FatalTransferError({
+      code: "chunk-total",
+      expectedTotal: expected.totalSize,
+      receivedTotal: range.total,
+    });
   }
   if (range.end < range.start) {
-    throw new Error(
-      `Invalid Content-Range: end ${range.end} is before start ${range.start}.`,
-    );
+    throw new FatalTransferError({
+      code: "range-order",
+      end: range.end,
+      start: range.start,
+    });
   }
 }
 
@@ -245,7 +256,7 @@ export async function getAgentFileDownloadChunk(
   );
   if (response.status === 204) {
     throw new TransferNotReadyError(
-      "Timed out waiting for agent to push chunk",
+      gettext.$gettext("Timed out waiting for agent to push chunk"),
     );
   }
   const contentRange =

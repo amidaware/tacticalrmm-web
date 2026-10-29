@@ -1,6 +1,6 @@
 <template>
   <div v-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $gettext("Only supported for Windows agents at this time") }}
   </div>
   <div v-else>
     <div class="row q-pt-sm q-pl-sm">
@@ -16,9 +16,12 @@
       </div>
       <div class="col-7"></div>
       <div class="col-3">
-        <code v-if="events"
-          >{{ logType }} log total records: {{ events.length }}</code
-        >
+        <code v-if="events">{{
+          $gettext("%{logType} log total records: %{count}", {
+            logType,
+            count: events.length,
+          })
+        }}</code>
       </div>
     </div>
     <q-table
@@ -46,22 +49,27 @@
           v-model="logType"
           color="cyan"
           val="Application"
-          label="Application"
+          :label="$gettext('Application')"
           @update:model-value="getEventLog"
         />
-        <q-radio v-model="logType" color="cyan" val="System" label="System" />
+        <q-radio
+          v-model="logType"
+          color="cyan"
+          val="System"
+          :label="$pgettext('Windows event logs', 'System')"
+        />
         <q-radio
           v-model="logType"
           color="cyan"
           val="Security"
-          label="Security"
+          :label="$gettext('Security')"
         />
         <q-space />
         <q-input
           v-model="filter"
           style="width: 300px"
           outlined
-          label="Search"
+          :label="$pgettext('General actions', 'Search')"
           dense
           clearable
         >
@@ -97,6 +105,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
@@ -106,39 +115,6 @@ import { truncateText } from "@/utils/format";
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
-
-// static data
-const columns = [
-  {
-    name: "eventType",
-    label: "Type",
-    field: "eventType",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "source",
-    label: "Source",
-    field: "source",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "eventID",
-    label: "Event ID",
-    field: "eventID",
-    align: "left",
-    sortable: true,
-  },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
-  {
-    name: "message",
-    label: "Message (click to view full)",
-    field: "message",
-    align: "left",
-    sortable: true,
-  },
-];
 
 const lastDaysOptions = [1, 2, 3, 4, 5, 10, 30, 60, 90, 180, 360, 9999];
 
@@ -162,7 +138,52 @@ export default {
     const filter = ref("");
     const loading = ref(false);
 
-    const showDays = computed(() => `Show last ${days.value} days`);
+    const showDays = computed(() =>
+      gettext.$ngettext(
+        "Show last %{days} day",
+        "Show last %{days} days",
+        days.value,
+        { days: days.value },
+      ),
+    );
+
+    const columns = computed(() => [
+      {
+        name: "eventType",
+        label: gettext.$pgettext("Windows event logs", "Type"),
+        field: "eventType",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "source",
+        label: gettext.$pgettext("Windows event logs", "Source"),
+        field: "source",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "eventID",
+        label: gettext.$gettext("Event ID"),
+        field: "eventID",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "time",
+        label: gettext.$pgettext("Windows event logs", "Time"),
+        field: "time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "message",
+        label: gettext.$gettext("Message (click to view full)"),
+        field: "message",
+        align: "left",
+        sortable: true,
+      },
+    ]);
 
     watch([logType, days], getEventLog);
 

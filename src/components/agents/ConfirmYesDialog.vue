@@ -1,11 +1,15 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="min-width: 25vw; max-width: 70vw">
-      <q-card-section class="text-h6">{{ title }}</q-card-section>
+      <q-card-section class="text-h6">{{
+        title || $gettext("Confirm action")
+      }}</q-card-section>
 
       <q-card-section>
-        Please type <span class="text-negative text-h5">yes</span> in the box
-        below to confirm {{ actionVerb }} of
+        {{ $gettext("Please type") }}
+        <span class="text-negative text-h5">{{ $gettext("yes") }}</span>
+        {{ $gettext("in the box below to confirm") }} {{ actionVerb }}
+        {{ $gettext("of") }}
         <span class="text-negative text-h5">{{ hostname }}</span
         >.
       </q-card-section>
@@ -14,17 +18,22 @@
         <q-input
           v-model="model"
           autofocus
-          label="Type yes to confirm"
-          :rules="[(val) => (val || '').toLowerCase() === 'yes']"
+          :label="$gettext('Type yes to confirm')"
+          :rules="[
+            (val) =>
+              (val || '').toLowerCase() === $gettext('yes').toLowerCase(),
+          ]"
         />
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" @click="onDialogCancel" />
+        <q-btn flat :label="$gettext('Cancel')" @click="onDialogCancel" />
         <q-btn
           :color="okColor"
-          :label="okLabel"
-          :disable="(model || '').toLowerCase() !== 'yes'"
+          :label="okLabel || $gettext('Confirm')"
+          :disable="
+            (model || '').toLowerCase() !== $gettext('yes').toLowerCase()
+          "
           @click="onDialogOK()"
         />
       </q-card-actions>
@@ -39,8 +48,8 @@ import { useDialogPluginComponent } from "quasar";
 defineProps({
   hostname: { type: String, required: true },
   actionVerb: { type: String, required: true },
-  title: { type: String, default: "Confirm action" },
-  okLabel: { type: String, default: "Confirm" },
+  title: { type: String, default: "" },
+  okLabel: { type: String, default: "" },
   okColor: { type: String, default: "negative" },
 });
 

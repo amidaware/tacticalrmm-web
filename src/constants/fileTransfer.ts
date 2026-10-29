@@ -21,12 +21,6 @@ export const FILE_TRANSFER_SLOT_RETRY_BASE_MS = 2_000;
 export const FILE_TRANSFER_SLOT_RETRY_MAX_MS = 30_000;
 export const FILE_TRANSFER_SLOT_RETRY_MAX_ATTEMPTS = 20;
 export const FILE_TRANSFER_SLOT_RETRY_MAX_DURATION_MS = 10 * 60 * 1000;
-export const TRANSFER_SLOT_WAIT_MESSAGE =
-  "Waiting for a free transfer slot. All slots are in use, possibly by other users; cancelling one of your paused transfers frees one.";
-export const TRANSFER_SLOT_WAIT_TIMEOUT_MESSAGE =
-  "No transfer slot became available. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.";
-export const TRANSFER_RATE_LIMIT_MESSAGE =
-  "Too many requests. Try again later.";
 export const FILE_TRANSFER_TRANSIENT_RETRY_ATTEMPTS = 4;
 export const FILE_TRANSFER_TRANSIENT_RETRY_BASE_MS = 500;
 export const FILE_TRANSFER_TRANSIENT_RETRY_MAX_MS = 4_000;
@@ -44,30 +38,3 @@ export const FILE_TRANSFER_STALL_NOTICE_MS = 30_000;
 export const FILE_TRANSFER_FINALIZE_WAIT_MAX_MS = 10 * 60 * 1000;
 export const FILE_TRANSFER_AUTO_RESUME_ATTEMPTS = 5;
 export const FILE_TRANSFER_AUTO_RESUME_DELAY_MS = 15_000;
-export const TRANSFER_RECONNECTING_MESSAGE =
-  "Connection interrupted — reconnecting…";
-export const DOWNLOAD_FILE_ACCESS_DENIED_MESSAGE =
-  "File access was not allowed. Click Resume and allow access to continue the download.";
-export const TRANSFER_CONNECTION_LOST_MESSAGE =
-  "Connection lost. Click Resume to continue.";
-export const TRANSFER_TOOLTIP_CLEAR_FINISHED =
-  "Remove completed, failed, and cancelled items from this list.";
-export const TRANSFER_TOOLTIP_HIDE_PAUSED =
-  "Hide paused items. Open Transfers to show them again.";
-export const TRANSFER_TOOLTIP_PAUSE_ALL =
-  "Pause all active and queued downloads.";
-export const TRANSFER_TOOLTIP_PAUSE = "Pause this download.";
-export const TRANSFER_TOOLTIP_CANCEL =
-  "Cancel download and release the transfer slot.";
-export const TRANSFER_TOOLTIP_CANCEL_EXTRACT =
-  "Cancel the extraction. Files already extracted are kept.";
-export const TRANSFER_TOOLTIP_PAUSE_UPLOAD = "Pause this upload.";
-export const TRANSFER_TOOLTIP_CANCEL_UPLOAD =
-  "Cancel upload and release the transfer slot.";
-export const TRANSFER_TOOLTIP_OPEN_IN_OTHER_TAB = "Open in another tab";
-export const TRANSFER_TOOLTIP_DISMISS = "Dismiss";
-export const TRANSFER_TOOLTIP_REMOVE_FROM_QUEUE = "Remove from queue";
-export const TRANSFER_SLOT_WAIT_LABEL = "Waiting for slot…";
-export const TRANSFER_RECONNECTING_LABEL = "Reconnecting…";
-export const TRANSFER_WAITING_FOR_AGENT_MESSAGE = "Waiting for the agent…";
-export const TRANSFER_WAITING_FOR_AGENT_LABEL = "Waiting for agent…";

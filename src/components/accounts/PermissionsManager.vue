@@ -3,7 +3,7 @@
     <q-card style="min-width: 60vw; height: 75vh">
       <q-bar>
         <q-btn @click="getRoles" class="q-mr-sm" dense flat icon="refresh" />
-        <q-space />Manage Roles
+        <q-space />{{ $gettext("Manage Roles") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -21,7 +21,7 @@
         :columns="columns"
         row-key="id"
         :pagination="{ rowsPerPage: 0, sortBy: 'name', descending: false }"
-        no-data-label="No Roles"
+        :no-data-label="$gettext('No Roles')"
         :rows-per-page-options="[0]"
       >
         <template v-slot:top>
@@ -29,7 +29,7 @@
             flat
             dense
             icon="add"
-            label="New Role"
+            :label="$gettext('New Role')"
             @click="showAddRoleModal"
           />
         </template>
@@ -45,7 +45,9 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("General edit action", "Edit")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -55,13 +57,13 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -85,33 +87,15 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { fetchRoles, removeRole } from "@/api/accounts";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
 import RolesForm from "@/components/accounts/RolesForm.vue";
-
-// static data
-const columns = [
-  { name: "name", label: "Name", field: "name", align: "left", sortable: true },
-  {
-    name: "is_superuser",
-    label: "Superuser",
-    field: "is_superuser",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "user_count",
-    label: "Assigned Users",
-    field: "user_count",
-    align: "left",
-    sortable: true,
-  },
-];
 
 export default {
   name: "PermissionsManager",
@@ -124,6 +108,29 @@ export default {
     // permission manager logic
     const roles = ref([]);
     const loading = ref(false);
+    const columns = computed(() => [
+      {
+        name: "name",
+        label: gettext.$pgettext("Settings actions", "Name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "is_superuser",
+        label: gettext.$gettext("Superuser"),
+        field: "is_superuser",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "user_count",
+        label: gettext.$gettext("Assigned Users"),
+        field: "user_count",
+        align: "left",
+        sortable: true,
+      },
+    ]);
 
     function showEditRoleModal(role) {
       $q.dialog({
@@ -148,9 +155,11 @@ export default {
 
     async function deleteRole(role) {
       $q.dialog({
-        title: `Delete role ${role.name}?`,
+        title: gettext.$gettext("Delete role %{name}?", {
+          name: role.name,
+        }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         try {
           $q.loading.show();

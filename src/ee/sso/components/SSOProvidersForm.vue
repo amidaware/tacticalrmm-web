@@ -8,10 +8,16 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog persistent ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 35vw; max-width: 35vw">
       <q-bar>
-        {{ props.provider ? "Edit OIDC Provider" : "Add OIDC Provider" }}
+        {{
+          props.provider
+            ? $gettext("Edit OIDC Provider")
+            : $gettext("Add OIDC Provider")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -20,40 +26,50 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-input
           :readonly="!!props.provider"
           :disable="!!props.provider"
-          label="Provider Name"
+          :label="$gettext('Provider Name')"
           outlined
           dense
           v-model="localProvider.name"
           :rules="[
-            (val) => !!val || '*Required',
+            (val) => !!val || $gettext('*Required'),
             (val) =>
               /^[a-zA-Z0-9_-]+$/.test(val) ||
-              'Only letters, numbers, hyphens, and underscores are allowed',
+              $gettext(
+                'Only letters, numbers, hyphens, and underscores are allowed',
+              ),
           ]"
-          hint="A unique identifier for the SSO provider. Avoid spaces and special characters, as this will be part of the callback URL."
+          :hint="
+            $gettext(
+              'A unique identifier for the SSO provider. Avoid spaces and special characters, as this will be part of the callback URL.',
+            )
+          "
         />
       </q-card-section>
 
       <!-- url -->
       <q-card-section>
         <q-input
-          label="Issuer URL"
+          :label="$gettext('Issuer URL')"
           outlined
           dense
           v-model="localProvider.server_url"
-          :rules="[(val) => !!val || '*Required']"
-          hint="The OpenID Connect Issuer URL provided by the SSO provider. This is typically the base URL where the provider hosts their OIDC configuration."
+          :rules="[(val) => !!val || $gettext('*Required')]"
+          :hint="
+            $gettext(
+              'The OpenID Connect Issuer URL provided by the SSO provider. This is typically the base URL where the provider hosts their OIDC configuration.',
+            )
+          "
         />
       </q-card-section>
 
       <!-- client id -->
       <q-card-section>
         <q-input
-          label="Client ID"
+          :label="$gettext('Client ID')"
           outlined
           dense
           v-model="localProvider.client_id"
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || $gettext('*Required')]"
         />
       </q-card-section>
 
@@ -63,10 +79,10 @@ For details, see: https://license.tacticalrmm.com/ee
           v-model="localProvider.secret"
           filled
           :type="hideSecret ? 'password' : 'text'"
-          label="Secret"
+          :label="$gettext('Secret')"
           outlined
           dense
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || $gettext('*Required')]"
         >
           <template v-slot:append>
             <q-icon
@@ -80,7 +96,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
       <q-card-section>
         <tactical-dropdown
-          label="Default User Role"
+          :label="$gettext('Default User Role')"
           :options="roleOptions"
           outlined
           dense
@@ -88,15 +104,19 @@ For details, see: https://license.tacticalrmm.com/ee
           mapOptions
           filled
           v-model="localProvider.role"
-          hint="The role assigned to users upon first sign-in through this provider."
+          :hint="
+            $gettext(
+              'The role assigned to users upon first sign-in through this provider.',
+            )
+          "
         />
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           flat
-          label="Submit"
+          :label="$gettext('Submit')"
           color="primary"
           :loading="loading"
           @click="submit"
@@ -107,6 +127,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, reactive } from "vue";
 import { useDialogPluginComponent, extend } from "quasar";
@@ -152,7 +173,7 @@ async function submit() {
       ? await editSSOProvider(localProvider.id, localProvider)
       : await addSSOProvider(localProvider);
     onDialogOK();
-    notifySuccess("SSO Provider was edited!");
+    notifySuccess(gettext.$gettext("SSO Provider was edited!"));
   } catch (e) {}
 
   loading.value = false;

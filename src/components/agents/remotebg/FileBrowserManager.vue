@@ -77,7 +77,8 @@
       :file-name="visibleSingleDownloadItem.name"
       :progress="visibleSingleDownloadItem.progress"
       :status="singleDownloadProgressStatus"
-      :error-message="visibleSingleDownloadItem.errorMessage"
+      :error-message="transferItemMessage(visibleSingleDownloadItem)"
+      :message-code="visibleSingleDownloadItem.messageCode"
       :building-archive="
         visibleSingleDownloadItem.kind === 'archive' &&
         visibleSingleDownloadItem.status === 'initializing'
@@ -190,6 +191,12 @@
 
 <script setup lang="ts">
 import {
+  setTransferMessage,
+  setTransferFailureMessage,
+  transferItemMessage,
+} from "@/services/fileTransfer/queueMessages";
+import { gettext } from "@/gettext";
+import {
   computed,
   onBeforeUnmount,
   onMounted,
@@ -248,11 +255,6 @@ import {
   FILE_TRANSFER_AUTO_RESUME_ATTEMPTS,
   FILE_TRANSFER_AUTO_RESUME_DELAY_MS,
   FILE_TRANSFER_DEFAULT_CHUNK_SIZE,
-  DOWNLOAD_FILE_ACCESS_DENIED_MESSAGE,
-  TRANSFER_CONNECTION_LOST_MESSAGE,
-  TRANSFER_RECONNECTING_MESSAGE,
-  TRANSFER_SLOT_WAIT_MESSAGE,
-  TRANSFER_WAITING_FOR_AGENT_MESSAGE,
 } from "@/constants/fileTransfer";
 import type {
   DownloadQueueItem,
@@ -280,8 +282,6 @@ import {
   rekeyOrClaimTransferSession,
   releaseTransferClaim,
   setTransferAbortMode,
-  transferFailureErrorMessage,
-  transferIntegrityFailMessage,
 } from "@/services/fileTransfer/transferQueueHelpers";
 import {
   archiveDownloadHandleIdbKey,
@@ -424,7 +424,18 @@ let uploadIdSeq = 0;
 let uploadNotifyBatchIds: Set<string> | null = null;
 
 const downloadQueue = ref<DownloadQueueItem[]>([]);
-const downloadQueueSummary = ref<string | null>(null);
+type DownloadBatchResult = {
+  succeeded: number;
+  failed: number;
+  paused: number;
+  cancelled: number;
+};
+const downloadBatchResult = ref<DownloadBatchResult | null>(null);
+const downloadQueueSummary = computed(() =>
+  downloadBatchResult.value
+    ? formatDownloadBatchSummary(downloadBatchResult.value)
+    : null,
+);
 const downloadBatchIsSingle = ref(false);
 const downloadAbortControllers = new Map<string, AbortController>();
 const downloadAbortIntents = new Map<string, TransferAbortIntent>();
@@ -526,10 +537,12 @@ const showTransfersIndicator = computed(
 const transfersIndicatorLabel = computed(() => {
   if (pausedTransferCount.value > 0) {
     return pausedTransferCount.value === 1
-      ? "Transfers · 1 paused"
-      : `Transfers · ${pausedTransferCount.value} paused`;
+      ? gettext.$gettext("Transfers · 1 paused")
+      : gettext.$gettext("Transfers · %{count} paused", {
+          count: pausedTransferCount.value,
+        });
   }
-  return "Transfers";
+  return gettext.$gettext("Transfers");
 });
 
 // Replaced wholesale on every load; shallow so thousands of rows are not
@@ -543,15 +556,25 @@ const uploadDestinationLabel = computed(() => {
   if (!visible.length) return "";
   const first = visible[0].destinationPath;
   const allSame = visible.every((i) => i.destinationPath === first);
-  return allSame ? first : "Multiple folders";
+  return allSame ? first : gettext.$gettext("Multiple folders");
 });
 
 const uploadLimitsCaption = computed(() => {
   const sizeLimit =
     props.maxUploadFileSizeBytes > 0
-      ? `Up to ${bytes2Human(props.maxUploadFileSizeBytes)} per file`
-      : "No file size limit";
-  return `${sizeLimit} · Up to ${MAX_UPLOAD_FILES_PER_SELECTION} files per selection`;
+      ? gettext.$gettext("Up to %{sizeLimit} per file", {
+          sizeLimit: bytes2Human(props.maxUploadFileSizeBytes),
+        })
+      : gettext.$gettext("No file size limit");
+  return gettext.$ngettext(
+    "%{sizeCaption} · Up to %{fileLimit} file per selection",
+    "%{sizeCaption} · Up to %{fileLimit} files per selection",
+    MAX_UPLOAD_FILES_PER_SELECTION,
+    {
+      sizeCaption: sizeLimit,
+      fileLimit: MAX_UPLOAD_FILES_PER_SELECTION,
+    },
+  );
 });
 
 const filteredRows = computed(() => rows.value);
@@ -582,9 +605,11 @@ const tableNoDataLabel = computed(() => {
   if (loading.value || filterSearching.value) return "";
   if (listError.value) return listError.value;
   if (committedFilter.value) {
-    return `No files or folders match “${committedFilter.value}”`;
+    return gettext.$gettext("No files or folders match “%{query}”", {
+      query: committedFilter.value,
+    });
   }
-  return "Folder is empty";
+  return gettext.$gettext("Folder is empty");
 });
 
 function clearFolderFilter() {
@@ -711,7 +736,9 @@ async function refresh(opts?: { preserveSelection?: boolean }) {
 
     const resolvedPath = (data.path || path || "").trim();
     if (!resolvedPath) {
-      throw new Error("Agent did not return a browsable path");
+      throw new Error(
+        gettext.$gettext("Agent did not return a browsable path"),
+      );
     }
 
     currentPath.value = resolvedPath;
@@ -739,7 +766,7 @@ async function refresh(opts?: { preserveSelection?: boolean }) {
 
     if (isListFilesPermissionError(err)) {
       notifyError(message);
-    } else if (isListFilesAgentOfflineError(message)) {
+    } else if (isListFilesAgentOfflineError(err)) {
       notifyWarning(message);
     }
   } finally {
@@ -764,8 +791,22 @@ async function loadMoreRows() {
     listHasMore.value = false;
     notifyInfo(
       committedFilter.value
-        ? `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} matches in this folder.`
-        : `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} items in this folder.`,
+        ? gettext.$ngettext(
+            "Showing the first %{count} match in this folder.",
+            "Showing the first %{count} matches in this folder.",
+            FILE_BROWSER_MAX_LOADED_ITEMS,
+            {
+              count: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+            },
+          )
+        : gettext.$ngettext(
+            "Showing the first %{count} item in this folder.",
+            "Showing the first %{count} items in this folder.",
+            FILE_BROWSER_MAX_LOADED_ITEMS,
+            {
+              count: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+            },
+          ),
     );
     return;
   }
@@ -803,15 +844,30 @@ async function loadMoreRows() {
       listHasMore.value = false;
       notifyInfo(
         committedFilter.value
-          ? `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} matches in this folder.`
-          : `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} items in this folder.`,
+          ? gettext.$ngettext(
+              "Showing the first %{count} match in this folder.",
+              "Showing the first %{count} matches in this folder.",
+              FILE_BROWSER_MAX_LOADED_ITEMS,
+              {
+                count: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+              },
+            )
+          : gettext.$ngettext(
+              "Showing the first %{count} item in this folder.",
+              "Showing the first %{count} items in this folder.",
+              FILE_BROWSER_MAX_LOADED_ITEMS,
+              {
+                count: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+              },
+            ),
       );
     }
   } catch (err: unknown) {
     if (seq !== loadSeq) return;
     const message = getListFilesErrorMessage(err);
     notifyWarning(
-      message || "Unable to load more items. Scroll again to retry.",
+      message ||
+        gettext.$gettext("Unable to load more items. Scroll again to retry."),
     );
   } finally {
     if (seq === loadSeq) {
@@ -869,7 +925,7 @@ function scheduleAutoResume(
       findDownloadItem(item.id) ?? findUploadItem(item.id) ?? undefined;
     if (
       current?.status === "paused" &&
-      current.errorMessage === TRANSFER_RECONNECTING_MESSAGE
+      current.messageCode === "reconnecting"
     ) {
       void resume(item.id);
     }
@@ -960,7 +1016,7 @@ watch(
     releaseAllLocalClaims("unmount");
     uploadQueue.value = [];
     downloadQueue.value = [];
-    downloadQueueSummary.value = null;
+    downloadBatchResult.value = null;
     stopExtractPolling();
     extractJobs.value = [];
     void restoreResumableTransfers(seq);
@@ -1012,8 +1068,14 @@ watch(
 const deleteConfirmTitle = computed(() => {
   const pending = deletePendingItems.value;
   if (pending.length === 0) return "";
-  if (pending.length === 1) return `Delete "${pending[0].name}" ?`;
-  return `Delete ${pending.length} items ?`;
+  if (pending.length === 1)
+    return gettext.$gettext('Delete "%{name}" ?', { name: pending[0].name });
+  return gettext.$ngettext(
+    "Delete %{count} item?",
+    "Delete %{count} items ?",
+    pending.length,
+    { count: pending.length },
+  );
 });
 
 const pendingDeleteLooksProtected = computed(() =>
@@ -1027,16 +1089,23 @@ const deleteConfirmBody = computed(() => {
   if (n === 0) return "";
   if (pendingDeleteLooksProtected.value) {
     return n === 1
-      ? "This looks like a protected system folder. The agent will refuse to delete it."
-      : "One or more items look like protected system folders. The agent will refuse to delete those paths.";
+      ? gettext.$gettext(
+          "This looks like a protected system folder. The agent will refuse to delete it.",
+        )
+      : gettext.$gettext(
+          "One or more items look like protected system folders. The agent will refuse to delete those paths.",
+        );
   }
-  if (n === 1) return "This item will be permanently deleted.";
-  return "These items will be permanently deleted.";
+  if (n === 1)
+    return gettext.$gettext("This item will be permanently deleted.");
+  return gettext.$gettext("These items will be permanently deleted.");
 });
 
 function openNewFolderDialog() {
   if (!hasUploadPath.value) {
-    notifyWarning("Select a folder path before creating a folder.");
+    notifyWarning(
+      gettext.$gettext("Select a folder path before creating a folder."),
+    );
     return;
   }
   newFolderDialog.value = true;
@@ -1047,7 +1116,9 @@ async function confirmNewFolder(name: string) {
 
   const parentPath = normalizeNavPath(currentPath.value.trim());
   if (!parentPath) {
-    notifyWarning("Select a folder path before creating a folder.");
+    notifyWarning(
+      gettext.$gettext("Select a folder path before creating a folder."),
+    );
     return;
   }
 
@@ -1060,12 +1131,15 @@ async function confirmNewFolder(name: string) {
       agentPlatform.value,
     );
     newFolderDialog.value = false;
-    notifySuccess("Folder created");
+    notifySuccess(gettext.$gettext("Folder created"));
     await refresh();
   } catch (err: unknown) {
-    const message = getFileBrowserErrorMessage(err, "Unable to create folder.");
+    const message = getFileBrowserErrorMessage(
+      err,
+      gettext.$gettext("Unable to create folder."),
+    );
     notifyError(message);
-    if (isDuplicateNameError(err, message)) {
+    if (isDuplicateNameError(err)) {
       void refresh();
     }
   } finally {
@@ -1076,7 +1150,7 @@ async function confirmNewFolder(name: string) {
 function openRenameDialog(row?: FileBrowserItem) {
   const item = row ?? selectedRows.value[0];
   if (!item) {
-    notifyWarning("Select a single item to rename.");
+    notifyWarning(gettext.$gettext("Select a single item to rename."));
     return;
   }
   renameTargetItem.value = item;
@@ -1099,12 +1173,15 @@ async function confirmRename(newName: string) {
     );
     renameDialog.value = false;
     renameTargetItem.value = null;
-    notifySuccess("Renamed");
+    notifySuccess(gettext.$gettext("Renamed"));
     await refresh();
   } catch (err: unknown) {
-    const message = getFileBrowserErrorMessage(err, "Unable to rename item.");
+    const message = getFileBrowserErrorMessage(
+      err,
+      gettext.$gettext("Unable to rename item."),
+    );
     notifyError(message);
-    if (isDuplicateNameError(err, message)) {
+    if (isDuplicateNameError(err)) {
       void refresh();
     }
   } finally {
@@ -1114,12 +1191,19 @@ async function confirmRename(newName: string) {
 
 function openDeleteDialog() {
   if (selectedRows.value.length === 0) {
-    notifyWarning("Select one or more items to delete.");
+    notifyWarning(gettext.$gettext("Select one or more items to delete."));
     return;
   }
   if (selectedRows.value.length > MAX_DELETE_PATHS_PER_REQUEST) {
     notifyWarning(
-      `Select at most ${MAX_DELETE_PATHS_PER_REQUEST} items to delete at once.`,
+      gettext.$ngettext(
+        "Select at most %{limit} item to delete at once.",
+        "Select at most %{limit} items to delete at once.",
+        MAX_DELETE_PATHS_PER_REQUEST,
+        {
+          limit: MAX_DELETE_PATHS_PER_REQUEST,
+        },
+      ),
     );
     return;
   }
@@ -1133,7 +1217,14 @@ function openDeleteDialogFromContext(row: FileBrowserItem) {
   const pending = inSelection && selected.length > 0 ? [...selected] : [row];
   if (pending.length > MAX_DELETE_PATHS_PER_REQUEST) {
     notifyWarning(
-      `Select at most ${MAX_DELETE_PATHS_PER_REQUEST} items to delete at once.`,
+      gettext.$ngettext(
+        "Select at most %{limit} item to delete at once.",
+        "Select at most %{limit} items to delete at once.",
+        MAX_DELETE_PATHS_PER_REQUEST,
+        {
+          limit: MAX_DELETE_PATHS_PER_REQUEST,
+        },
+      ),
     );
     return;
   }
@@ -1168,25 +1259,57 @@ function notifyDeleteResults(
   if (failed.length === 0) {
     if (succeeded.length === 1 && alreadyGone.length === 0) {
       notifySuccess(
-        `Deleted "${pendingItemName(pending, succeeded[0].path)}".`,
+        gettext.$gettext('Deleted "%{name}".', {
+          name: pendingItemName(pending, succeeded[0].path),
+        }),
       );
     } else if (succeeded.length > 1 && alreadyGone.length === 0) {
-      notifySuccess(`Deleted ${succeeded.length} items.`);
+      notifySuccess(
+        gettext.$ngettext(
+          "Deleted %{count} item.",
+          "Deleted %{count} items.",
+          succeeded.length,
+          {
+            count: succeeded.length,
+          },
+        ),
+      );
     } else if (succeeded.length > 0 && alreadyGone.length > 0) {
       notifySuccess(
         succeeded.length === 1
-          ? `Deleted "${pendingItemName(pending, succeeded[0].path)}".`
-          : `Deleted ${succeeded.length} items.`,
+          ? gettext.$gettext('Deleted "%{name}".', {
+              name: pendingItemName(pending, succeeded[0].path),
+            })
+          : gettext.$ngettext(
+              "Deleted %{count} item.",
+              "Deleted %{count} items.",
+              succeeded.length,
+              {
+                count: succeeded.length,
+              },
+            ),
       );
     }
 
     if (alreadyGone.length === 1) {
       notifyInfo(
-        `"${pendingItemName(pending, alreadyGone[0].path)}" was already gone on the agent. The list has been updated.`,
+        gettext.$gettext(
+          '"%{name}" was already gone on the agent. The list has been updated.',
+          {
+            name: pendingItemName(pending, alreadyGone[0].path),
+          },
+        ),
       );
     } else if (alreadyGone.length > 1) {
       notifyInfo(
-        `${alreadyGone.length} items were already gone on the agent. The list has been updated.`,
+        gettext.$ngettext(
+          "%{count} item was already gone on the agent. The list has been updated.",
+          "%{count} items were already gone on the agent. The list has been updated.",
+          alreadyGone.length,
+          {
+            count: alreadyGone.length,
+          },
+        ),
       );
     }
     return;
@@ -1201,13 +1324,22 @@ function notifyDeleteResults(
           : name;
       })
       .join("; ");
-    notifyError(detail || "Unable to delete items.");
+    notifyError(detail || gettext.$gettext("Unable to delete items."));
     return;
   }
 
   const removed = succeeded.length + alreadyGone.length;
   notifyWarning(
-    `Removed ${removed} of ${results.length} items. ${failed.length} failed.`,
+    gettext.$ngettext(
+      "Removed %{removed} of %{total} item. %{failed} failed.",
+      "Removed %{removed} of %{total} items. %{failed} failed.",
+      results.length,
+      {
+        removed: removed,
+        total: results.length,
+        failed: failed.length,
+      },
+    ),
   );
 }
 
@@ -1229,7 +1361,12 @@ async function confirmDelete() {
     notifyDeleteResults(pending, data.results ?? []);
     await refresh();
   } catch (err: unknown) {
-    notifyError(getFileBrowserErrorMessage(err, "Unable to delete items."));
+    notifyError(
+      getFileBrowserErrorMessage(
+        err,
+        gettext.$gettext("Unable to delete items."),
+      ),
+    );
   } finally {
     mutationSaving.value = false;
   }
@@ -1237,7 +1374,7 @@ async function confirmDelete() {
 
 function resetDownloadUiState() {
   downloadQueue.value = [];
-  downloadQueueSummary.value = null;
+  downloadBatchResult.value = null;
   downloadBatchIsSingle.value = false;
 }
 
@@ -1262,11 +1399,11 @@ let extractPollSeq = 0;
 function openExtractDialog(item?: FileBrowserItem) {
   const target = item ?? selectedRows.value[0];
   if (selectedRows.value.length > 1 && !item) {
-    notifyWarning("Select a single .zip file to extract.");
+    notifyWarning(gettext.$gettext("Select a single .zip file to extract."));
     return;
   }
   if (!isZipFileItem(target)) {
-    notifyWarning("Select a single .zip file to extract.");
+    notifyWarning(gettext.$gettext("Select a single .zip file to extract."));
     return;
   }
   extractItem.value = target;
@@ -1299,7 +1436,10 @@ async function confirmExtract(value: {
     });
   } catch (err: unknown) {
     notifyError(
-      getFileBrowserErrorMessage(err, "Unable to start the extraction."),
+      getFileBrowserErrorMessage(
+        err,
+        gettext.$gettext("Unable to start the extraction."),
+      ),
     );
   } finally {
     extractStarting.value = false;
@@ -1362,7 +1502,10 @@ async function pollExtract(sessionId: string, seq: number) {
       removeExtractJob(sessionId);
       if (code !== 404) {
         notifyError(
-          getFileBrowserErrorMessage(err, "Unable to check the extraction."),
+          getFileBrowserErrorMessage(
+            err,
+            gettext.$gettext("Unable to check the extraction."),
+          ),
         );
       }
       return;
@@ -1403,37 +1546,69 @@ function removeExtractJob(sessionId: string) {
 }
 
 function fileCountLabel(n: number): string {
-  return n === 1 ? "1 file" : `${n.toLocaleString()} files`;
+  return gettext.$ngettext("%{count} file", "%{count} files", n, { count: n });
 }
 
 function finishExtractJob(job: ExtractJob, data: FileExtractStatusResponse) {
   removeExtractJob(job.sessionId);
   const files = fileCountLabel(data.files_done);
   if (data.status === "completed") {
-    let message = `Extracted ${files} from "${job.name}"`;
+    let message = gettext.$gettext('Extracted %{count} from "%{archiveName}"', {
+      count: files,
+      archiveName: job.name,
+    });
     if (data.files_skipped > 0) {
-      message += ` · ${data.files_skipped.toLocaleString()} skipped (already existed)`;
+      message += gettext.$gettext(" · %{count} skipped (already existed)", {
+        count: data.files_skipped.toLocaleString(),
+      });
     }
     const warnings = data.warnings ?? [];
     if (warnings.length > 0) {
       const shown = warnings.slice(0, 5).join("; ");
       const extra =
-        warnings.length > 5 ? ` (+${warnings.length - 5} more)` : "";
+        warnings.length > 5
+          ? gettext.$gettext(" (+%{count} more)", {
+              count: warnings.length - 5,
+            })
+          : "";
       notifyWarning(
-        `${message}. Some items were not extracted: ${shown}${extra}`,
+        gettext.$gettext(
+          "%{summary}. Some items were not extracted: %{errors}%{remainingWarnings}",
+          {
+            summary: message,
+            errors: shown,
+            remainingWarnings: extra,
+          },
+        ),
       );
     } else {
       notifySuccess(message);
     }
   } else if (data.status === "cancelled") {
-    notifyInfo(`Extraction cancelled. ${files} extracted before cancel.`);
+    notifyInfo(
+      gettext.$gettext(
+        "Extraction cancelled. %{count} extracted before cancel.",
+        {
+          count: files,
+        },
+      ),
+    );
   } else {
     const kept =
       data.files_done > 0
-        ? ` ${files} ${data.files_done === 1 ? "was" : "were"} extracted before it stopped.`
+        ? gettext.$gettext(" %{count} extracted before it stopped.", {
+            count: files,
+          })
         : "";
     notifyError(
-      `Extracting "${job.name}" failed: ${data.error || "unknown error"}${kept}`,
+      gettext.$gettext(
+        'Extracting "%{archiveName}" failed: %{error}%{progress}',
+        {
+          archiveName: job.name,
+          error: data.error || gettext.$gettext("unknown error"),
+          progress: kept,
+        },
+      ),
     );
   }
   if (extractAffectsListing(job.destination)) {
@@ -1470,7 +1645,10 @@ async function cancelExtractJob(sessionId: string) {
   } catch (err: unknown) {
     job.cancelling = false;
     notifyError(
-      getFileBrowserErrorMessage(err, "Unable to cancel the extraction."),
+      getFileBrowserErrorMessage(
+        err,
+        gettext.$gettext("Unable to cancel the extraction."),
+      ),
     );
   }
 }
@@ -1619,7 +1797,7 @@ function abortLocalTransferForClaimKey(key: string): void {
     if (item.status === "paused") {
       item.status = "cancelled";
       item.hidden = false;
-      item.errorMessage = undefined;
+      setTransferMessage(item);
       item.ownedByOtherTab = false;
       item.sessionId = undefined;
       releaseUploadClaim(item.id, "cancel");
@@ -1665,7 +1843,7 @@ function abortLocalTransferForClaimKey(key: string): void {
 
       item.status = "cancelled";
       item.hidden = false;
-      item.errorMessage = undefined;
+      setTransferMessage(item);
       item.ownedByOtherTab = false;
       item.sessionId = undefined;
       releaseDownloadClaim(item.id, "cancel");
@@ -1884,7 +2062,7 @@ function pruneFinishedDownloadsBeforeNewBatch() {
       isDownloadQueueItemActive(item.status),
   );
   if (!downloadQueue.value.length) {
-    downloadQueueSummary.value = null;
+    downloadBatchResult.value = null;
     downloadBatchIsSingle.value = false;
   }
 }
@@ -1921,32 +2099,62 @@ function offerZipDownloadDialog(selection: {
   const parts: string[] = [];
   if (selection.folderCount > 0) {
     parts.push(
-      selection.folderCount === 1
-        ? "1 folder"
-        : `${selection.folderCount} folders`,
+      gettext.$ngettext(
+        "%{count} folder",
+        "%{count} folders",
+        selection.folderCount,
+        { count: selection.folderCount },
+      ),
     );
   }
   if (selection.fileCount > 0) {
     parts.push(
-      selection.fileCount === 1 ? "1 file" : `${selection.fileCount} files`,
+      gettext.$ngettext(
+        "%{count} file",
+        "%{count} files",
+        selection.fileCount,
+        { count: selection.fileCount },
+      ),
     );
   }
-  const summary = parts.join(" and ");
+  const summary =
+    parts.length === 2
+      ? gettext.$gettext("%{folders} and %{files}", {
+          folders: parts[0],
+          files: parts[1],
+        })
+      : parts[0];
   const reason =
     selection.folderCount > 0 &&
     selection.fileCount > MAX_SEQUENTIAL_DOWNLOAD_FILES
-      ? "Folders and large multi-file selections are downloaded as a single ZIP archive."
+      ? gettext.$gettext(
+          "Folders and large multi-file selections are downloaded as a single ZIP archive.",
+        )
       : selection.folderCount > 0
-        ? "Folders are downloaded as a single ZIP archive."
-        : `More than ${MAX_SEQUENTIAL_DOWNLOAD_FILES} files are downloaded as a single ZIP archive.`;
+        ? gettext.$gettext("Folders are downloaded as a single ZIP archive.")
+        : gettext.$ngettext(
+            "More than %{limit} file is downloaded as a single ZIP archive.",
+            "More than %{limit} files are downloaded as a single ZIP archive.",
+            MAX_SEQUENTIAL_DOWNLOAD_FILES,
+            {
+              limit: MAX_SEQUENTIAL_DOWNLOAD_FILES,
+            },
+          );
 
   return new Promise((resolve) => {
     $q.dialog({
-      title: "Download as ZIP?",
-      message: `${summary} selected. ${reason}`,
+      title: gettext.$gettext("Download as ZIP?"),
+      message: gettext.$gettext("%{summary} selected. %{reason}", {
+        summary,
+        reason,
+      }),
       persistent: true,
-      ok: { label: "Download ZIP", color: "primary" },
-      cancel: { label: "Cancel", flat: true, color: "primary" },
+      ok: { label: gettext.$gettext("Download ZIP"), color: "primary" },
+      cancel: {
+        label: gettext.$gettext("Cancel"),
+        flat: true,
+        color: "primary",
+      },
     })
       .onOk(() => resolve(true))
       .onCancel(() => resolve(false));
@@ -1959,19 +2167,26 @@ function startZipDownload(items: FileBrowserItem[]) {
 
 async function enqueueZipDownload(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(gettext.$gettext("Select one or more items to download."));
     return;
   }
 
   if (items.length > MAX_ARCHIVE_PATHS) {
     notifyWarning(
-      `Select at most ${MAX_ARCHIVE_PATHS} items for archive download.`,
+      gettext.$ngettext(
+        "Select at most %{limit} item for archive download.",
+        "Select at most %{limit} items for archive download.",
+        MAX_ARCHIVE_PATHS,
+        {
+          limit: MAX_ARCHIVE_PATHS,
+        },
+      ),
     );
     return;
   }
 
   if (isDownloadProcessorBusy()) {
-    notifyWarning("Downloads are already in progress.");
+    notifyWarning(gettext.$gettext("Downloads are already in progress."));
     return;
   }
 
@@ -1984,7 +2199,7 @@ async function enqueueZipDownload(items: FileBrowserItem[]) {
       saveHandle = await pickDownloadSaveHandle(archiveName);
     } catch (err) {
       if (isAbortError(err)) return;
-      notifyError("Could not choose a save location.");
+      notifyError(gettext.$gettext("Could not choose a save location."));
       return;
     }
   }
@@ -1997,7 +2212,7 @@ async function enqueueZipDownload(items: FileBrowserItem[]) {
     await persistDownloadFileHandle([handleKey], saveHandle).catch(() => {});
   }
 
-  downloadQueueSummary.value = null;
+  downloadBatchResult.value = null;
   downloadStopAllRequested = false;
   downloadBatchIsSingle.value = true;
 
@@ -2025,17 +2240,29 @@ async function confirmContinueAfterDownloadFailure(
   ).length;
   if (remaining === 0) return false;
 
-  const detail = item.errorMessage
-    ? `"${item.name}": ${item.errorMessage}`
-    : `"${item.name}" failed.`;
+  const detail = transferItemMessage(item)
+    ? `"${item.name}": ${transferItemMessage(item)}`
+    : gettext.$gettext('"%{name}" failed.', { name: item.name });
 
   return new Promise((resolve) => {
     $q.dialog({
-      title: "Download failed",
-      message: `${detail}\n\nContinue with the remaining ${remaining} file(s)?`,
+      title: gettext.$gettext("Download failed"),
+      message: gettext.$ngettext(
+        "%{error}\n\nContinue with the remaining %{count} file?",
+        "%{error}\n\nContinue with the remaining %{count} files?",
+        remaining,
+        {
+          error: detail,
+          count: remaining,
+        },
+      ),
       persistent: true,
-      ok: { label: "Continue", color: "primary" },
-      cancel: { label: "Pause remaining", flat: true, color: "negative" },
+      ok: { label: gettext.$gettext("Continue"), color: "primary" },
+      cancel: {
+        label: gettext.$gettext("Pause remaining"),
+        flat: true,
+        color: "negative",
+      },
     })
       .onOk(() => resolve(true))
       .onCancel(() => resolve(false));
@@ -2052,6 +2279,45 @@ function cancelRemainingDownloads() {
   }
 }
 
+function formatDownloadBatchSummary({
+  succeeded,
+  failed,
+  paused,
+  cancelled,
+}: DownloadBatchResult): string | null {
+  if (succeeded + failed + paused + cancelled === 0) return null;
+  if (failed === 0 && paused === 0 && cancelled === 0)
+    return succeeded === 1
+      ? gettext.$gettext("All downloads finished successfully.")
+      : gettext.$ngettext(
+          "%{count} download finished successfully.",
+          "All %{count} downloads finished successfully.",
+          succeeded,
+          {
+            count: succeeded,
+          },
+        );
+  if (succeeded === 0 && failed > 0 && paused === 0 && cancelled === 0)
+    return failed === 1
+      ? gettext.$gettext("Download failed.")
+      : gettext.$ngettext(
+          "%{count} download failed.",
+          "All %{count} downloads failed.",
+          failed,
+          { count: failed },
+        );
+  const parts: string[] = [];
+  if (succeeded > 0)
+    parts.push(gettext.$gettext("%{count} succeeded", { count: succeeded }));
+  if (failed > 0)
+    parts.push(gettext.$gettext("%{count} failed", { count: failed }));
+  if (paused > 0)
+    parts.push(gettext.$gettext("%{count} paused", { count: paused }));
+  if (cancelled > 0)
+    parts.push(gettext.$gettext("%{count} cancelled", { count: cancelled }));
+  return parts.join(" · ");
+}
+
 function notifyDownloadBatchSummary(
   succeeded: number,
   failed: number,
@@ -2060,35 +2326,54 @@ function notifyDownloadBatchSummary(
 ) {
   const total = succeeded + failed + paused + cancelled;
   if (total === 0) return;
+  downloadBatchResult.value = { succeeded, failed, paused, cancelled };
 
   if (failed === 0 && paused === 0 && cancelled === 0) {
     if (succeeded === 1) {
-      notifySuccess("Download complete.");
-      downloadQueueSummary.value = "All downloads finished successfully.";
+      notifySuccess(gettext.$gettext("Download complete."));
+
       return;
     }
-    notifySuccess(`Downloaded ${succeeded} files.`);
-    downloadQueueSummary.value = `All ${succeeded} downloads finished successfully.`;
+    notifySuccess(
+      gettext.$ngettext(
+        "Downloaded %{count} file.",
+        "Downloaded %{count} files.",
+        succeeded,
+        { count: succeeded },
+      ),
+    );
+
     return;
   }
 
   if (succeeded === 0 && failed > 0 && paused === 0 && cancelled === 0) {
     notifyError(
-      failed === 1 ? "Download failed." : `All ${failed} downloads failed.`,
+      failed === 1
+        ? gettext.$gettext("Download failed.")
+        : gettext.$ngettext(
+            "%{count} download failed.",
+            "All %{count} downloads failed.",
+            failed,
+            { count: failed },
+          ),
     );
-    downloadQueueSummary.value =
-      failed === 1 ? "Download failed." : `All ${failed} downloads failed.`;
+
     return;
   }
 
   const parts: string[] = [];
-  if (succeeded > 0) parts.push(`${succeeded} succeeded`);
-  if (failed > 0) parts.push(`${failed} failed`);
-  if (paused > 0) parts.push(`${paused} paused`);
-  if (cancelled > 0) parts.push(`${cancelled} cancelled`);
+  if (succeeded > 0)
+    parts.push(gettext.$gettext("%{count} succeeded", { count: succeeded }));
+  if (failed > 0)
+    parts.push(gettext.$gettext("%{count} failed", { count: failed }));
+  if (paused > 0)
+    parts.push(gettext.$gettext("%{count} paused", { count: paused }));
+  if (cancelled > 0)
+    parts.push(gettext.$gettext("%{count} cancelled", { count: cancelled }));
 
-  downloadQueueSummary.value = parts.join(" · ");
-  notifyWarning(`Downloads: ${parts.join(" · ")}`);
+  notifyWarning(
+    gettext.$gettext("Downloads: %{summary}", { summary: parts.join(" · ") }),
+  );
 }
 
 function isUploadMultiBatchNotify(): boolean {
@@ -2105,30 +2390,54 @@ function notifyUploadBatchSummary(
   if (total === 0) return;
 
   if (failed === 0 && paused === 0 && cancelled === 0) {
-    notifySuccess(`${succeeded} files uploaded successfully`);
+    notifySuccess(
+      gettext.$ngettext(
+        "%{count} file uploaded successfully",
+        "%{count} files uploaded successfully",
+        succeeded,
+        {
+          count: succeeded,
+        },
+      ),
+    );
     return;
   }
 
   if (succeeded === 0 && failed > 0 && paused === 0 && cancelled === 0) {
     notifyError(
-      failed === 1 ? "Upload failed." : `All ${failed} uploads failed.`,
+      failed === 1
+        ? gettext.$gettext("Upload failed.")
+        : gettext.$ngettext(
+            "%{count} upload failed.",
+            "All %{count} uploads failed.",
+            failed,
+            { count: failed },
+          ),
     );
     return;
   }
 
   const parts: string[] = [];
-  if (succeeded > 0) parts.push(`${succeeded} uploaded`);
-  if (failed > 0) parts.push(`${failed} failed`);
-  if (paused > 0) parts.push(`${paused} paused`);
-  if (cancelled > 0) parts.push(`${cancelled} cancelled`);
-  notifyWarning(`Uploads finished: ${parts.join(", ")}.`);
+  if (succeeded > 0)
+    parts.push(gettext.$gettext("%{count} uploaded", { count: succeeded }));
+  if (failed > 0)
+    parts.push(gettext.$gettext("%{count} failed", { count: failed }));
+  if (paused > 0)
+    parts.push(gettext.$gettext("%{count} paused", { count: paused }));
+  if (cancelled > 0)
+    parts.push(gettext.$gettext("%{count} cancelled", { count: cancelled }));
+  notifyWarning(
+    gettext.$gettext("Uploads finished: %{summary}.", {
+      summary: parts.join(", "),
+    }),
+  );
 }
 
 async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   if (!files.length) return;
 
   if (isDownloadProcessorBusy()) {
-    notifyWarning("Downloads are already in progress.");
+    notifyWarning(gettext.$gettext("Downloads are already in progress."));
     return;
   }
 
@@ -2137,7 +2446,14 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   const room = MAX_DOWNLOAD_QUEUE_ITEMS - downloadQueue.value.length;
   if (room <= 0) {
     notifyWarning(
-      `The download queue is full (max ${MAX_DOWNLOAD_QUEUE_ITEMS} items). Clear finished items first.`,
+      gettext.$ngettext(
+        "The download queue is full (max %{limit} item). Clear finished items first.",
+        "The download queue is full (max %{limit} items). Clear finished items first.",
+        MAX_DOWNLOAD_QUEUE_ITEMS,
+        {
+          limit: MAX_DOWNLOAD_QUEUE_ITEMS,
+        },
+      ),
     );
     return;
   }
@@ -2145,7 +2461,15 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   let batch = files;
   if (batch.length > room) {
     notifyWarning(
-      `Only the first ${room} of ${batch.length} files were queued (queue limit).`,
+      gettext.$ngettext(
+        "Only the first %{queued} of %{total} file was queued (queue limit).",
+        "Only the first %{queued} of %{total} files were queued (queue limit).",
+        batch.length,
+        {
+          queued: room,
+          total: batch.length,
+        },
+      ),
     );
     batch = batch.slice(0, room);
   }
@@ -2160,12 +2484,12 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
       }
     } catch (err) {
       if (isAbortError(err)) return;
-      notifyError("Could not choose a save location.");
+      notifyError(gettext.$gettext("Could not choose a save location."));
       return;
     }
   }
 
-  downloadQueueSummary.value = null;
+  downloadBatchResult.value = null;
   downloadStopAllRequested = false;
   downloadBatchIsSingle.value = singleFile;
 
@@ -2199,7 +2523,7 @@ async function runSingleDownload(itemId: string): Promise<void> {
   if (!getTabSync().tryClaim(claimKey)) {
     item.status = "paused";
     item.ownedByOtherTab = true;
-    item.errorMessage = undefined;
+    setTransferMessage(item);
     return;
   }
   downloadClaimKeys.set(itemId, claimKey);
@@ -2209,7 +2533,7 @@ async function runSingleDownload(itemId: string): Promise<void> {
     typeof item.progress === "number" && item.progress > 0 ? item.progress : 0;
   const isResume = Boolean(item.sessionId) || priorProgress > 0;
   item.status = isResume ? "downloading" : "initializing";
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   if (!isResume) {
     item.progress = 0;
   }
@@ -2232,14 +2556,14 @@ async function runSingleDownload(itemId: string): Promise<void> {
         if (current.status === "queued") {
           current.status = "initializing";
         }
-        current.errorMessage = TRANSFER_SLOT_WAIT_MESSAGE;
+        setTransferMessage(current, "waiting-slot");
       },
       onSession: (sessionId: string) => {
         const current = findDownloadItem(itemId);
         if (!current) return;
         current.sessionId = sessionId;
-        if (current.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE) {
-          current.errorMessage = undefined;
+        if (current.messageCode === "waiting-slot") {
+          setTransferMessage(current);
         }
         rekeyOrClaimTransferSession({
           agentId: props.agent_id,
@@ -2265,11 +2589,11 @@ async function runSingleDownload(itemId: string): Promise<void> {
           current.status = "downloading";
         }
         if (
-          current.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE ||
-          current.errorMessage === TRANSFER_RECONNECTING_MESSAGE ||
-          current.errorMessage === TRANSFER_WAITING_FOR_AGENT_MESSAGE
+          current.messageCode === "waiting-slot" ||
+          current.messageCode === "reconnecting" ||
+          current.messageCode === "waiting-agent"
         ) {
-          current.errorMessage = undefined;
+          setTransferMessage(current);
         }
       },
       onStatus: (status: "initializing" | "downloading" | "completing") => {
@@ -2284,19 +2608,20 @@ async function runSingleDownload(itemId: string): Promise<void> {
         current.status = status;
         if (
           (status === "downloading" || status === "completing") &&
-          (current.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE ||
-            current.errorMessage === TRANSFER_RECONNECTING_MESSAGE ||
-            current.errorMessage === TRANSFER_WAITING_FOR_AGENT_MESSAGE)
+          (current.messageCode === "waiting-slot" ||
+            current.messageCode === "reconnecting" ||
+            current.messageCode === "waiting-agent")
         ) {
-          current.errorMessage = undefined;
+          setTransferMessage(current);
         }
       },
       onRetrying: (info) => {
         const current = findDownloadItem(itemId);
         if (!current) return;
-        current.errorMessage = info.waitingForAgent
-          ? TRANSFER_WAITING_FOR_AGENT_MESSAGE
-          : TRANSFER_RECONNECTING_MESSAGE;
+        setTransferMessage(
+          current,
+          info.waitingForAgent ? "waiting-agent" : "reconnecting",
+        );
       },
     };
 
@@ -2348,15 +2673,29 @@ async function runSingleDownload(itemId: string): Promise<void> {
       const shown = result.warnings.slice(0, 5).join("; ");
       const extra =
         result.warnings.length > 5
-          ? ` (+${result.warnings.length - 5} more)`
+          ? gettext.$gettext(" (+%{count} more)", {
+              count: result.warnings.length - 5,
+            })
           : "";
       notifyWarning(
-        `"${result.fileName}" archived with ${result.warnings.length} warning(s): ${shown}${extra}`,
+        gettext.$ngettext(
+          '"%{archiveName}" archived with %{count} warning: %{warnings}%{remainingWarnings}',
+          '"%{archiveName}" archived with %{count} warnings: %{warnings}%{remainingWarnings}',
+          result.warnings.length,
+          {
+            archiveName: result.fileName,
+            count: result.warnings.length,
+            warnings: shown,
+            remainingWarnings: extra,
+          },
+        ),
       );
     }
 
     if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
-      notifySuccess(`Downloaded "${result.fileName}"`);
+      notifySuccess(
+        gettext.$gettext('Downloaded "%{name}"', { name: result.fileName }),
+      );
       scheduleSingleDownloadAutoDismiss(itemId);
     }
   } catch (err: unknown) {
@@ -2366,7 +2705,7 @@ async function runSingleDownload(itemId: string): Promise<void> {
     if (isDownloadAbortError(err)) {
       const mode = downloadAbortIntents.get(itemId)?.mode ?? "pause";
       current.status = mode === "cancel" ? "cancelled" : "paused";
-      current.errorMessage = undefined;
+      setTransferMessage(current);
       current.ownedByOtherTab =
         mode !== "cancel" &&
         getTabSync().isRemotelyOwned(claimKeyForDownload(current));
@@ -2395,10 +2734,10 @@ async function runSingleDownload(itemId: string): Promise<void> {
       if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
         notifyInfo(
           mode === "cancel"
-            ? "Download cancelled."
+            ? gettext.$gettext("Download cancelled.")
             : current.ownedByOtherTab
-              ? "This download is open in another tab."
-              : "Download paused.",
+              ? gettext.$gettext("This download is open in another tab.")
+              : gettext.$gettext("Download paused."),
         );
       }
       return;
@@ -2409,14 +2748,16 @@ async function runSingleDownload(itemId: string): Promise<void> {
       current.hidden = false;
       current.ownedByOtherTab = false;
       if (scheduleAutoResume(current, err, resumeDownloadItem)) {
-        current.errorMessage = TRANSFER_RECONNECTING_MESSAGE;
+        setTransferMessage(current, "reconnecting");
         void persistDownloadQueueMeta(props.agent_id, current);
         return;
       }
-      current.errorMessage = TRANSFER_CONNECTION_LOST_MESSAGE;
+      setTransferMessage(current, "connection-lost");
       void persistDownloadQueueMeta(props.agent_id, current);
       if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
-        notifyWarning(TRANSFER_CONNECTION_LOST_MESSAGE);
+        notifyWarning(
+          gettext.$gettext("Connection lost. Click Resume to continue."),
+        );
       }
       return;
     }
@@ -2425,9 +2766,9 @@ async function runSingleDownload(itemId: string): Promise<void> {
     current.hidden = false;
     current.ownedByOtherTab = false;
     releaseDownloadClaim(itemId, "fail");
-    current.errorMessage = transferFailureErrorMessage(err, "download");
+    setTransferFailureMessage(current, err, "download");
     if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
-      notifyError(current.errorMessage);
+      notifyError(transferItemMessage(current) ?? "");
     }
   } finally {
     downloadAbortControllers.delete(itemId);
@@ -2560,7 +2901,7 @@ async function downloadFileHandleFor(
 async function discardPausedDownload(item: DownloadQueueItem): Promise<void> {
   item.status = "cancelled";
   item.hidden = false;
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   item.ownedByOtherTab = false;
 
   const resumeScopeKey =
@@ -2604,7 +2945,7 @@ async function discardPausedDownload(item: DownloadQueueItem): Promise<void> {
     handleKey,
     localQueueId: item.id,
   });
-  notifyInfo("Download cancelled.");
+  notifyInfo(gettext.$gettext("Download cancelled."));
 }
 
 async function resumeDownloadItem(id: string) {
@@ -2615,12 +2956,14 @@ async function resumeDownloadItem(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForDownload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This download is open in another tab.");
+    notifyWarning(gettext.$gettext("This download is open in another tab."));
     return;
   }
   if (item.recoveryHint === "non_resumable") {
     notifyWarning(
-      "This download cannot be resumed here. Cancel it to free the server session.",
+      gettext.$gettext(
+        "This download cannot be resumed here. Cancel it to free the server session.",
+      ),
     );
     return;
   }
@@ -2629,8 +2972,12 @@ async function resumeDownloadItem(id: string) {
     // Access to the partial file was denied. Starting over in memory would
     // throw away the bytes on disk (and fail above the in-memory limit).
     item.recoveryHint = "needs_permission";
-    item.errorMessage = DOWNLOAD_FILE_ACCESS_DENIED_MESSAGE;
-    notifyWarning(DOWNLOAD_FILE_ACCESS_DENIED_MESSAGE);
+    setTransferMessage(item, "file-permission");
+    notifyWarning(
+      gettext.$gettext(
+        "File access was not allowed. Click Resume and allow access to continue the download.",
+      ),
+    );
     return;
   }
   if (
@@ -2653,7 +3000,7 @@ async function resumeDownloadItem(id: string) {
         notifyWarning(
           err instanceof Error
             ? err.message
-            : "Could not reopen the saved download file.",
+            : gettext.$gettext("Could not reopen the saved download file."),
         );
         return;
       }
@@ -2665,7 +3012,7 @@ async function resumeDownloadItem(id: string) {
   }
   item.hidden = false;
   item.status = "queued";
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   item.ownedByOtherTab = false;
   void processDownloadQueue();
 }
@@ -2715,8 +3062,8 @@ function pauseAllDownloads() {
       abortDownloadItem(item.id, "pause");
     } else if (item.status === "queued") {
       item.status = "paused";
-    } else if (item.errorMessage === TRANSFER_RECONNECTING_MESSAGE) {
-      item.errorMessage = TRANSFER_CONNECTION_LOST_MESSAGE;
+    } else if (item.messageCode === "reconnecting") {
+      setTransferMessage(item, "connection-lost");
     }
   }
 }
@@ -2727,22 +3074,22 @@ function pauseAllUploads() {
       abortUploadItem(item.id, "pause");
     } else if (item.status === "queued") {
       item.status = "paused";
-    } else if (item.errorMessage === TRANSFER_RECONNECTING_MESSAGE) {
-      item.errorMessage = TRANSFER_CONNECTION_LOST_MESSAGE;
+    } else if (item.messageCode === "reconnecting") {
+      setTransferMessage(item, "connection-lost");
     }
   }
 }
 
 async function startDownloads(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(gettext.$gettext("Select one or more items to download."));
     return;
   }
 
   const selection = classifyDownloadSelection(items);
 
   if (selection.mode === "none") {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(gettext.$gettext("Select one or more items to download."));
     return;
   }
 
@@ -2775,7 +3122,7 @@ function downloadFromContext(row: FileBrowserItem) {
 function setPath(path: string) {
   const normalized = normalizeNavPath(path);
   if (!normalized) {
-    notifyWarning("Enter a valid path.");
+    notifyWarning(gettext.$gettext("Enter a valid path."));
     return;
   }
 
@@ -2850,7 +3197,9 @@ async function showProperties(row: FileBrowserItem) {
 function showPropertiesFromToolbar() {
   const sel = selectedRows.value;
   if (sel.length !== 1) {
-    notifyWarning("Select exactly one item to view properties.");
+    notifyWarning(
+      gettext.$gettext("Select exactly one item to view properties."),
+    );
     return;
   }
   showProperties(sel[0]);
@@ -2858,15 +3207,24 @@ function showPropertiesFromToolbar() {
 
 function copyPathsToClipboard(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to copy their paths.");
+    notifyWarning(
+      gettext.$gettext("Select one or more items to copy their paths."),
+    );
     return;
   }
   const text = items.map((r) => r.path).join("\n");
   void copyOutput(text, {
     successMessage:
       items.length === 1
-        ? "Path copied to clipboard."
-        : `${items.length} paths copied to clipboard.`,
+        ? gettext.$gettext("Path copied to clipboard.")
+        : gettext.$ngettext(
+            "%{count} path copied to clipboard.",
+            "%{count} paths copied to clipboard.",
+            items.length,
+            {
+              count: items.length,
+            },
+          ),
   });
 }
 
@@ -2884,7 +3242,7 @@ function copyPathFromContext(row: FileBrowserItem) {
 
 function assertUploadPath(): boolean {
   if (!hasUploadPath.value) {
-    notifyWarning("Select a folder path before uploading.");
+    notifyWarning(gettext.$gettext("Select a folder path before uploading."));
     return false;
   }
   return true;
@@ -2936,7 +3294,9 @@ async function queueFilesForUpload(
   if (!files.length) {
     if ((options?.folderCount ?? 0) > 0) {
       notifyWarning(
-        "Folders cannot be uploaded. Drop files into this folder instead.",
+        gettext.$gettext(
+          "Folders cannot be uploaded. Drop files into this folder instead.",
+        ),
       );
     }
     return;
@@ -2947,13 +3307,28 @@ async function queueFilesForUpload(
 
   if ((options?.folderCount ?? 0) > 0) {
     notes.push(
-      `${options!.folderCount} folder(s) skipped — folder upload is not supported.`,
+      gettext.$ngettext(
+        "%{count} folder skipped — folder upload is not supported.",
+        "%{count} folders skipped — folder upload is not supported.",
+        options!.folderCount,
+        {
+          count: options!.folderCount,
+        },
+      ),
     );
   }
 
   if (batch.length > MAX_UPLOAD_FILES_PER_SELECTION) {
     notes.push(
-      `Only the first ${MAX_UPLOAD_FILES_PER_SELECTION} of ${batch.length} files were considered (per-selection limit).`,
+      gettext.$ngettext(
+        "Only the first %{considered} of %{total} file was considered (per-selection limit).",
+        "Only the first %{considered} of %{total} files were considered (per-selection limit).",
+        batch.length,
+        {
+          considered: MAX_UPLOAD_FILES_PER_SELECTION,
+          total: batch.length,
+        },
+      ),
     );
     batch = batch.slice(0, MAX_UPLOAD_FILES_PER_SELECTION);
   }
@@ -2961,7 +3336,14 @@ async function queueFilesForUpload(
   const room = MAX_UPLOAD_QUEUE_ITEMS - uploadQueue.value.length;
   if (room <= 0) {
     notifyWarning(
-      `Upload queue is full (max ${MAX_UPLOAD_QUEUE_ITEMS} items). Clear finished items or cancel transfers, then try again.`,
+      gettext.$ngettext(
+        "Upload queue is full (max %{limit} item). Clear finished items or cancel transfers, then try again.",
+        "Upload queue is full (max %{limit} items). Clear finished items or cancel transfers, then try again.",
+        MAX_UPLOAD_QUEUE_ITEMS,
+        {
+          limit: MAX_UPLOAD_QUEUE_ITEMS,
+        },
+      ),
     );
     return;
   }
@@ -2988,22 +3370,45 @@ async function queueFilesForUpload(
       agentPlatform.value,
     );
     notes.push(
-      `${skippedInvalidName} file(s) skipped — ${
-        typeof reason === "string" ? reason : "invalid filename"
-      }`,
+      gettext.$ngettext(
+        "%{count} file skipped — %{reason}",
+        "%{count} files skipped — %{reason}",
+        skippedInvalidName,
+        {
+          count: skippedInvalidName,
+          reason:
+            typeof reason === "string"
+              ? reason
+              : gettext.$gettext("invalid filename"),
+        },
+      ),
     );
   }
 
   if (skippedOversized > 0) {
     notes.push(
-      `${skippedOversized} file(s) skipped — larger than ${bytes2Human(
-        maxFileBytes,
-      )} each.`,
+      gettext.$ngettext(
+        "%{count} file skipped — larger than %{sizeLimit}.",
+        "%{count} files skipped — larger than %{sizeLimit} each.",
+        skippedOversized,
+        {
+          count: skippedOversized,
+          sizeLimit: bytes2Human(maxFileBytes),
+        },
+      ),
     );
   }
   if (skippedDueToQueue > 0) {
     notes.push(
-      `${skippedDueToQueue} file(s) not queued — would exceed the queue limit (${MAX_UPLOAD_QUEUE_ITEMS}).`,
+      gettext.$ngettext(
+        "%{count} file not queued — would exceed the queue limit (%{limit}).",
+        "%{count} files not queued — would exceed the queue limit (%{limit}).",
+        skippedDueToQueue,
+        {
+          count: skippedDueToQueue,
+          limit: MAX_UPLOAD_QUEUE_ITEMS,
+        },
+      ),
     );
   }
 
@@ -3013,7 +3418,9 @@ async function queueFilesForUpload(
 
   if (!toEnqueue.length) {
     if (!notes.length) {
-      notifyWarning("No files could be added to the upload queue.");
+      notifyWarning(
+        gettext.$gettext("No files could be added to the upload queue."),
+      );
     }
     return;
   }
@@ -3037,7 +3444,9 @@ async function queueFilesForUpload(
     );
   } catch {
     notifyWarning(
-      "Could not check the folder for existing files. Only names currently shown in the list were compared.",
+      gettext.$gettext(
+        "Could not check the folder for existing files. Only names currently shown in the list were compared.",
+      ),
     );
     conflicts = listUploadNameConflicts(
       toEnqueue,
@@ -3050,7 +3459,7 @@ async function queueFilesForUpload(
   if (conflicts.length > 0) {
     const action = await confirmUploadOverwrite(conflicts);
     if (action === "cancel") {
-      notifyInfo("Upload cancelled.");
+      notifyInfo(gettext.$gettext("Upload cancelled."));
       return;
     }
     if (action === "skip") {
@@ -3058,11 +3467,17 @@ async function queueFilesForUpload(
       const conflictSet = new Set(conflicts);
       toEnqueue = toEnqueue.filter((f) => !conflictSet.has(f));
       if (!toEnqueue.length) {
-        notifyInfo("Upload skipped — existing files were not replaced.");
+        notifyInfo(
+          gettext.$gettext(
+            "Upload skipped — existing files were not replaced.",
+          ),
+        );
         return;
       }
       notifyInfo(
-        "Skipped files that already exist. Uploading the remaining items.",
+        gettext.$gettext(
+          "Skipped files that already exist. Uploading the remaining items.",
+        ),
       );
     } else {
       conflictPolicy = "replace";
@@ -3114,7 +3529,7 @@ async function runSingleUpload(itemId: string): Promise<void> {
   if (!item.file) {
     item.status = "paused";
     item.recoveryHint = "needs_file";
-    item.errorMessage = "Select the original file to resume this upload.";
+    setTransferMessage(item, "select-upload-file");
     return;
   }
 
@@ -3122,7 +3537,7 @@ async function runSingleUpload(itemId: string): Promise<void> {
   if (!getTabSync().tryClaim(claimKey)) {
     item.status = "paused";
     item.ownedByOtherTab = true;
-    item.errorMessage = undefined;
+    setTransferMessage(item);
     return;
   }
   uploadClaimKeys.set(itemId, claimKey);
@@ -3132,7 +3547,7 @@ async function runSingleUpload(itemId: string): Promise<void> {
     typeof item.progress === "number" && item.progress > 0 ? item.progress : 0;
   const isResume = Boolean(item.sessionId) || priorProgress > 0;
   item.status = "uploading";
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   if (!isResume) {
     item.progress = 0;
   }
@@ -3158,14 +3573,14 @@ async function runSingleUpload(itemId: string): Promise<void> {
         onWaitingForSlot: () => {
           const current = findUploadItem(itemId);
           if (!current) return;
-          current.errorMessage = TRANSFER_SLOT_WAIT_MESSAGE;
+          setTransferMessage(current, "waiting-slot");
         },
         onSession: (sessionId: string) => {
           const current = findUploadItem(itemId);
           if (!current) return;
           current.sessionId = sessionId;
-          if (current.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE) {
-            current.errorMessage = undefined;
+          if (current.messageCode === "waiting-slot") {
+            setTransferMessage(current);
           }
           rekeyOrClaimTransferSession({
             agentId: props.agent_id,
@@ -3180,19 +3595,20 @@ async function runSingleUpload(itemId: string): Promise<void> {
           const current = findUploadItem(itemId);
           if (
             current &&
-            (current.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE ||
-              current.errorMessage === TRANSFER_RECONNECTING_MESSAGE ||
-              current.errorMessage === TRANSFER_WAITING_FOR_AGENT_MESSAGE)
+            (current.messageCode === "waiting-slot" ||
+              current.messageCode === "reconnecting" ||
+              current.messageCode === "waiting-agent")
           ) {
-            current.errorMessage = undefined;
+            setTransferMessage(current);
           }
         },
         onRetrying: (info) => {
           const current = findUploadItem(itemId);
           if (!current) return;
-          current.errorMessage = info.waitingForAgent
-            ? TRANSFER_WAITING_FOR_AGENT_MESSAGE
-            : TRANSFER_RECONNECTING_MESSAGE;
+          setTransferMessage(
+            current,
+            info.waitingForAgent ? "waiting-agent" : "reconnecting",
+          );
         },
       },
     );
@@ -3206,9 +3622,9 @@ async function runSingleUpload(itemId: string): Promise<void> {
       current.sessionId = undefined;
       current.ownedByOtherTab = false;
       releaseUploadClaim(itemId, "fail");
-      current.errorMessage = transferIntegrityFailMessage("upload");
+      setTransferMessage(current, "upload-integrity");
       if (!multiBatch) {
-        notifyError(current.errorMessage);
+        notifyError(transferItemMessage(current) ?? "");
       }
       return;
     }
@@ -3226,7 +3642,9 @@ async function runSingleUpload(itemId: string): Promise<void> {
     }
     deleteLocalPausedEntry(props.agent_id, current.id);
     if (!multiBatch) {
-      notifySuccess(`Uploaded "${item.name}"`);
+      notifySuccess(
+        gettext.$gettext('Uploaded "%{name}"', { name: item.name }),
+      );
     }
     if (pathsEqual(item.destinationPath, currentPath.value)) {
       uploadListingNeedsRefresh = true;
@@ -3238,7 +3656,7 @@ async function runSingleUpload(itemId: string): Promise<void> {
     if (isUploadAbortError(err)) {
       const mode = uploadAbortIntents.get(itemId)?.mode ?? "pause";
       current.status = mode === "cancel" ? "cancelled" : "paused";
-      current.errorMessage = undefined;
+      setTransferMessage(current);
       current.ownedByOtherTab =
         mode !== "cancel" &&
         getTabSync().isRemotelyOwned(claimKeyForUpload(current));
@@ -3259,10 +3677,10 @@ async function runSingleUpload(itemId: string): Promise<void> {
       if (!multiBatch) {
         notifyInfo(
           mode === "cancel"
-            ? "Upload cancelled."
+            ? gettext.$gettext("Upload cancelled.")
             : current.ownedByOtherTab
-              ? "This upload is open in another tab."
-              : "Upload paused.",
+              ? gettext.$gettext("This upload is open in another tab.")
+              : gettext.$gettext("Upload paused."),
         );
       }
       return;
@@ -3273,14 +3691,16 @@ async function runSingleUpload(itemId: string): Promise<void> {
       current.hidden = false;
       current.ownedByOtherTab = false;
       if (scheduleAutoResume(current, err, resumeUploadItem)) {
-        current.errorMessage = TRANSFER_RECONNECTING_MESSAGE;
+        setTransferMessage(current, "reconnecting");
         void persistUploadQueueMeta(props.agent_id, current);
         return;
       }
-      current.errorMessage = TRANSFER_CONNECTION_LOST_MESSAGE;
+      setTransferMessage(current, "connection-lost");
       void persistUploadQueueMeta(props.agent_id, current);
       if (!multiBatch) {
-        notifyWarning(`"${item.name}": ${TRANSFER_CONNECTION_LOST_MESSAGE}`);
+        notifyWarning(
+          `"${item.name}": ${gettext.$gettext("Connection lost. Click Resume to continue.")}`,
+        );
       }
       return;
     }
@@ -3289,9 +3709,9 @@ async function runSingleUpload(itemId: string): Promise<void> {
     current.hidden = false;
     current.ownedByOtherTab = false;
     releaseUploadClaim(itemId, "fail");
-    current.errorMessage = transferFailureErrorMessage(err, "upload");
+    setTransferFailureMessage(current, err, "upload");
     if (!multiBatch) {
-      notifyError(`"${item.name}": ${current.errorMessage}`);
+      notifyError(`"${item.name}": ${transferItemMessage(current)}`);
     }
   } finally {
     uploadAbortControllers.delete(itemId);
@@ -3386,7 +3806,7 @@ function cancelUploadItem(id: string) {
 async function discardPausedUpload(item: UploadQueueItem): Promise<void> {
   item.status = "cancelled";
   item.hidden = false;
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   item.ownedByOtherTab = false;
 
   let sessionId = item.sessionId;
@@ -3413,7 +3833,7 @@ async function discardPausedUpload(item: UploadQueueItem): Promise<void> {
   await clearTransferPersistence(props.agent_id, sessionId, {
     localQueueId: item.id,
   });
-  notifyInfo("Upload cancelled.");
+  notifyInfo(gettext.$gettext("Upload cancelled."));
 }
 
 function selectFileToResumeUpload(id: string) {
@@ -3424,7 +3844,7 @@ function selectFileToResumeUpload(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(gettext.$gettext("This upload is open in another tab."));
     return;
   }
   resumeUploadTargetId = id;
@@ -3446,14 +3866,16 @@ function onResumeUploadFileSelected(event: Event) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(gettext.$gettext("This upload is open in another tab."));
     return;
   }
 
   if (item.uploadFileIdentity) {
     if (!matchesUploadFileIdentity(file, item.uploadFileIdentity)) {
       notifyError(
-        "Selected file does not match the paused upload (name, size, or modified time).",
+        gettext.$gettext(
+          "Selected file does not match the paused upload (name, size, or modified time).",
+        ),
       );
       return;
     }
@@ -3462,7 +3884,9 @@ function onResumeUploadFileSelected(event: Event) {
     (item.sizeBytes > 0 && file.size !== item.sizeBytes)
   ) {
     notifyError(
-      "Selected file does not match the paused upload (name or size).",
+      gettext.$gettext(
+        "Selected file does not match the paused upload (name or size).",
+      ),
     );
     return;
   }
@@ -3476,7 +3900,7 @@ function onResumeUploadFileSelected(event: Event) {
   item.sizeBytes = file.size;
   item.sizeLabel = bytes2Human(file.size);
   item.recoveryHint = "ready";
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   item.hidden = false;
   item.status = "queued";
   void persistUploadQueueMeta(props.agent_id, item);
@@ -3491,7 +3915,7 @@ function resumeUploadItem(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(gettext.$gettext("This upload is open in another tab."));
     return;
   }
   if (!item.file) {
@@ -3500,7 +3924,7 @@ function resumeUploadItem(id: string) {
   }
   item.hidden = false;
   item.status = "queued";
-  item.errorMessage = undefined;
+  setTransferMessage(item);
   item.recoveryHint = undefined;
   item.ownedByOtherTab = false;
   void processUploadQueue();

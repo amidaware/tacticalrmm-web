@@ -2,28 +2,40 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="min-width: 65vw">
       <q-bar>
-        Script Test
+        {{ $gettext("Script Test") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section style="min-height: 70vh" class="q-pa-md">
         <div>
-          Run Time:
-          <code>{{ ret.execution_time }} seconds</code>
-          <br />Return Code:
+          {{ $pgettext("Script testing", "Run Time") }}:
+          <code>{{
+            $gettext("%{value} s", {
+              value: ret.execution_time,
+            })
+          }}</code>
+          <br />{{ $gettext("Return Code") }}:
           <code>{{ ret.retcode }}</code>
           <br />
         </div>
         <br />
         <div v-if="ret.stdout">
-          <script-output-copy-clip label="Standard Output" :data="ret.stdout" />
+          <script-output-copy-clip
+            :label="$gettext('Standard Output')"
+            :data="ret.stdout"
+          />
           <q-separator />
           <pre class="scroll" style="max-height: 65vh">{{ ret.stdout }}</pre>
         </div>
         <div v-if="ret.stderr">
-          <script-output-copy-clip label="Standard Error" :data="ret.stderr" />
+          <script-output-copy-clip
+            :label="$gettext('Standard Error')"
+            :data="ret.stderr"
+          />
           <q-separator />
           <pre class="scroll" style="max-height: 65vh">{{ ret.stderr }}</pre>
         </div>

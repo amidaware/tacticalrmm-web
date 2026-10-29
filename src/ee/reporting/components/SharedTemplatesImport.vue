@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" maximized @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Shared Templates
+        {{ $gettext("Shared Templates") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -37,7 +39,7 @@ For details, see: https://license.tacticalrmm.com/ee
         <template #top>
           <q-btn
             class="q-ml-sm"
-            label="Import"
+            :label="$gettext('Import')"
             icon="fa-solid fa-file-import"
             no-caps
             dense
@@ -48,14 +50,14 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-checkbox
             class="q-ml-sm"
             dense
-            label="Overwrite if name conflicts"
+            :label="$gettext('Overwrite if name conflicts')"
             v-model="overwrite"
           />
           <q-space />
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$pgettext('Report editing', 'Search')"
             dense
             outlined
             clearable
@@ -72,30 +74,31 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { until } from "@vueuse/shared";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
 import { truncateText } from "@/utils/format";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: gettext.$pgettext("Report editing", "Name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "url",
-    label: "Download Url",
+    label: gettext.$gettext("Download URL"),
     field: "url",
     align: "left",
     sortable: true,
     format: (val) => truncateText(val, 90),
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);

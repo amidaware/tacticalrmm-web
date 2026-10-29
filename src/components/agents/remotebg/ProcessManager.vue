@@ -25,7 +25,7 @@
           push
           @click="stopPoll"
           icon="stop"
-          label="Stop Live Refresh"
+          :label="$gettext('Stop Live Refresh')"
         />
         <q-btn
           v-else
@@ -34,13 +34,13 @@
           push
           @click="startPoll"
           icon="play_arrow"
-          label="Resume Live Refresh"
+          :label="$gettext('Resume Live Refresh')"
         />
 
         <div class="flex flex-center q-ml-md">
           <q-icon name="fas fa-microchip" class="q-mr-xs" />
           <div class="text-caption q-mr-sm">
-            CPU Usage:
+            {{ $gettext("CPU Usage") }}:
             <span class="text-body1 text-weight-medium"
               >{{ totalCpuUsage }}%</span
             >
@@ -48,7 +48,7 @@
 
           <q-icon name="fas fa-memory" class="q-mr-xs" />
           <div class="text-caption">
-            RAM Usage:
+            {{ $gettext("RAM Usage") }}:
             <span class="text-body1 text-weight-medium"
               >{{ bytes2Human(totalRamUsage) }}/{{ total_ram }} GB</span
             >
@@ -85,12 +85,18 @@
             color="blue"
             :label="pollInterval"
           />
-          Refresh interval (seconds)
+          {{ $gettext("Refresh interval (seconds)") }}
         </div>
 
         <q-space />
 
-        <q-input v-model="filter" outlined label="Search" dense clearable>
+        <q-input
+          v-model="filter"
+          outlined
+          :label="$pgettext('General actions', 'Search')"
+          dense
+          clearable
+        >
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
@@ -108,11 +114,11 @@
               <q-item-section side>
                 <q-icon name="fas fa-trash-alt" size="xs" />
               </q-item-section>
-              <q-item-section>End Process</q-item-section>
+              <q-item-section>{{ $gettext("End Process") }}</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $gettext("Close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -127,6 +133,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import {
   fetchAgent,
@@ -135,45 +142,6 @@ import {
 } from "@/api/agents";
 import { bytes2Human } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
-
-const columns = [
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "cpu_percent",
-    label: "CPU",
-    field: "cpu_percent",
-    align: "left",
-    sortable: true,
-    sort: (a, b) => parseFloat(b) < parseFloat(a),
-  },
-  {
-    name: "membytes",
-    label: "Memory",
-    field: "membytes",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "User",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "pid",
-    label: "PID",
-    field: "pid",
-    align: "left",
-    sortable: true,
-  },
-];
 
 export default {
   name: "ProcessManager",
@@ -240,6 +208,45 @@ export default {
     const totalRamUsage = computed(() => {
       return processes.value.reduce((acc, proc) => acc + proc.membytes, 0);
     });
+
+    const columns = computed(() => [
+      {
+        name: "name",
+        label: gettext.$pgettext("Running processes", "Name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "cpu_percent",
+        label: gettext.$pgettext("Running processes", "CPU"),
+        field: "cpu_percent",
+        align: "left",
+        sortable: true,
+        sort: (a, b) => parseFloat(b) < parseFloat(a),
+      },
+      {
+        name: "membytes",
+        label: gettext.$gettext("Memory"),
+        field: "membytes",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: gettext.$pgettext("Running processes", "User"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "pid",
+        label: gettext.$gettext("PID"),
+        field: "pid",
+        align: "left",
+        sortable: true,
+      },
+    ]);
 
     async function getProcesses() {
       loading.value = true;

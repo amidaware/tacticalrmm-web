@@ -34,3 +34,12 @@ yarn-error.log*
 
 .env
 /public/env-config.js
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# Kilo local config
+.kilo/
+
+# Compiled gettext catalogue (generated before serve/build)
+/src/gettext/generated/

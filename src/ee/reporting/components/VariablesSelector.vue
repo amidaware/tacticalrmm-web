@@ -6,8 +6,10 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <q-list dense>
     <q-item-label header
-      >Base Template Blocks
-      <span v-if="copiedBlock" class="float-right">Copied!</span></q-item-label
+      >{{ $gettext("Base Template Blocks") }}
+      <span v-if="copiedBlock" class="float-right">{{
+        $gettext("Copied!")
+      }}</span></q-item-label
     >
     <q-item
       v-for="block in templateBlocks"
@@ -16,10 +18,11 @@ For details, see: https://license.tacticalrmm.com/ee
     >
       <q-item-section avatar v-if="block.warning">
         <q-icon name="warning" color="warning">
-          <q-tooltip
-            >Block not found in template. Click on the block to copy and paste
-            into template</q-tooltip
-          >
+          <q-tooltip>{{
+            $gettext(
+              "Block not found in template. Click on the block to copy and paste into template",
+            )
+          }}</q-tooltip>
         </q-icon>
       </q-item-section>
       <q-item-section>
@@ -36,7 +39,10 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-separator />
 
     <q-item-label header>
-      Variables <span v-if="copiedVariable" class="float-right">Copied!</span>
+      {{ $gettext("Variables") }}
+      <span v-if="copiedVariable" class="float-right">{{
+        $gettext("Copied!")
+      }}</span>
     </q-item-label>
     <q-item
       v-for="warning in [...dependencyWarnings, ...variableWarnings]"
@@ -84,7 +90,7 @@ For details, see: https://license.tacticalrmm.com/ee
       >
         <q-badge
           class="cursor-pointer"
-          label="for loop"
+          :label="$gettext('for loop')"
           @click="copy(prop.toString(), true)"
         />
       </q-item-section>
@@ -93,6 +99,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref, watch } from "vue";
 import type { ReportDependencies } from "../types/reporting";
 import {
@@ -164,7 +171,9 @@ async function getVariables() {
   // check if any data queries returned empty results
   for (let key in variableAnalysis.value) {
     if (variableAnalysis.value[key].includes("0 Results")) {
-      variableWarnings.value.push(`Data Query: ${key} returned no results`);
+      variableWarnings.value.push(
+        gettext.$gettext("Data Query: %{key} returned no results", { key }),
+      );
     }
 
     if (variableAnalysis.value[key].toLowerCase().substring(0, 5) === "array") {
@@ -179,20 +188,23 @@ watchDebounced(
   () => {
     getVariables();
   },
-  { debounce: 5000 }
+  { debounce: 5000 },
 );
 
 // checks dependencies and adds warnings
 function checkDependencies(
   dependsOn: string[] | undefined,
-  dependencies: ReportDependencies | undefined
+  dependencies: ReportDependencies | undefined,
 ) {
   dependencyWarnings.value = [];
   // Check if dependencies aren't specified
   dependsOn?.forEach((dep) => {
     !dependencies?.[dep] &&
       dependencyWarnings.value.push(
-        `Missing value for dependency: ${dep} . Open Preview to set values`
+        gettext.$gettext(
+          "Missing value for dependency: %{dep}. Open Preview to set values",
+          { dep },
+        ),
       );
   });
 }
@@ -202,7 +214,7 @@ watch(
   [() => props.dependencies, () => props.dependsOn],
   ([dependencies, dependsOn]) => {
     checkDependencies(dependsOn, dependencies);
-  }
+  },
 );
 
 // checks available blocks in base template and checks if they are used
@@ -210,7 +222,7 @@ function checkBaseTemplate(template: string, base_id: number | undefined) {
   templateBlocks.value = [];
   if (base_id) {
     const base_template = reportHTMLTemplates.value.find(
-      (template) => template.id === base_id
+      (template) => template.id === base_id,
     );
 
     let regex = /\{% block ([A-Za-z0-9_ ]+) %\}/g,
@@ -233,7 +245,7 @@ watch(
   [() => props.base_template, () => props.template],
   ([newBase, newTemplate]) => {
     checkBaseTemplate(newTemplate, newBase);
-  }
+  },
 );
 
 onMounted(() => {

@@ -7,20 +7,22 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">SSO Providers</div>
+      <div class="text-subtitle2">
+        {{ $gettext("SSO Providers") }}
+      </div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add OIDC Provider"
+        :label="$gettext('Add OIDC Provider')"
         @click="addSSOProvider"
         :disable="!ssoSettings.sso_enabled"
       >
-        <q-tooltip v-if="!ssoSettings.sso_enabled" class="text-caption"
-          >Enable SSO in the settings to allow adding a provider.</q-tooltip
-        >
+        <q-tooltip v-if="!ssoSettings.sso_enabled" class="text-caption">{{
+          $gettext("Enable SSO in the settings to allow adding a provider.")
+        }}</q-tooltip>
       </q-btn>
     </div>
     <q-separator />
@@ -35,13 +37,13 @@ For details, see: https://license.tacticalrmm.com/ee
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No OIDC Providers added yet"
+      :no-data-label="$gettext('No OIDC Providers added yet')"
       :loading="loading"
     >
       <template v-slot:top>
         <q-btn
           @click="openSSOSettings"
-          label="SSO Settings"
+          :label="$gettext('SSO Settings')"
           no-caps
           color="primary"
           size="md"
@@ -65,7 +67,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{
+                  $pgettext("Report edit action", "Edit")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -75,7 +79,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $gettext("Delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
@@ -89,7 +93,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="description" />
                 </q-item-section>
-                <q-item-section>Copy Callback URL</q-item-section>
+                <q-item-section>{{
+                  $gettext("Copy Callback URL")
+                }}</q-item-section>
               </q-item>
 
               <!-- javascript origin url (used by google oauth) -->
@@ -101,15 +107,15 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="description" />
                 </q-item-section>
-                <q-item-section
-                  >Copy Authorized JavaScript origin</q-item-section
-                >
+                <q-item-section>{{
+                  $gettext("Copy Authorized JavaScript origin")
+                }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $gettext("Close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -134,7 +140,9 @@ For details, see: https://license.tacticalrmm.com/ee
               name="content_copy"
               @click="getCallbackURL(props.row.callback_url)"
             >
-              <q-tooltip>Copy Callback URL to Clipboard</q-tooltip>
+              <q-tooltip>{{
+                $gettext("Copy Callback URL to Clipboard")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
         </q-tr>
@@ -144,6 +152,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -173,46 +182,46 @@ const loading = ref(false);
 const providers = ref([] as SSOProvider[]);
 const ssoSettings = ref({} as SSOSettingsType);
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: gettext.$pgettext("Report editing", "Name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "server_url",
-    label: "Server Url",
+    label: gettext.$gettext("Server Url"),
     field: "server_url",
     align: "left",
     sortable: true,
   },
   {
     name: "client_id",
-    label: "Client ID",
+    label: gettext.$gettext("Client ID"),
     field: "client_id",
     align: "left",
     sortable: true,
   },
   {
     name: "callback_url",
-    label: "Callback URL",
+    label: gettext.$gettext("Callback URL"),
     field: "callback_url",
     align: "left",
     sortable: false,
   },
   {
     name: "javascript_origin_url",
-    label: "Javascript Origin URL",
+    label: gettext.$gettext("Javascript Origin URL"),
     field: "javascript_origin_url",
     align: "left",
     sortable: false,
   },
-];
+]);
 
 const visibleColumns = computed(() => {
-  return columns
+  return columns.value
     .map((column) => column.name)
     .filter((name) => name !== "javascript_origin_url");
 });
@@ -252,15 +261,21 @@ function editSSOProvider(provider: SSOProvider) {
 
 function deleteSSOProvider(provider: SSOProvider) {
   $q.dialog({
-    title: `Delete SSO Provider: ${provider.name}?`,
+    title: gettext.$gettext("Delete SSO Provider: %{name}?", {
+      name: provider.name,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await removeSSOProvider(provider.id);
       await getSSOProviders();
-      notifySuccess(`SSO Provider: ${provider.name} was deleted!`);
+      notifySuccess(
+        gettext.$gettext("SSO Provider: %{name} was deleted!", {
+          name: provider.name,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }
@@ -270,7 +285,7 @@ function deleteSSOProvider(provider: SSOProvider) {
 
 function getCallbackURL(url: string) {
   copyToClipboard(url).then(() => {
-    notifySuccess("URL copied!");
+    notifySuccess(gettext.$gettext("URL copied!"));
   });
 }
 

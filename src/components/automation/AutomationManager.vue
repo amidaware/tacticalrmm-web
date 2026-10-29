@@ -11,16 +11,18 @@
             flat
             push
             icon="refresh"
-          />Automation Manager
+          />{{ $gettext("Automation Manager") }}
           <q-space />
           <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+            <q-tooltip class="bg-white text-primary">{{
+              $gettext("Close")
+            }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section>
           <div class="q-gutter-sm">
             <q-btn
-              label="New"
+              :label="$pgettext('Automation policy management', 'New')"
               dense
               flat
               push
@@ -30,7 +32,7 @@
               @click="showAddPolicyForm"
             />
             <q-btn
-              label="Policy Overview"
+              :label="$gettext('Policy Overview')"
               dense
               flat
               push
@@ -56,13 +58,13 @@
               binary-state-sort
               hide-pagination
               virtual-scroll
-              no-data-label="No Policies"
+              :no-data-label="$gettext('No Policies')"
             >
               <!-- header slots -->
               <template v-slot:header-cell-active="props">
                 <q-th :props="props" auto-width>
                   <q-icon name="power_settings_new" size="1.5em">
-                    <q-tooltip>Enable Policy</q-tooltip>
+                    <q-tooltip>{{ $gettext("Enable Policy") }}</q-tooltip>
                   </q-icon>
                 </q-th>
               </template>
@@ -70,10 +72,11 @@
               <template v-slot:header-cell-enforced="props">
                 <q-th :props="props" auto-width>
                   <q-icon name="security" size="1.5em">
-                    <q-tooltip
-                      >Enforce Policy (Will override Agent
-                      tasks/checks)</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $gettext(
+                        "Enforce Policy (Will override Agent tasks/checks)",
+                      )
+                    }}</q-tooltip>
                   </q-icon>
                 </q-th>
               </template>
@@ -99,7 +102,9 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{
+                          $pgettext("General edit action", "Edit")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -110,7 +115,7 @@
                         <q-item-section side>
                           <q-icon name="content_copy" />
                         </q-item-section>
-                        <q-item-section>Copy</q-item-section>
+                        <q-item-section>{{ $gettext("Copy") }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -121,7 +126,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Delete")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-separator></q-separator>
@@ -134,7 +141,9 @@
                         <q-item-section side>
                           <q-icon name="account_tree" />
                         </q-item-section>
-                        <q-item-section>Show Relations</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Show Relations")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -145,7 +154,9 @@
                         <q-item-section side>
                           <q-icon name="rule" />
                         </q-item-section>
-                        <q-item-section>Policy Exclusions</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Policy Exclusions")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -177,7 +188,7 @@
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
-                        <q-item-section>Close</q-item-section>
+                        <q-item-section>{{ $gettext("Close") }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -206,14 +217,14 @@
                       color="primary"
                       text-color="white"
                       size="sm"
-                      >Default Server</q-chip
+                      >{{ $gettext("Default Server") }}</q-chip
                     >
                     <q-chip
                       v-if="props.row.default_workstation_policy"
                       color="primary"
                       text-color="white"
                       size="sm"
-                      >Default Workstation</q-chip
+                      >{{ $gettext("Default Workstation") }}</q-chip
                     >
                   </q-td>
                   <q-td>{{ props.row.desc }}</q-td>
@@ -222,7 +233,11 @@
                       style="cursor: pointer; text-decoration: underline"
                       class="text-primary"
                       @click="showRelations(props.row)"
-                      >{{ `Show Relations (${props.row.agents_count})` }}</span
+                      >{{
+                        $gettext("Show Relations (%{count})", {
+                          count: props.row.agents_count,
+                        })
+                      }}</span
                     >
                   </q-td>
                   <q-td>
@@ -231,11 +246,12 @@
                       class="text-primary"
                       @click="showPolicyExclusions(props.row)"
                       >{{
-                        `Show Policy Exclusions (${
-                          props.row.excluded_agents.length +
-                          props.row.excluded_clients.length +
-                          props.row.excluded_sites.length
-                        })`
+                        $gettext("Show Policy Exclusions (%{count})", {
+                          count:
+                            props.row.excluded_agents.length +
+                            props.row.excluded_clients.length +
+                            props.row.excluded_sites.length,
+                        })
                       }}</span
                     >
                   </q-td>
@@ -261,7 +277,9 @@
                       size="1.5em"
                       @click="showCopyPolicyForm(props.row)"
                     >
-                      <q-tooltip>Create a copy of this policy</q-tooltip>
+                      <q-tooltip>{{
+                        $gettext("Create a copy of this policy")
+                      }}</q-tooltip>
                     </q-icon>
                   </q-td>
                 </q-tr>
@@ -282,8 +300,16 @@
             narrow-indicator
             no-caps
           >
-            <q-tab name="checks" icon="fas fa-check-double" label="Checks" />
-            <q-tab name="tasks" icon="fas fa-tasks" label="Tasks" />
+            <q-tab
+              name="checks"
+              icon="fas fa-check-double"
+              :label="$pgettext('Role permissions', 'Checks')"
+            />
+            <q-tab
+              name="tasks"
+              icon="fas fa-tasks"
+              :label="$gettext('Tasks')"
+            />
           </q-tabs>
           <q-separator />
           <q-tab-panels v-model="subtab" :animated="false">
@@ -332,57 +358,7 @@ export default {
       subtab: "checks",
       policies: [],
       selectedPolicy: null,
-      columns: [
-        { name: "active", label: "Active", field: "active", align: "left" },
-        {
-          name: "enforced",
-          label: "Enforced",
-          field: "enforced",
-          align: "left",
-        },
-        {
-          name: "name",
-          label: "Name",
-          field: "name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "desc",
-          label: "Description",
-          field: "desc",
-          align: "left",
-        },
-        {
-          name: "relations",
-          label: "Relations",
-          field: "relations",
-          align: "left",
-        },
-        {
-          name: "exclusions",
-          label: "Exclusions",
-          align: "left",
-        },
-        {
-          name: "winupdatepolicy",
-          label: "Patch Policy",
-          field: "winupdatepolicy",
-          align: "left",
-        },
-        {
-          name: "alert_template",
-          label: "Alert Template",
-          field: "alert_template",
-          align: "left",
-        },
-        {
-          name: "actions",
-          label: "Actions",
-          field: "actions",
-          align: "left",
-        },
-      ],
+
       pagination: {
         rowsPerPage: 0,
         sortBy: "name",
@@ -390,6 +366,67 @@ export default {
       },
     };
   },
+  computed: {
+    columns() {
+      return [
+        {
+          name: "active",
+          label: this.$pgettext("Automation policy management", "Active"),
+          field: "active",
+          align: "left",
+        },
+        {
+          name: "enforced",
+          label: this.$gettext("Enforced"),
+          field: "enforced",
+          align: "left",
+        },
+        {
+          name: "name",
+          label: this.$pgettext("Settings actions", "Name"),
+          field: "name",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "desc",
+          label: this.$pgettext("Automation policy management", "Description"),
+          field: "desc",
+          align: "left",
+        },
+        {
+          name: "relations",
+          label: this.$gettext("Relations"),
+          field: "relations",
+          align: "left",
+        },
+        {
+          name: "exclusions",
+          label: this.$gettext("Exclusions"),
+          align: "left",
+        },
+        {
+          name: "winupdatepolicy",
+          label: this.$gettext("Patch Policy"),
+          field: "winupdatepolicy",
+          align: "left",
+        },
+        {
+          name: "alert_template",
+          label: this.$gettext("Alert Template"),
+          field: "alert_template",
+          align: "left",
+        },
+        {
+          name: "actions",
+          label: this.$pgettext("Automation policy management", "Actions"),
+          field: "actions",
+          align: "left",
+        },
+      ];
+    },
+  },
+
   methods: {
     getPolicies() {
       this.$q.loading.show();
@@ -413,9 +450,9 @@ export default {
     deletePolicy(policy) {
       this.$q
         .dialog({
-          title: "Delete policy?",
+          title: this.$gettext("Delete policy?"),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$gettext("Delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -424,7 +461,7 @@ export default {
             .then(() => {
               this.refresh();
               this.$q.loading.hide();
-              this.notifySuccess("Policy was deleted!");
+              this.notifySuccess(this.$gettext("Policy was deleted!"));
               this.$store.dispatch("loadTree");
             })
             .catch(() => {
@@ -498,8 +535,8 @@ export default {
           componentProps: {
             title:
               policy.winupdatepolicy.length > 0
-                ? "Edit Patch Policy"
-                : "Add Patch Policy",
+                ? this.$gettext("Edit Patch Policy")
+                : this.$gettext("Add Patch Policy"),
             vuecomponent: PatchPolicyForm,
             componentProps: {
               policy: policy,
@@ -534,13 +571,13 @@ export default {
 
       if (type === "Active") {
         text = !policy.active
-          ? "Policy enabled successfully"
-          : "Policy disabled successfully";
+          ? this.$gettext("Policy enabled successfully")
+          : this.$gettext("Policy disabled successfully");
         data["active"] = !policy.active;
       } else if (type === "Enforced") {
         text = !policy.enforced
-          ? "Policy enforced successfully"
-          : "Policy enforcement disabled";
+          ? this.$gettext("Policy enforced successfully")
+          : this.$gettext("Policy enforcement disabled");
         data["enforced"] = !policy.enforced;
       }
 
@@ -557,13 +594,16 @@ export default {
     },
     patchPolicyText(policy) {
       return policy.winupdatepolicy.length > 0
-        ? "Modify Patch Policy"
-        : "Create Patch Policy";
+        ? this.$gettext("Modify Patch Policy")
+        : this.$gettext("Create Patch Policy");
     },
     alertTemplateText(policy) {
       return policy.alert_template
-        ? "Modify Alert Template"
-        : "Assign Alert Template";
+        ? this.$gettext("Modify Alert Template")
+        : this.$pgettext(
+            "Automation policy management",
+            "Assign Alert Template",
+          );
     },
     rowSelectedClass(id, selectedPolicy) {
       if (selectedPolicy && selectedPolicy.id === id)

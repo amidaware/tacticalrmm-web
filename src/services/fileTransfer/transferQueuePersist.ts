@@ -1,3 +1,5 @@
+import { recoveryMessageCode, transferItemMessage } from "./queueMessages";
+import { gettext } from "@/gettext";
 import {
   FILE_TRANSFER_LOCAL_PAUSED_LS_KEY,
   FILE_TRANSFER_UI_META_IDB_STORE,
@@ -151,16 +153,24 @@ export function formatResumeWindowCaption(expiresAt?: string): string | null {
   const end = Date.parse(expiresAt);
   if (!Number.isFinite(end)) return null;
   const ms = end - Date.now();
-  if (ms <= 0) return "Resume window expired";
+  if (ms <= 0) return gettext.$gettext("Resume window expired");
   const mins = Math.max(1, Math.round(ms / 60_000));
   if (mins >= 60) {
     const hours = Math.floor(mins / 60);
     const rem = mins % 60;
     return rem
-      ? `Resume available for ${hours}h ${rem}m`
-      : `Resume available for ${hours}h`;
+      ? gettext.$gettext("Resume available for %{hours}h %{minutes}m", {
+          hours: hours,
+          minutes: rem,
+        })
+      : gettext.$gettext("Resume available for %{hours}h", { hours: hours });
   }
-  return `Resume available for ${mins} minute${mins === 1 ? "" : "s"}`;
+  return gettext.$ngettext(
+    "Resume available for %{count} minute",
+    "Resume available for %{count} minutes",
+    mins,
+    { count: mins },
+  );
 }
 
 export function matchesUploadFileIdentity(
@@ -437,19 +447,9 @@ export async function hasStoredDownloadHandle(
 function downloadRecoveryErrorMessage(
   recoveryHint: TransferRecoveryHint,
 ): string | undefined {
-  if (recoveryHint === "non_resumable") {
-    return "This download cannot be resumed here. Cancel to free the session.";
-  }
-  if (recoveryHint === "needs_destination") {
-    return "Select the existing download file to resume.";
-  }
-  if (recoveryHint === "needs_permission") {
-    return "Click Resume and allow file access to continue.";
-  }
-  if (recoveryHint === "archive_preparing") {
-    return "Archive was still preparing. Resume to continue.";
-  }
-  return undefined;
+  return transferItemMessage({
+    messageCode: recoveryMessageCode(recoveryHint),
+  });
 }
 
 export interface ReconcileResult {
@@ -531,6 +531,7 @@ export async function reconcileResumableTransfers(
         committedOffset: transfer.committed_offset,
         totalSize: transfer.total_size,
         chunkSize: transfer.chunk_size,
+        messageCode: recoveryMessageCode(recoveryHint),
         errorMessage: downloadRecoveryErrorMessage(recoveryHint),
       });
     } catch {
@@ -563,6 +564,7 @@ export async function reconcileResumableTransfers(
           committedOffset: transfer.committed_offset,
           totalSize: transfer.total_size,
           chunkSize: transfer.chunk_size,
+          messageCode: recoveryMessageCode("needs_destination"),
           errorMessage: downloadRecoveryErrorMessage("needs_destination"),
         });
       }

@@ -6,8 +6,18 @@
   "scripts": {
     "serve": "quasar dev",
     "build": "quasar build",
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore"
+    "lint": "eslint --ext .js,.ts,.vue,.mjs,.cjs ./",
+    "format": "prettier --write \"**/*.{js,mjs,cjs,ts,vue,html,md,json,yml,yaml}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "gettext:extract": "node scripts/gettext/extract.mjs",
+    "gettext:compile": "node scripts/gettext/compile.mjs",
+    "preserve": "npm run gettext:compile",
+    "prebuild": "npm run gettext:compile",
+    "gettext:test": "npm run gettext:compile && node --test tests/gettext-runtime/*.test.mjs && node scripts/gettext/service-tests.mjs && node scripts/gettext/service-audit.mjs && node scripts/gettext/ui-audit.mjs && node scripts/gettext/runtime-tests.mjs",
+    "gettext:services:check": "node scripts/gettext/service-audit.mjs",
+    "gettext:services:test": "npm run gettext:compile && node scripts/gettext/service-tests.mjs && node scripts/gettext/service-audit.mjs",
+    "format:check": "prettier --check \"**/*.{js,mjs,cjs,ts,vue,html,md,json,yml,yaml}\" --ignore-path .gitignore --ignore-path .prettierignore",
+    "gettext:check": "node scripts/gettext/check.mjs && node scripts/gettext/service-audit.mjs",
+    "gettext:check-extraction": "node scripts/gettext/check-extraction.mjs"
   },
   "dependencies": {
     "@quasar/extras": "1.16.17",
@@ -27,21 +37,26 @@
     "vue": "3.5.22",
     "vue-router": "4.5.1",
     "vue3-apexcharts": "1.7.0",
+    "vue3-gettext": "4.0.1",
     "vuedraggable": "4.1.0",
     "vuex": "4.1.0",
     "yaml": "2.6.0"
   },
   "devDependencies": {
-    "@intlify/unplugin-vue-i18n": "4.0.0",
     "@quasar/app-vite": "1.10.2",
     "@quasar/cli": "2.4.1",
     "@types/node": "22.7.5",
     "@typescript-eslint/eslint-plugin": "7.16.0",
     "@typescript-eslint/parser": "7.16.0",
+    "@vue/compiler-dom": "3.5.22",
+    "@vue/compiler-sfc": "3.5.22",
     "autoprefixer": "10.4.20",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-vue": "8.7.1",
+    "fake-indexeddb": "6.2.6",
+    "jsdom": "26.1.0",
+    "postcss-nested": "^6.2.0",
     "prettier": "3.3.3",
     "typescript": "5.9.2"
   }

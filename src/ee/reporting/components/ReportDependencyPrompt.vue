@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        Select Report Dependencies
+        {{ $gettext("Select Report Dependencies") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -56,12 +58,12 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Submit"
+          :label="$gettext('Submit')"
           color="primary"
           @click="submit"
         />
@@ -71,6 +73,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref, reactive, onBeforeMount } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { notifyError } from "@/utils/notify";
@@ -121,7 +124,7 @@ function validate() {
 
 function submit() {
   if (validate()) onDialogOK(dependencies);
-  else notifyError("All fields must have a value");
+  else notifyError(gettext.$gettext("All fields must have a value"));
 }
 
 onBeforeMount(() => {

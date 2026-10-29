@@ -6,7 +6,7 @@
   >
     <q-card style="min-width: 360px">
       <q-card-section>
-        <div class="text-h6">Rename</div>
+        <div class="text-h6">{{ $gettext("Rename") }}</div>
       </q-card-section>
 
       <q-separator />
@@ -18,7 +18,7 @@
           dense
           outlined
           autofocus
-          label="Name"
+          :label="$pgettext('File browser', 'Name')"
           :rules="nameRules"
           maxlength="255"
           counter
@@ -27,10 +27,10 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat :label="$gettext('Cancel')" color="primary" v-close-popup />
         <q-btn
           unelevated
-          label="Rename"
+          :label="$gettext('Rename')"
           color="primary"
           :loading="saving"
           :disable="saving || !canSubmit"

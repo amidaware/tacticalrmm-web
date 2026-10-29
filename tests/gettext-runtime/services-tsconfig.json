@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "vite/client", "quasar"]
+  },
+  "include": [
+    "../../src/types/typings.d.ts",
+    "../../src/gettext/**/*.ts",
+    "../../src/services/fileTransfer/**/*.ts",
+    "../../src/utils/format.ts",
+    "../../src/utils/filebrowser.ts",
+    "../../src/utils/filebrowserColumns.ts",
+    "../../src/utils/validation.ts",
+    "../../src/composables/scripts.ts",
+    "../../src/composables/core.ts"
+  ]
+}

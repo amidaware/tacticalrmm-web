@@ -14,7 +14,7 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        New Report Template
+        {{ $gettext("New Report Template") }}
         <!-- <q-btn
           icon="help"
           round
@@ -24,13 +24,15 @@ For details, see: https://license.tacticalrmm.com/ee
         /> -->
         <q-space />
         <q-btn dense flat icon="close" @click="openClosePrompt">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="Report Name"
+          :label="$gettext('Report Name')"
           class="q-pr-sm"
           filled
           dense
@@ -43,7 +45,7 @@ For details, see: https://license.tacticalrmm.com/ee
           style="width: 250px"
           class="q-pr-sm"
           :options="HTMLTemplateOptions"
-          label="Base Templates"
+          :label="$gettext('Base Templates')"
           map-options
           emit-value
           dense
@@ -56,7 +58,7 @@ For details, see: https://license.tacticalrmm.com/ee
           style="width: 250px"
           class="q-pr-sm"
           :options="dependsOnFilterOptions"
-          label="Template Dependencies"
+          :label="$gettext('Template Dependencies')"
           multiple
           dense
           filled
@@ -66,9 +68,11 @@ For details, see: https://license.tacticalrmm.com/ee
           @filter="filterFn"
         >
           <template v-slot:selected>
-            <span v-if="state.depends_on && state.depends_on?.length > 0"
-              >{{ state.depends_on?.length }} Selected</span
-            >
+            <span v-if="state.depends_on && state.depends_on?.length > 0">{{
+              $gettext("%{count} Selected", {
+                count: state.depends_on?.length,
+              })
+            }}</span>
           </template>
         </q-select>
 
@@ -79,30 +83,40 @@ For details, see: https://license.tacticalrmm.com/ee
           color="primary"
           :disable="debug"
         />
-        <q-toggle v-model="debug" dense label="Debug" class="q-pl-sm" />
+        <q-toggle
+          v-model="debug"
+          dense
+          :label="$gettext('Debug')"
+          class="q-pl-sm"
+        />
         <q-space />
 
         <q-tabs v-model="tab" dense shrink>
           <q-tab
             v-if="templateType === 'markdown'"
             name="markdown"
-            label="Markdown"
+            :label="$gettext('Markdown Template')"
             :ripple="false"
           />
           <q-tab
             v-else-if="templateType === 'html'"
             name="html"
-            label="Html"
+            :label="$gettext('HTML')"
             :ripple="false"
           />
-          <q-tab v-else name="plaintext" label="Plain Text" :ripple="false" />
+          <q-tab
+            v-else
+            name="plaintext"
+            :label="$gettext('Plain Text')"
+            :ripple="false"
+          />
           <q-tab
             v-if="templateType !== 'plaintext'"
             name="css"
-            label="CSS"
+            :label="$gettext('CSS')"
             :ripple="false"
           />
-          <q-tab name="preview" label="Preview" :ripple="false" />
+          <q-tab name="preview" :label="$gettext('Preview')" :ripple="false" />
         </q-tabs>
       </q-toolbar>
 
@@ -185,23 +199,27 @@ For details, see: https://license.tacticalrmm.com/ee
                       flat
                       dense
                       :ripple="false"
-                      label="vars"
+                      :label="$gettext('vars')"
                       no-caps
                       @click="splitter > 3 ? (splitter = 3) : (splitter = 35)"
                     >
                       <q-tooltip :delay="500">{{
-                        splitter >= 3 ? "Hide variables" : "Show variables"
+                        splitter >= 3
+                          ? $gettext("Hide variables")
+                          : $gettext("Show variables")
                       }}</q-tooltip>
                     </q-btn>
                     <q-btn
                       flat
                       dense
                       :ripple="false"
-                      label="base"
+                      :label="$gettext('base')"
                       no-caps
                       @click="openBaseTemplateForm"
                     >
-                      <q-tooltip :delay="500">Add Base Template</q-tooltip>
+                      <q-tooltip :delay="500">{{
+                        $gettext("Add Base Template")
+                      }}</q-tooltip>
                     </q-btn>
                   </template>
                 </EditorToolbar>
@@ -230,7 +248,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   ></q-btn>
 
                   <div v-if="splitter > 8" class="q-pl-xs text-subtitle">
-                    Variables
+                    {{ $gettext("Variables") }}
                   </div>
                 </q-bar>
                 <div
@@ -255,7 +273,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-inner-loading
         v-if="tab == 'preview'"
         :showing="isLoading"
-        label="Generating Report..."
+        :label="$gettext('Generating Report...')"
         label-class="text-teal"
         label-style="font-size: 1.1em"
       />
@@ -264,18 +282,25 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-toggle
           v-if="reportTemplate"
           v-model="autoSave"
-          label="Auto-save"
+          :label="$gettext('Auto-save')"
           dense
         />
-        <span class="q-pl-sm" v-if="showSaved">Template Saved!</span>
+        <span class="q-pl-sm" v-if="showSaved">{{
+          $gettext("Template Saved!")
+        }}</span>
         <q-space />
-        <q-btn dense flat label="Cancel" @click="openClosePrompt" />
+        <q-btn
+          dense
+          flat
+          :label="$gettext('Cancel')"
+          @click="openClosePrompt"
+        />
         <q-btn
           v-if="reportTemplate"
           :loading="isLoading"
           dense
           flat
-          label="Apply"
+          :label="$gettext('Apply')"
           color="primary"
           @click="applyChanges"
         />
@@ -283,7 +308,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="submit"
         />
@@ -293,6 +318,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, reactive, computed, watch, onBeforeMount, shallowRef } from "vue";
 import { until, useDebounceFn, useTimeoutFn } from "@vueuse/shared";
@@ -375,8 +401,8 @@ watch(
 function openClosePrompt() {
   if (edited.value) {
     $q.dialog({
-      title: "You have unsaved changes",
-      message: "Would you like to close?",
+      title: gettext.$gettext("You have unsaved changes"),
+      message: gettext.$gettext("Would you like to close?"),
       cancel: true,
       persistent: true,
     }).onOk(() => {
@@ -403,19 +429,19 @@ const previewFormat = ref<ReportFormat>(
     : "plaintext",
 );
 
-const formatOptions = [
+const formatOptions = computed(() => [
   {
     label:
       props.templateType === "html" || props.templateType === "markdown"
-        ? "HTML"
-        : "Text",
+        ? gettext.$gettext("HTML")
+        : gettext.$pgettext("Report editing", "Text"),
     value:
       props.templateType === "html" || props.templateType === "markdown"
         ? "html"
         : "plaintext",
   },
-  { label: "PDF", value: "pdf" },
-];
+  { label: gettext.$gettext("PDF"), value: "pdf" },
+]);
 
 const dependencies = ref<ReportDependencies>({});
 
@@ -485,8 +511,8 @@ const tab = ref(
   props.templateType === "markdown"
     ? "markdown"
     : props.templateType === "html"
-    ? "html"
-    : "plaintext",
+      ? "html"
+      : "plaintext",
 );
 
 onBeforeMount(() => {
@@ -679,12 +705,12 @@ function validate(dontNotify = false): boolean {
   let isValid = true;
 
   if (!state.template_md) {
-    dontNotify || notifyError("Template Text is required");
+    dontNotify || notifyError(gettext.$gettext("Template text is required"));
     isValid = false;
   }
 
   if (!state.name) {
-    dontNotify || notifyError("Template Name is required");
+    dontNotify || notifyError(gettext.$gettext("Template name is required"));
     isNameValid.value = false;
     isValid = false;
   }
@@ -693,7 +719,12 @@ function validate(dontNotify = false): boolean {
   const doc = parseDocument(state.template_variables, { prettyErrors: true });
   if (doc.errors.length > 0) {
     dontNotify ||
-      notifyError("Error in variables: " + doc.errors[0].message, 5000);
+      notifyError(
+        gettext.$gettext("Error in variables: %{error}", {
+          error: doc.errors[0].message,
+        }),
+        5000,
+      );
     isValid = false;
   }
 

@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" maximized @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Report Assets
+        {{ $gettext("Report Assets") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <FileBrowser
@@ -25,7 +27,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             icon="add"
-            label="Upload"
+            :label="$gettext('Upload')"
             no-caps
             dense
             flat
@@ -33,7 +35,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
           <q-btn
             class="q-ml-sm"
-            label="New Folder"
+            :label="$gettext('New Folder')"
             no-caps
             dense
             flat
@@ -46,7 +48,7 @@ For details, see: https://license.tacticalrmm.com/ee
             outline
             dense
             no-caps
-            label="Bulk Actions"
+            :label="$pgettext('Report resources', 'Bulk Actions')"
           >
             <q-list>
               <q-item
@@ -59,7 +61,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-icon name="delete" />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label>Delete</q-item-label>
+                  <q-item-label>{{ $gettext("Delete") }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -73,13 +75,13 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Rename</q-item-section>
+                <q-item-section>{{ $gettext("Rename") }}</q-item-section>
               </q-item>
               <q-item v-close-popup clickable @click="downloadFile(item)">
                 <q-item-section side>
                   <q-icon name="cloud_download" />
                 </q-item-section>
-                <q-item-section>Download</q-item-section>
+                <q-item-section>{{ $gettext("Download") }}</q-item-section>
               </q-item>
 
               <q-item
@@ -90,13 +92,13 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $gettext("Delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item v-close-popup clickable>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $gettext("Close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -107,8 +109,9 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script lang="ts" setup>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useFileBrowser } from "@/composables/filebrowser";
 import {
   fetchReportAssets,
@@ -145,8 +148,20 @@ const { createFileNode, createFolderNode, getFile } = useFileBrowser();
 
 // data
 const nodes = ref([
-  createFolderNode("Assets", "/", "storage", "primary"),
+  createFolderNode(
+    gettext.$pgettext("Report resources", "Assets"),
+    "/",
+    "storage",
+    "primary",
+  ),
 ] as QTreeFileNode[]);
+watch(
+  () => gettext.current,
+  () => {
+    const root = nodes.value.find((node) => node.path === "/");
+    if (root) root.label = gettext.$pgettext("Report resources", "Assets");
+  },
+);
 const fileBrowser = ref<InstanceType<typeof FileBrowser> | null>(null);
 const isLoading = ref(false);
 
@@ -183,19 +198,19 @@ function uploadFiles(node: QTreeFileNode) {
           name,
           path,
           file.size.toString(),
-          asset_id
+          asset_id,
         );
         node.children?.push(fileNode);
       });
 
       fileBrowser.value?.reloadTable();
-    }
+    },
   );
 }
 
 function newFolder(node: QTreeFileNode) {
   $q.dialog({
-    title: "Enter a folder name",
+    title: gettext.$gettext("Enter a folder name"),
     prompt: {
       model: "",
       isValid: (val) => val.length > 0,
@@ -223,7 +238,7 @@ function newFolder(node: QTreeFileNode) {
 
 function sendRename(node: FileSystemNodeTable) {
   $q.dialog({
-    title: `Enter a new ${node.type} name`,
+    title: gettext.$gettext("Enter a new %{type} name", { type: node.type }),
     prompt: {
       model: node.name,
       isValid: (val) => val.length > 0,
@@ -241,7 +256,7 @@ function sendRename(node: FileSystemNodeTable) {
       const treeNode = fileBrowser.value?.getNodeByKey(node.id);
 
       if (treeNode === undefined) {
-        console.error("Node key not found");
+        console.error(gettext.$gettext("Node key not found"));
         return;
       }
 
@@ -275,13 +290,16 @@ async function downloadFile(node: FileSystemNodeTable) {
 
 function deleteFiles(
   nodes: FileSystemNodeTable[],
-  selectedTreeNode: QTreeFileNode
+  selectedTreeNode: QTreeFileNode,
 ) {
   $q.dialog({
-    title: "Are you sure?",
-    message: `You are about to delete ${
-      nodes.length > 1 ? nodes.length + " assets" : "an asset"
-    }. This action isn't reversible`,
+    title: gettext.$gettext("Are you sure?"),
+    message: gettext.$ngettext(
+      "You are about to delete %{count} asset. This action isn't reversible",
+      "You are about to delete %{count} assets. This action isn't reversible",
+      nodes.length,
+      { count: nodes.length },
+    ),
     cancel: true,
     persistent: true,
   }).onOk(async () => {
@@ -290,7 +308,7 @@ function deleteFiles(
       await deleteAssets(paths);
 
       selectedTreeNode.children = selectedTreeNode.children?.filter(
-        (node) => !paths.includes(node.path)
+        (node) => !paths.includes(node.path),
       );
 
       fileBrowser.value?.reloadTable();
@@ -306,7 +324,7 @@ function deleteFiles(
 function updatePathOnChildNodes(
   nodes: QTreeFileNode[],
   oldPath: string,
-  newPath: string
+  newPath: string,
 ) {
   nodes.forEach((node) => {
     node.path = node.path.replace(oldPath, newPath);

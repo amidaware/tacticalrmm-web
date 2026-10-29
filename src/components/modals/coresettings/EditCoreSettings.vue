@@ -3,25 +3,30 @@
     <q-splitter v-model="splitterModel">
       <template v-slot:before>
         <q-tabs dense v-model="tab" vertical class="text-primary">
-          <q-tab name="general" label="General" />
-          <q-tab name="emailalerts" label="Email Alerts" />
-          <q-tab name="smsalerts" label="SMS Alerts" />
-          <q-tab name="meshcentral" label="MeshCentral" />
-          <q-tab name="customfields" label="Custom Fields" />
-          <q-tab name="keystore" label="Key Store" />
-          <q-tab name="urlactions" label="URL Actions" />
-          <q-tab name="webhooks" label="Web Hooks" />
-          <q-tab name="retention" label="Retention" />
-          <q-tab name="apikeys" label="API Keys" />
-          <q-tab name="sso" label="Single Sign-On (SSO)" />
-          <q-tab name="schedules" label="Schedules" />
+          <q-tab
+            name="general"
+            :label="$pgettext('Global settings', 'General')"
+          />
+          <q-tab name="emailalerts" :label="$gettext('Email Alerts')" />
+          <q-tab name="smsalerts" :label="$gettext('SMS Alerts')" />
+          <q-tab name="meshcentral" :label="$gettext('MeshCentral')" />
+          <q-tab name="customfields" :label="$gettext('Custom Fields')" />
+          <q-tab name="keystore" :label="$gettext('Key Store')" />
+          <q-tab name="urlactions" :label="$gettext('URL Actions')" />
+          <q-tab name="webhooks" :label="$gettext('Web Hooks')" />
+          <q-tab name="retention" :label="$gettext('Retention')" />
+          <q-tab name="apikeys" :label="$gettext('API Keys')" />
+          <q-tab name="sso" :label="$gettext('Single Sign-On (SSO)')" />
+          <q-tab name="schedules" :label="$gettext('Schedules')" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
       <template v-slot:after>
         <q-form @submit.prevent="editSettings">
           <q-card-section class="row items-center">
-            <div class="text-h6">Global Settings</div>
+            <div class="text-h6">
+              {{ $gettext("Global Settings") }}
+            </div>
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup />
           </q-card-section>
@@ -34,25 +39,30 @@
             >
               <!-- general -->
               <q-tab-panel name="general">
-                <div class="text-subtitle2">General</div>
+                <div class="text-subtitle2">
+                  {{ $pgettext("Global settings", "General") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
                   <q-checkbox
                     v-model="settings.agent_auto_update"
-                    label="Enable agent automatic self update"
+                    :label="$gettext('Enable agent automatic self update')"
                   >
-                    <q-tooltip> Runs at 35mins past every hour </q-tooltip>
+                    <q-tooltip>
+                      {{ $gettext("Runs at 35mins past every hour") }}
+                    </q-tooltip>
                   </q-checkbox>
                 </q-card-section>
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_scripts"
-                    label="Enable server side scripts"
+                    :label="$gettext('Enable server side scripts')"
                   >
-                    <q-tooltip
-                      >Allow running scripts on TRMM server for alert
-                      failure/resolve actions</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $gettext(
+                        "Allow running scripts on TRMM server for alert failure/resolve actions",
+                      )
+                    }}</q-tooltip>
                   </q-checkbox>
                   <q-btn
                     size="sm"
@@ -71,9 +81,11 @@
                 <q-card-section v-if="!hosted" class="row">
                   <q-checkbox
                     v-model="settings.enable_server_webterminal"
-                    label="Enable web terminal"
+                    :label="$gettext('Enable web terminal')"
                   >
-                    <q-tooltip>Enable the web terminal</q-tooltip>
+                    <q-tooltip>{{
+                      $gettext("Enable the web terminal")
+                    }}</q-tooltip>
                   </q-checkbox>
                   <q-btn
                     size="sm"
@@ -90,7 +102,9 @@
                   </q-btn>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default agent timezone:</div>
+                  <div class="col-4">
+                    {{ $gettext("Default agent timezone") }}:
+                  </div>
                   <div class="col-2"></div>
                   <tactical-dropdown
                     filterable
@@ -103,7 +117,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default date format:</div>
+                  <div class="col-4">
+                    {{ $gettext("Default date format") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -124,13 +140,17 @@
                           )
                         "
                       >
-                        <q-tooltip>Click to see formatting options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see formatting options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default server policy:</div>
+                  <div class="col-4">
+                    {{ $gettext("Default server policy") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -145,7 +165,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default workstation policy:</div>
+                  <div class="col-4">
+                    {{ $gettext("Default workstation policy") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -160,7 +182,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Default alert template:</div>
+                  <div class="col-4">
+                    {{ $gettext("Default alert template") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     clearable
@@ -176,24 +200,24 @@
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4 flex items-center">
-                    Receive notifications on:
+                    {{ $gettext("Receive notifications on") }}:
                   </div>
                   <div class="col-2"></div>
                   <q-checkbox
                     dense
                     v-model="settings.notify_on_info_alerts"
                     class="col-3"
-                    label="Informational Alerts"
+                    :label="$gettext('Informational Alerts')"
                   />
                   <q-checkbox
                     dense
                     v-model="settings.notify_on_warning_alerts"
                     class="col-3"
-                    label="Warning Alerts"
+                    :label="$gettext('Warning Alerts')"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Agent Debug Level:</div>
+                  <div class="col-4">{{ $gettext("Agent Debug Level") }}:</div>
                   <div class="col-2"></div>
                   <q-select
                     emit-value
@@ -208,20 +232,28 @@
                 </q-card-section>
                 <q-card-section class="row">
                   <div class="col-4">
-                    Clear faults on agents that haven't checked in after (days):
+                    {{
+                      $gettext(
+                        "Clear faults on agents that haven\u0027t checked in after (days)",
+                      )
+                    }}:
                   </div>
                   <div class="col-2"></div>
                   <q-input
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                     outlined
                     dense
                     v-model.number="settings.clear_faults_days"
                     class="col-6"
-                    :rules="[(val) => val >= 0 || 'Minimum is 0']"
+                    :rules="[(val) => val >= 0 || $gettext('Minimum is 0')]"
                   />
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">Terminal Experience</div>
+                  <div class="col-6">
+                    {{ $gettext("Terminal Experience") }}
+                  </div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
@@ -234,7 +266,9 @@
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">File Browser Experience</div>
+                  <div class="col-6">
+                    {{ $gettext("File Browser Experience") }}
+                  </div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
@@ -247,7 +281,13 @@
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">Windows Default Terminal</div>
+                  <div class="col-6">
+                    {{
+                      $gettext("%{platform} Default Terminal", {
+                        platform: "Windows",
+                      })
+                    }}
+                  </div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
@@ -263,20 +303,33 @@
                       class="q-mt-md"
                       dense
                       outlined
-                      placeholder="Enter custom shell path"
+                      :placeholder="$gettext('Enter custom shell path')"
                       bottom-slots
                     >
                       <template v-slot:hint>
                         <span style="font-size: 1.2em">
-                          Enter custom shell path (e.g. C:\Program
-                          Files\PowerShell\7\pwsh.exe)
+                          {{
+                            $gettext(
+                              "Enter custom shell path (e.g. %{example})",
+                              {
+                                example:
+                                  "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+                              },
+                            )
+                          }}
                         </span>
                       </template>
                     </q-input>
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">Linux Default Terminal</div>
+                  <div class="col-6">
+                    {{
+                      $gettext("%{platform} Default Terminal", {
+                        platform: "Linux",
+                      })
+                    }}
+                  </div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
@@ -292,12 +345,22 @@
                       class="q-mt-md"
                       dense
                       outlined
-                      placeholder="Enter custom shell path (e.g. /usr/bin/fish)"
+                      :placeholder="
+                        $gettext('Enter custom shell path (e.g. %{example})', {
+                          example: '/usr/bin/fish',
+                        })
+                      "
                     />
                   </div>
                 </q-card-section>
                 <q-card-section class="row items-start content-between">
-                  <div class="col-6">macOS Default Terminal</div>
+                  <div class="col-6">
+                    {{
+                      $gettext("%{platform} Default Terminal", {
+                        platform: "macOS",
+                      })
+                    }}
+                  </div>
                   <div class="col-6">
                     <q-option-group
                       class="q-gutter-lg"
@@ -313,16 +376,22 @@
                       class="q-mt-md"
                       dense
                       outlined
-                      placeholder="Enter custom shell path (e.g. /bin/zsh)"
+                      :placeholder="
+                        $gettext('Enter custom shell path (e.g. %{example})', {
+                          example: '/bin/zsh',
+                        })
+                      "
                     />
                   </div>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Reset Patch Policy on Agents:</div>
+                  <div class="col-4">
+                    {{ $gettext("Reset Patch Policy on Agents") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-btn
                     color="negative"
-                    label="Reset"
+                    :label="$pgettext('Reset label', 'Reset')"
                     @click="showResetPatchPolicy"
                   />
                 </q-card-section>
@@ -330,7 +399,9 @@
               <!-- email alerts -->
               <q-tab-panel name="emailalerts">
                 <div class="text-subtitle2 row">
-                  <div>Email Alert Routing</div>
+                  <div>
+                    {{ $gettext("Email Alert Routing") }}
+                  </div>
                   <q-space />
                   <div>
                     <q-btn
@@ -338,14 +409,16 @@
                       color="grey-5"
                       icon="fas fa-plus"
                       text-color="black"
-                      label="Add emails"
+                      :label="$gettext('Add emails')"
                       @click="toggleAddEmail"
                     />
                   </div>
                 </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Recipients</div>
+                  <div class="col-3">
+                    {{ $pgettext("Global settings", "Recipients") }}
+                  </div>
                   <div class="col-4"></div>
                   <div class="col-5">
                     <q-list
@@ -371,27 +444,33 @@
                     </q-list>
                     <q-list v-else>
                       <q-item-section>
-                        <q-item-label>No recipients</q-item-label>
+                        <q-item-label>{{
+                          $gettext("No recipients")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-list>
                   </div>
                 </q-card-section>
                 <!-- smtp -->
-                <div class="text-subtitle2">SMTP Settings</div>
+                <div class="text-subtitle2">
+                  {{ $gettext("SMTP Settings") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-2">From email:</div>
+                  <div class="col-2">{{ $gettext("From email") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
                     dense
                     v-model="settings.smtp_from_email"
                     class="col-6 q-pa-none"
-                    :rules="[(val) => isValidEmail(val) || 'Invalid email']"
+                    :rules="[
+                      (val) => isValidEmail(val) || $gettext('Invalid email'),
+                    ]"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">From name:</div>
+                  <div class="col-2">{{ $gettext("From name") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -401,7 +480,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Host:</div>
+                  <div class="col-2">{{ $gettext("Host") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -411,7 +490,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Port:</div>
+                  <div class="col-2">{{ $gettext("Port") }}:</div>
                   <div class="col-4"></div>
                   <q-input
                     dense
@@ -420,14 +499,15 @@
                     filled
                     class="q-pa-none"
                     :rules="[
-                      (val) => (val > 0 && val <= 65535) || 'Invalid Port',
+                      (val) =>
+                        (val > 0 && val <= 65535) || $gettext('Invalid Port'),
                     ]"
                   />
                 </q-card-section>
                 <q-card-section class="row">
                   <q-checkbox
                     v-model="settings.smtp_requires_auth"
-                    label="My Server Requires Authentication"
+                    :label="$gettext('My Server Requires Authentication')"
                     class="q-pa-none"
                   />
                 </q-card-section>
@@ -435,7 +515,9 @@
                   class="row"
                   v-show="settings.smtp_requires_auth"
                 >
-                  <div class="col-2">Username:</div>
+                  <div class="col-2">
+                    {{ $pgettext("Settings actions", "Username") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -448,7 +530,9 @@
                   class="row"
                   v-show="settings.smtp_requires_auth"
                 >
-                  <div class="col-2">Password:</div>
+                  <div class="col-2">
+                    {{ $pgettext("Settings actions", "Password") }}:
+                  </div>
                   <div class="col-4"></div>
                   <q-input
                     outlined
@@ -470,7 +554,9 @@
               <!-- twilio sms alerts -->
               <q-tab-panel name="smsalerts">
                 <div class="text-subtitle2 row">
-                  <div>SMS Alert Routing</div>
+                  <div>
+                    {{ $gettext("SMS Alert Routing") }}
+                  </div>
                   <q-space />
                   <div>
                     <q-btn
@@ -478,14 +564,16 @@
                       color="grey-5"
                       icon="fas fa-plus"
                       text-color="black"
-                      label="Add numbers"
+                      :label="$gettext('Add numbers')"
                       @click="toggleAddSMSNumber"
                     />
                   </div>
                 </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Recipients</div>
+                  <div class="col-3">
+                    {{ $pgettext("Global settings", "Recipients") }}
+                  </div>
                   <div class="col-4"></div>
                   <div class="col-5">
                     <q-list
@@ -509,16 +597,20 @@
                     </q-list>
                     <q-list v-else>
                       <q-item-section>
-                        <q-item-label>No recipients</q-item-label>
+                        <q-item-label>{{
+                          $gettext("No recipients")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-list>
                   </div>
                 </q-card-section>
                 <!-- smtp -->
-                <div class="text-subtitle2">Twilio Settings</div>
+                <div class="text-subtitle2">
+                  {{ $gettext("Twilio Settings") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Number:</div>
+                  <div class="col-3">{{ $gettext("Twilio Number") }}:</div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -529,7 +621,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Account SID:</div>
+                  <div class="col-3">{{ $gettext("Twilio Account SID") }}:</div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -539,7 +631,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-3">Twilio Auth Token:</div>
+                  <div class="col-3">{{ $gettext("Twilio Auth Token") }}:</div>
                   <div class="col-3"></div>
                   <q-input
                     outlined
@@ -551,10 +643,14 @@
               </q-tab-panel>
               <!-- meshcentral -->
               <q-tab-panel name="meshcentral">
-                <div class="text-subtitle2">MeshCentral Settings</div>
+                <div class="text-subtitle2">
+                  {{ $gettext("MeshCentral Settings") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Username:</div>
+                  <div class="col-4">
+                    {{ $pgettext("Settings actions", "Username") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -565,12 +661,12 @@
                       (val) =>
                         (val == val.toLowerCase() &&
                           val != val.toUpperCase()) ||
-                        'Username must be all lowercase',
+                        $gettext('Username must be all lowercase'),
                     ]"
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Site:</div>
+                  <div class="col-4">{{ $gettext("Mesh Site") }}:</div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -580,7 +676,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Token:</div>
+                  <div class="col-4">{{ $gettext("Mesh Token") }}:</div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -590,7 +686,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
-                  <div class="col-4">Mesh Device Group Name:</div>
+                  <div class="col-4">
+                    {{ $gettext("Mesh Device Group Name") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
@@ -601,7 +699,7 @@
                 </q-card-section>
                 <q-card-section class="row" v-if="!hosted">
                   <div class="col-4 flex items-center">
-                    Sync Mesh Perms with TRMM:
+                    {{ $gettext("Sync Mesh Perms with TRMM") }}:
                     <q-icon
                       right
                       name="ion-information-circle-outline"
@@ -609,9 +707,11 @@
                       class="cursor-pointer"
                     >
                       <q-tooltip class="text-caption">
-                        It is recommended to keep this option enabled;
-                        otherwise, all TRMM users will have full permissions in
-                        MeshCentral regardless of their permissions in TRMM.
+                        {{
+                          $gettext(
+                            "It is recommended to keep this option enabled; otherwise, all TRMM users will have full permissions in MeshCentral regardless of their permissions in TRMM.",
+                          )
+                        }}
                       </q-tooltip>
                     </q-icon>
                   </div>
@@ -626,17 +726,19 @@
 
                 <q-card-section class="row items-center">
                   <div class="col-4 flex items-center">
-                    Company Name:
+                    {{ $gettext("Company Name") }}:
                     <q-icon
                       name="ion-information-circle-outline"
                       size="sm"
                       class="q-ml-sm cursor-pointer"
                     >
                       <q-tooltip class="text-caption">
-                        Adding your company name here will append it to the
-                        user's full name that appears when doing a remote
-                        control session, for example: 'John Doe - Amidaware
-                        Inc.'
+                        {{
+                          $pgettext(
+                            "Global settings",
+                            "Adding your company name here will append it to the user\u0027s full name that appears when doing a remote control session, for example: \u0027John Doe - Amidaware Inc.\u0027",
+                          )
+                        }}
                       </q-tooltip>
                     </q-icon>
                   </div>
@@ -676,69 +778,89 @@
               <!-- retention -->
               <q-tab-panel name="retention">
                 <q-card-section class="row">
-                  <div class="col-4">Check History (days):</div>
+                  <div class="col-4">
+                    {{ $gettext("Check History (days)") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.check_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Resolved Alerts (days):</div>
+                  <div class="col-4">
+                    {{ $gettext("Resolved Alerts (days)") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.resolved_alerts_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Agent History (days):</div>
+                  <div class="col-4">
+                    {{ $gettext("Agent History (days)") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.agent_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Debug Logs (days):</div>
+                  <div class="col-4">{{ $gettext("Debug Logs (days)") }}:</div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.debug_log_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Audit Logs (days):</div>
+                  <div class="col-4">{{ $gettext("Audit Logs (days)") }}:</div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.audit_log_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Report History (days):</div>
+                  <div class="col-4">
+                    {{ $gettext("Report History (days)") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     dense
                     outlined
                     v-model="settings.report_history_prune_days"
                     class="col-6"
-                    hint="Setting this value to 0 disables this feature"
+                    :hint="
+                      $gettext('Setting this value to 0 disables this feature')
+                    "
                   />
                 </q-card-section>
               </q-tab-panel>
@@ -810,13 +932,13 @@
                 tab === 'meshcentral' ||
                 tab === 'retention'
               "
-              label="Save"
+              :label="$gettext('Save')"
               color="primary"
               type="submit"
             />
             <q-btn
               v-show="tab === 'emailalerts'"
-              label="Save and Test Email"
+              :label="$gettext('Save and Test Email')"
               color="primary"
               type="submit"
               class="q-ml-md"
@@ -824,7 +946,7 @@
             />
             <q-btn
               v-show="tab === 'smsalerts'"
-              label="Save and Test SMS"
+              :label="$gettext('Save and Test SMS')"
               color="primary"
               type="submit"
               class="q-ml-md"
@@ -838,6 +960,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 import { openURL } from "quasar";
 import mixins from "@/mixins/mixins";
 import ResetPatchPolicy from "@/components/modals/coresettings/ResetPatchPolicy.vue";
@@ -882,47 +1005,76 @@ export default {
         opacity: 0.75,
       },
       alertTemplateOptions: [],
-      logLevelOptions: [
-        { label: "Info", value: "info" },
-        { label: "Warning", value: "warning" },
-        { label: "Error", value: "error" },
-        { label: "Critical", value: "critical" },
-      ],
     };
   },
   computed: {
+    logLevelOptions() {
+      return [
+        {
+          label: this.$pgettext("Global settings", "Info"),
+          value: "info",
+        },
+        {
+          label: this.$pgettext("Global settings", "Warning"),
+          value: "warning",
+        },
+        {
+          label: this.$pgettext("Global settings", "Error"),
+          value: "error",
+        },
+        {
+          label: this.$pgettext("Global settings", "Critical"),
+          value: "critical",
+        },
+      ];
+    },
     hosted() {
       return this.$store.state.hosted;
     },
     terminalModeOptions() {
       return [
-        { label: "Use new terminal", value: "new" },
-        { label: "Use legacy terminal", value: "legacy" },
+        {
+          label: this.$gettext("Use new terminal"),
+          value: "new",
+        },
+        {
+          label: this.$gettext("Use legacy terminal"),
+          value: "legacy",
+        },
       ];
     },
     fileBrowserModeOptions() {
       return [
-        { label: "Use new file browser", value: "new" },
-        { label: "Use legacy file browser", value: "legacy" },
+        { label: gettext.$gettext("Use new file browser"), value: "new" },
+        { label: gettext.$gettext("Use legacy file browser"), value: "legacy" },
       ];
     },
     windowsShellOptions() {
       return [
         { label: "CMD", value: "cmd" },
         { label: "PowerShell", value: "powershell" },
-        { label: "Custom", value: "custom" },
+        {
+          label: this.$pgettext("Interactive terminal", "Custom"),
+          value: "custom",
+        },
       ];
     },
     linuxShellOptions() {
       return [
         { label: "Bash", value: "bash" },
-        { label: "Custom", value: "custom" },
+        {
+          label: this.$pgettext("Interactive terminal", "Custom"),
+          value: "custom",
+        },
       ];
     },
     darwinShellOptions() {
       return [
         { label: "Bash", value: "bash" },
-        { label: "Custom", value: "custom" },
+        {
+          label: this.$pgettext("Interactive terminal", "Custom"),
+          value: "custom",
+        },
       ];
     },
   },
@@ -970,11 +1122,12 @@ export default {
     confirmSyncChange(newValue) {
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message:
+          title: this.$gettext("Are you sure?"),
+          message: this.$gettext(
             "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete.",
-          ok: { label: "Yes", color: "primary" },
-          cancel: { label: "No", color: "negative" },
+          ),
+          ok: { label: this.$gettext("Yes"), color: "primary" },
+          cancel: { label: this.$gettext("No"), color: "negative" },
         })
         .onOk(() => {
           this.settings.sync_mesh_with_trmm = newValue;
@@ -988,14 +1141,14 @@ export default {
     toggleAddEmail() {
       this.$q
         .dialog({
-          title: "Add email",
+          title: this.$gettext("Add email"),
           prompt: {
             model: "",
             isValid: (val) => this.isValidEmail(val),
             type: "email",
           },
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: this.$gettext("Add"), color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
@@ -1005,15 +1158,17 @@ export default {
     toggleAddSMSNumber() {
       this.$q
         .dialog({
-          title: "Add number",
-          message:
+          title: this.$gettext("Add number"),
+          message: this.$pgettext(
+            "Global settings",
             "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+          ),
           prompt: {
             model: "",
           },
           html: true,
           cancel: true,
-          ok: { label: "Add", color: "primary" },
+          ok: { label: this.$gettext("Add"), color: "primary" },
           persistent: false,
         })
         .onOk((data) => {
@@ -1040,7 +1195,9 @@ export default {
         .then(() => {
           this.$q.loading.hide();
           if (this.emailTest) {
-            this.$q.loading.show({ message: "Sending test email..." });
+            this.$q.loading.show({
+              message: this.$gettext("Sending test email..."),
+            });
             this.$axios
               .post("/core/emailtest/")
               .then((r) => {
@@ -1054,7 +1211,9 @@ export default {
                 this.$q.loading.hide();
               });
           } else if (this.smsTest) {
-            this.$q.loading.show({ message: "Sending test SMS..." });
+            this.$q.loading.show({
+              message: this.$gettext("Sending test SMS..."),
+            });
             this.$axios
               .post("/core/smstest/")
               .then((r) => {
@@ -1070,7 +1229,7 @@ export default {
           } else {
             this.$emit("close");
             this.$store.dispatch("getDashInfo", false);
-            this.notifySuccess("Settings were edited!");
+            this.notifySuccess(this.$gettext("Settings were edited!"));
           }
         })
         .catch(() => {

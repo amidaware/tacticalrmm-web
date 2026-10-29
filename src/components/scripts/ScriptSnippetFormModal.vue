@@ -14,22 +14,24 @@
           :disable="loading"
           dense
           size="xs"
-          label="Generate Script"
+          :label="$gettext('Generate Script')"
           color="primary"
           no-caps
           @click="generateScriptOpenAI"
         />
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row">
         <q-input
-          :rules="[(val: string) => !!val || '*Required']"
+          :rules="[(val: string) => !!val || $gettext('*Required')]"
           class="q-pa-sm col-4"
           v-model="snippet.name"
-          label="Name"
+          :label="$pgettext('Script configuration', 'Name')"
           filled
           dense
         />
@@ -37,7 +39,7 @@
           v-model="snippet.shell"
           :options="shellOptions"
           class="q-pa-sm col-2"
-          label="Shell Type"
+          :label="$gettext('Shell Type')"
           options-dense
           filled
           dense
@@ -49,7 +51,7 @@
           filled
           dense
           v-model="snippet.desc"
-          label="Description"
+          :label="$pgettext('Script configuration', 'Description')"
         />
       </div>
 
@@ -59,12 +61,12 @@
       ></div>
 
       <q-card-actions align="right">
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="submit"
         />
@@ -74,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composable imports
 import { ref, watch, reactive, computed } from "vue";
 import { useStore } from "vuex";
@@ -145,9 +148,9 @@ const loading = ref(false);
 
 const title = computed(() => {
   if (props.snippet) {
-    return `Editing ${snippet.name}`;
+    return gettext.$gettext("Editing %{name}", { name: snippet.name });
   } else {
-    return "Adding New Script Snippet";
+    return gettext.$gettext("Adding New Script Snippet");
   }
 });
 
@@ -218,7 +221,7 @@ function unloadEditor() {
 
 function generateScriptOpenAI() {
   $q.dialog({
-    title: "Ask ChatGPT what you need!",
+    title: gettext.$gettext("Ask ChatGPT what you need!"),
     prompt: {
       model: `${lang.value} code that `,
       type: "text",

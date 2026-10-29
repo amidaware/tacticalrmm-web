@@ -6,18 +6,22 @@
     :class="{ 'extract-progress-section--dark': $q.dark.isActive }"
   >
     <div class="row items-center justify-between q-mb-xs">
-      <div class="text-subtitle2 text-weight-medium">Extract</div>
+      <div class="text-subtitle2 text-weight-medium">
+        {{ $gettext("Extract") }}
+      </div>
       <q-btn
         dense
         flat
         no-caps
         size="sm"
         color="negative"
-        label="Cancel"
+        :label="$gettext('Cancel')"
         :loading="job.cancelling"
         @click="emit('cancel', job.sessionId)"
       >
-        <q-tooltip>{{ TRANSFER_TOOLTIP_CANCEL_EXTRACT }}</q-tooltip>
+        <q-tooltip>{{
+          $gettext("Cancel the extraction. Files already extracted are kept.")
+        }}</q-tooltip>
       </q-btn>
     </div>
     <div class="text-caption extract-progress-dest q-mb-xs ellipsis">
@@ -41,9 +45,9 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { useQuasar } from "quasar";
 
-import { TRANSFER_TOOLTIP_CANCEL_EXTRACT } from "@/constants/fileTransfer";
 import type { ExtractJob } from "@/types/filebrowser";
 
 const $q = useQuasar();
@@ -62,9 +66,17 @@ function percent(job: ExtractJob): number {
 }
 
 function statusLabel(job: ExtractJob): string {
-  if (job.cancelling) return "Cancelling…";
-  if (job.filesTotal === 0) return "Starting…";
-  return `${job.filesDone.toLocaleString()} of ${job.filesTotal.toLocaleString()} files`;
+  if (job.cancelling) return gettext.$gettext("Cancelling…");
+  if (job.filesTotal === 0) return gettext.$gettext("Starting…");
+  return gettext.$ngettext(
+    "%{done} of %{total} file",
+    "%{done} of %{total} files",
+    job.filesTotal,
+    {
+      done: job.filesDone.toLocaleString(),
+      total: job.filesTotal.toLocaleString(),
+    },
+  );
 }
 </script>
 

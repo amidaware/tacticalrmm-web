@@ -2,26 +2,32 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 600px; max-width: 80vw">
       <q-bar>
-        Service Details - {{ service.display_name }}
+        {{
+          $gettext("Service Details - %{name}", { name: service.display_name })
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service name:</div>
+          <div class="col-3">{{ $gettext("Service name:") }}</div>
           <div class="col-9">{{ service.name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Display name:</div>
+          <div class="col-3">{{ $gettext("Display name:") }}</div>
           <div class="col-9">{{ service.display_name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Description:</div>
+          <div class="col-3">
+            {{ $pgettext("Windows service configuration", "Description:") }}
+          </div>
           <div class="col-9">
             <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">{{
               service.description
@@ -30,7 +36,7 @@
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Path:</div>
+          <div class="col-3">{{ $gettext("Path:") }}</div>
           <div class="col-9">
             <code>{{ service.binpath }}</code>
           </div>
@@ -38,7 +44,7 @@
         <br />
         <br />
         <div class="row">
-          <div class="col-3">Startup type:</div>
+          <div class="col-3">{{ $gettext("Startup type:") }}</div>
           <div class="col-5">
             <q-select
               dense
@@ -55,16 +61,24 @@
       <q-separator />
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service status:</div>
+          <div class="col-3">
+            {{ $gettext("Service status:") }}
+          </div>
           <div class="col-9">{{ service.status }}</div>
         </div>
         <br />
         <div class="row">
           <q-btn-group color="primary" push>
-            <q-btn label="Start" @click="sendServiceAction(service, 'start')" />
-            <q-btn label="Stop" @click="sendServiceAction(service, 'stop')" />
             <q-btn
-              label="Restart"
+              :label="$pgettext('Windows services', 'Start')"
+              @click="sendServiceAction(service, 'start')"
+            />
+            <q-btn
+              :label="$gettext('Stop')"
+              @click="sendServiceAction(service, 'stop')"
+            />
+            <q-btn
+              :label="$gettext('Restart')"
               @click="sendServiceAction(service, 'restart')"
             />
           </q-btn-group>
@@ -72,13 +86,13 @@
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
-        <q-btn flat dense label="Cancel" v-close-popup />
+        <q-btn flat dense :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           :disable="!startupTypeEdited"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="editServiceStartup"
         />
@@ -88,6 +102,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -97,25 +112,6 @@ import {
 } from "@/api/services";
 import { notifySuccess } from "@/utils/notify";
 
-// static data
-const startupOptions = [
-  {
-    label: "Automatic (Delayed Start)",
-    value: "autodelay",
-  },
-  {
-    label: "Automatic",
-    value: "automatic",
-  },
-  {
-    label: "Manual",
-    value: "manual",
-  },
-  {
-    label: "Disabled",
-    value: "disabled",
-  },
-];
 export default {
   name: "ServiceDetail",
   emits: [...useDialogPluginComponent.emits],
@@ -130,6 +126,25 @@ export default {
     // services detail
     const startupType = ref("");
     const loading = ref(false);
+
+    const startupOptions = computed(() => [
+      {
+        label: gettext.$gettext("Automatic (Delayed Start)"),
+        value: "autodelay",
+      },
+      {
+        label: gettext.$gettext("Automatic"),
+        value: "automatic",
+      },
+      {
+        label: gettext.$gettext("Manual"),
+        value: "manual",
+      },
+      {
+        label: gettext.$pgettext("Windows service configuration", "Disabled"),
+        value: "disabled",
+      },
+    ]);
 
     const startupTypeEdited = computed(() => {
       if (
@@ -146,7 +161,7 @@ export default {
         const result = await sendAgentServiceAction(
           props.agent_id,
           service.name,
-          { sv_action: action }
+          { sv_action: action },
         );
         notifySuccess(result);
         onDialogOK();
@@ -167,7 +182,7 @@ export default {
         const result = await editAgentServiceStartType(
           props.agent_id,
           props.service.name,
-          data
+          data,
         );
         notifySuccess(result);
         onDialogOK();

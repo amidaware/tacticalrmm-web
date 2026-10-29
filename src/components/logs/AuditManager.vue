@@ -2,15 +2,17 @@
   <q-card>
     <q-bar v-if="modal">
       <q-btn @click="search" class="q-mr-sm" dense flat push icon="refresh" />
-      <q-space />Audit Manager
+      <q-space />{{ $gettext("Audit Manager") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $gettext("Close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-table
       @request="onRequest"
-      :title="modal ? 'Audit Logs' : ''"
+      :title="modal ? $gettext('Audit Logs') : ''"
       :rows="auditLogs"
       :columns="columns"
       class="tabs-tbl-sticky"
@@ -54,7 +56,7 @@
           style="width: 200px"
           v-model="agentFilter"
           :options="agentOptions"
-          label="Agent"
+          :label="$pgettext('Audit log', 'Agent')"
           clearable
           mapOptions
           multiple
@@ -67,7 +69,7 @@
           style="width: 200px"
           v-model="clientFilter"
           :options="clientOptions"
-          label="Clients"
+          :label="$pgettext('Audit log', 'Clients')"
           clearable
           multiple
           filled
@@ -79,7 +81,7 @@
           style="width: 200px"
           v-model="userFilter"
           :options="userOptions"
-          label="Users"
+          :label="$gettext('Users')"
           clearable
           filled
           multiple
@@ -89,7 +91,7 @@
           style="width: 200px"
           v-model="actionFilter"
           :options="actionOptions"
-          label="Action"
+          :label="$pgettext('Audit log', 'Action')"
           clearable
           filled
           multiple
@@ -101,7 +103,7 @@
           v-if="!agent"
           v-model="objectFilter"
           :options="objectOptions"
-          label="Object"
+          :label="$pgettext('Audit log', 'Object')"
           clearable
           filled
           multiple
@@ -112,11 +114,16 @@
           style="width: 200px"
           v-model="timeFilter"
           :options="timeOptions"
-          label="Time"
+          :label="$pgettext('Audit log', 'Time')"
           filled
           mapOptions
         />
-        <q-btn v-if="!agent" color="primary" label="Search" @click="search" />
+        <q-btn
+          v-if="!agent"
+          color="primary"
+          :label="$pgettext('General actions', 'Search')"
+          @click="search"
+        />
 
         <q-space />
         <export-table-btn :data="auditLogs" :columns="columns" />
@@ -125,8 +132,8 @@
         <q-td :props="props">
           <div>
             <q-badge
-              :color="formatActionColor(props.value)"
-              :label="props.value"
+              :color="formatActionColor(props.row.action)"
+              :label="getAuditActionLabel(props.row.action)"
             />
           </div>
         </q-td>
@@ -152,6 +159,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -166,131 +174,6 @@ import { formatTableColumnText } from "@/utils/format";
 import AuditLogDetailModal from "@/components/logs/AuditLogDetailModal.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
-
-// static data
-const columns = [
-  {
-    name: "entry_time",
-    label: "Time",
-    field: "entry_time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "Username",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "agent",
-    label: "Agent",
-    field: "agent",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "client",
-    label: "Client",
-    field: "site",
-    align: "left",
-    sortable: true,
-  },
-  { name: "site", label: "Site", field: "site", align: "left", sortable: true },
-  {
-    name: "action",
-    label: "Action",
-    field: "action",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  {
-    name: "object_type",
-    label: "Object",
-    field: "object_type",
-    align: "left",
-    sortable: true,
-    format: (val) => formatTableColumnText(val),
-  },
-  {
-    name: "message",
-    label: "Message",
-    field: "message",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "client_ip",
-    label: "Client IP",
-    field: "ip_address",
-    align: "left",
-    sortable: true,
-  },
-];
-
-const agentActionOptions = [
-  { value: "add", label: "Add Object" },
-  { value: "modify", label: "Modify Object" },
-  { value: "execute_command", label: "Execute Command" },
-  { value: "execute_script", label: "Execute Script" },
-  { value: "remote_session", label: "Remote Session" },
-  { value: "file_transfer", label: "File Transfer" },
-  { value: "url_action", label: "URL Action" },
-];
-
-const actionOptions = [
-  { value: "agent_install", label: "Agent Installs" },
-  { value: "bulk_action", label: "Bulk Actions" },
-  { value: "delete", label: "Delete Object" },
-  { value: "failed_login", label: "Failed User login" },
-  { value: "login", label: "User Login" },
-  { value: "modify", label: "Modify Object" },
-  { value: "task_run", label: "Task Run Results" },
-];
-
-const objectOptions = [
-  { value: "agent", label: "Agent" },
-  { value: "automatedtask", label: "Automated Task" },
-  { value: "bulk", label: "Bulk Actions" },
-  { value: "coresettings", label: "Core Settings" },
-  { value: "check", label: "Check" },
-  { value: "client", label: "Client" },
-  { value: "policy", label: "Policy" },
-  { value: "site", label: "Site" },
-  { value: "script", label: "Script" },
-  { value: "user", label: "User" },
-  { value: "winupdatepolicy", label: "Patch Policy" },
-  { value: "alerttemplate", label: "Alert Template" },
-  { value: "role", label: "Role" },
-  { value: "urlaction", label: "URL Action" },
-  { value: "keystore", label: "Global Key Store" },
-  { value: "customfield", label: "Custom Field" },
-  { value: "schedule", label: "Schedule" },
-  { value: "reportschedule", label: "Report Schedule" },
-];
-
-const timeOptions = [
-  { value: 1, label: "1 Day Ago" },
-  { value: 7, label: "1 Week Ago" },
-  { value: 30, label: "30 Days Ago" },
-  { value: 90, label: "3 Months Ago" },
-  { value: 180, label: "6 Months Ago" },
-  { value: 365, label: "1 Year Ago" },
-  { value: 0, label: "Everything" },
-];
-
-const filterTypeOptions = [
-  {
-    label: "Clients",
-    value: "clients",
-  },
-  {
-    label: "Agents",
-    value: "agents",
-  },
-];
 
 export default {
   name: "AuditManager",
@@ -335,6 +218,189 @@ export default {
       descending: true,
       page: 1,
     });
+
+    const columns = computed(() => [
+      {
+        name: "entry_time",
+        label: gettext.$pgettext("Audit log", "Time"),
+        field: "entry_time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: gettext.$pgettext("Audit log", "Username"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "agent",
+        label: gettext.$pgettext("Audit log", "Agent"),
+        field: "agent",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "client",
+        label: gettext.$pgettext("Audit log", "Client"),
+        field: "client",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "site",
+        label: gettext.$pgettext("Audit log", "Site"),
+        field: "site",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "action",
+        label: gettext.$pgettext("Audit log", "Action"),
+        field: "action",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "object_type",
+        label: gettext.$pgettext("Audit log", "Object"),
+        field: "object_type",
+        align: "left",
+        sortable: true,
+        format: (val) => formatTableColumnText(val),
+      },
+      {
+        name: "message",
+        label: gettext.$gettext("Message"),
+        field: "message",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "client_ip",
+        label: gettext.$gettext("Client IP"),
+        field: "ip_address",
+        align: "left",
+        sortable: true,
+      },
+    ]);
+
+    const agentActionOptions = computed(() => [
+      { value: "add", label: gettext.$gettext("Add Object") },
+      {
+        value: "modify",
+        label: gettext.$gettext("Modify Object"),
+      },
+      {
+        value: "execute_command",
+        label: gettext.$gettext("Execute Command"),
+      },
+      {
+        value: "execute_script",
+        label: gettext.$gettext("Execute Script"),
+      },
+      {
+        value: "remote_session",
+        label: gettext.$gettext("Remote Session"),
+      },
+      {
+        value: "file_transfer",
+        label: gettext.$gettext("File Transfer"),
+      },
+      {
+        value: "url_action",
+        label: gettext.$pgettext("Audit log", "URL Action"),
+      },
+    ]);
+
+    const actionOptions = computed(() => [
+      {
+        value: "agent_install",
+        label: gettext.$gettext("Agent Installs"),
+      },
+      {
+        value: "bulk_action",
+        label: gettext.$pgettext("Audit log", "Bulk Actions"),
+      },
+      {
+        value: "delete",
+        label: gettext.$gettext("Delete Object"),
+      },
+      {
+        value: "failed_login",
+        label: gettext.$gettext("Failed User login"),
+      },
+      { value: "login", label: gettext.$gettext("User Login") },
+      {
+        value: "modify",
+        label: gettext.$gettext("Modify Object"),
+      },
+      {
+        value: "task_run",
+        label: gettext.$gettext("Task Run Results"),
+      },
+    ]);
+
+    const objectOptions = computed(() => [
+      { value: "agent", label: gettext.$pgettext("Audit log", "Agent") },
+      {
+        value: "automatedtask",
+        label: gettext.$gettext("Automated Task"),
+      },
+      { value: "bulk", label: gettext.$pgettext("Audit log", "Bulk Actions") },
+      {
+        value: "coresettings",
+        label: gettext.$gettext("Core Settings"),
+      },
+      { value: "check", label: gettext.$gettext("Check") },
+      { value: "client", label: gettext.$pgettext("Audit log", "Client") },
+      { value: "policy", label: gettext.$pgettext("Audit log", "Policy") },
+      { value: "site", label: gettext.$pgettext("Audit log", "Site") },
+      { value: "script", label: gettext.$pgettext("Audit log", "Script") },
+      { value: "user", label: gettext.$pgettext("Audit log", "User") },
+      {
+        value: "winupdatepolicy",
+        label: gettext.$gettext("Patch Policy"),
+      },
+      {
+        value: "alerttemplate",
+        label: gettext.$gettext("Alert Template"),
+      },
+      { value: "role", label: gettext.$pgettext("Audit log", "Role") },
+      {
+        value: "urlaction",
+        label: gettext.$pgettext("Audit log", "URL Action"),
+      },
+      {
+        value: "keystore",
+        label: gettext.$gettext("Global Key Store"),
+      },
+      {
+        value: "customfield",
+        label: gettext.$gettext("Custom Field"),
+      },
+      { value: "schedule", label: gettext.$pgettext("Audit log", "Schedule") },
+      {
+        value: "reportschedule",
+        label: gettext.$gettext("Report Schedule"),
+      },
+    ]);
+
+    const timeOptions = computed(() => [
+      { value: 1, label: gettext.$gettext("1 Day Ago") },
+      { value: 7, label: gettext.$gettext("1 Week Ago") },
+      { value: 30, label: gettext.$gettext("30 Days Ago") },
+      { value: 90, label: gettext.$gettext("3 Months Ago") },
+      { value: 180, label: gettext.$gettext("6 Months Ago") },
+      { value: 365, label: gettext.$gettext("1 Year Ago") },
+      { value: 0, label: gettext.$pgettext("Alert history", "Everything") },
+    ]);
+
+    const filterTypeOptions = computed(() => [
+      { label: gettext.$pgettext("Audit log", "Clients"), value: "clients" },
+      { label: gettext.$pgettext("Audit log", "Agents"), value: "agents" },
+    ]);
 
     async function search() {
       loading.value = true;
@@ -387,7 +453,7 @@ export default {
     }
 
     function formatActionColor(action) {
-      switch (action.toLowerCase()) {
+      switch (normalizeActionKey(action)) {
         case "modify":
           return dash_warning_color.value;
         case "add":
@@ -399,6 +465,46 @@ export default {
           return dash_negative_color.value;
         default:
           return "primary";
+      }
+    }
+
+    function normalizeActionKey(action) {
+      if (!action) return "";
+      return action.toString().trim().toLowerCase().replace(/\s+/g, "_");
+    }
+
+    function getAuditActionLabel(action) {
+      if (!action) return action;
+      const normalized = normalizeActionKey(action);
+      switch (normalized) {
+        case "add":
+          return gettext.$gettext("Add Object");
+        case "agent_install":
+          return gettext.$gettext("Agent Installs");
+        case "bulk_action":
+          return gettext.$pgettext("Audit log", "Bulk Actions");
+        case "delete":
+          return gettext.$gettext("Delete Object");
+        case "execute_command":
+          return gettext.$gettext("Execute Command");
+        case "execute_script":
+          return gettext.$gettext("Execute Script");
+        case "failed_login":
+          return gettext.$gettext("Failed User login");
+        case "file_transfer":
+          return gettext.$gettext("File Transfer");
+        case "login":
+          return gettext.$gettext("User Login");
+        case "modify":
+          return gettext.$gettext("Modify Object");
+        case "remote_session":
+          return gettext.$gettext("Remote Session");
+        case "task_run":
+          return gettext.$gettext("Task Run Results");
+        case "url_action":
+          return gettext.$pgettext("Audit log", "URL Action");
+        default:
+          return formatTableColumnText(normalized);
       }
     }
 
@@ -453,9 +559,11 @@ export default {
       clientOptions,
       agentOptions,
       columns,
-      actionOptions: props.agent
-        ? [...agentActionOptions]
-        : [...agentActionOptions, ...actionOptions],
+      actionOptions: computed(() =>
+        props.agent
+          ? [...agentActionOptions.value]
+          : [...agentActionOptions.value, ...actionOptions.value],
+      ),
       objectOptions,
       timeOptions,
       filterTypeOptions,
@@ -463,8 +571,8 @@ export default {
       //computed
       tableNoDataText: computed(() =>
         searched.value
-          ? "No data found. Try to refine you search"
-          : "Click search to find audit logs",
+          ? gettext.$gettext("No data found. Try to refine your search")
+          : gettext.$gettext("Click search to find audit logs"),
       ),
 
       // methods
@@ -472,6 +580,7 @@ export default {
       onRequest,
       openAuditDetail,
       formatActionColor,
+      getAuditActionLabel,
       formatDate,
     };
   },

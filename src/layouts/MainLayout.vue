@@ -6,11 +6,11 @@
         inline-actions
         class="bg-red text-white text-center"
       >
-        You are viewing an outdated version of this page.
+        {{ $gettext("You are viewing an outdated version of this page.") }}
         <q-btn
           color="dark"
           icon="refresh"
-          label="Refresh"
+          :label="$gettext('Refresh')"
           @click="$store.dispatch('reload')"
         />
       </q-banner>
@@ -21,12 +21,19 @@
       >
         <q-icon size="xl" name="warning" />
         <span
-          ><br />Your license is currently inactive, usually due to a payment
-          issue.<br /><br />To restore access, please update your payment
-          method.<br /><br />
-          If you’ve intentionally cancelled your sponsorship, you can remove
-          your license key to stop seeing this message.<br /><br />
-          If you need help, please contact our support team at
+          ><br />{{
+            $gettext(
+              "Your license is currently inactive, usually due to a payment issue.",
+            )
+          }}<br /><br />
+          {{ $gettext("To restore access, please update your payment method.")
+          }}<br /><br />
+          {{
+            $gettext(
+              "If you intentionally cancelled your sponsorship, you can remove your license key to stop seeing this message.",
+            )
+          }}<br /><br />
+          {{ $gettext("If you need help, please contact our support team at") }}
           <a
             href="https://support.amidaware.com"
             target="_blank"
@@ -38,7 +45,7 @@
         <q-btn
           color="dark"
           icon="refresh"
-          label="Refresh"
+          :label="$gettext('Refresh')"
           @click="$store.dispatch('reload')"
         />
       </q-banner>
@@ -57,7 +64,7 @@
           @click="$router.push({ name: 'Dashboard' })"
           icon="dashboard"
         >
-          <q-tooltip>Back to Dashboard</q-tooltip>
+          <q-tooltip>{{ $gettext("Back to Dashboard") }}</q-tooltip>
         </q-btn>
         <q-toolbar-title>
           Tactical RMM<span class="text-overline q-ml-sm"
@@ -70,9 +77,11 @@
             :color="dash_warning_color"
             icon="update"
             dense
-            ><a :href="latestReleaseURL" target="_blank"
-              >v{{ latestTRMMVersion }} available</a
-            ></q-chip
+            ><a :href="latestReleaseURL" target="_blank">{{
+              $gettext("v%{version} available", {
+                version: latestTRMMVersion,
+              })
+            }}</a></q-chip
           >
           <!-- cert expiring soon check -->
           <q-chip
@@ -81,7 +90,16 @@
             :color="dash_negative_color"
             text-color="black"
             icon="warning"
-            >SSL certificate expires in {{ daysUntilCertExpires }} days</q-chip
+            >{{
+              $ngettext(
+                "SSL certificate expires in %{days} day",
+                "SSL certificate expires in %{days} days",
+                daysUntilCertExpires,
+                {
+                  days: daysUntilCertExpires,
+                },
+              )
+            }}</q-chip
           >
         </q-toolbar-title>
         <!-- temp dark mode toggle -->
@@ -104,20 +122,22 @@
         <!-- Devices Chip -->
         <q-chip class="cursor-pointer">
           <q-avatar size="md" icon="devices" color="primary" />
-          <q-tooltip :delay="600" anchor="top middle" self="top middle"
-            >Agent Count</q-tooltip
-          >
+          <q-tooltip :delay="600" anchor="top middle" self="top middle">{{
+            $gettext("Agent Count")
+          }}</q-tooltip>
           {{ serverCount + workstationCount }}
           <q-menu>
             <q-list dense>
-              <q-item-label header>Servers</q-item-label>
+              <q-item-label header>{{ $gettext("Servers") }}</q-item-label>
               <q-item>
                 <q-item-section avatar>
                   <q-icon name="dns" size="sm" color="primary" />
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Total: {{ serverCount }}</q-item-label>
+                  <q-item-label>
+                    {{ $gettext("Total: %{count}", { count: serverCount }) }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>
@@ -130,17 +150,29 @@
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Offline: {{ serverOfflineCount }}</q-item-label>
+                  <q-item-label>
+                    {{
+                      $gettext("Offline: %{count}", {
+                        count: serverOfflineCount,
+                      })
+                    }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item-label header>Workstations</q-item-label>
+              <q-item-label header>{{ $gettext("Workstations") }}</q-item-label>
               <q-item>
                 <q-item-section avatar>
                   <q-icon name="computer" size="sm" color="primary" />
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Total: {{ workstationCount }}</q-item-label>
+                  <q-item-label>
+                    {{
+                      $gettext("Total: %{count}", {
+                        count: workstationCount,
+                      })
+                    }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>
@@ -153,9 +185,13 @@
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label
-                    >Offline: {{ workstationOfflineCount }}</q-item-label
-                  >
+                  <q-item-label>
+                    {{
+                      $gettext("Offline: %{count}", {
+                        count: workstationOfflineCount,
+                      })
+                    }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -173,11 +209,13 @@
               v-close-popup
             >
               <q-item-section>
-                <q-item-label>Preferences</q-item-label>
+                <q-item-label>{{
+                  $pgettext("User menu", "Preferences")
+                }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-item clickable>
-              <q-item-section>Account</q-item-section>
+              <q-item-section>{{ $gettext("Account") }}</q-item-section>
               <q-item-section side>
                 <q-icon name="keyboard_arrow_right" />
               </q-item-section>
@@ -191,12 +229,16 @@
                     v-close-popup
                   >
                     <q-item-section>
-                      <q-item-label>Reset Password</q-item-label>
+                      <q-item-label>{{
+                        $gettext("Reset Password")
+                      }}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-ripple @click="reset2FA" v-close-popup>
                     <q-item-section>
-                      <q-item-label>Reset 2FA</q-item-label>
+                      <q-item-label>{{
+                        $pgettext("User menu", "Reset 2FA")
+                      }}</q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -204,7 +246,7 @@
             </q-item>
             <q-item to="/expired" exact>
               <q-item-section>
-                <q-item-label>Logout</q-item-label>
+                <q-item-label>{{ $gettext("Logout") }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -217,6 +259,7 @@
   </q-layout>
 </template>
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import { useQuasar } from "quasar";
@@ -287,8 +330,10 @@ function resetPassword() {
 
 function reset2FA() {
   $q.dialog({
-    title: "Reset 2FA",
-    message: "Are you sure you would like to reset your 2FA token?",
+    title: gettext.$pgettext("User confirmation dialogs", "Reset 2FA"),
+    message: gettext.$gettext(
+      "Are you sure you would like to reset your 2FA token?",
+    ),
     cancel: true,
     persistent: true,
   }).onOk(async () => {
@@ -303,7 +348,13 @@ async function openWebTerm() {
   try {
     const { message, status } = await checkWebTermPerms();
     if (status === 412) {
-      notifyError(message);
+      const backendMessage = typeof message === "string" ? message.trim() : "";
+      notifyError(
+        backendMessage ||
+          gettext.$gettext(
+            "This feature is disabled. It can be enabled in Global Settings.",
+          ),
+      );
     } else {
       openWebTerminal();
     }

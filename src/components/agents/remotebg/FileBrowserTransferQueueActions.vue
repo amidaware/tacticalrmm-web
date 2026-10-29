@@ -1,6 +1,13 @@
 <template>
   <div v-if="mode === 'active'" class="row q-gutter-xs" :class="wrapClass">
-    <q-btn dense flat no-caps size="sm" label="Pause" @click="emit('pause')">
+    <q-btn
+      dense
+      flat
+      no-caps
+      size="sm"
+      :label="$gettext('Pause')"
+      @click="emit('pause')"
+    >
       <q-tooltip v-if="pauseTooltip">{{ pauseTooltip }}</q-tooltip>
     </q-btn>
     <q-btn
@@ -9,7 +16,7 @@
       no-caps
       size="sm"
       color="negative"
-      label="Cancel"
+      :label="$gettext('Cancel')"
       @click="emit('cancel')"
     >
       <q-tooltip v-if="cancelTooltip">{{ cancelTooltip }}</q-tooltip>
@@ -24,12 +31,12 @@
       no-caps
       size="sm"
       color="primary"
-      label="Select file"
+      :label="$gettext('Select file')"
       :disable="resumeDisabled"
       @click="emit('select-file')"
     >
       <q-tooltip v-if="ownedByOtherTab">{{
-        TRANSFER_TOOLTIP_OPEN_IN_OTHER_TAB
+        $gettext("Open in another tab")
       }}</q-tooltip>
     </q-btn>
     <q-btn
@@ -39,12 +46,12 @@
       no-caps
       size="sm"
       color="primary"
-      label="Resume"
+      :label="$gettext('Resume')"
       :disable="resumeDisabled"
       @click="emit('resume')"
     >
       <q-tooltip v-if="ownedByOtherTab">{{
-        TRANSFER_TOOLTIP_OPEN_IN_OTHER_TAB
+        $gettext("Open in another tab")
       }}</q-tooltip>
     </q-btn>
     <q-btn
@@ -53,13 +60,22 @@
       no-caps
       size="sm"
       color="negative"
-      label="Cancel"
+      :label="$gettext('Cancel')"
       @click="emit('cancel')"
     >
       <q-tooltip v-if="cancelTooltip">{{ cancelTooltip }}</q-tooltip>
     </q-btn>
-    <q-btn dense flat no-caps size="sm" label="Hide" @click="emit('hide')">
-      <q-tooltip>{{ TRANSFER_TOOLTIP_HIDE_PAUSED }}</q-tooltip>
+    <q-btn
+      dense
+      flat
+      no-caps
+      size="sm"
+      :label="$gettext('Hide')"
+      @click="emit('hide')"
+    >
+      <q-tooltip>{{
+        $gettext("Hide paused items. Open Transfers to show them again.")
+      }}</q-tooltip>
     </q-btn>
   </div>
 
@@ -69,12 +85,12 @@
     flat
     :round="dismissRound"
     :icon="dismissRound ? 'close' : undefined"
-    :label="dismissRound ? undefined : 'Dismiss'"
+    :label="dismissRound ? undefined : $gettext('Dismiss')"
     size="sm"
     :class="wrapClass"
     @click="emit('dismiss')"
   >
-    <q-tooltip>{{ TRANSFER_TOOLTIP_DISMISS }}</q-tooltip>
+    <q-tooltip>{{ $gettext("Dismiss") }}</q-tooltip>
   </q-btn>
 
   <q-btn
@@ -87,18 +103,11 @@
     :class="wrapClass"
     @click="emit('dismiss')"
   >
-    <q-tooltip>{{ TRANSFER_TOOLTIP_REMOVE_FROM_QUEUE }}</q-tooltip>
+    <q-tooltip>{{ $gettext("Remove from queue") }}</q-tooltip>
   </q-btn>
 </template>
 
 <script setup lang="ts">
-import {
-  TRANSFER_TOOLTIP_DISMISS,
-  TRANSFER_TOOLTIP_HIDE_PAUSED,
-  TRANSFER_TOOLTIP_OPEN_IN_OTHER_TAB,
-  TRANSFER_TOOLTIP_REMOVE_FROM_QUEUE,
-} from "@/constants/fileTransfer";
-
 export type TransferQueueActionMode =
   | "active"
   | "paused"

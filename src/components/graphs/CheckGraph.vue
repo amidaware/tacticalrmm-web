@@ -16,11 +16,13 @@
         {{ title }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row">
-        <span v-if="!showChart" class="q-pa-md">No Data</span>
+        <span v-if="!showChart" class="q-pa-md">{{ $gettext("No Data") }}</span>
         <q-space />
         <q-select
           v-model="timeFilter"
@@ -62,13 +64,7 @@ export default {
       history: [],
       results: [],
       timeFilter: 1,
-      timeFilterOptions: [
-        { value: 1, label: "Last 24 Hours" },
-        { value: 7, label: "Last 7 Days" },
-        { value: 30, label: "Last 30 Days" },
-        { value: 0, label: "Everything" },
-      ],
-      chartOptions: {
+      baseChartOptions: {
         tooltip: {
           x: {
             format: "dd MMM h:mm:sst",
@@ -104,7 +100,7 @@ export default {
           },
         },
         noData: {
-          text: "No Data",
+          text: this.$gettext("No Data"),
         },
         theme: {
           mode: this.$q.dark.isActive ? "dark" : "light",
@@ -113,21 +109,66 @@ export default {
     };
   },
   computed: {
+    chartOptions() {
+      const annotations = this.baseChartOptions.annotations;
+      return {
+        ...this.baseChartOptions,
+        noData: {
+          ...this.baseChartOptions.noData,
+          text: this.$gettext("No Data"),
+        },
+        ...(annotations
+          ? {
+              annotations: {
+                ...annotations,
+                yaxis: annotations.yaxis.map((annotation) => ({
+                  ...annotation,
+                  label: {
+                    ...annotation.label,
+                    text:
+                      annotation.id === "error-threshold"
+                        ? this.$gettext("Error Threshold")
+                        : annotation.id === "warning-threshold"
+                          ? this.$gettext("Warning Threshold")
+                          : annotation.label.text,
+                  },
+                })),
+              },
+            }
+          : {}),
+      };
+    },
+
     title() {
-      return this.check.readable_desc + " history";
+      return this.$gettext("%{name} history", {
+        name: this.check.readable_desc,
+      });
+    },
+    timeFilterOptions() {
+      return [
+        { value: 1, label: this.$gettext("Last 24 Hours") },
+        { value: 7, label: this.$gettext("Last 7 Days") },
+        { value: 30, label: this.$gettext("Last 30 Days") },
+        { value: 0, label: this.$pgettext("Check history", "Everything") },
+      ];
     },
     showChart() {
       return !this.$q.loading.isActive && this.history.length > 0;
     },
     seriesName() {
-      if (this.check.check_type === "cpuload") return "CPU Load";
-      else if (this.check.check_type === "memory") return "Memory Usage";
+      if (this.check.check_type === "cpuload") return this.$gettext("CPU Load");
+      else if (this.check.check_type === "memory")
+        return this.$gettext("Memory Usage");
       else if (this.check.check_type === "diskspace")
-        return "Disk Space Remaining";
-      else if (this.check.check_type === "script") return "Script Results";
-      else if (this.check.check_type === "eventlog") return "Status";
-      else if (this.check.check_type === "winsvc") return "Status";
-      else if (this.check.check_type === "ping") return "Status";
+        return this.$gettext("Disk Space Remaining");
+      else if (this.check.check_type === "script")
+        return this.$gettext("Script Results");
+      else if (this.check.check_type === "eventlog")
+        return this.$pgettext("Check history", "Status");
+      else if (this.check.check_type === "winsvc")
+        return this.$pgettext("Check history", "Status");
+      else if (this.check.check_type === "ping")
+        return this.$pgettext("Check history", "Status");
       else return "";
     },
   },
@@ -174,14 +215,15 @@ export default {
       this.check.check_type === "memory" ||
       this.check.check_type === "diskspace"
     ) {
-      this.chartOptions["annotations"] = {
+      this.baseChartOptions["annotations"] = {
         position: "front",
         yaxis: [],
       };
 
       // add error threshold line if exists
       if (this.check.error_threshold) {
-        this.chartOptions["annotations"]["yaxis"].push({
+        this.baseChartOptions["annotations"]["yaxis"].push({
+          id: "error-threshold",
           y: this.check.error_threshold,
           strokeDashArray: 0,
           borderColor: "#C10015",
@@ -193,14 +235,15 @@ export default {
               color: "#FFF",
               background: "#C10015",
             },
-            text: "Error Threshold",
+            text: this.$gettext("Error Threshold"),
           },
         });
       }
 
       // add warning threshold line depending on check type
       if (this.check.warning_threshold) {
-        this.chartOptions["annotations"]["yaxis"].push({
+        this.baseChartOptions["annotations"]["yaxis"].push({
+          id: "warning-threshold",
           y: this.check.warning_threshold,
           strokeDashArray: 0,
           borderColor: "#ff9800",
@@ -212,13 +255,13 @@ export default {
               color: "#FFF",
               background: "#ff9800",
             },
-            text: "Warning Threshold",
+            text: this.$gettext("Warning Threshold"),
           },
         });
       }
 
       // Set yaxis options
-      this.chartOptions["yaxis"] = {
+      this.baseChartOptions["yaxis"] = {
         min: 0,
         max: 100,
         labels: {
@@ -229,11 +272,11 @@ export default {
       };
 
       if (this.check.check_type === "diskspace") {
-        this.chartOptions["yaxis"]["reversed"] = true;
+        this.baseChartOptions["yaxis"]["reversed"] = true;
       }
     } else {
       // Set the y-axis labels to Failing and Passing
-      this.chartOptions["yaxis"] = {
+      this.baseChartOptions["yaxis"] = {
         min: -1,
         max: 2,
         tickAmount: 0,
@@ -242,15 +285,15 @@ export default {
         labels: {
           minWidth: 50,
           formatter: (val) => {
-            if (val === 0) return "Passing";
-            else if (val === 1) return "Failing";
+            if (val === 0) return this.$gettext("Passing");
+            else if (val === 1) return this.$gettext("Failing");
             else return "";
           },
         },
       };
 
       // customize the yaxis tooltip to include more information
-      this.chartOptions["tooltip"]["y"] = {
+      this.baseChartOptions["tooltip"]["y"] = {
         title: {
           formatter: () => {
             return "";
@@ -259,22 +302,18 @@ export default {
         formatter: (value, { dataPointIndex }) => {
           let formatted = "";
           if (this.check.check_type === "script") {
-            formatted +=
-              "Return Code: " +
-              this.results[dataPointIndex].results.retcode +
-              "<br/>";
-            formatted +=
-              "Std Out: " +
-              this.results[dataPointIndex].results.stdout +
-              "<br/>";
-            formatted +=
-              "Err Out: " +
-              this.results[dataPointIndex].results.errout +
-              "<br/>";
-            formatted +=
-              "Execution Time: " +
-              this.results[dataPointIndex].results.execution_time +
-              "<br/>";
+            formatted += `${this.$gettext("Return Code")}: ${
+              this.results[dataPointIndex].results.retcode
+            }<br/>`;
+            formatted += `${this.$gettext("Std Out")}: ${
+              this.results[dataPointIndex].results.stdout
+            }<br/>`;
+            formatted += `${this.$gettext("Err Out")}: ${
+              this.results[dataPointIndex].results.errout
+            }<br/>`;
+            formatted += `${this.$gettext("Execution Time")}: ${
+              this.results[dataPointIndex].results.execution_time
+            }<br/>`;
           } else {
             formatted += this.results[dataPointIndex].results;
           }

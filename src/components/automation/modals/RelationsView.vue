@@ -2,10 +2,12 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card style="width: 60vw">
       <q-bar>
-        {{ policy.name }} Relations
+        {{ $gettext("%{name} Relations", { name: policy.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section
@@ -15,12 +17,14 @@
         "
       >
         <div v-if="related.default_server_policy" class="text-body">
-          <q-icon name="error_outline" color="info" size="1.5em" />This policy
-          is set as the Default Server Policy.
+          <q-icon name="error_outline" color="info" size="1.5em" />{{
+            $gettext("This policy is set as the Default Server Policy.")
+          }}
         </div>
         <div v-if="related.default_workstation_policy" class="text-body">
-          <q-icon name="error_outline" color="info" size="1.5em" />This policy
-          is set as the Default Workstation Policy.
+          <q-icon name="error_outline" color="info" size="1.5em" />{{
+            $gettext("This policy is set as the Default Workstation Policy.")
+          }}
         </div>
       </q-card-section>
       <q-card-section>
@@ -35,9 +39,15 @@
           narrow-indicator
           no-caps
         >
-          <q-tab name="clients" label="Clients" />
-          <q-tab name="sites" label="Sites" />
-          <q-tab name="agents" label="Agents" />
+          <q-tab
+            name="clients"
+            :label="$pgettext('Role permissions', 'Clients')"
+          />
+          <q-tab name="sites" :label="$gettext('List Sites')" />
+          <q-tab
+            name="agents"
+            :label="$pgettext('Role permissions', 'Agents')"
+          />
         </q-tabs>
 
         <q-separator />
@@ -54,7 +64,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Servers</i>
+                      <i>{{ $gettext("Applied to Servers") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -67,7 +77,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Workstations</i>
+                      <i>{{ $gettext("Applied to Workstations") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -86,7 +96,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Servers</i>
+                      <i>{{ $gettext("Applied to Servers") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -100,7 +110,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Workstations</i>
+                      <i>{{ $gettext("Applied to Workstations") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>

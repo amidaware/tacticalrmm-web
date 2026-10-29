@@ -5,7 +5,9 @@
     }}</q-badge>
     <q-menu :style="{ 'max-height': `${$q.screen.height - 100}px` }">
       <q-list separator>
-        <q-item v-if="alertsCount === 0">No New Alerts</q-item>
+        <q-item v-if="alertsCount === 0">{{
+          $gettext("No New Alerts")
+        }}</q-item>
         <q-item v-for="alert in topAlerts" :key="alert.id">
           <q-item-section>
             <q-item-label overline
@@ -36,7 +38,7 @@
                 @click="snoozeAlert(alert)"
                 v-close-popup
               >
-                <q-tooltip>Snooze alert</q-tooltip>
+                <q-tooltip>{{ $gettext("Snooze alert") }}</q-tooltip>
               </q-icon>
               <q-icon
                 name="flag"
@@ -45,14 +47,14 @@
                 @click="resolveAlert(alert)"
                 v-close-popup
               >
-                <q-tooltip>Resolve alert</q-tooltip>
+                <q-tooltip>{{ $gettext("Resolve alert") }}</q-tooltip>
               </q-icon>
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup @click="showOverview"
-          >View All Alerts ({{ alertsCount }})</q-item
-        >
+        <q-item clickable v-close-popup @click="showOverview">{{
+          $gettext("View All Alerts (%{count})", { count: alertsCount })
+        }}</q-item>
       </q-list>
     </q-menu>
   </q-btn>
@@ -112,8 +114,8 @@ export default {
     snoozeAlert(alert) {
       this.$q
         .dialog({
-          title: "Snooze Alert",
-          message: "How many days to snooze alert?",
+          title: this.$gettext("Snooze Alert"),
+          message: this.$gettext("How many days to snooze alert?"),
           prompt: {
             model: "",
             type: "number",
@@ -135,7 +137,16 @@ export default {
             .then(() => {
               this.getAlerts();
               this.$q.loading.hide();
-              this.notifySuccess(`The alert has been snoozed for ${days} days`);
+              this.notifySuccess(
+                this.$ngettext(
+                  "The alert has been snoozed for %{days} day",
+                  "The alert has been snoozed for %{days} days",
+                  days,
+                  {
+                    days: days,
+                  },
+                ),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -155,7 +166,7 @@ export default {
         .then(() => {
           this.getAlerts();
           this.$q.loading.hide();
-          this.notifySuccess("The alert has been resolved");
+          this.notifySuccess(this.$gettext("The alert has been resolved"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -171,9 +182,12 @@ export default {
       else return this.alertsCount;
     },
     pollAlerts() {
-      this.poll = setInterval(() => {
-        this.getAlerts();
-      }, 60 * 1 * 1000);
+      this.poll = setInterval(
+        () => {
+          this.getAlerts();
+        },
+        60 * 1 * 1000,
+      );
     },
   },
   mounted() {

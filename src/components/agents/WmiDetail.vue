@@ -16,7 +16,9 @@
             icon="content_copy"
             @click="copyValueToClip(v)"
           >
-            <q-tooltip>Copy to Clipboard</q-tooltip>
+            <q-tooltip>{{
+              $pgettext("WMI results", "Copy to Clipboard")
+            }}</q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 import { copyToClipboard } from "quasar";
 import { notifySuccess } from "@/utils/notify";
 // composition imports
@@ -39,11 +42,12 @@ export default {
   setup() {
     // setup vuex
     const store = useStore();
+
     const tabHeight = computed(() => store.state.tabHeight);
 
     function copyValueToClip(val) {
       copyToClipboard(val).then(() => {
-        notifySuccess("Copied to clipboard");
+        notifySuccess(gettext.$gettext("Copied to clipboard"));
       });
     }
 

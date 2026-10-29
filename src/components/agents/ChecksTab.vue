@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $gettext("No agent selected") }}
+  </div>
   <div v-else>
     <q-table
       dense
@@ -17,7 +19,7 @@
       :loading="loading"
       :rows-per-page-options="[0]"
       virtual-scroll
-      no-data-label="No checks"
+      :no-data-label="$gettext('No checks')"
     >
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />
@@ -35,7 +37,7 @@
         />
         <q-btn-dropdown
           icon="add"
-          label="New"
+          :label="$pgettext('Agent checks', 'New')"
           no-caps
           dense
           flat
@@ -51,13 +53,17 @@
               <q-item-section side>
                 <q-icon size="xs" name="far fa-hdd" />
               </q-item-section>
-              <q-item-section>Disk Space Check</q-item-section>
+              <q-item-section>{{
+                $pgettext("Agent checks", "Disk Space Check")
+              }}</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="showCheckModal('ping')">
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-network-wired" />
               </q-item-section>
-              <q-item-section>Ping Check</q-item-section>
+              <q-item-section>{{
+                $pgettext("Agent checks", "Ping Check")
+              }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -68,7 +74,7 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-microchip" />
               </q-item-section>
-              <q-item-section>CPU Load Check</q-item-section>
+              <q-item-section>{{ $gettext("CPU Load Check") }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -79,7 +85,7 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-memory" />
               </q-item-section>
-              <q-item-section>Memory Check</q-item-section>
+              <q-item-section>{{ $gettext("Memory Check") }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -90,13 +96,15 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-cogs" />
               </q-item-section>
-              <q-item-section>Windows Service Check</q-item-section>
+              <q-item-section>{{
+                $gettext("Windows Service Check")
+              }}</q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="showCheckModal('script')">
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-terminal" />
               </q-item-section>
-              <q-item-section>Script Check</q-item-section>
+              <q-item-section>{{ $gettext("Script Check") }}</q-item-section>
             </q-item>
             <q-item
               v-if="agentPlatform === 'windows'"
@@ -107,12 +115,12 @@
               <q-item-section side>
                 <q-icon size="xs" name="fas fa-clipboard-list" />
               </q-item-section>
-              <q-item-section>Event Log Check</q-item-section>
+              <q-item-section>{{ $gettext("Event Log Check") }}</q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
         <q-btn
-          label="Run Checks Now"
+          :label="$gettext('Run Checks Now')"
           dense
           flat
           push
@@ -122,7 +130,7 @@
           class="q-mr-md"
         />
         <q-btn
-          label="Reset All Checks Status"
+          :label="$gettext('Reset All Checks Status')"
           dense
           flat
           push
@@ -136,21 +144,23 @@
       <template v-slot:header-cell-smsalert="props">
         <q-th auto-width :props="props">
           <q-icon name="phone_android" size="1.5em">
-            <q-tooltip>SMS Alert</q-tooltip>
+            <q-tooltip>{{ $gettext("SMS Alert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-emailalert="props">
         <q-th auto-width :props="props">
           <q-icon name="email" size="1.5em">
-            <q-tooltip>Email Alert</q-tooltip>
+            <q-tooltip>{{ $gettext("Email Alert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-dashboardalert="props">
         <q-th auto-width :props="props">
           <q-icon name="notifications" size="1.5em">
-            <q-tooltip>Dashboard Alert</q-tooltip>
+            <q-tooltip>{{
+              $pgettext("Agent monitoring", "Dashboard Alert")
+            }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -180,7 +190,9 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{
+                  $pgettext("General edit action", "Edit")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -191,7 +203,7 @@
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $gettext("Delete") }}</q-item-section>
               </q-item>
               <q-separator></q-separator>
               <q-item
@@ -202,11 +214,13 @@
                 <q-item-section side>
                   <q-icon name="info" />
                 </q-item-section>
-                <q-item-section>Reset Check Status</q-item-section>
+                <q-item-section>{{
+                  $gettext("Reset Check Status")
+                }}</q-item-section>
               </q-item>
               <q-separator></q-separator>
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $gettext("Close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -223,7 +237,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $gettext("Setting is overridden by alert template") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -250,7 +264,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $gettext("Setting is overridden by alert template") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -277,7 +291,7 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
+                {{ $gettext("Setting is overridden by alert template") }}:
                 {{ props.row.alert_template.name }}
               </q-tooltip>
             </q-checkbox>
@@ -297,12 +311,16 @@
           <!-- policy check icon -->
           <q-td v-if="props.row.policy">
             <q-icon style="font-size: 1.3rem" name="policy">
-              <q-tooltip>This check is managed by a policy</q-tooltip>
+              <q-tooltip>{{
+                $gettext("This check is managed by a policy")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else-if="props.row.overridden_by_policy">
             <q-icon style="font-size: 1.3rem" name="remove_circle_outline">
-              <q-tooltip>This check is overriden by a policy</q-tooltip>
+              <q-tooltip>{{
+                $gettext("This check is overriden by a policy")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else></q-td>
@@ -314,7 +332,7 @@
               :color="dash_positive_color"
               name="check_circle"
             >
-              <q-tooltip>Passing</q-tooltip>
+              <q-tooltip>{{ $gettext("Passing") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else-if="props.row.check_result.status === 'failing'">
@@ -324,7 +342,9 @@
               :color="dash_info_color"
               name="info"
             >
-              <q-tooltip>Informational</q-tooltip>
+              <q-tooltip>{{
+                $pgettext("Agent monitoring", "Informational")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="getAlertSeverity(props.row) === 'warning'"
@@ -332,7 +352,9 @@
               :color="dash_warning_color"
               name="warning"
             >
-              <q-tooltip>Warning</q-tooltip>
+              <q-tooltip>{{
+                $pgettext("General status", "Warning")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
@@ -340,7 +362,7 @@
               :color="dash_negative_color"
               name="error"
             >
-              <q-tooltip>Error</q-tooltip>
+              <q-tooltip>{{ $pgettext("General status", "Error") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else></q-td>
@@ -360,7 +382,7 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showCheckGraphModal(props.row)"
-              >Show Run History</span
+              >{{ $gettext("Show Run History") }}</span
             >
             &nbsp;&nbsp;&nbsp;
             <span
@@ -394,7 +416,7 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showEventInfo(props.row)"
-              >Last Output</span
+              >{{ $gettext("Last Output") }}</span
             >
             <span
               v-else-if="
@@ -409,11 +431,18 @@
           <q-td>{{
             props.row.check_result.last_run
               ? formatDate(props.row.check_result.last_run)
-              : "Never"
+              : $gettext("Never")
           }}</q-td>
-          <q-td v-if="props.row.assignedtasks.length > 1"
-            >{{ props.row.assignedtasks.length }} Tasks</q-td
-          >
+          <q-td v-if="props.row.assignedtasks.length > 1">{{
+            $ngettext(
+              "%{count} Task",
+              "%{count} Tasks",
+              props.row.assignedtasks.length,
+              {
+                count: props.row.assignedtasks.length,
+              },
+            )
+          }}</q-td>
           <q-td v-else-if="props.row.assignedtasks.length === 1">{{
             props.row.assignedtasks[0].name
           }}</q-td>
@@ -425,6 +454,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, inject, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -452,43 +482,6 @@ import ScriptOutput from "@/components/checks/ScriptOutput.vue";
 import EventLogCheckOutput from "@/components/checks/EventLogCheckOutput.vue";
 import CheckGraph from "@/components/graphs/CheckGraph.vue";
 import PreDialog from "@/components/ui/PreDialog.vue";
-
-// static data
-const columns = [
-  { name: "smsalert", field: "text_alert", align: "left" },
-  { name: "emailalert", field: "email_alert", align: "left" },
-  { name: "dashboardalert", field: "dashboard_alert", align: "left" },
-  { name: "policystatus", align: "left" },
-  { name: "statusicon", align: "left" },
-  {
-    name: "desc",
-    field: "readable_desc",
-    label: "Description",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "moreinfo",
-    label: "More Info",
-    field: "more_info",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "datetime",
-    label: "Last Run",
-    field: "last_run",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "assignedtasks",
-    label: "Assigned Tasks",
-    field: "assigned_task",
-    align: "left",
-    sortable: true,
-  },
-];
 
 export default {
   name: "ChecksTab",
@@ -519,6 +512,42 @@ export default {
       descending: false,
     });
 
+    const columns = computed(() => [
+      { name: "smsalert", field: "text_alert", align: "left" },
+      { name: "emailalert", field: "email_alert", align: "left" },
+      { name: "dashboardalert", field: "dashboard_alert", align: "left" },
+      { name: "policystatus", align: "left" },
+      { name: "statusicon", align: "left" },
+      {
+        name: "desc",
+        field: "readable_desc",
+        label: gettext.$pgettext("Agent checks", "Description"),
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "moreinfo",
+        label: gettext.$gettext("More Info"),
+        field: "more_info",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "datetime",
+        label: gettext.$pgettext("Agent checks", "Last Run"),
+        field: "last_run",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "assignedtasks",
+        label: gettext.$gettext("Assigned Tasks"),
+        field: "assigned_task",
+        align: "left",
+        sortable: true,
+      },
+    ]);
+
     // TODO this will break when we add translations
     function grep(text, stringsToMatch) {
       try {
@@ -531,10 +560,12 @@ export default {
           }
         }
 
-        return matched.length > 0 ? matched.join("\n") : "Last Output";
+        return matched.length > 0
+          ? matched.join("\n")
+          : gettext.$gettext("Last Output");
       } catch (e) {
         console.error(e);
-        return "Last Output";
+        return gettext.$gettext("Last Output");
       }
     }
 
@@ -545,11 +576,11 @@ export default {
         } else if (result.stderr && result.stderr.trim() !== "") {
           return result.stderr.substring(0, 60);
         } else {
-          return "Last Output";
+          return gettext.$gettext("Last Output");
         }
       } catch (e) {
         console.error(e);
-        return "Last Output";
+        return gettext.$gettext("Last Output");
       }
     }
 
@@ -593,10 +624,12 @@ export default {
 
     function deleteCheck(check) {
       $q.dialog({
-        title: "Are you sure?",
-        message: `Delete ${check.readable_desc}`,
+        title: gettext.$gettext("Are you sure?"),
+        message: gettext.$gettext("Delete %{check}", {
+          check: check.readable_desc,
+        }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
         persistent: true,
       }).onOk(async () => {
         loading.value = true;
@@ -614,9 +647,9 @@ export default {
     async function resetCheckStatus(check) {
       // make sure there is a check result before sending
       if (!check.check_result.status) {
-        notifyWarning("Check hasn't run yet");
+        notifyWarning(gettext.$gettext("Check hasn't run yet"));
       } else if (check.check_result.status === "passing") {
-        notifyWarning("Check is already passing");
+        notifyWarning(gettext.$gettext("Check is already passing"));
       }
 
       loading.value = true;
@@ -636,10 +669,13 @@ export default {
 
     function resetAllChecks() {
       $q.dialog({
-        title: "Are you sure?",
-        message: "Reset all checks status",
+        title: gettext.$gettext("Are you sure?"),
+        message: gettext.$gettext("Reset All Checks Status"),
         cancel: true,
-        ok: { label: "Reset", color: "negative" },
+        ok: {
+          label: gettext.$pgettext("Reset action", "Reset"),
+          color: "negative",
+        },
         persistent: true,
       }).onOk(async () => {
         loading.value = true;

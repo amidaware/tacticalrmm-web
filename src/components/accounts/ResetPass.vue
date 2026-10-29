@@ -2,14 +2,14 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-card-section class="row">
-        <div class="col-3">New password:</div>
+        <div class="col-3">{{ $gettext("New password:") }}</div>
         <div class="col-9">
           <q-input
             outlined
             dense
             v-model="pass"
             :type="isPwd ? 'password' : 'text'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('This field is required')]"
           >
             <template v-slot:append>
               <q-icon
@@ -20,14 +20,16 @@
             </template>
           </q-input>
         </div>
-        <div class="col-3">Confirm password:</div>
+        <div class="col-3">{{ $gettext("Confirm password:") }}</div>
         <div class="col-9">
           <q-input
             outlined
             dense
             v-model="pass2"
             :type="isPwd ? 'password' : 'text'"
-            :rules="[(val) => val === pass || 'Passwords do not match']"
+            :rules="[
+              (val) => val === pass || $gettext('Passwords do not match'),
+            ]"
           >
             <template v-slot:append>
               <q-icon
@@ -42,11 +44,15 @@
       <q-card-actions align="right">
         <q-btn
           color="primary"
-          label="Reset"
+          :label="$pgettext('Password reset', 'Reset')"
           @click="onOKClick"
           :disable="!pass || pass !== pass2"
         />
-        <q-btn color="negative" label="Cancel" @click="onDialogCancel" />
+        <q-btn
+          color="negative"
+          :label="$gettext('Cancel')"
+          @click="onDialogCancel"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

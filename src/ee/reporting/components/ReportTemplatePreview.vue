@@ -31,7 +31,11 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-splitter v-if="debug" v-model="verticalSplitter">
         <template v-slot:before>
           <div class="q-pa-xs">
-            {{ previewFormat === "plaintext" ? "Text" : "HTML" }}
+            {{
+              previewFormat === "plaintext"
+                ? $pgettext("Report editing", "Text")
+                : $gettext("HTML")
+            }}
           </div>
           <div
             id="templateDiv"
@@ -39,7 +43,7 @@ For details, see: https://license.tacticalrmm.com/ee
           ></div>
         </template>
         <template v-slot:after>
-          <div class="q-pa-xs">Variables</div>
+          <div class="q-pa-xs">{{ $gettext("Variables") }}</div>
           <div
             id="variablesDiv"
             :style="{ height: `${splitterHeight - horizontalSplitter - 33}px` }"

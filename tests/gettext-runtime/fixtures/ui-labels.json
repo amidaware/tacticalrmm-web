@@ -1,0 +1,116 @@
+{
+  "agents": {
+    "en": {
+      "historyTab": {
+        "actions": {
+          "check_run": "Check Run",
+          "cmd_run": "Cmd Run",
+          "script_run": "Script Run",
+          "task_run": "Task Run"
+        }
+      },
+      "winUpdateTab": {
+        "severity": {
+          "critical": "Critical",
+          "important": "Important",
+          "low": "Low",
+          "moderate": "Moderate",
+          "other": "Other"
+        }
+      }
+    },
+    "ru": {
+      "historyTab": {
+        "actions": {
+          "check_run": "Запуск проверки",
+          "cmd_run": "Запуск cmd",
+          "script_run": "Запуск скрипта",
+          "task_run": "Запуск задачи"
+        }
+      },
+      "winUpdateTab": {
+        "severity": {
+          "critical": "Критично",
+          "important": "Важно",
+          "low": "Низко",
+          "moderate": "Умеренно",
+          "other": "Другое"
+        }
+      }
+    }
+  },
+  "settings": {
+    "en": {
+      "auditManager": {
+        "actions": {
+          "add": "Add Object",
+          "agent_install": "Agent Installs",
+          "bulk_action": "Bulk Actions",
+          "delete": "Delete Object",
+          "execute_command": "Execute Command",
+          "execute_script": "Execute Script",
+          "failed_login": "Failed User login",
+          "file_transfer": "File Transfer",
+          "login": "User Login",
+          "modify": "Modify Object",
+          "remote_session": "Remote Session",
+          "task_run": "Task Run Results",
+          "url_action": "URL Action"
+        }
+      },
+      "editCoreSettings": {
+        "logLevel": {
+          "critical": "Critical",
+          "error": "Error",
+          "info": "Info",
+          "warning": "Warning"
+        }
+      },
+      "debugLog": {
+        "logTypes": {
+          "agentIssues": "Agent Issues",
+          "agentUpdate": "Agent Update",
+          "scripting": "Scripting",
+          "systemIssues": "System Issues",
+          "windowsUpdates": "Windows Updates"
+        }
+      }
+    },
+    "ru": {
+      "auditManager": {
+        "actions": {
+          "add": "Добавить объект",
+          "agent_install": "Установки агента",
+          "bulk_action": "Массовые действия",
+          "delete": "Удалить объект",
+          "execute_command": "Выполнить команду",
+          "execute_script": "Выполнить скрипт",
+          "failed_login": "Неудачный вход пользователя",
+          "file_transfer": "Передача файлов",
+          "login": "Вход пользователя",
+          "modify": "Изменить объект",
+          "remote_session": "Удаленная сессия",
+          "task_run": "Результаты запуска задач",
+          "url_action": "URL Action"
+        }
+      },
+      "editCoreSettings": {
+        "logLevel": {
+          "critical": "Критично",
+          "error": "Ошибка",
+          "info": "Инфо",
+          "warning": "Предупреждение"
+        }
+      },
+      "debugLog": {
+        "logTypes": {
+          "agentIssues": "Проблемы агента",
+          "agentUpdate": "Обновление агента",
+          "scripting": "Скриптинг",
+          "systemIssues": "Системные проблемы",
+          "windowsUpdates": "Обновления Windows"
+        }
+      }
+    }
+  }
+}

@@ -5,12 +5,14 @@
   >
     <div class="row items-center justify-between q-mb-xs">
       <div class="text-subtitle2 text-weight-medium download-progress-title">
-        Download
+        {{ $gettext("Download") }}
       </div>
       <FileBrowserTransferQueueActions
         :mode="actionMode"
-        :pause-tooltip="TRANSFER_TOOLTIP_PAUSE"
-        :cancel-tooltip="TRANSFER_TOOLTIP_CANCEL"
+        :pause-tooltip="$gettext('Pause this download.')"
+        :cancel-tooltip="
+          $gettext('Cancel download and release the transfer slot.')
+        "
         :resume-disabled="!!ownedByOtherTab"
         :owned-by-other-tab="!!ownedByOtherTab"
         :dismiss-round="false"
@@ -44,21 +46,17 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { computed } from "vue";
 import { useQuasar } from "quasar";
 
 import FileBrowserTransferQueueActions, {
   type TransferQueueActionMode,
 } from "@/components/agents/remotebg/FileBrowserTransferQueueActions.vue";
+import { transferItemMessage } from "@/services/fileTransfer/queueMessages";
+import type { TransferMessageCode } from "@/types/filebrowser";
 import type { DownloadTransferStatus } from "@/types/fileTransfer";
-import {
-  TRANSFER_CONNECTION_LOST_MESSAGE,
-  TRANSFER_RECONNECTING_MESSAGE,
-  TRANSFER_SLOT_WAIT_MESSAGE,
-  TRANSFER_WAITING_FOR_AGENT_MESSAGE,
-  TRANSFER_TOOLTIP_CANCEL,
-  TRANSFER_TOOLTIP_PAUSE,
-} from "@/constants/fileTransfer";
+
 import {
   downloadStatusLabel,
   transferQueueProgressColor,
@@ -71,6 +69,7 @@ const props = defineProps<{
   progress: number;
   status: DownloadTransferStatus;
   errorMessage?: string;
+  messageCode?: TransferMessageCode;
   buildingArchive?: boolean;
   ownedByOtherTab?: boolean;
 }>();
@@ -111,34 +110,32 @@ const progressPercent = computed(() => Math.round(props.progress * 100));
 const statusLabel = computed(() => {
   if (
     isActive.value &&
-    props.errorMessage &&
-    (props.errorMessage === TRANSFER_SLOT_WAIT_MESSAGE ||
-      props.errorMessage === TRANSFER_RECONNECTING_MESSAGE ||
-      props.errorMessage === TRANSFER_WAITING_FOR_AGENT_MESSAGE ||
-      /waiting for a free transfer slot/i.test(props.errorMessage))
+    (props.messageCode === "waiting-slot" ||
+      props.messageCode === "reconnecting" ||
+      props.messageCode === "waiting-agent")
   ) {
-    return props.errorMessage;
+    return transferItemMessage(props);
   }
   if (
     isPaused.value &&
     !props.ownedByOtherTab &&
-    (props.errorMessage === TRANSFER_RECONNECTING_MESSAGE ||
-      props.errorMessage === TRANSFER_CONNECTION_LOST_MESSAGE)
+    (props.messageCode === "reconnecting" ||
+      props.messageCode === "connection-lost")
   ) {
-    return props.errorMessage;
+    return transferItemMessage(props);
   }
 
   if (props.status === "initializing" && props.buildingArchive) {
-    return "Building archive…";
+    return gettext.$gettext("Building archive…");
   }
   if (props.status === "completed") {
-    return "Complete";
+    return gettext.$gettext("Complete");
   }
   if (props.status === "failed") {
-    return props.errorMessage || "Download failed";
+    return props.errorMessage || gettext.$gettext("Download failed");
   }
   if (props.status === "paused" && props.ownedByOtherTab) {
-    return "Open in another tab";
+    return gettext.$gettext("Open in another tab");
   }
   if (props.status === "idle") {
     return "";

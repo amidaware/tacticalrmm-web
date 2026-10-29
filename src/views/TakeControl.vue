@@ -2,7 +2,7 @@
   <div>
     <q-bar>
       <span class="text-caption">
-        TRMM Agent Status:
+        {{ $gettext("TRMM Agent Status") }}:
         <q-badge :color="statusColor" :label="status" />
       </span>
       <q-space />
@@ -10,14 +10,14 @@
         class="q-mr-md"
         color="primary"
         size="sm"
-        label="Restart Connection"
+        :label="$gettext('Restart Connection')"
         icon="refresh"
         @click="restartMeshService"
       />
       <q-btn
         :color="dash_negative_color"
         size="sm"
-        label="Recover Connection"
+        :label="$gettext('Recover Connection')"
         icon="fas fa-first-aid"
         @click="repairMeshCentral"
       />
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -65,6 +66,14 @@ export default {
 
     // vue router
     const { params } = useRoute();
+    const pageTitlePrefix = ref("");
+    useMeta(() =>
+      pageTitlePrefix.value
+        ? {
+            title: `${pageTitlePrefix.value} | ${gettext.$pgettext("Remote control", "Take Control")}`,
+          }
+        : {},
+    );
 
     // take control setup
     const control = ref("");
@@ -92,9 +101,7 @@ export default {
         const data = await fetchAgentMeshCentralURLs(params.agent_id);
         control.value = data.control;
         status.value = data.status;
-        useMeta({
-          title: `${data.hostname} - ${data.client} - ${data.site} | Take Control`,
-        });
+        pageTitlePrefix.value = `${data.hostname} - ${data.client} - ${data.site}`;
       } catch (e) {
         console.error(e);
       }
@@ -109,7 +116,9 @@ export default {
 
     async function repairMeshCentral() {
       control.value = "";
-      $q.loading.show({ message: "Attempting to repair Mesh Agent" });
+      $q.loading.show({
+        message: gettext.$gettext("Attempting to repair Mesh Agent"),
+      });
       try {
         const data = await sendAgentRecoverMesh(params.agent_id);
         await getMeshURLs();
@@ -123,7 +132,9 @@ export default {
     }
 
     async function restartMeshService() {
-      $q.loading.show({ message: "Restarting Mesh Agent" });
+      $q.loading.show({
+        message: gettext.$gettext("Restarting Mesh Agent"),
+      });
       const data = {
         sv_action: "restart",
       };
@@ -131,7 +142,7 @@ export default {
       try {
         await sendAgentServiceAction(params.agent_id, "mesh agent", data);
         setTimeout(() => {
-          notifySuccess("Mesh agent service was restarted");
+          notifySuccess(gettext.$gettext("Mesh agent service was restarted"));
         }, 500);
       } catch (e) {
         console.error(e);

@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $gettext("No agent selected") }}
+  </div>
   <div v-else-if="!summary && loading" class="q-pa-md flex flex-center">
     <q-circular-progress
       indeterminate
@@ -25,7 +27,7 @@
         :color="dash_negative_color"
         class="q-mr-sm"
       >
-        <q-tooltip>Agent overdue</q-tooltip>
+        <q-tooltip>{{ $gettext("Agent overdue") }}</q-tooltip>
       </q-icon>
       <q-icon
         v-else-if="summary.status === 'offline'"
@@ -47,14 +49,16 @@
       </q-icon>
       <b>{{ summary.hostname }}</b>
       <span v-if="summary.maintenance_mode">
-        &bull; <q-badge color="green"> Maintenance Mode </q-badge>
+        &bull;
+        <q-badge color="green">{{ $gettext("Maintenance Mode") }}</q-badge>
       </span>
-      &bull; {{ summary.operating_system }} &bull; Agent v{{ summary.version }}
+      &bull; {{ summary.operating_system }} &bull;
+      {{ $gettext("Agent v%{version}", { version: summary.version }) }}
       <q-space />
       <q-btn
         dense
         flat
-        label="Popout"
+        :label="$gettext('Popout')"
         icon="open_in_new"
         size="md"
         no-caps
@@ -64,14 +68,20 @@
       <q-btn
         dense
         flat
-        label="Take Control"
+        :label="$pgettext('Agent summary', 'Take Control')"
         icon="computer"
         size="md"
         no-caps
         class="q-mr-sm"
         @click="runTakeControl(selectedAgent)"
       />
-      <q-btn-dropdown dense flat size="md" no-caps label="Actions">
+      <q-btn-dropdown
+        dense
+        flat
+        size="md"
+        no-caps
+        :label="$pgettext('Agent summary', 'Actions')"
+      >
         <AgentActionMenu :agent="summary" />
       </q-btn-dropdown>
     </q-bar>
@@ -79,7 +89,9 @@
     <div class="row">
       <div class="col-4">
         <!-- left -->
-        <span class="text-subtitle2 text-bold">Hardware Details</span>
+        <span class="text-subtitle2 text-bold">{{
+          $gettext("Hardware Details")
+        }}</span>
         <q-list dense>
           <q-item>
             <q-item-section avatar>
@@ -97,7 +109,9 @@
             <q-item-section avatar>
               <q-icon name="fas fa-memory" />
             </q-item-section>
-            <q-item-section>{{ summary.total_ram }} GB RAM</q-item-section>
+            <q-item-section>{{
+              $gettext("%{totalRam} GB RAM", { totalRam: summary.total_ram })
+            }}</q-item-section>
           </q-item>
 
           <!-- physical disks -->
@@ -125,18 +139,24 @@
             <q-item-section avatar>
               <q-icon name="fas fa-globe-americas" />
             </q-item-section>
-            <q-item-section>Public IP: {{ summary.public_ip }}</q-item-section>
+            <q-item-section>{{
+              $gettext("Public IP: %{ip}", { ip: summary.public_ip })
+            }}</q-item-section>
           </q-item>
           <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-network-wired" />
             </q-item-section>
-            <q-item-section>LAN IP: {{ summary.local_ips }}</q-item-section>
+            <q-item-section>{{
+              $gettext("LAN IP: %{ip}", { ip: summary.local_ips })
+            }}</q-item-section>
           </q-item>
         </q-list>
       </div>
       <div class="col-2">
-        <span class="text-subtitle2 text-bold">Checks Status</span>
+        <span class="text-subtitle2 text-bold">{{
+          $gettext("Checks Status")
+        }}</span>
         <br />
         <div v-if="summary.checks.total !== 0">
           <q-chip v-if="summary.checks.passing" square size="lg">
@@ -147,7 +167,16 @@
               :color="dash_positive_color"
               text-color="white"
             />
-            <small>{{ summary.checks.passing }} checks passing</small>
+            <small>{{
+              $ngettext(
+                "%{count} check passing",
+                "%{count} checks passing",
+                summary.checks.passing,
+                {
+                  count: summary.checks.passing,
+                },
+              )
+            }}</small>
           </q-chip>
           <q-chip v-if="summary.checks.failing" square size="lg">
             <q-avatar
@@ -157,7 +186,16 @@
               :color="dash_negative_color"
               text-color="white"
             />
-            <small>{{ summary.checks.failing }} checks failing</small>
+            <small>{{
+              $ngettext(
+                "%{count} check failing",
+                "%{count} checks failing",
+                summary.checks.failing,
+                {
+                  count: summary.checks.failing,
+                },
+              )
+            }}</small>
           </q-chip>
           <q-chip v-if="summary.checks.warning" square size="lg">
             <q-avatar
@@ -167,7 +205,16 @@
               :color="dash_warning_color"
               text-color="white"
             />
-            <small>{{ summary.checks.warning }} checks warning</small>
+            <small>{{
+              $ngettext(
+                "%{count} check warning",
+                "%{count} checks warning",
+                summary.checks.warning,
+                {
+                  count: summary.checks.warning,
+                },
+              )
+            }}</small>
           </q-chip>
           <q-chip v-if="summary.checks.info" square size="lg">
             <q-avatar
@@ -177,7 +224,14 @@
               :color="dash_info_color"
               text-color="white"
             />
-            <small>{{ summary.checks.info }} checks info</small>
+            <small>{{
+              $ngettext(
+                "%{count} check info",
+                "%{count} checks info",
+                summary.checks.info,
+                { count: summary.checks.info },
+              )
+            }}</small>
           </q-chip>
           <span
             v-if="
@@ -187,16 +241,24 @@
               summary.checks.warning === 0 &&
               summary.checks.info === 0
             "
-            >{{ summary.checks.total }} checks awaiting first
-            synchronization</span
+            >{{
+              $ngettext(
+                "%{count} check awaiting first synchronization",
+                "%{count} checks awaiting first synchronization",
+                summary.checks.total,
+                {
+                  count: summary.checks.total,
+                },
+              )
+            }}</span
           >
         </div>
-        <div v-else>No checks</div>
+        <div v-else>{{ $gettext("No checks") }}</div>
 
         <span
           v-if="customFields.length > 0"
           class="text-subtitle2 text-bold block q-mt-xl"
-          >Custom Fields</span
+          >{{ $gettext("Custom Fields") }}</span
         >
         <q-list dense>
           <q-item v-for="(field, i) in customFields" :key="field + i">
@@ -210,7 +272,7 @@
       <div class="col-1"></div>
       <!-- right -->
       <div class="col-3">
-        <span class="text-subtitle2 text-bold">Disks</span>
+        <span class="text-subtitle2 text-bold">{{ $gettext("Disks") }}</span>
         <div v-for="disk in disks" :key="disk.device">
           <span>{{ disk.device }} ({{ disk.fstype }})</span>
           <q-linear-progress
@@ -220,7 +282,12 @@
             :color="diskBarColor(disk.percent)"
             class="q-mt-sm"
           />
-          <span>{{ disk.free }} free of {{ disk.total }}</span>
+          <span>{{
+            $gettext("%{free} free of %{total}", {
+              free: disk.free,
+              total: disk.total,
+            })
+          }}</span>
           <q-separator />
         </div>
       </div>

@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">API Keys</div>
+      <div class="text-subtitle2">{{ $gettext("API Keys") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add key"
+        :label="$pgettext('API keys', 'Add key')"
         @click="addAPIKey"
       />
     </div>
@@ -23,7 +23,7 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No API tokens added yet"
+      :no-data-label="$gettext('No API tokens added yet')"
     >
       <!-- header slots -->
       <template v-slot:header-cell-actions="props">
@@ -44,19 +44,21 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{
+                  $pgettext("Settings actions", "Edit")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="deleteAPIKey(props.row)">
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $gettext("Delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $gettext("Close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -81,7 +83,7 @@
               name="content_copy"
               @click="copyKeyToClipboard(props.row.key)"
             >
-              <q-tooltip>Copy API Key to clipboard</q-tooltip>
+              <q-tooltip>{{ $gettext("Copy API Key to clipboard") }}</q-tooltip>
             </q-icon>
           </q-td>
         </q-tr>
@@ -91,6 +93,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -99,41 +102,6 @@ import { useQuasar, copyToClipboard } from "quasar";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import APIKeysForm from "@/components/core/APIKeysForm.vue";
 
-const columns = [
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "User",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "expiration",
-    label: "Expiration",
-    field: "expiration",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "created_time",
-    label: "Created",
-    field: "created_time",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "actions",
-    label: "",
-    field: "actions",
-  },
-];
 export default {
   name: "APIKeysTable",
   setup() {
@@ -148,6 +116,42 @@ export default {
     const keys = ref([]);
     const loading = ref(false);
 
+    const columns = computed(() => [
+      {
+        name: "name",
+        label: gettext.$pgettext("Settings actions", "Name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: gettext.$pgettext("Settings actions", "User"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "expiration",
+        label: gettext.$gettext("Expiration"),
+        field: "expiration",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "created_time",
+        label: gettext.$pgettext("API keys", "Created"),
+        field: "created_time",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "actions",
+        label: "",
+        field: "actions",
+      },
+    ]);
+
     // setup table
     const pagination = ref({
       rowsPerPage: 0,
@@ -158,10 +162,10 @@ export default {
     function copyKeyToClipboard(apikey) {
       copyToClipboard(apikey)
         .then(() => {
-          notifySuccess("Key was copied to clipboard!");
+          notifySuccess(gettext.$gettext("Key was copied to clipboard!"));
         })
         .catch(() => {
-          notifyError("Unable to copy to clipboard!");
+          notifyError(gettext.$gettext("Unable to copy to clipboard!"));
         });
     }
 
@@ -174,9 +178,9 @@ export default {
 
     async function deleteAPIKey(key) {
       $q.dialog({
-        title: `Delete API key: ${key.name}?`,
+        title: gettext.$gettext("Delete API key: %{name}?", { name: key.name }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

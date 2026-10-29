@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 40vw">
       <q-bar>
-        Add Deployment
+        {{ $gettext("Add Deployment") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary" />
@@ -10,9 +10,9 @@
       </q-bar>
       <q-card-section>
         <tactical-dropdown
-          :rules="[(val) => !!val || '*Required']"
+          :rules="[(val) => !!val || $gettext('*Required')]"
           outlined
-          label="Site"
+          :label="$pgettext('Agent table', 'Site')"
           v-model="state.site"
           :options="siteOptions"
           mapOptions
@@ -20,51 +20,63 @@
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-pl-sm">Agent Type</div>
+        <div class="q-pl-sm">{{ $gettext("Agent Type") }}</div>
         <q-radio
           v-model="state.agenttype"
           val="server"
-          label="Server"
+          :label="$gettext('Server')"
           @update:model-value="power = false"
         />
         <q-radio
           v-model="state.agenttype"
           val="workstation"
-          label="Workstation"
+          :label="$gettext('Workstation')"
         />
       </q-card-section>
       <q-card-section>
         <q-input
           type="datetime-local"
           dense
-          label="Expiry"
+          :label="$gettext('Expiry')"
           stack-label
           filled
           v-model="state.expires"
         />
       </q-card-section>
       <q-card-section class="q-gutter-sm">
-        <q-checkbox v-model="state.rdp" dense label="Enable RDP" />
-        <q-checkbox v-model="state.ping" dense label="Enable Ping" />
+        <q-checkbox v-model="state.rdp" dense :label="$gettext('Enable RDP')" />
+        <q-checkbox
+          v-model="state.ping"
+          dense
+          :label="$gettext('Enable Ping')"
+        />
         <q-checkbox
           v-model="state.power"
           dense
           v-show="state.agenttype === 'workstation'"
-          label="Disable sleep/hibernate"
+          :label="$gettext('Disable sleep/hibernate')"
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-pl-sm">Arch</div>
-        <q-radio v-model="state.goarch" :val="GOARCH_AMD64" label="64 bit" />
-        <q-radio v-model="state.goarch" :val="GOARCH_i386" label="32 bit" />
+        <div class="q-pl-sm">{{ $gettext("Arch") }}</div>
+        <q-radio
+          v-model="state.goarch"
+          :val="GOARCH_AMD64"
+          :label="$gettext('64 bit')"
+        />
+        <q-radio
+          v-model="state.goarch"
+          :val="GOARCH_i386"
+          :label="$gettext('32 bit')"
+        />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Create"
+          :label="$pgettext('General actions', 'Create')"
           color="primary"
           @click="submit"
         />
@@ -96,6 +108,7 @@ export default {
   emits: [...useDialogPluginComponent.emits],
   setup() {
     // setup quasar dialog
+
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
     // setup site dropdown
