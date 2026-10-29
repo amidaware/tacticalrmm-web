@@ -13,15 +13,17 @@
         {{
           props.action
             ? props.type === "web"
-              ? "Edit URL Action"
-              : "Edit Web Hook"
+              ? $gettext("Edit URL Action")
+              : $gettext("Edit Web Hook")
             : props.type === "web"
-              ? "Add URL Action"
-              : "Add Web Hook"
+              ? $gettext("Add URL Action")
+              : $gettext("Add Web Hook")
         }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -29,18 +31,18 @@
         <!-- name -->
         <q-card-section>
           <q-input
-            label="Name"
+            :label="$pgettext('Settings actions', 'Name')"
             outlined
             dense
             v-model="localAction.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('Required')]"
           />
         </q-card-section>
 
         <!-- description -->
         <q-card-section>
           <q-input
-            label="Description"
+            :label="$pgettext('HTTP action configuration', 'Description')"
             outlined
             dense
             type="textarea"
@@ -52,18 +54,18 @@
         <!-- pattern -->
         <q-card-section>
           <q-input
-            label="URL Pattern"
+            :label="$gettext('URL Pattern')"
             outlined
             dense
             v-model="localAction.pattern"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('Required')]"
           />
         </q-card-section>
 
         <q-card-section v-if="type === 'rest'">
           <q-select
             v-model="localAction.rest_method"
-            label="Method"
+            :label="$gettext('Method')"
             :options="URLActionMethods"
             outlined
             dense
@@ -77,11 +79,15 @@
             <q-tabs v-model="tab" dense shrink>
               <q-tab
                 name="body"
-                label="Request Body"
+                :label="$gettext('Request Body')"
                 :ripple="false"
                 :disable="disableBodyTab"
               />
-              <q-tab name="headers" label="Request Headers" :ripple="false" />
+              <q-tab
+                name="headers"
+                :label="$gettext('Request Headers')"
+                :ripple="false"
+              />
             </q-tabs>
           </q-toolbar>
           <div ref="editorDiv" :style="{ height: '30vh' }"></div>
@@ -92,18 +98,24 @@
         <q-btn
           v-if="type === 'rest'"
           flat
-          label="Test"
+          :label="$pgettext('Settings actions', 'Test')"
           color="primary"
           @click="testWebHook"
         />
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Submit" color="primary" @click="submit" />
+        <q-btn flat :label="$gettext('Cancel')" v-close-popup />
+        <q-btn
+          flat
+          :label="$gettext('Submit')"
+          color="primary"
+          @click="submit"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, reactive, watch } from "vue";
 import { useDialogPluginComponent, useQuasar, extend } from "quasar";
@@ -124,6 +136,7 @@ const props = defineProps<{ type: URLActionType; action?: URLAction }>();
 
 // setup quasar
 const $q = useQuasar();
+
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 // static data
@@ -167,7 +180,7 @@ async function submit() {
       ? await editURLAction(localAction.id, localAction)
       : await saveURLAction(localAction);
     onDialogOK();
-    notifySuccess("Url Action was edited!");
+    notifySuccess(gettext.$gettext("Url Action was edited!"));
   } catch (e) {}
 
   $q.loading.hide();

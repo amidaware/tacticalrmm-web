@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import { date } from "quasar";
 import { validateTimePeriod } from "@/utils/validation";
 import trmmLogo from "@/assets/trmm_256.png";
@@ -93,37 +94,29 @@ function _formatOptions<T extends { [key: string]: any }>(
   }
 }
 
-export function formatScriptOptions(data: Script[]): Option[] {
-  const categoryMap = new Map<string, Script[]>();
-  let hasUnassigned = false;
-
-  data.forEach((script) => {
-    const category = script.category || "Unassigned";
-    if (!script.category) hasUnassigned = true;
-
-    if (!categoryMap.has(category)) {
-      categoryMap.set(category, []);
-    }
-    categoryMap.get(category)!.push(script);
-  });
-
-  const categories = Array.from(categoryMap.keys());
-  if (hasUnassigned) {
-    // Ensure "Unassigned" is the last category
-    const index = categories.indexOf("Unassigned");
-    categories.splice(index, 1);
-    categories.push("Unassigned");
+export function groupScriptsByCategory(data: Script[]) {
+  const categories = new Map<string | null, Script[]>();
+  for (const script of data) {
+    const key = script.category || null;
+    const scripts = categories.get(key) ?? [];
+    scripts.push(script);
+    categories.set(key, scripts);
   }
+  return [...categories]
+    .sort(([a], [b]) =>
+      a === b ? 0 : a === null ? 1 : b === null ? -1 : a < b ? -1 : 1,
+    )
+    .map(([category, scripts]) => ({
+      category,
+      scripts: scripts.sort((a, b) => a.name.localeCompare(b.name)),
+    }));
+}
 
-  categories.sort();
-
+export function formatScriptOptions(data: Script[]): Option[] {
   const options: Option[] = [];
-  categories.forEach((cat) => {
-    options.push({ category: cat });
+  groupScriptsByCategory(data).forEach(({ category, scripts }) => {
+    options.push({ category: category ?? gettext.$gettext("Unassigned") });
 
-    const scripts = categoryMap
-      .get(cat)!
-      .sort((a, b) => a.name.localeCompare(b.name));
     scripts.forEach((script) => {
       const option: Option = {
         img_right: script.script_type === "builtin" ? trmmLogo : undefined,
@@ -193,16 +186,20 @@ export function formatCustomFieldOptions(
     return _formatOptions(data, { label: "name", flat: true });
   } else {
     // Predefined categories for organizing the custom fields
-    const categories = ["Client", "Site", "Agent"];
+    const categories = [
+      { model: "client", label: gettext.$pgettext("Custom fields", "Clients") },
+      { model: "site", label: gettext.$pgettext("Custom fields", "Sites") },
+      { model: "agent", label: gettext.$pgettext("Custom fields", "Agents") },
+    ];
     const options: Option[] = [];
 
-    categories.forEach((cat) => {
+    categories.forEach(({ model, label: cat }) => {
       // Add a category header as an option
-      options.push({ category: cat, label: cat, value: cat });
+      options.push({ category: cat, label: cat, value: model });
 
       // Filter and map the custom fields that match the current category
       const matchingFields = data
-        .filter((custom_field) => custom_field.model === cat.toLowerCase())
+        .filter((custom_field) => custom_field.model === model)
         .map((custom_field) => ({
           label: custom_field.name,
           value: custom_field.id,
@@ -308,17 +305,59 @@ export function getTimeLapse(unixtime: number) {
   const msPerYear = msPerDay * 365;
   const elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return gettext.$ngettext(
+      "%{count} second ago",
+      "%{count} seconds ago",
+      Math.round(elapsed / 1000),
+      {
+        count: Math.round(elapsed / 1000),
+      },
+    );
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return gettext.$ngettext(
+      "%{count} minute ago",
+      "%{count} minutes ago",
+      Math.round(elapsed / msPerMinute),
+      {
+        count: Math.round(elapsed / msPerMinute),
+      },
+    );
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return gettext.$ngettext(
+      "%{count} hour ago",
+      "%{count} hours ago",
+      Math.round(elapsed / msPerHour),
+      {
+        count: Math.round(elapsed / msPerHour),
+      },
+    );
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return gettext.$ngettext(
+      "%{count} day ago",
+      "%{count} days ago",
+      Math.round(elapsed / msPerDay),
+      {
+        count: Math.round(elapsed / msPerDay),
+      },
+    );
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return gettext.$ngettext(
+      "%{count} month ago",
+      "%{count} months ago",
+      Math.round(elapsed / msPerMonth),
+      {
+        count: Math.round(elapsed / msPerMonth),
+      },
+    );
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return gettext.$ngettext(
+      "%{count} year ago",
+      "%{count} years ago",
+      Math.round(elapsed / msPerYear),
+      {
+        count: Math.round(elapsed / msPerYear),
+      },
+    );
   }
 }
 
@@ -341,7 +380,7 @@ export function getNextAgentUpdateTime() {
   }
   const a = date.formatDate(ret, "MMM D, YYYY");
   const b = date.formatDate(ret, "h:mm A");
-  return `${a} at ${b}`;
+  return gettext.$gettext("%{date} at %{time}", { date: a, time: b });
 }
 
 // converts a date with timezone to local for html native datetime fields -> YYYY-MM-DD HH:mm:ss
@@ -396,7 +435,7 @@ export function convertMemoryToPercent(percent: number, memory: number) {
 // convert time period(str) to seconds(int) (3h -> 10800) used for comparing time intervals
 export function convertPeriodToSeconds(period: string) {
   if (!validateTimePeriod(period)) {
-    console.error("Time Period is invalid");
+    console.error("Time period is invalid");
     return 0;
   }
 

@@ -88,24 +88,24 @@ export default {
   },
   setup(props) {
     const filtered = ref(false);
-    const filteredOptions = ref(props.options);
+    const filterNeedle = ref("");
+    const filteredOptions = computed(() => {
+      const needle = filterNeedle.value;
+      if (!needle) return props.options;
+      if (!props.mapOptions)
+        return props.options.filter(
+          (value) => value.toLowerCase().indexOf(needle) > -1,
+        );
+      return props.options.filter((value) =>
+        !value.category
+          ? value.label.toLowerCase().indexOf(needle) > -1
+          : false,
+      );
+    });
 
     function filterFn(val, update) {
       update(() => {
-        if (val !== "") {
-          const needle = val.toLowerCase();
-
-          if (!props.mapOptions)
-            filteredOptions.value = props.options.filter(
-              (v) => v.toLowerCase().indexOf(needle) > -1,
-            );
-          else
-            filteredOptions.value = props.options.filter((v) => {
-              return !v.category
-                ? v.label.toLowerCase().indexOf(needle) > -1
-                : false;
-            });
-        }
+        filterNeedle.value = val.toLowerCase();
       });
     }
 

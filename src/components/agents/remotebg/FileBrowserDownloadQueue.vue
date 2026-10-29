@@ -5,7 +5,7 @@
   >
     <div class="row items-center justify-between q-mb-xs">
       <div class="text-subtitle2 text-weight-medium download-queue-title">
-        Download queue
+        {{ $gettext("Download queue") }}
       </div>
       <div class="row items-center q-gutter-xs">
         <q-btn
@@ -13,22 +13,28 @@
           flat
           no-caps
           size="sm"
-          label="Clear finished"
+          :label="$gettext('Clear finished')"
           :disable="!canClearFinished"
           @click="emit('clear-finished')"
         >
-          <q-tooltip>{{ TRANSFER_TOOLTIP_CLEAR_FINISHED }}</q-tooltip>
+          <q-tooltip>{{
+            $gettext(
+              "Remove completed, failed, and cancelled items from this list.",
+            )
+          }}</q-tooltip>
         </q-btn>
         <q-btn
           dense
           flat
           no-caps
           size="sm"
-          label="Hide all"
+          :label="$gettext('Hide all')"
           :disable="!canHideAll"
           @click="emit('hide-all')"
         >
-          <q-tooltip>{{ TRANSFER_TOOLTIP_HIDE_PAUSED }}</q-tooltip>
+          <q-tooltip>{{
+            $gettext("Hide paused items. Open Transfers to show them again.")
+          }}</q-tooltip>
         </q-btn>
         <q-btn
           dense
@@ -36,11 +42,13 @@
           no-caps
           size="sm"
           color="negative"
-          label="Pause all"
+          :label="$gettext('Pause all')"
           :disable="!canPauseAll"
           @click="emit('pause-all')"
         >
-          <q-tooltip>{{ TRANSFER_TOOLTIP_PAUSE_ALL }}</q-tooltip>
+          <q-tooltip>{{
+            $gettext("Pause all active and queued downloads.")
+          }}</q-tooltip>
         </q-btn>
       </div>
     </div>
@@ -67,20 +75,21 @@
             item.name
           }}</q-item-label>
           <q-item-label
-            v-if="item.errorMessage && item.status === 'failed'"
+            v-if="transferItemMessage(item) && item.status === 'failed'"
             caption
             class="download-queue-item-error"
           >
-            {{ item.errorMessage }}
+            {{ transferItemMessage(item) }}
           </q-item-label>
           <q-item-label
             v-else-if="
-              item.errorMessage && isDownloadQueueItemActive(item.status)
+              transferItemMessage(item) &&
+              isDownloadQueueItemActive(item.status)
             "
             caption
             class="download-queue-item-meta"
           >
-            {{ item.errorMessage }}
+            {{ transferItemMessage(item) }}
           </q-item-label>
           <q-item-label
             v-else-if="item.status === 'paused' && pausedCaption(item)"
@@ -113,8 +122,10 @@
           </q-badge>
           <FileBrowserTransferQueueActions
             :mode="actionModeForItem(item)"
-            :pause-tooltip="TRANSFER_TOOLTIP_PAUSE"
-            :cancel-tooltip="TRANSFER_TOOLTIP_CANCEL"
+            :pause-tooltip="$gettext('Pause this download.')"
+            :cancel-tooltip="
+              $gettext('Cancel download and release the transfer slot.')
+            "
             :resume-disabled="
               item.recoveryHint === 'non_resumable' || !!item.ownedByOtherTab
             "
@@ -132,6 +143,8 @@
 </template>
 
 <script setup lang="ts">
+import { transferItemMessage } from "@/services/fileTransfer/queueMessages";
+import { gettext } from "@/gettext";
 import { computed } from "vue";
 import { useQuasar } from "quasar";
 
@@ -139,13 +152,7 @@ import FileBrowserTransferQueueActions, {
   type TransferQueueActionMode,
 } from "@/components/agents/remotebg/FileBrowserTransferQueueActions.vue";
 import type { DownloadQueueItem } from "@/types/filebrowser";
-import {
-  TRANSFER_TOOLTIP_CANCEL,
-  TRANSFER_TOOLTIP_CLEAR_FINISHED,
-  TRANSFER_TOOLTIP_HIDE_PAUSED,
-  TRANSFER_TOOLTIP_PAUSE,
-  TRANSFER_TOOLTIP_PAUSE_ALL,
-} from "@/constants/fileTransfer";
+
 import { formatResumeWindowCaption } from "@/services/fileTransfer/transferQueuePersist";
 import {
   canDismissDownloadQueueItem,
@@ -176,10 +183,10 @@ const emit = defineEmits<{
 
 function pausedCaption(item: DownloadQueueItem): string | null {
   if (item.ownedByOtherTab) {
-    return "Open in another tab";
+    return gettext.$gettext("Open in another tab");
   }
   const parts: string[] = [];
-  if (item.errorMessage) parts.push(item.errorMessage);
+  if (transferItemMessage(item)) parts.push(transferItemMessage(item));
   const window = formatResumeWindowCaption(item.expiresAt);
   if (window) parts.push(window);
   return parts.length ? parts.join(" · ") : null;
@@ -188,7 +195,7 @@ function pausedCaption(item: DownloadQueueItem): string | null {
 function downloadStatusLabelForItem(item: DownloadQueueItem): string {
   return transferQueueStatusLabelWithSlotWait(
     downloadStatusLabel(item.status),
-    item.errorMessage,
+    item.messageCode,
     isDownloadQueueItemActive(item.status),
   );
 }

@@ -1,3 +1,6 @@
+import { gettext } from "@/gettext";
+import { isTransferIntegrityError } from "./transferErrors";
+export { isTransferIntegrityError } from "./transferErrors";
 import type { TransferAbortIntent } from "@/types/fileTransfer";
 import { getFileBrowserErrorMessage } from "@/utils/filebrowser";
 import {
@@ -5,8 +8,6 @@ import {
   type TransferReleaseReason,
   type TransferTabSync,
 } from "./transferTabSync";
-
-const INTEGRITY_ERROR_RE = /integrity check failed|sha-256 mismatch/i;
 
 export type TransferDirection = "upload" | "download";
 
@@ -77,16 +78,12 @@ export function setTransferAbortMode(
   controllers.get(id)?.abort();
 }
 
-export function isTransferIntegrityError(err: unknown): boolean {
-  return err instanceof Error && INTEGRITY_ERROR_RE.test(err.message);
-}
-
 export function transferIntegrityFailMessage(
   direction: TransferDirection,
 ): string {
   return direction === "upload"
-    ? "Upload failed: file integrity check did not match."
-    : "Download failed: file integrity check did not match.";
+    ? gettext.$gettext("Upload failed: file integrity check did not match.")
+    : gettext.$gettext("Download failed: file integrity check did not match.");
 }
 
 export function transferFailureErrorMessage(
@@ -98,6 +95,8 @@ export function transferFailureErrorMessage(
   }
   return getFileBrowserErrorMessage(
     err,
-    direction === "upload" ? "Upload failed." : "Download failed.",
+    direction === "upload"
+      ? gettext.$gettext("Upload failed.")
+      : gettext.$gettext("Download failed."),
   );
 }

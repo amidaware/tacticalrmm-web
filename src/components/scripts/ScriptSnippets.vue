@@ -17,10 +17,12 @@
           flat
           push
           icon="refresh"
-        />Script Snippets
+        />{{ $gettext("Script Snippets") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -46,12 +48,14 @@
             flat
             no-caps
             icon="add"
-            label="New"
+            :label="$pgettext('Script configuration', 'New')"
             @click="newSnippetModal"
           />
         </template>
         <template v-slot:header-cell-shell="props">
-          <q-th :props="props" auto-width> Shell </q-th>
+          <q-th :props="props" auto-width>
+            {{ $pgettext("Script configuration", "Shell") }}
+          </q-th>
         </template>
 
         <template v-slot:body="props">
@@ -72,7 +76,9 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("Script configuration", "Edit")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -83,11 +89,11 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -98,7 +104,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Powershell </q-tooltip>
+                <q-tooltip>
+                  {{ $gettext("Powershell") }}
+                </q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="props.row.shell === 'python'"
@@ -106,7 +114,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Python </q-tooltip>
+                <q-tooltip>
+                  {{ $gettext("Python") }}
+                </q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="props.row.shell === 'cmd'"
@@ -114,7 +124,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Batch </q-tooltip>
+                <q-tooltip>
+                  {{ $gettext("Batch") }}
+                </q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="props.row.shell === 'shell'"
@@ -122,7 +134,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Shell </q-tooltip>
+                <q-tooltip>
+                  {{ $pgettext("Script shell selector", "Shell") }}
+                </q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="props.row.shell === 'nushell'"
@@ -130,7 +144,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Nushell </q-tooltip>
+                <q-tooltip>
+                  {{ $gettext("Nushell") }}
+                </q-tooltip>
               </q-icon>
               <q-icon
                 v-else-if="props.row.shell === 'deno'"
@@ -138,7 +154,9 @@
                 color="primary"
                 size="sm"
               >
-                <q-tooltip> Deno </q-tooltip>
+                <q-tooltip>
+                  {{ $gettext("Deno") }}
+                </q-tooltip>
               </q-icon>
             </q-td>
             <!-- name -->
@@ -152,39 +170,15 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { fetchScriptSnippets, removeScriptSnippet } from "@/api/scripts";
 import { notifySuccess } from "@/utils/notify";
 
 // ui imports
 import ScriptSnippetFormModal from "@/components/scripts/ScriptSnippetFormModal.vue";
-
-// static data
-const columns = [
-  {
-    name: "shell",
-    label: "Shell",
-    field: "shell",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "desc",
-    label: "Description",
-    field: "description",
-    align: "left",
-    sortable: false,
-  },
-];
 
 export default {
   name: "ScriptSnippetManager",
@@ -193,6 +187,30 @@ export default {
     // setup quasar plugins
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
     const $q = useQuasar();
+
+    const columns = computed(() => [
+      {
+        name: "shell",
+        label: gettext.$pgettext("Script configuration", "Shell"),
+        field: "shell",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "name",
+        label: gettext.$pgettext("Script configuration", "Name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "desc",
+        label: gettext.$pgettext("Script configuration", "Description"),
+        field: "description",
+        align: "left",
+        sortable: false,
+      },
+    ]);
 
     // script snippet manager logic
     const snippets = ref([]);
@@ -209,9 +227,11 @@ export default {
 
     function deleteSnippet(snippet) {
       $q.dialog({
-        title: `Delete script snippet: ${snippet.name}?`,
+        title: gettext.$gettext("Delete script snippet: %{name}?", {
+          name: snippet.name,
+        }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

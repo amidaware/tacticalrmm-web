@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Import Report Template
+        {{ $gettext("Import Report Template") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -19,28 +21,28 @@ For details, see: https://license.tacticalrmm.com/ee
           v-model="file"
           dense
           filled
-          label="Import File"
+          :label="$gettext('Import File')"
           style="width: 400px"
           accept=".json"
-          hint="Only accepts exported report template json files"
+          :hint="$gettext('Only accepts exported report template JSON files')"
         />
       </q-card-section>
 
       <q-card-section>
         <q-checkbox
           v-model="overwriteOnNameConflict"
-          label="Overwrite if name exists"
+          :label="$gettext('Overwrite if name exists')"
         />
       </q-card-section>
 
       <q-card-actions>
         <q-space />
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Import"
+          :label="$gettext('Import')"
           color="primary"
           @click="submit"
         />
@@ -50,6 +52,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref } from "vue";
 import { until } from "@vueuse/shared";
 import { useDialogPluginComponent } from "quasar";
@@ -79,7 +82,7 @@ async function submit() {
 
     onDialogOK();
   } else {
-    notifyError("File is required");
+    notifyError(gettext.$gettext("File is required"));
   }
 }
 </script>

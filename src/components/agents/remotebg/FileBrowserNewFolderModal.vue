@@ -6,7 +6,7 @@
   >
     <q-card style="min-width: 360px">
       <q-card-section>
-        <div class="text-h6">New Folder</div>
+        <div class="text-h6">{{ $gettext("New Folder") }}</div>
       </q-card-section>
 
       <q-separator />
@@ -18,7 +18,7 @@
           dense
           outlined
           autofocus
-          label="Folder name"
+          :label="$gettext('Folder name')"
           lazy-rules
           :rules="nameRules"
           maxlength="255"
@@ -28,10 +28,10 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat :label="$gettext('Cancel')" color="primary" v-close-popup />
         <q-btn
           unelevated
-          label="Create"
+          :label="$pgettext('File browser', 'Create')"
           color="primary"
           :loading="saving"
           :disable="saving || !localName.trim()"

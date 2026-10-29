@@ -7,7 +7,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <template>
   <q-bar>
     <q-btn-dropdown
-      label="Formatting"
+      :label="$gettext('Formatting')"
       flat
       dense
       auto-close
@@ -17,44 +17,56 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-list dense>
         <q-item clickable @click="insertHeader('#')">
           <q-item-section>
-            <q-item-label>Heading 1</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 1 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('##')">
           <q-item-section>
-            <q-item-label>Heading 2</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 2 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('###')">
           <q-item-section>
-            <q-item-label>Heading 3</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 3 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('####')">
           <q-item-section>
-            <q-item-label>Heading 4</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 4 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('#####')">
           <q-item-section>
-            <q-item-label>Heading 5</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 5 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertHeader('######')">
           <q-item-section>
-            <q-item-label>Heading 6</q-item-label>
+            <q-item-label>{{
+              $gettext("Heading %{level}", { level: 6 })
+            }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
     </q-btn-dropdown>
 
     <q-btn-dropdown
-      label="Section"
+      :label="$gettext('Section')"
       flat
       dense
       auto-close
@@ -64,49 +76,49 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-list dense>
         <q-item clickable @click="insertSection('section')">
           <q-item-section>
-            <q-item-label>Section</q-item-label>
+            <q-item-label>{{ $gettext("Section") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('chapter')">
           <q-item-section>
-            <q-item-label>Chapter</q-item-label>
+            <q-item-label>{{ $gettext("Chapter") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('header')">
           <q-item-section>
-            <q-item-label>Header</q-item-label>
+            <q-item-label>{{ $gettext("Header") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('footer')">
           <q-item-section>
-            <q-item-label>Footer</q-item-label>
+            <q-item-label>{{ $gettext("Footer") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('nav')">
           <q-item-section>
-            <q-item-label>Nav</q-item-label>
+            <q-item-label>{{ $gettext("Nav") }}</q-item-label>
           </q-item-section>
         </q-item>
 
         <q-item clickable @click="insertSection('div')">
           <q-item-section>
-            <q-item-label>Div</q-item-label>
+            <q-item-label>{{ $gettext("Div") }}</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable @click="insertSection('article')">
           <q-item-section>
-            <q-item-label>Article</q-item-label>
+            <q-item-label>{{ $gettext("Article") }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
     </q-btn-dropdown>
 
     <q-btn flat dense :ripple="false" icon="format_bold" @click="insertBold">
-      <q-tooltip :delay="500">Bold</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Bold") }}</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -115,7 +127,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_italic"
       @click="insertItalic"
     >
-      <q-tooltip :delay="500">Italic</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Italic") }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -125,7 +137,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_numbered"
       @click="insertNumberedList"
     >
-      <q-tooltip :delay="500">Numbered List</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Numbered List") }}</q-tooltip>
     </q-btn>
     <q-btn
       flat
@@ -134,7 +146,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_list_bulleted"
       @click="insertBulletList"
     >
-      <q-tooltip :delay="500">Bullet List</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Bullet List") }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn
@@ -144,32 +156,44 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="format_quote"
       @click="insertBlockQuote"
     >
-      <q-tooltip :delay="500">Block Quote</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Block Quote") }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="undo" @click="undo">
-      <q-tooltip :delay="500">Undo</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Undo") }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="redo" @click="redo">
-      <q-tooltip :delay="500">Redo</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Redo") }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
     <q-btn flat dense :ripple="false" icon="code" @click="insertCodeBlock">
-      <q-tooltip :delay="500">Code Block</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Code Block") }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="link">
-      <q-tooltip :delay="500">Link</q-tooltip>
+      <q-tooltip :delay="500">{{
+        $pgettext("Report editor toolbar", "Link")
+      }}</q-tooltip>
       <q-menu>
         <div class="no-wrap q-pa-md">
-          <div class="text-subtitle1">Create Link</div>
-          <q-input v-model="linkText" label="Text" type="text" />
+          <div class="text-subtitle1">
+            {{ $gettext("Create Link") }}
+          </div>
+          <q-input
+            v-model="linkText"
+            :label="$pgettext('Report editing', 'Text')"
+            type="text"
+          />
 
-          <q-input v-model="linkUrl" label="Url" type="text" />
+          <q-input
+            v-model="linkUrl"
+            :label="$pgettext('Report editing', 'URL')"
+            type="text"
+          />
 
           <q-btn
             v-close-popup
             color="primary"
-            label="Insert Link"
+            :label="$gettext('Insert Link')"
             class="full-width q-mt-sm"
             flat
             dense
@@ -179,10 +203,12 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-menu>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="image" @click="insertImage">
-      <q-tooltip :delay="500">Image</q-tooltip>
+      <q-tooltip :delay="500">{{
+        $pgettext("Report editor toolbar", "Image")
+      }}</q-tooltip>
     </q-btn>
     <q-btn flat dense :ripple="false" icon="horizontal_rule" @click="insertHr">
-      <q-tooltip :delay="500">Horizontal Rule</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Horizontal Rule") }}</q-tooltip>
     </q-btn>
     <q-separator vertical inset />
 
@@ -195,7 +221,7 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('block [name]', 'endblock')"
     >
-      <q-tooltip :delay="500">Jinja {% %} block</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Jinja {% %} block") }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -206,7 +232,7 @@ For details, see: https://license.tacticalrmm.com/ee
       label="{{ }}"
       @click="insertJinjaData()"
     >
-      <q-tooltip :delay="500">Jinja template data</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Jinja template data") }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -217,7 +243,7 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('for item in items', 'endfor')"
     >
-      <q-tooltip :delay="500">Jinja for loop</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Jinja for loop") }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -228,7 +254,7 @@ For details, see: https://license.tacticalrmm.com/ee
       no-caps
       @click="insertJinjaBlock('if [condition]', 'endif')"
     >
-      <q-tooltip :delay="500">Jinja if condition</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Jinja if condition") }}</q-tooltip>
     </q-btn>
 
     <q-separator vertical inset />
@@ -240,7 +266,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-plus-outline"
       @click="openQueryAddDialog"
     >
-      <q-tooltip :delay="500">Add Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Add Data Query") }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -250,7 +276,9 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-arrow-down"
       @click="insertDataQuery"
     >
-      <q-tooltip :delay="500">Insert Saved Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{
+        $gettext("Insert Saved Data Query")
+      }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -260,7 +288,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-database-edit"
       @click="editDataQuery"
     >
-      <q-tooltip :delay="500">Edit Data Query</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Edit Data Query") }}</q-tooltip>
     </q-btn>
 
     <q-btn
@@ -270,7 +298,7 @@ For details, see: https://license.tacticalrmm.com/ee
       icon="mdi-table-large-plus"
       @click="openTableMaker"
     >
-      <q-tooltip :delay="500">Table</q-tooltip>
+      <q-tooltip :delay="500">{{ $gettext("Table") }}</q-tooltip>
     </q-btn>
 
     <!-- <q-btn flat dense :ripple="false" icon="add_chart" @click="openChartDialog">
@@ -282,6 +310,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, toRaw, onMounted } from "vue";
 import { useQuasar } from "quasar";
@@ -415,7 +444,11 @@ function insertDataQuery() {
     component: DataQuerySelect,
   }).onOk((dataQuery: ReportDataQuery) => {
     _saveDataSourcesInTemplate(dataQuery);
-    notifySuccess(`${dataQuery.name} was saved successfully in template`);
+    notifySuccess(
+      gettext.$gettext("%{name} was saved successfully in template", {
+        name: dataQuery.name,
+      }),
+    );
   });
 }
 
@@ -423,7 +456,9 @@ function editDataQuery() {
   const dataSources = _getDataSourcesInTemplate();
 
   if (!dataSources) {
-    notifyWarning("No data sources exist in template variables");
+    notifyWarning(
+      gettext.$gettext("No data sources exist in template variables"),
+    );
     return;
   }
 
@@ -441,7 +476,11 @@ function editDataQuery() {
       },
     }).onOk((dataQuery: ReportDataQuery) => {
       _saveDataSourcesInTemplate(dataQuery, false);
-      notifySuccess(`${dataQuery.name} was saved successfully in template`);
+      notifySuccess(
+        gettext.$gettext("%{name} was saved successfully in template", {
+          name: dataQuery.name,
+        }),
+      );
     });
   });
 }

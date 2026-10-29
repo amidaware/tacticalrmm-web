@@ -1,0 +1,11 @@
+# Preserve licenses, copyright notices, and third-party legal text at any depth.
+[Ll][Ii][Cc][Ee][Nn][Ss][Ee]*
+[Ll][Ii][Cc][Ee][Nn][Cc][Ee]*
+[Cc][Oo][Pp][Yy][Ii][Nn][Gg]*
+[Cc][Oo][Pp][Yy][Rr][Ii][Gg][Hh][Tt]*
+[Nn][Oo][Tt][Ii][Cc][Ee]*
+[Pp][Aa][Tt][Ee][Nn][Tt][Ss]*
+[Tt][Hh][Ii][Rr][Dd][-_][Pp][Aa][Rr][Tt][Yy]*
+
+# Compiled gettext catalogue
+/src/gettext/generated/

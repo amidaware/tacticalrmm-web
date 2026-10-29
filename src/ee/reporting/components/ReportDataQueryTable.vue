@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportDataQueries"
-        />Data Queries
+        />{{ $gettext("Data Queries") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -43,7 +45,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             icon="add"
-            label="New"
+            :label="$pgettext('Report editing', 'New')"
             no-caps
             dense
             flat
@@ -53,7 +55,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$pgettext('Report editing', 'Search')"
             dense
             outlined
             clearable
@@ -75,7 +77,7 @@ For details, see: https://license.tacticalrmm.com/ee
             <q-menu context-menu>
               <q-list dense style="min-width: 200px">
                 <q-item v-close-popup clickable @click="cloneQuery(props.row)">
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{ $gettext("Clone") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -83,7 +85,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditDataQuery(props.row)"
                 >
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("Report edit action", "Edit")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -91,13 +95,13 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteDataQuery(props.row)"
                 >
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -112,8 +116,9 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { useSharedReportDataQueries } from "../api/reporting";
 
@@ -123,15 +128,15 @@ import ReportDataQueryForm from "./ReportDataQueryForm.vue";
 // type imports
 import type { ReportDataQuery } from "../types/reporting";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "name",
-    label: "Name",
+    label: gettext.$pgettext("Report editing", "Name"),
     field: "name",
     align: "left",
     sortable: true,
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -165,11 +170,14 @@ function openEditDataQuery(dataQuery: ReportDataQuery) {
 
 function deleteDataQuery(dataQuery: ReportDataQuery) {
   $q.dialog({
-    title: `Delete Data Query: ${dataQuery.name}?`,
-    message:
+    title: gettext.$gettext("Delete Data Query: %{name}?", {
+      name: dataQuery.name,
+    }),
+    message: gettext.$gettext(
       "If this query is in use you will need to change it in every report template",
+    ),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(() => {
     deleteReportDataQuery(dataQuery.id);
   });

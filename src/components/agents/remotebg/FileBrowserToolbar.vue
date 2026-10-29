@@ -10,7 +10,7 @@
         no-caps
         color="primary"
         icon="upload"
-        label="Upload"
+        :label="$gettext('Upload')"
         class="toolbar-btn toolbar-primary-btn"
         :disable="!hasUploadPath"
         @click="emit('upload')"
@@ -20,7 +20,7 @@
         dense
         unelevated
         icon="create_new_folder"
-        label="New Folder"
+        :label="$gettext('New Folder')"
         class="toolbar-btn"
         :disable="!hasUploadPath"
         @click="emit('new-folder')"
@@ -29,7 +29,7 @@
         dense
         unelevated
         icon="download"
-        label="Download"
+        :label="$gettext('Download')"
         class="toolbar-btn"
         :disable="selectedCount === 0"
         @click="emit('download')"
@@ -38,7 +38,7 @@
         dense
         unelevated
         icon="delete"
-        label="Delete"
+        :label="$gettext('Delete')"
         class="toolbar-btn"
         :disable="selectedCount === 0"
         @click="emit('delete')"
@@ -47,7 +47,7 @@
         dense
         unelevated
         icon="edit"
-        label="Rename"
+        :label="$gettext('Rename')"
         class="toolbar-btn"
         :disable="selectedCount !== 1"
         @click="emit('rename')"
@@ -56,7 +56,7 @@
       <q-btn
         dense
         unelevated
-        label="More"
+        :label="$gettext('More')"
         icon-right="expand_more"
         class="toolbar-btn"
       >
@@ -71,7 +71,9 @@
               <q-item-section avatar>
                 <q-icon name="info" size="18px" />
               </q-item-section>
-              <q-item-section>Properties</q-item-section>
+              <q-item-section>
+                {{ $gettext("Properties") }}
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -83,7 +85,9 @@
               <q-item-section avatar>
                 <q-icon name="unarchive" size="18px" />
               </q-item-section>
-              <q-item-section>Extract to…</q-item-section>
+              <q-item-section>
+                {{ $gettext("Extract to…") }}
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -95,7 +99,9 @@
               <q-item-section avatar>
                 <q-icon name="content_copy" size="18px" />
               </q-item-section>
-              <q-item-section>Copy Path</q-item-section>
+              <q-item-section>
+                {{ $gettext("Copy Path") }}
+              </q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -111,7 +117,7 @@
         unelevated
         no-caps
         icon="swap_vert"
-        :label="transfersLabel"
+        :label="resolvedTransfersLabel"
         class="toolbar-btn"
         @click="emit('open-transfers')"
       >
@@ -124,7 +130,8 @@
           {{ pausedCount }}
         </q-badge>
         <q-tooltip v-if="pausedCount > 0">
-          {{ pausedTooltip }} — resume anytime, or cancel to discard
+          {{ pausedTooltip }}
+          {{ $gettext("— resume anytime, or cancel to discard") }}
         </q-tooltip>
       </q-btn>
 
@@ -149,8 +156,8 @@
           hide-bottom-space
           class="toolbar-search"
           :class="{ 'toolbar-search--active': filterActive }"
-          placeholder="Filter by name in this folder"
-          aria-label="Filter by name in this folder"
+          :placeholder="$gettext('Filter by name in this folder')"
+          :aria-label="$gettext('Filter by name in this folder')"
           :dark="$q.dark.isActive"
           @update:model-value="onSearchUpdate"
           @keydown="onSearchKeydown"
@@ -172,7 +179,7 @@
         unelevated
         icon="refresh"
         class="toolbar-btn toolbar-icon-btn"
-        aria-label="Refresh folder"
+        :aria-label="$gettext('Refresh folder')"
         @click="emit('refresh')"
       />
     </div>
@@ -180,6 +187,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { computed, ref } from "vue";
 import { useQuasar } from "quasar";
 
@@ -202,13 +210,16 @@ const props = withDefaults(
   {
     showTransfers: false,
     canExtract: false,
-    transfersLabel: "Transfers",
     pausedCount: 0,
     filterMatchCount: 0,
     filterTotalCount: 0,
     listingLoading: false,
     filterSearching: false,
   },
+);
+
+const resolvedTransfersLabel = computed(
+  () => props.transfersLabel ?? gettext.$gettext("Transfers"),
 );
 
 const emit = defineEmits<{
@@ -239,22 +250,32 @@ const showFilterCount = computed(() => filterActive.value);
 
 const filterCountLabel = computed(() => {
   if (props.filterSearching) {
-    return "Searching this folder…";
+    return gettext.$gettext("Searching this folder…");
   }
   const match = props.filterMatchCount ?? 0;
   const total = props.filterTotalCount ?? 0;
   if (total > 0 && match !== total) {
-    return `${match.toLocaleString()} of ${total.toLocaleString()} matches`;
+    return gettext.$ngettext(
+      "%{match} of %{total} match",
+      "%{match} of %{total} matches",
+      total,
+      {
+        match: match.toLocaleString(),
+        total: total.toLocaleString(),
+      },
+    );
   }
-  if (total === 1) return "1 match";
-  if (total > 1) return `${total.toLocaleString()} matches`;
-  return "0 matches";
+  if (total > 0)
+    return gettext.$ngettext("%{count} match", "%{count} matches", total, {
+      count: total,
+    });
+  return gettext.$ngettext("%{count} match", "%{count} matches", 0, {
+    count: 0,
+  });
 });
 
 const pausedTooltip = computed(() =>
-  (props.pausedCount ?? 0) === 1
-    ? "1 paused"
-    : `${props.pausedCount ?? 0} paused`,
+  gettext.$gettext("%{count} paused", { count: props.pausedCount ?? 0 }),
 );
 
 function onSearchUpdate(val: string | number | null) {

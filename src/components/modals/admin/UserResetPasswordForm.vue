@@ -3,19 +3,25 @@
     <q-card style="width: 60vw">
       <q-form ref="form" @submit="onSubmit">
         <q-card-section class="row items-center">
-          <div class="text-h6">{{ user.username }} Password Reset</div>
+          <div class="text-h6">
+            {{
+              $gettext("%{username} Password Reset", {
+                username: user.username,
+              })
+            }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">New Password:</div>
+          <div class="col-2">{{ $gettext("New Password") }}:</div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="password"
               :type="isPwd ? 'password' : 'text'"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $gettext('*Required')]"
             >
               <template v-slot:append>
                 <q-icon
@@ -28,7 +34,11 @@
           </div>
         </q-card-section>
         <q-card-section class="row items-center">
-          <q-btn label="Reset" color="primary" type="submit" />
+          <q-btn
+            :label="$pgettext('Reset action', 'Reset')"
+            color="primary"
+            type="submit"
+          />
         </q-card-section>
       </q-form>
     </q-card>
@@ -62,7 +72,7 @@ export default {
         .then(() => {
           this.onOk();
           this.$q.loading.hide();
-          this.notifySuccess("User Password Reset!");
+          this.notifySuccess(this.$gettext("User Password Reset!"));
         })
         .catch(() => {
           this.$q.loading.hide();

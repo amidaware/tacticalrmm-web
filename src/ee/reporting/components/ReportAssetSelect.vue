@@ -8,28 +8,51 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        Report Asset Select
+        {{ $gettext("Report Asset Select") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section class="q-gutter-sm">
-        <q-radio dense v-model="imageType" val="link" label="Link" />
-        <q-radio dense v-model="imageType" val="asset" label="Report Asset" />
+        <q-radio
+          dense
+          v-model="imageType"
+          val="link"
+          :label="$pgettext('Report editing', 'Link')"
+        />
+        <q-radio
+          dense
+          v-model="imageType"
+          val="asset"
+          :label="$gettext('Report Asset')"
+        />
       </q-card-section>
 
       <q-card-section v-if="imageType === 'link'">
         <q-input
           v-model="linkText"
-          label="Text"
+          :label="$pgettext('Report editing', 'Text')"
           dense
           outlined
           class="q-pb-sm"
         />
-        <q-input v-model="linkUrl" label="Url" dense outlined class="q-pb-sm" />
-        <q-input v-model="output" label="Output" readonly dense />
+        <q-input
+          v-model="linkUrl"
+          :label="$pgettext('Report editing', 'URL')"
+          dense
+          outlined
+          class="q-pb-sm"
+        />
+        <q-input
+          v-model="output"
+          :label="$pgettext('Report editing', 'Output')"
+          readonly
+          dense
+        />
       </q-card-section>
       <q-card-section
         v-if="imageType === 'asset'"
@@ -37,8 +60,11 @@ For details, see: https://license.tacticalrmm.com/ee
         class="scroll"
       >
         <div v-if="tree.length === 0">
-          No Report Assets found. Go to Reporting Manager and use the Report
-          Assets button to upload
+          {{
+            $gettext(
+              "No report assets found. Go to Reporting Manager and use the Report Assets button to upload",
+            )
+          }}
         </div>
         <q-tree
           v-else
@@ -54,7 +80,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section v-if="imageType === 'asset'">
         <q-input
           v-model="output"
-          label="Selected"
+          :label="$gettext('Selected')"
           readonly
           dense
           class="q-pb-sm"
@@ -62,12 +88,12 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
       <q-card-actions>
         <q-space />
-        <q-btn dense flat label="Cancel" v-close-popup />
+        <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           @click="onDialogOK(output)"
           dense
           flat
-          label="Select"
+          :label="$gettext('Select')"
           color="primary"
         />
       </q-card-actions>

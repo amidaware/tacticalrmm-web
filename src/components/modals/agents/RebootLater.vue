@@ -2,31 +2,37 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="dialog-plugin" style="min-width: 30vw">
       <q-bar>
-        Schedule reboot on {{ agent.hostname }}
+        {{
+          $gettext("Schedule reboot on %{hostname}", {
+            hostname: agent.hostname,
+          })
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
         <q-input
           type="datetime-local"
           dense
-          label="Reboot time"
+          :label="$gettext('Reboot time')"
           stack-label
           filled
           v-model="state.datetime"
-          hint="Uses the agent's local time zone"
+          :hint="$gettext('Uses the agent\u0027s local time zone')"
         />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn dense flat push label="Cancel" v-close-popup />
+        <q-btn dense flat push :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
           push
-          label="Schedule Reboot"
+          :label="$gettext('Schedule Reboot')"
           color="primary"
           @click="scheduleReboot"
         />
@@ -36,6 +42,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref } from "vue";
 import { useQuasar, useDialogPluginComponent, date } from "quasar";
@@ -68,9 +75,15 @@ export default {
           state.value,
         );
         $q.dialog({
-          title: "Reboot pending",
+          title: gettext.$gettext("Reboot pending"),
           style: "width: 40vw",
-          message: `A reboot has been scheduled for ${ret.time} on ${props.agent.hostname}. It can be cancelled from the Pending Actions menu until the scheduled time.`,
+          message: gettext.$gettext(
+            "A reboot has been scheduled for %{time} on %{hostname}. It can be cancelled from the Pending Actions menu until the scheduled time.",
+            {
+              time: ret.time,
+              hostname: props.agent.hostname,
+            },
+          ),
         }).onDismiss(onDialogOK);
       } catch (e) {
         console.error(e);

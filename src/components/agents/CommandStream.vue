@@ -1,6 +1,9 @@
 <template>
   <q-card-section class="q-px-xs q-pb-md q-pt-xs" v-if="hasText">
-    <script-output-copy-clip label="Live Output" :data="outputText" />
+    <script-output-copy-clip
+      :label="$gettext('Live Output')"
+      :data="outputText"
+    />
     <q-separator class="q-my-sm" />
   </q-card-section>
   <div class="command-stream" ref="streamContainer" v-if="hasText">

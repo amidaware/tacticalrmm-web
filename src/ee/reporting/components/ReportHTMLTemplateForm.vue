@@ -14,16 +14,18 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        New Base Template
+        {{ $gettext("New Base Template") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="HTML Template Name"
+          :label="$gettext('HTML Template Name')"
           filled
           dense
           style="width: 400px"
@@ -37,12 +39,12 @@ For details, see: https://license.tacticalrmm.com/ee
       ></div>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="submit"
         />

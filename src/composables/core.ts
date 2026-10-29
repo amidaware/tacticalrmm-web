@@ -22,17 +22,24 @@ export interface UseCustomFieldDropdownParams {
 }
 
 export function useCustomFieldDropdown(opts: UseCustomFieldDropdownParams) {
-  const customFieldOptions = ref([] as CustomFieldOption[]);
+  const customFields = ref([] as CustomField[]);
+  const flatOptions = ref(false);
+  const customFieldOptions = computed(
+    () =>
+      formatCustomFieldOptions(
+        customFields.value,
+        flatOptions.value,
+      ) as CustomFieldOption[],
+  );
 
   // type can be "client", "site", or "agent"
   async function getCustomFieldOptions(model = null, flat = false) {
     const params = {};
 
     if (model) params[model] = model;
-    customFieldOptions.value = formatCustomFieldOptions(
-      await fetchCustomFields(params),
-      flat,
-    );
+    const fields = await fetchCustomFields(params);
+    customFields.value = fields;
+    flatOptions.value = flat;
   }
 
   const restActionOptions = computed(() =>

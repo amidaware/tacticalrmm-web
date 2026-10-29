@@ -56,7 +56,7 @@ export default defineComponent({
       () => route.params.agent_id,
       () => {
         store.commit("setActiveRow", route.params.agent_id);
-      }
+      },
     );
 
     return {

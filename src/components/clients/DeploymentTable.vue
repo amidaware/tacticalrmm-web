@@ -10,7 +10,7 @@
           push
           icon="refresh"
         />
-        Manage Deployments
+        {{ $gettext("Manage Deployments") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
           <q-tooltip class="bg-white text-primary" />
@@ -31,11 +31,17 @@
         :rows-per-page-options="[0]"
         row-key="id"
         :pagination="{ rowsPerPage: 0, sortBy: 'id', descending: true }"
-        no-data-label="No Deployments"
+        :no-data-label="$gettext('No Deployments')"
         :loading="loading"
       >
         <template v-slot:top>
-          <q-btn dense flat icon="add" label="New" @click="showAddDeployment" />
+          <q-btn
+            dense
+            flat
+            icon="add"
+            :label="$pgettext('Clients and sites', 'New')"
+            @click="showAddDeployment"
+          />
         </template>
 
         <template v-slot:body="props">
@@ -50,11 +56,11 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -69,7 +75,7 @@
               formatDate(props.row.created)
             }}</q-td>
             <q-td key="flags" :props="props"
-              ><q-badge color="grey-8" label="View Flags" />
+              ><q-badge color="grey-8" :label="$gettext('View Flags')" />
               <q-tooltip style="font-size: 12px">{{
                 props.row.install_flags
               }}</q-tooltip>
@@ -81,7 +87,7 @@
                 size="sm"
                 color="primary"
                 icon="content_copy"
-                label="Copy"
+                :label="$gettext('Copy')"
                 @click="copyLink(props.row)"
               />
             </q-td>
@@ -93,6 +99,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -104,54 +111,6 @@ import { getBaseUrl } from "@/boot/axios";
 // ui imports
 import NewDeployment from "@/components/clients/NewDeployment.vue";
 
-// static data
-const columns = [
-  {
-    name: "client",
-    label: "Client",
-    field: "client_name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "site",
-    label: "Site",
-    field: "site_name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "mon_type",
-    label: "Type",
-    field: "mon_type",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "goarch",
-    label: "Arch",
-    field: "goarch",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "expiry",
-    label: "Expiry",
-    field: "expiry",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "created",
-    label: "Created",
-    field: "created",
-    align: "left",
-    sortable: true,
-  },
-  { name: "flags", label: "Flags", field: "install_flags", align: "left" },
-  { name: "link", label: "Download Link", align: "left" },
-];
-
 export default {
   name: "DeploymentTable",
   emits: [...useDialogPluginComponent.emits],
@@ -159,6 +118,62 @@ export default {
     // quasar dialog setup
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
     const $q = useQuasar();
+
+    const columns = computed(() => [
+      {
+        name: "client",
+        label: gettext.$pgettext("Agent table", "Client"),
+        field: "client_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "site",
+        label: gettext.$pgettext("Agent table", "Site"),
+        field: "site_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "mon_type",
+        label: gettext.$pgettext("Legacy file browser", "Type"),
+        field: "mon_type",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "goarch",
+        label: gettext.$gettext("Arch"),
+        field: "goarch",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "expiry",
+        label: gettext.$gettext("Expiry"),
+        field: "expiry",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "created",
+        label: gettext.$pgettext("Agent deployments", "Created"),
+        field: "created",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "flags",
+        label: gettext.$gettext("Flags"),
+        field: "install_flags",
+        align: "left",
+      },
+      {
+        name: "link",
+        label: gettext.$gettext("Download Link"),
+        align: "left",
+      },
+    ]);
 
     // setup vuex
     const store = useStore();
@@ -176,9 +191,9 @@ export default {
 
     function deleteDeployment(deployment) {
       $q.dialog({
-        title: "Delete deployment?",
+        title: gettext.$gettext("Delete deployment?"),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {
@@ -195,7 +210,7 @@ export default {
     function copyLink(deployment) {
       const api = getBaseUrl();
       copyToClipboard(`${api}/clients/${deployment.uid}/deploy/`).then(() => {
-        notifySuccess("Link copied to clipboard", 1500);
+        notifySuccess(gettext.$gettext("Link copied to clipboard"), 1500);
       });
     }
 

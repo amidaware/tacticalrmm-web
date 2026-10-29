@@ -9,10 +9,12 @@
           flat
           push
           icon="refresh"
-        />Clients Manager
+        />{{ $gettext("Clients Manager") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -30,13 +32,13 @@
         binary-state-sort
         virtual-scroll
         :rows-per-page-options="[0]"
-        no-data-label="No Clients"
+        :no-data-label="$gettext('No Clients')"
         :loading="loading"
       >
         <!-- top slot -->
         <template v-slot:top>
           <q-btn
-            label="New"
+            :label="$pgettext('Clients and sites', 'New')"
             dense
             flat
             push
@@ -69,7 +71,9 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("Dashboard agent actions", "Edit")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -79,7 +83,7 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -88,13 +92,13 @@
                   <q-item-section side>
                     <q-icon name="add" />
                   </q-item-section>
-                  <q-item-section>Add Site</q-item-section>
+                  <q-item-section>{{ $gettext("Add Site") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -107,7 +111,11 @@
                 style="cursor: pointer; text-decoration: underline"
                 class="text-primary"
                 @click="showSitesTable(props.row)"
-                >Show Sites ({{ props.row.sites.length }})</span
+                >{{
+                  $gettext("Show Sites (%{count})", {
+                    count: props.row.sites.length,
+                  })
+                }}</span
               >
             </q-td>
             <q-td>{{ props.row.agent_count }}</q-td>
@@ -119,8 +127,9 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { fetchClients, removeClient } from "@/api/clients";
 import { notifySuccess } from "@/utils/notify";
@@ -131,25 +140,35 @@ import SitesForm from "@/components/clients/SitesForm.vue";
 import DeleteClient from "@/components/clients/DeleteClient.vue";
 import SitesTable from "@/components/clients/SitesTable.vue";
 
-// static data
-const columns = [
-  { name: "name", label: "Name", field: "name", align: "left" },
-  { name: "sites", label: "Sites", field: "sites", align: "left" },
-  {
-    name: "agent_count",
-    label: "Total Agents",
-    field: "agent_count",
-    align: "left",
-  },
-];
-
 export default {
   name: "ClientsManager",
   emits: [...useDialogPluginComponent.emits],
   setup() {
     // setup quasar dialog
     const $q = useQuasar();
+
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
+
+    const columns = computed(() => [
+      {
+        name: "name",
+        label: gettext.$pgettext("Clients and sites", "Name"),
+        field: "name",
+        align: "left",
+      },
+      {
+        name: "sites",
+        label: gettext.$pgettext("Clients and sites", "Sites"),
+        field: "sites",
+        align: "left",
+      },
+      {
+        name: "agent_count",
+        label: gettext.$gettext("Total Agents"),
+        field: "agent_count",
+        align: "left",
+      },
+    ]);
 
     // clients manager logic
     const clients = ref([]);
@@ -175,10 +194,12 @@ export default {
         // can delete the client since there are no agents
       } else {
         $q.dialog({
-          title: "Are you sure?",
-          message: `Delete client: ${client.name}.`,
+          title: gettext.$gettext("Are you sure?"),
+          message: gettext.$gettext("Delete client: %{name}.", {
+            name: client.name,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: gettext.$gettext("Delete"), color: "negative" },
         }).onOk(async () => {
           loading.value = true;
           try {

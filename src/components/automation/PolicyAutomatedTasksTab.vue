@@ -13,7 +13,7 @@
       <q-btn
         v-if="!!selectedPolicy"
         icon="add"
-        label="Add Task"
+        :label="$gettext('Add Task')"
         no-caps
         dense
         flat
@@ -39,23 +39,25 @@
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
-            <span v-if="!selectedPolicy"
-              >Click on a policy to see the tasks</span
-            >
-            <span v-else>There are no tasks added to this policy</span>
+            <span v-if="!selectedPolicy">{{
+              $gettext("Click on a policy to see the tasks")
+            }}</span>
+            <span v-else>{{
+              $gettext("There are no tasks added to this policy")
+            }}</span>
           </div>
         </template>
         <!-- header slots -->
         <template v-slot:header-cell-enabled="props">
           <q-th auto-width :props="props">
-            <small>Enabled</small>
+            <small>{{ $pgettext("Policy tasks", "Enabled") }}</small>
           </q-th>
         </template>
 
         <template v-slot:header-cell-smsalert="props">
           <q-th auto-width :props="props">
             <q-icon name="phone_android" size="1.5em">
-              <q-tooltip>SMS Alert</q-tooltip>
+              <q-tooltip>{{ $gettext("SMS Alert") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -63,14 +65,16 @@
         <template v-slot:header-cell-emailalert="props">
           <q-th auto-width :props="props">
             <q-icon name="email" size="1.5em">
-              <q-tooltip>Email Alert</q-tooltip>
+              <q-tooltip>{{ $gettext("Email Alert") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
         <template v-slot:header-cell-dashboardalert="props">
           <q-th auto-width :props="props">
             <q-icon name="notifications" size="1.5em">
-              <q-tooltip>Dashboard Alert</q-tooltip>
+              <q-tooltip>{{
+                $pgettext("Policy tasks", "Dashboard Alert")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -78,7 +82,7 @@
         <template v-slot:header-cell-collector="props">
           <q-th auto-width :props="props">
             <q-icon name="mdi-database-arrow-up" size="1.5em">
-              <q-tooltip>Collector Task</q-tooltip>
+              <q-tooltip>{{ $gettext("Collector Task") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -93,7 +97,9 @@
                   <q-item-section side>
                     <q-icon name="play_arrow" />
                   </q-item-section>
-                  <q-item-section>Run task now</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Run task now")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -103,24 +109,28 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("Task actions", "Edit")
+                  }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="deleteTask(props.row)">
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup @click="showStatus(props.row)">
                   <q-item-section side>
                     <q-icon name="sync" />
                   </q-item-section>
-                  <q-item-section>Policy Status</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Policy Status")
+                  }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -173,9 +183,9 @@
                 style="font-size: 1.3rem"
                 name="check"
               >
-                <q-tooltip
-                  >The task updates a custom field on the agent</q-tooltip
-                >
+                <q-tooltip>{{
+                  $gettext("The task updates a custom field on the agent")
+                }}</q-tooltip>
               </q-icon>
             </q-td>
             <q-td>{{ props.row.name }}</q-td>
@@ -185,7 +195,7 @@
                 style="cursor: pointer; text-decoration: underline"
                 @click="showStatus(props.row)"
                 class="status-cell text-primary"
-                >See Status</span
+                >{{ $pgettext("Policy tasks", "See Status") }}</span
               >
             </q-td>
             <q-td>{{ props.row.check_name }}</q-td>
@@ -210,47 +220,7 @@ export default {
   data() {
     return {
       tasks: [],
-      columns: [
-        { name: "enabled", align: "left", field: "enabled" },
-        { name: "smsalert", field: "text_alert", align: "left" },
-        { name: "emailalert", field: "email_alert", align: "left" },
-        { name: "dashboardalert", field: "dashboard_alert", align: "left" },
-        {
-          name: "collector",
-          label: "Collector",
-          field: "custom_field",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "name",
-          label: "Name",
-          field: "name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "schedule",
-          label: "Schedule",
-          field: "schedule",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "status",
-          label: "More Info",
-          field: "more_info",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "check_name",
-          label: "Assigned Check",
-          field: "check_name",
-          align: "left",
-          sortable: true,
-        },
-      ],
+
       pagination: {
         rowsPerPage: 0,
         sortBy: "name",
@@ -258,6 +228,52 @@ export default {
       },
     };
   },
+  computed: {
+    columns() {
+      return [
+        { name: "enabled", align: "left", field: "enabled" },
+        { name: "smsalert", field: "text_alert", align: "left" },
+        { name: "emailalert", field: "email_alert", align: "left" },
+        { name: "dashboardalert", field: "dashboard_alert", align: "left" },
+        {
+          name: "collector",
+          label: this.$gettext("Collector"),
+          field: "custom_field",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "name",
+          label: this.$pgettext("Policy tasks", "Name"),
+          field: "name",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "schedule",
+          label: this.$pgettext("Policy tasks", "Schedule"),
+          field: "schedule",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "status",
+          label: this.$gettext("More Info"),
+          field: "more_info",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "check_name",
+          label: this.$gettext("Assigned Check"),
+          field: "check_name",
+          align: "left",
+          sortable: true,
+        },
+      ];
+    },
+  },
+
   watch: {
     selectedPolicy: function (newValue, oldValue) {
       if (newValue !== oldValue) this.getTasks();
@@ -321,15 +337,19 @@ export default {
     runTask(task) {
       if (!task.enabled) {
         this.notifyError(
-          "Task cannot be run when it's disabled. Enable it first.",
+          this.$gettext(
+            "Task cannot be run when it's disabled. Enable it first.",
+          ),
         );
         return;
       }
 
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message: `Run ${task.name} task`,
+          title: this.$gettext("Are you sure?"),
+          message: this.$gettext("Run %{task} task", {
+            task: task.name,
+          }),
           cancel: true,
           persistent: true,
         })
@@ -340,7 +360,7 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.notifySuccess(
-                "The task was initiated on all affected agents",
+                this.$gettext("The task was initiated on all affected agents"),
               );
             })
             .catch(() => {
@@ -351,8 +371,10 @@ export default {
     deleteTask(task) {
       this.$q
         .dialog({
-          title: "Are you sure?",
-          message: `Delete ${task.name} task`,
+          title: this.$gettext("Are you sure?"),
+          message: this.$gettext("Delete %{task} task", {
+            task: task.name,
+          }),
           cancel: true,
           persistent: true,
         })
@@ -363,7 +385,9 @@ export default {
             .then(() => {
               this.getTasks();
               this.$q.loading.hide();
-              this.notifySuccess("Task was deleted successfully");
+              this.notifySuccess(
+                this.$gettext("Task was deleted successfully"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

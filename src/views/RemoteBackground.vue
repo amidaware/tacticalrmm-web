@@ -10,29 +10,37 @@
       align="left"
       narrow-indicator
     >
-      <q-tab name="terminal" icon="fas fa-terminal" label="Terminal" />
+      <q-tab
+        name="terminal"
+        icon="fas fa-terminal"
+        :label="$gettext('Terminal')"
+      />
       <q-tab
         name="filebrowser"
         icon="far fa-folder-open"
-        label="File Browser"
+        :label="$gettext('File Browser')"
       />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="services"
         icon="fas fa-cogs"
-        label="Services"
+        :label="$gettext('Services')"
       />
-      <q-tab name="processes" icon="fas fa-chart-area" label="Processes" />
+      <q-tab
+        name="processes"
+        icon="fas fa-chart-area"
+        :label="$gettext('Processes')"
+      />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="eventlog"
         icon="fas fa-clipboard-list"
-        label="Event Log"
+        :label="$gettext('Event Log')"
       />
       <q-tab v-if="$route.query.agentPlatform === 'windows'" name="registry">
         <div class="flex items-center text-weight-bold text-subtitle2">
           <q-icon :name="`img:${registryIcon}`" size="25px" />
-          <span class="q-ml-sm font">Registry</span>
+          <span class="q-ml-sm font">{{ $gettext("Registry") }}</span>
         </div>
       </q-tab>
     </q-tabs>
@@ -130,7 +138,7 @@
         unelevated
         no-caps
         color="primary"
-        label="Retry"
+        :label="$gettext('Retry')"
         @click="retryFileBrowserDefaults"
       />
     </div>
@@ -138,6 +146,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
@@ -177,6 +186,14 @@ export default {
 
     // vue router
     const { params } = useRoute();
+    const pageTitlePrefix = ref("");
+    useMeta(() =>
+      pageTitlePrefix.value
+        ? {
+            title: `${pageTitlePrefix.value} | ${gettext.$gettext("Remote Background")}`,
+          }
+        : {},
+    );
 
     // meshcentral tabs
     const terminal = ref("");
@@ -185,7 +202,19 @@ export default {
     const terminalMode = ref("legacy");
     const terminalDefaults = ref(null);
     const fileBrowserMode = ref(null);
-    const fileBrowserError = ref("");
+    const rawFileBrowserError = ref("");
+    const fileBrowserError = computed(() => {
+      if (fileBrowserMode.value === "denied")
+        return gettext.$gettext(
+          "You do not have permission to use the file browser.",
+        );
+      if (fileBrowserMode.value === "error")
+        return (
+          rawFileBrowserError.value ||
+          gettext.$gettext("Failed to load file browser settings")
+        );
+      return rawFileBrowserError.value;
+    });
     const fileBrowserDefaultsLoaded = ref(false);
     const fileBrowserMaxUploadFileSizeBytes = ref(0);
     let fileBrowserDefaultsPromise = null;
@@ -196,9 +225,7 @@ export default {
       const data = await fetchAgentMeshCentralURLs(params.agent_id);
       terminal.value = data.terminal;
       file.value = data.file;
-      useMeta({
-        title: `${data.hostname} - ${data.client} - ${data.site} | Remote Background`,
-      });
+      pageTitlePrefix.value = `${data.hostname} - ${data.client} - ${data.site}`;
     }
 
     async function getDashInfo() {
@@ -221,8 +248,9 @@ export default {
 
           $q.notify({
             type: "warning",
-            message:
+            message: gettext.$gettext(
               "New terminal mode requires agent version 2.11.0 or higher. Reverting to legacy terminal mode. Please update the agent to use the new terminal.",
+            ),
             timeout: 6000,
           });
           return;
@@ -235,13 +263,14 @@ export default {
         $q.notify({
           type: "negative",
           message:
-            e?.response?.data?.detail || "Failed to load terminal settings",
+            e?.response?.data?.detail ||
+            gettext.$gettext("Failed to load terminal settings"),
         });
       }
     }
 
     async function getFileBrowserDefaults() {
-      fileBrowserError.value = "";
+      rawFileBrowserError.value = "";
       try {
         const data = await fetchAgentFileBrowserDefaults(params.agent_id);
 
@@ -254,8 +283,9 @@ export default {
 
           $q.notify({
             type: "warning",
-            message:
+            message: gettext.$gettext(
               "New file browser mode requires agent version 2.12.0 or higher. Reverting to legacy file browser mode. Please update the agent to use the new file browser.",
+            ),
             timeout: 6000,
           });
           return;
@@ -268,15 +298,12 @@ export default {
         const status = e?.response?.status;
         if (status === 403) {
           fileBrowserMode.value = "denied";
-          fileBrowserError.value =
-            "You do not have permission to use the file browser.";
+          rawFileBrowserError.value = "";
         } else {
           const detail = e?.response?.data?.detail;
           fileBrowserMode.value = "error";
-          fileBrowserError.value =
-            typeof detail === "string" && detail.trim()
-              ? detail
-              : "Failed to load file browser settings";
+          rawFileBrowserError.value =
+            typeof detail === "string" && detail.trim() ? detail : "";
         }
 
         $q.notify({
@@ -300,7 +327,7 @@ export default {
       fileBrowserDefaultsLoaded.value = false;
       fileBrowserDefaultsPromise = null;
       fileBrowserMode.value = null;
-      fileBrowserError.value = "";
+      rawFileBrowserError.value = "";
       ensureFileBrowserDefaults();
     }
 

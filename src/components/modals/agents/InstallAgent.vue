@@ -2,7 +2,7 @@
   <q-card style="min-width: 35vw">
     <q-card-section class="row">
       <q-card-actions align="left">
-        <div class="text-h6">Add an agent</div>
+        <div class="text-h6">{{ $gettext("Add an agent") }}</div>
       </q-card-actions>
       <q-space />
       <q-card-actions align="right">
@@ -16,7 +16,7 @@
             outlined
             dense
             options-dense
-            label="Client"
+            :label="$pgettext('Agent installation', 'Client')"
             v-model="client"
             :options="client_options"
             @update:model-value="site = sites[0]"
@@ -27,7 +27,7 @@
             dense
             options-dense
             outlined
-            label="Site"
+            :label="$pgettext('Agent installation', 'Site')"
             v-model="site"
             :options="sites"
           />
@@ -37,7 +37,7 @@
             <q-radio
               v-model="agentOS"
               val="windows"
-              label="Windows"
+              :label="$gettext('Windows')"
               @update:model-value="
                 installMethod = 'manual';
                 goarch = GOARCH_AMD64;
@@ -46,7 +46,7 @@
             <q-radio
               v-model="agentOS"
               val="linux"
-              label="Linux"
+              :label="$gettext('Linux')"
               @update:model-value="
                 installMethod = 'bash';
                 goarch = GOARCH_AMD64;
@@ -55,7 +55,7 @@
             <q-radio
               v-model="agentOS"
               val="darwin"
-              label="macOS"
+              :label="$gettext('macOS')"
               @update:model-value="
                 installMethod = 'mac';
                 goarch = GOARCH_AMD64;
@@ -68,13 +68,13 @@
             <q-radio
               v-model="agenttype"
               val="server"
-              label="Server"
+              :label="$gettext('Server')"
               @update:model-value="power = false"
             />
             <q-radio
               v-model="agenttype"
               val="workstation"
-              label="Workstation"
+              :label="$gettext('Workstation')"
             />
           </div>
         </q-card-section>
@@ -85,7 +85,7 @@
               dense
               type="number"
               filled
-              label="Token expiration (hours)"
+              :label="$gettext('Token expiration (hours)')"
               style="max-width: 200px"
               stack-label
             />
@@ -93,81 +93,83 @@
         </q-card-section>
         <q-card-section v-show="agentOS === 'windows'">
           <div class="q-gutter-sm">
-            <q-checkbox v-model="rdp" dense label="Enable RDP" />
-            <q-checkbox v-model="ping" dense label="Enable Ping">
+            <q-checkbox v-model="rdp" dense :label="$gettext('Enable RDP')" />
+            <q-checkbox v-model="ping" dense :label="$gettext('Enable Ping')">
               <q-tooltip>
-                Enable ICMP echo requests in the local firewall
+                {{
+                  $gettext("Enable ICMP echo requests in the local firewall")
+                }}
               </q-tooltip>
             </q-checkbox>
             <q-checkbox
               v-model="power"
               dense
               v-show="agenttype === 'workstation'"
-              label="Disable sleep/hibernate"
+              :label="$gettext('Disable sleep/hibernate')"
             />
           </div>
         </q-card-section>
         <q-card-section>
-          Arch
+          {{ $gettext("Arch") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
-              label="64 bit"
+              :label="$gettext('64 bit')"
               v-show="agentOS === 'windows' || agentOS === 'linux'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
-              label="Intel 64 bit"
+              :label="$gettext('Intel 64 bit')"
               v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_i386"
-              label="32 bit"
+              :label="$gettext('32 bit')"
               v-show="agentOS !== 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
-              label="ARM 64 bit"
+              :label="$gettext('ARM 64 bit')"
               v-show="agentOS === 'linux'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
-              label="Apple Silicon (M-Series)"
+              :label="$gettext('Apple Silicon (M-Series)')"
               v-show="agentOS === 'darwin'"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
-              label="ARM 32 bit"
+              :label="$gettext('ARM 32 bit')"
               v-show="agentOS === 'linux'"
             />
           </div>
         </q-card-section>
         <q-card-section>
-          Installation Method
+          {{ $gettext("Installation Method") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="installMethod"
               val="manual"
               v-show="agentOS === 'windows'"
-              label="Standard EXE"
+              :label="$gettext('Standard EXE')"
             />
             <q-radio
               v-model="installMethod"
               val="powershell"
               v-show="agentOS === 'windows'"
-              label="Powershell"
+              :label="$gettext('Powershell')"
             />
             <q-radio
               v-model="installMethod"
               val="exe"
               v-show="agentOS === 'windows'"
-              label="Generated EXE"
+              :label="$gettext('Generated EXE')"
             />
           </div>
         </q-card-section>
@@ -288,32 +290,31 @@ export default {
       } else if (this.installMethod === "exe") {
         this.$q
           .dialog({
-            title: "Warning",
+            title: this.$pgettext("General status", "Warning"),
             style: {
               width: "40vw",
               maxWidth: "50vw",
             },
-            message: `
-              This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings.<br><br>
-              We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>
-              This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">this guidance</a> before continuing.<br><br>
-              Proceed only if you understand and accept these risks.
-              `,
+            message: this.$gettext(
+              'This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings.<br><br>We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">this guidance</a> before continuing.<br><br>Proceed only if you understand and accept these risks.',
+            ),
             color: "negative",
             ok: {
-              label: "Yes, continue",
+              label: this.$gettext("Yes, continue"),
               color: "negative",
               unelevated: true,
             },
             cancel: {
-              label: "Cancel",
+              label: this.$gettext("Cancel"),
               color: "grey",
             },
             persistent: true,
             html: true,
           })
           .onOk(() => {
-            this.$q.loading.show({ message: "Generating executable..." });
+            this.$q.loading.show({
+              message: this.$gettext("Generating executable..."),
+            });
             this.$axios
               .post("/agents/installer/", data, { responseType: "blob" })
               .then((r) => {
@@ -356,8 +357,17 @@ export default {
     },
     showDLMessage() {
       this.$q.dialog({
-        message: `Installer for ${this.client.label}, ${this.site.label} (${this.agenttype}) will now be downloaded.
-              You may reuse this installer for ${this.expires} hours before it expires. No command line arguments are needed.`,
+        message: this.$ngettext(
+          "Installer for %{client}, %{site} (%{agenttype}) will now be downloaded. You may reuse this installer for %{expires} hour before it expires. No command line arguments are needed.",
+          "Installer for %{client}, %{site} (%{agenttype}) will now be downloaded. You may reuse this installer for %{expires} hours before it expires. No command line arguments are needed.",
+          this.expires,
+          {
+            client: this.client.label,
+            site: this.site.label,
+            agenttype: this.agenttype,
+            expires: this.expires,
+          },
+        ),
       });
     },
   },
@@ -369,19 +379,19 @@ export default {
       let text;
       switch (this.installMethod) {
         case "exe":
-          text = "Generate and download exe";
+          text = this.$gettext("Generate and download exe");
           break;
         case "powershell":
-          text = "Download powershell script";
+          text = this.$gettext("Download powershell script");
           break;
         case "manual":
-          text = "Show installation instructions";
+          text = this.$gettext("Show manual installation instructions");
           break;
         case "bash":
-          text = "Download linux install script";
+          text = this.$gettext("Download linux install script");
           break;
         case "mac":
-          text = "Show installation instructions";
+          text = this.$gettext("Show installation instructions");
           break;
       }
 

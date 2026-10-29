@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 40vw; max-width: 50vw">
       <q-bar>
-        Install Software
+        {{ $pgettext("Software installation", "Install Software") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -27,7 +29,13 @@
           row-key="name"
         >
           <template v-slot:top-left>
-            <q-input v-model="filter" outlined label="Search" dense clearable>
+            <q-input
+              v-model="filter"
+              outlined
+              :label="$pgettext('Software management', 'Search')"
+              dense
+              clearable
+            >
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -58,22 +66,12 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { gettext } from "@/gettext";
+import { computed, ref, onMounted } from "vue";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { fetchChocosSoftware, installAgentSoftware } from "@/api/software";
 import { notifySuccess } from "@/utils/notify";
 
-// static data
-const columns = [
-  { name: "install", align: "left", label: "Install", sortable: false },
-  {
-    name: "name",
-    align: "left",
-    label: "Name",
-    field: "name",
-    sortable: true,
-  },
-];
 export default {
   name: "InstallSoftware",
   emits: [...useDialogPluginComponent.emits],
@@ -84,6 +82,22 @@ export default {
     // quasar setup
     const { dialogRef, onDialogHide } = useDialogPluginComponent();
     const $q = useQuasar();
+
+    const columns = computed(() => [
+      {
+        name: "install",
+        align: "left",
+        label: gettext.$pgettext("Software installation", "Install"),
+        sortable: false,
+      },
+      {
+        name: "name",
+        align: "left",
+        label: gettext.$pgettext("Software management", "Name"),
+        field: "name",
+        sortable: true,
+      },
+    ]);
 
     // install software logic
     const chocos = ref([]);
@@ -105,9 +119,9 @@ export default {
     function installSoftware(name) {
       const data = { name: name };
       $q.dialog({
-        title: `Install ${name}?`,
+        title: gettext.$gettext("Install %{name}?", { name }),
         persistent: true,
-        ok: { label: "Install" },
+        ok: { label: gettext.$pgettext("Software installation", "Install") },
         cancel: true,
       }).onOk(async () => {
         $q.loading.show();

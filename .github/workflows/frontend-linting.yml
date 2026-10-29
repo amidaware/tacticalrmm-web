@@ -1,26 +1,23 @@
-name: Frontend Linting and Formatting
+name: Frontend checks
 on:
   push:
-    branches: [develop]
+    branches: [develop, final/i18n-rollout]
   pull_request:
-    branches: [develop]
+    branches: [develop, final/i18n-rollout]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  lint:
+  frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20.20.2"
-
-      - run: sudo npm install -g npm@11.14.0
-
-      - run: npm install
-
-      - name: Run Prettier formatting
-        run: npm run format
-
-      - name: Run ESLint
-        run: npm run lint -- --max-warnings=0
+      - name: Build the shared Node and GNU gettext environment
+        run: docker build -t tacticalrmm-frontend-checks -f .devcontainer/Dockerfile .devcontainer
+      - name: Install, validate and build from a clean checkout
+        run: >-
+          docker run --rm
+          -v "${{ github.workspace }}:/workspace" -w /workspace
+          tacticalrmm-frontend-checks sh scripts/gettext/ci.sh

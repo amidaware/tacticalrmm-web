@@ -2,7 +2,7 @@
   <q-card style="min-width: 400px">
     <q-card-section class="row">
       <q-card-actions align="left">
-        <div class="text-h6">Server Maintenance</div>
+        <div class="text-h6">{{ $gettext("Server Maintenance") }}</div>
       </q-card-actions>
       <q-space />
       <q-card-actions align="right">
@@ -13,10 +13,10 @@
       <q-form @submit.prevent="submit">
         <q-card-section>
           <q-select
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('Required')]"
             outlined
             options-dense
-            label="Actions"
+            :label="$pgettext('Server maintenance', 'Actions')"
             v-model="action"
             :options="actions"
             emit-value
@@ -26,24 +26,34 @@
         </q-card-section>
 
         <q-card-section v-if="action === 'prune_db'">
-          <q-checkbox v-model="prune_tables" val="audit_logs" label="Audit Log">
-            <q-tooltip>Removes agent check results</q-tooltip>
+          <q-checkbox
+            v-model="prune_tables"
+            val="audit_logs"
+            :label="$gettext('Audit Log')"
+          >
+            <q-tooltip>{{ $gettext("Removes agent check results") }}</q-tooltip>
           </q-checkbox>
           <q-checkbox
             v-model="prune_tables"
             val="pending_actions"
-            label="Pending Actions"
+            :label="$gettext('Pending Actions')"
           >
-            <q-tooltip>Removes completed pending actions</q-tooltip>
+            <q-tooltip>{{
+              $gettext("Removes completed pending actions")
+            }}</q-tooltip>
           </q-checkbox>
-          <q-checkbox v-model="prune_tables" val="alerts" label="Alerts">
-            <q-tooltip>Removes all alerts</q-tooltip>
+          <q-checkbox
+            v-model="prune_tables"
+            val="alerts"
+            :label="$pgettext('Server maintenance', 'Alerts')"
+          >
+            <q-tooltip>{{ $gettext("Removes all alerts") }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
 
         <q-card-actions align="left">
           <q-btn
-            label="Submit"
+            :label="$gettext('Submit')"
             color="primary"
             type="submit"
             class="full-width"
@@ -64,21 +74,24 @@ export default {
     return {
       action: null,
       prune_tables: [],
-      actions: [
-        {
-          label: "Reload Nats Configuration",
-          value: "reload_nats",
-        },
-        {
-          label: "Remove Orphaned Tasks",
-          value: "rm_orphaned_tasks",
-        },
-        {
-          label: "Prune DB Tables",
-          value: "prune_db",
-        },
-      ],
+      actions: [],
     };
+  },
+  created() {
+    this.actions = [
+      {
+        label: this.$gettext("Reload Nats Configuration"),
+        value: "reload_nats",
+      },
+      {
+        label: this.$gettext("Remove Orphaned Tasks"),
+        value: "rm_orphaned_tasks",
+      },
+      {
+        label: this.$gettext("Prune DB Tables"),
+        value: "prune_db",
+      },
+    ];
   },
   methods: {
     clear() {

@@ -307,7 +307,7 @@ export async function deleteRegistryValue(agent_id, path, name) {
     );
     return data;
   } catch (e) {
-    console.error("Failed to delete value:", e);
+    console.error("Failed to delete registry value:", e);
     throw e;
   }
 }

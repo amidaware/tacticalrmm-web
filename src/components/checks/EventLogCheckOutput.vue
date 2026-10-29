@@ -5,7 +5,9 @@
         {{ evtLogData.readable_desc }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div v-if="evtLogData.check_result.extra_details !== null">
@@ -25,14 +27,14 @@
           binary-state-sort
           virtual-scroll
           :rows-per-page-options="[0]"
-          no-data-label="No event logs"
+          :no-data-label="$gettext('No event logs')"
         >
           <template v-slot:top>
             <q-space />
             <q-input
               v-model="filter"
               outlined
-              label="Search"
+              :label="$pgettext('Event log check output', 'Search')"
               dense
               clearable
               class="q-pr-sm"
@@ -48,46 +50,53 @@
           </template>
         </q-table>
       </div>
-      <div v-else>Check has not run yet</div>
+      <div v-else>{{ $gettext("Check has not run yet") }}</div>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 
 //ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 
 // static data
-const columns = [
+const eventLogColumns = () => [
   {
     name: "eventType",
-    label: "Type",
+    label: gettext.$pgettext("Event log check output", "Type"),
     field: "eventType",
     align: "left",
     sortable: true,
   },
   {
     name: "source",
-    label: "Source",
+    label: gettext.$pgettext("Event log check output", "Source"),
     field: "source",
     align: "left",
     sortable: true,
   },
   {
     name: "eventID",
-    label: "Event ID",
+    label: gettext.$gettext("Event ID"),
     field: "eventID",
     align: "left",
     sortable: true,
   },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
+  {
+    name: "time",
+    label: gettext.$pgettext("Event log check output", "Time"),
+    field: "time",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "message",
-    label: "Message",
+    label: gettext.$gettext("Message"),
     field: "message",
     align: "left",
     sortable: true,
@@ -109,13 +118,15 @@ export default {
       descending: true,
     });
 
+    const localizedColumns = computed(() => eventLogColumns());
+
     return {
       // reactive data
       filter,
       pagination,
 
       // non-reactive data
-      columns,
+      columns: localizedColumns,
 
       // quasar dialog
       dialogRef,

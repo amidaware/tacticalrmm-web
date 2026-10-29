@@ -1,0 +1,932 @@
+{
+  "en": {
+    "getSeverityOptions": [
+      {
+        "label": "Informational",
+        "value": "info"
+      },
+      {
+        "label": "Warning",
+        "value": "warning"
+      },
+      {
+        "label": "Error",
+        "value": "error"
+      }
+    ],
+    "getTaskTypeOptions": [
+      {
+        "label": "Daily",
+        "value": "daily"
+      },
+      {
+        "label": "Weekly",
+        "value": "weekly"
+      },
+      {
+        "label": "Monthly",
+        "value": "monthly"
+      },
+      {
+        "label": "Run Once",
+        "value": "runonce"
+      },
+      {
+        "label": "On check failure",
+        "value": "checkfailure"
+      },
+      {
+        "label": "Onboarding",
+        "value": "onboarding"
+      },
+      {
+        "label": "Manual",
+        "value": "manual"
+      }
+    ],
+    "getDayOfWeekOptions": [
+      {
+        "label": "Monday",
+        "value": 2
+      },
+      {
+        "label": "Tuesday",
+        "value": 4
+      },
+      {
+        "label": "Wednesday",
+        "value": 8
+      },
+      {
+        "label": "Thursday",
+        "value": 16
+      },
+      {
+        "label": "Friday",
+        "value": 32
+      },
+      {
+        "label": "Saturday",
+        "value": 64
+      },
+      {
+        "label": "Sunday",
+        "value": 1
+      }
+    ],
+    "getDayOfMonthOptions": [
+      {
+        "label": "1",
+        "value": 1
+      },
+      {
+        "label": "2",
+        "value": 2
+      },
+      {
+        "label": "3",
+        "value": 4
+      },
+      {
+        "label": "4",
+        "value": 8
+      },
+      {
+        "label": "5",
+        "value": 16
+      },
+      {
+        "label": "6",
+        "value": 32
+      },
+      {
+        "label": "7",
+        "value": 64
+      },
+      {
+        "label": "8",
+        "value": 128
+      },
+      {
+        "label": "9",
+        "value": 256
+      },
+      {
+        "label": "10",
+        "value": 512
+      },
+      {
+        "label": "11",
+        "value": 1024
+      },
+      {
+        "label": "12",
+        "value": 2048
+      },
+      {
+        "label": "13",
+        "value": 4096
+      },
+      {
+        "label": "14",
+        "value": 8192
+      },
+      {
+        "label": "15",
+        "value": 16384
+      },
+      {
+        "label": "16",
+        "value": 32768
+      },
+      {
+        "label": "17",
+        "value": 65536
+      },
+      {
+        "label": "18",
+        "value": 131072
+      },
+      {
+        "label": "19",
+        "value": 262144
+      },
+      {
+        "label": "20",
+        "value": 524288
+      },
+      {
+        "label": "21",
+        "value": 1048576
+      },
+      {
+        "label": "22",
+        "value": 2097152
+      },
+      {
+        "label": "23",
+        "value": 4194304
+      },
+      {
+        "label": "24",
+        "value": 8388608
+      },
+      {
+        "label": "25",
+        "value": 16777216
+      },
+      {
+        "label": "26",
+        "value": 33554432
+      },
+      {
+        "label": "27",
+        "value": 67108864
+      },
+      {
+        "label": "28",
+        "value": 134217728
+      },
+      {
+        "label": "29",
+        "value": 268435456
+      },
+      {
+        "label": "30",
+        "value": 536870912
+      },
+      {
+        "label": "31",
+        "value": 1073741824
+      },
+      {
+        "label": "Last Day",
+        "value": 2147483648
+      }
+    ],
+    "getMonthOptions": [
+      {
+        "label": "January",
+        "value": 1
+      },
+      {
+        "label": "February",
+        "value": 2
+      },
+      {
+        "label": "March",
+        "value": 4
+      },
+      {
+        "label": "April",
+        "value": 8
+      },
+      {
+        "label": "May",
+        "value": 16
+      },
+      {
+        "label": "June",
+        "value": 32
+      },
+      {
+        "label": "July",
+        "value": 64
+      },
+      {
+        "label": "August",
+        "value": 128
+      },
+      {
+        "label": "September",
+        "value": 256
+      },
+      {
+        "label": "October",
+        "value": 512
+      },
+      {
+        "label": "November",
+        "value": 1024
+      },
+      {
+        "label": "December",
+        "value": 2048
+      }
+    ],
+    "getWeekOptions": [
+      {
+        "label": "First Week",
+        "value": 1
+      },
+      {
+        "label": "Second Week",
+        "value": 2
+      },
+      {
+        "label": "Third Week",
+        "value": 4
+      },
+      {
+        "label": "Fourth Week",
+        "value": 8
+      },
+      {
+        "label": "Last Week",
+        "value": 16
+      }
+    ],
+    "getTaskInstancePolicyOptions": [
+      {
+        "label": "Run in Parallel",
+        "value": 0
+      },
+      {
+        "label": "Queue Task",
+        "value": 1
+      },
+      {
+        "label": "Ignore",
+        "value": 2
+      },
+      {
+        "label": "Stop Existing",
+        "value": 3
+      }
+    ],
+    "getPlatformOptions": [
+      {
+        "label": "Windows",
+        "value": "windows"
+      },
+      {
+        "label": "Linux",
+        "value": "linux"
+      },
+      {
+        "label": "macOS",
+        "value": "darwin"
+      }
+    ]
+  },
+  "ru": {
+    "getSeverityOptions": [
+      {
+        "label": "Информационно",
+        "value": "info"
+      },
+      {
+        "label": "Предупреждение",
+        "value": "warning"
+      },
+      {
+        "label": "Ошибка",
+        "value": "error"
+      }
+    ],
+    "getTaskTypeOptions": [
+      {
+        "label": "Ежедневно",
+        "value": "daily"
+      },
+      {
+        "label": "Еженедельно",
+        "value": "weekly"
+      },
+      {
+        "label": "Ежемесячно",
+        "value": "monthly"
+      },
+      {
+        "label": "Один раз",
+        "value": "runonce"
+      },
+      {
+        "label": "При сбое проверки",
+        "value": "checkfailure"
+      },
+      {
+        "label": "Онбординг",
+        "value": "onboarding"
+      },
+      {
+        "label": "Вручную",
+        "value": "manual"
+      }
+    ],
+    "getDayOfWeekOptions": [
+      {
+        "label": "Понедельник",
+        "value": 2
+      },
+      {
+        "label": "Вторник",
+        "value": 4
+      },
+      {
+        "label": "Среда",
+        "value": 8
+      },
+      {
+        "label": "Четверг",
+        "value": 16
+      },
+      {
+        "label": "Пятница",
+        "value": 32
+      },
+      {
+        "label": "Суббота",
+        "value": 64
+      },
+      {
+        "label": "Воскресенье",
+        "value": 1
+      }
+    ],
+    "getDayOfMonthOptions": [
+      {
+        "label": "1",
+        "value": 1
+      },
+      {
+        "label": "2",
+        "value": 2
+      },
+      {
+        "label": "3",
+        "value": 4
+      },
+      {
+        "label": "4",
+        "value": 8
+      },
+      {
+        "label": "5",
+        "value": 16
+      },
+      {
+        "label": "6",
+        "value": 32
+      },
+      {
+        "label": "7",
+        "value": 64
+      },
+      {
+        "label": "8",
+        "value": 128
+      },
+      {
+        "label": "9",
+        "value": 256
+      },
+      {
+        "label": "10",
+        "value": 512
+      },
+      {
+        "label": "11",
+        "value": 1024
+      },
+      {
+        "label": "12",
+        "value": 2048
+      },
+      {
+        "label": "13",
+        "value": 4096
+      },
+      {
+        "label": "14",
+        "value": 8192
+      },
+      {
+        "label": "15",
+        "value": 16384
+      },
+      {
+        "label": "16",
+        "value": 32768
+      },
+      {
+        "label": "17",
+        "value": 65536
+      },
+      {
+        "label": "18",
+        "value": 131072
+      },
+      {
+        "label": "19",
+        "value": 262144
+      },
+      {
+        "label": "20",
+        "value": 524288
+      },
+      {
+        "label": "21",
+        "value": 1048576
+      },
+      {
+        "label": "22",
+        "value": 2097152
+      },
+      {
+        "label": "23",
+        "value": 4194304
+      },
+      {
+        "label": "24",
+        "value": 8388608
+      },
+      {
+        "label": "25",
+        "value": 16777216
+      },
+      {
+        "label": "26",
+        "value": 33554432
+      },
+      {
+        "label": "27",
+        "value": 67108864
+      },
+      {
+        "label": "28",
+        "value": 134217728
+      },
+      {
+        "label": "29",
+        "value": 268435456
+      },
+      {
+        "label": "30",
+        "value": 536870912
+      },
+      {
+        "label": "31",
+        "value": 1073741824
+      },
+      {
+        "label": "Последний день",
+        "value": 2147483648
+      }
+    ],
+    "getMonthOptions": [
+      {
+        "label": "Январь",
+        "value": 1
+      },
+      {
+        "label": "Февраль",
+        "value": 2
+      },
+      {
+        "label": "Март",
+        "value": 4
+      },
+      {
+        "label": "Апрель",
+        "value": 8
+      },
+      {
+        "label": "Май",
+        "value": 16
+      },
+      {
+        "label": "Июнь",
+        "value": 32
+      },
+      {
+        "label": "Июль",
+        "value": 64
+      },
+      {
+        "label": "Август",
+        "value": 128
+      },
+      {
+        "label": "Сентябрь",
+        "value": 256
+      },
+      {
+        "label": "Октябрь",
+        "value": 512
+      },
+      {
+        "label": "Ноябрь",
+        "value": 1024
+      },
+      {
+        "label": "Декабрь",
+        "value": 2048
+      }
+    ],
+    "getWeekOptions": [
+      {
+        "label": "Первая неделя",
+        "value": 1
+      },
+      {
+        "label": "Вторая неделя",
+        "value": 2
+      },
+      {
+        "label": "Третья неделя",
+        "value": 4
+      },
+      {
+        "label": "Четвертая неделя",
+        "value": 8
+      },
+      {
+        "label": "Последняя неделя",
+        "value": 16
+      }
+    ],
+    "getTaskInstancePolicyOptions": [
+      {
+        "label": "Запускать параллельно",
+        "value": 0
+      },
+      {
+        "label": "Ставить задачу в очередь",
+        "value": 1
+      },
+      {
+        "label": "Игнорировать",
+        "value": 2
+      },
+      {
+        "label": "Остановить существующую",
+        "value": 3
+      }
+    ],
+    "getPlatformOptions": [
+      {
+        "label": "Windows",
+        "value": "windows"
+      },
+      {
+        "label": "Linux",
+        "value": "linux"
+      },
+      {
+        "label": "macOS",
+        "value": "darwin"
+      }
+    ]
+  },
+  "it": {
+    "getSeverityOptions": [
+      {
+        "label": "Informational",
+        "value": "info"
+      },
+      {
+        "label": "Warning",
+        "value": "warning"
+      },
+      {
+        "label": "Error",
+        "value": "error"
+      }
+    ],
+    "getTaskTypeOptions": [
+      {
+        "label": "Daily",
+        "value": "daily"
+      },
+      {
+        "label": "Weekly",
+        "value": "weekly"
+      },
+      {
+        "label": "Monthly",
+        "value": "monthly"
+      },
+      {
+        "label": "Run Once",
+        "value": "runonce"
+      },
+      {
+        "label": "On check failure",
+        "value": "checkfailure"
+      },
+      {
+        "label": "Onboarding",
+        "value": "onboarding"
+      },
+      {
+        "label": "Manual",
+        "value": "manual"
+      }
+    ],
+    "getDayOfWeekOptions": [
+      {
+        "label": "Monday",
+        "value": 2
+      },
+      {
+        "label": "Tuesday",
+        "value": 4
+      },
+      {
+        "label": "Wednesday",
+        "value": 8
+      },
+      {
+        "label": "Thursday",
+        "value": 16
+      },
+      {
+        "label": "Friday",
+        "value": 32
+      },
+      {
+        "label": "Saturday",
+        "value": 64
+      },
+      {
+        "label": "Sunday",
+        "value": 1
+      }
+    ],
+    "getDayOfMonthOptions": [
+      {
+        "label": "1",
+        "value": 1
+      },
+      {
+        "label": "2",
+        "value": 2
+      },
+      {
+        "label": "3",
+        "value": 4
+      },
+      {
+        "label": "4",
+        "value": 8
+      },
+      {
+        "label": "5",
+        "value": 16
+      },
+      {
+        "label": "6",
+        "value": 32
+      },
+      {
+        "label": "7",
+        "value": 64
+      },
+      {
+        "label": "8",
+        "value": 128
+      },
+      {
+        "label": "9",
+        "value": 256
+      },
+      {
+        "label": "10",
+        "value": 512
+      },
+      {
+        "label": "11",
+        "value": 1024
+      },
+      {
+        "label": "12",
+        "value": 2048
+      },
+      {
+        "label": "13",
+        "value": 4096
+      },
+      {
+        "label": "14",
+        "value": 8192
+      },
+      {
+        "label": "15",
+        "value": 16384
+      },
+      {
+        "label": "16",
+        "value": 32768
+      },
+      {
+        "label": "17",
+        "value": 65536
+      },
+      {
+        "label": "18",
+        "value": 131072
+      },
+      {
+        "label": "19",
+        "value": 262144
+      },
+      {
+        "label": "20",
+        "value": 524288
+      },
+      {
+        "label": "21",
+        "value": 1048576
+      },
+      {
+        "label": "22",
+        "value": 2097152
+      },
+      {
+        "label": "23",
+        "value": 4194304
+      },
+      {
+        "label": "24",
+        "value": 8388608
+      },
+      {
+        "label": "25",
+        "value": 16777216
+      },
+      {
+        "label": "26",
+        "value": 33554432
+      },
+      {
+        "label": "27",
+        "value": 67108864
+      },
+      {
+        "label": "28",
+        "value": 134217728
+      },
+      {
+        "label": "29",
+        "value": 268435456
+      },
+      {
+        "label": "30",
+        "value": 536870912
+      },
+      {
+        "label": "31",
+        "value": 1073741824
+      },
+      {
+        "label": "Last Day",
+        "value": 2147483648
+      }
+    ],
+    "getMonthOptions": [
+      {
+        "label": "January",
+        "value": 1
+      },
+      {
+        "label": "February",
+        "value": 2
+      },
+      {
+        "label": "March",
+        "value": 4
+      },
+      {
+        "label": "April",
+        "value": 8
+      },
+      {
+        "label": "May",
+        "value": 16
+      },
+      {
+        "label": "June",
+        "value": 32
+      },
+      {
+        "label": "July",
+        "value": 64
+      },
+      {
+        "label": "August",
+        "value": 128
+      },
+      {
+        "label": "September",
+        "value": 256
+      },
+      {
+        "label": "October",
+        "value": 512
+      },
+      {
+        "label": "November",
+        "value": 1024
+      },
+      {
+        "label": "December",
+        "value": 2048
+      }
+    ],
+    "getWeekOptions": [
+      {
+        "label": "First Week",
+        "value": 1
+      },
+      {
+        "label": "Second Week",
+        "value": 2
+      },
+      {
+        "label": "Third Week",
+        "value": 4
+      },
+      {
+        "label": "Fourth Week",
+        "value": 8
+      },
+      {
+        "label": "Last Week",
+        "value": 16
+      }
+    ],
+    "getTaskInstancePolicyOptions": [
+      {
+        "label": "Run in Parallel",
+        "value": 0
+      },
+      {
+        "label": "Queue Task",
+        "value": 1
+      },
+      {
+        "label": "Ignore",
+        "value": 2
+      },
+      {
+        "label": "Stop Existing",
+        "value": 3
+      }
+    ],
+    "getPlatformOptions": [
+      {
+        "label": "Windows",
+        "value": "windows"
+      },
+      {
+        "label": "Linux",
+        "value": "linux"
+      },
+      {
+        "label": "macOS",
+        "value": "darwin"
+      }
+    ]
+  }
+}

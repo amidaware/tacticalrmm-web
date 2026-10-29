@@ -4,6 +4,7 @@ This file is subject to the EE License Agreement.
 For details, see: https://license.tacticalrmm.com/ee
 */
 
+import { gettext } from "@/gettext";
 import axios from "axios";
 import { ref } from "vue";
 import { router } from "@/router";
@@ -68,7 +69,9 @@ export function useReportTemplates() {
         reportTemplates.value = reportTemplates.value.filter(
           (template) => template.id != id,
         );
-        notifySuccess("The report template was successfully removed");
+        notifySuccess(
+          gettext.$gettext("The report template was successfully removed"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -81,7 +84,9 @@ export function useReportTemplates() {
       .post(`${baseUrl}/templates/`, payload)
       .then(({ data }: { data: ReportTemplate }) => {
         reportTemplates.value.push(data);
-        notifySuccess("The report template was added successfully");
+        notifySuccess(
+          gettext.$gettext("The report template was added successfully"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -102,7 +107,9 @@ export function useReportTemplates() {
         );
         reportTemplates.value[index] = data;
         options?.dontNotify ||
-          notifySuccess("The report template was edited successfully");
+          notifySuccess(
+            gettext.$gettext("The report template was edited successfully"),
+          );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -181,7 +188,7 @@ export function useReportTemplates() {
 
     // get filename
     Dialog.create({
-      title: "Confirm File Name",
+      title: gettext.$gettext("Confirm File Name"),
       prompt: {
         model: `${template.name}.${extension}`,
         isValid: (val) => !!val,
@@ -277,7 +284,9 @@ export function useReportTemplates() {
         if (index !== -1) reportTemplates.value[index] = data;
         else reportTemplates.value.push(data);
 
-        notifySuccess("Report Template was successfully imported.");
+        notifySuccess(
+          gettext.$gettext("Report template was successfully imported."),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -306,7 +315,9 @@ export function useReportTemplates() {
     axios
       .post(`${baseUrl}/templates/shared/`, payload)
       .then(() => {
-        notifySuccess("Shared templates imported successfully");
+        notifySuccess(
+          gettext.$gettext("Shared templates imported successfully"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -342,7 +353,9 @@ export function useReportTemplates() {
       .post(`${baseUrl}/templates/${id}/email/`, payload)
       .then(() => {
         notifySuccess(
-          "Report was generated and the email is queued for delivery",
+          gettext.$gettext(
+            "Report was generated and the email is queued for delivery",
+          ),
         );
       })
       .catch(() => {
@@ -468,7 +481,7 @@ export function useReportingHTMLTemplates() {
       .post(`${baseUrl}/htmltemplates/`, payload)
       .then(({ data }: { data: ReportHTMLTemplate }) => {
         reportHTMLTemplates.value.push(data);
-        notifySuccess("HTML Template was added successfully");
+        notifySuccess(gettext.$gettext("HTML template was added successfully"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -484,7 +497,9 @@ export function useReportingHTMLTemplates() {
         );
         reportHTMLTemplates.value[index] = data;
 
-        notifySuccess("HTML Template was edited successfully");
+        notifySuccess(
+          gettext.$gettext("HTML template was edited successfully"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -498,7 +513,9 @@ export function useReportingHTMLTemplates() {
         reportHTMLTemplates.value = reportHTMLTemplates.value.filter(
           (template) => template.id != id,
         );
-        notifySuccess("The HTML template was successfully removed");
+        notifySuccess(
+          gettext.$gettext("The HTML template was successfully removed"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -541,7 +558,7 @@ export function useReportingDataQueries() {
       .then(({ data }: { data: ReportDataQuery }) => {
         isLoading.value = true;
         reportDataQueries.value.push(data);
-        notifySuccess("Data Query was added successfully");
+        notifySuccess(gettext.$gettext("Data query was added successfully"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -556,7 +573,7 @@ export function useReportingDataQueries() {
           (template) => template.id === id,
         );
         reportDataQueries.value[index] = data;
-        notifySuccess("Data Query was edited successfully");
+        notifySuccess(gettext.$gettext("Data query was edited successfully"));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -569,7 +586,9 @@ export function useReportingDataQueries() {
         reportDataQueries.value = reportDataQueries.value.filter(
           (template) => template.id != id,
         );
-        notifySuccess("The Data Query was successfully removed");
+        notifySuccess(
+          gettext.$gettext("The data query was successfully removed"),
+        );
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -619,7 +638,9 @@ export function useReportingSchedules() {
       .post<ReportSchedule>(`${baseUrl}/schedules/`, payload)
       .then(({ data }) => {
         reportSchedules.value.push(data);
-        notifySuccess("Report Schedule was added successfully");
+        notifySuccess(
+          gettext.$gettext("Report schedule was added successfully"),
+        );
       })
       .catch(() => {
         isError.value = true;
@@ -640,7 +661,9 @@ export function useReportingSchedules() {
         if (idx !== -1) {
           reportSchedules.value[idx] = data;
         }
-        notifySuccess("Report Schedule was updated successfully");
+        notifySuccess(
+          gettext.$gettext("Report schedule was updated successfully"),
+        );
       })
       .catch(() => {
         isError.value = true;
@@ -660,7 +683,9 @@ export function useReportingSchedules() {
         reportSchedules.value = reportSchedules.value.filter(
           (r) => r.id !== id,
         );
-        notifySuccess("Report Schedule was deleted successfully");
+        notifySuccess(
+          gettext.$gettext("Report schedule was deleted successfully"),
+        );
       })
       .catch(() => {
         isError.value = true;
@@ -678,7 +703,9 @@ export function useReportingSchedules() {
       .post(`${baseUrl}/schedules/${id}/run/`)
       .then(() => {
         notifySuccess(
-          "Report Schedule was run. Check the Report History for the status.",
+          gettext.$gettext(
+            "Report schedule was run. Check the report history for the status.",
+          ),
         );
       })
       .catch(() => {
@@ -734,7 +761,9 @@ export function useReportingHistory() {
       .delete(`${baseUrl}/history/${id}/`)
       .then(() => {
         reportHistory.value = reportHistory.value.filter((r) => r.id !== id);
-        notifySuccess("Report History entry was deleted successfully");
+        notifySuccess(
+          gettext.$gettext("Report history entry was deleted successfully"),
+        );
       })
       .catch(() => {
         isError.value = true;
@@ -789,7 +818,7 @@ export function useReportingHistory() {
 
     // get filename
     Dialog.create({
-      title: "Confirm File Name",
+      title: gettext.$gettext("Confirm File Name"),
       prompt: {
         model: `${template_name}-${Date.now()}.${extension}`,
         isValid: (val) => !!val,

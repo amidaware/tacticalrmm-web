@@ -1,24 +1,18 @@
+import { gettext } from "@/gettext";
 import type {
   DownloadQueueStatus,
   DownloadSelectionMode,
   FileBrowserApiItem,
   FileBrowserItem,
   UploadQueueStatus,
+  TransferMessageCode,
 } from "@/types/filebrowser";
 import {
   FILE_BROWSER_INVALID_NAME_CHARS,
   FILE_BROWSER_MAX_NAME_LENGTH,
   MAX_SEQUENTIAL_DOWNLOAD_FILES,
 } from "@/constants/filebrowser";
-import {
-  TRANSFER_RATE_LIMIT_MESSAGE,
-  TRANSFER_RECONNECTING_LABEL,
-  TRANSFER_RECONNECTING_MESSAGE,
-  TRANSFER_WAITING_FOR_AGENT_LABEL,
-  TRANSFER_WAITING_FOR_AGENT_MESSAGE,
-  TRANSFER_SLOT_WAIT_LABEL,
-  TRANSFER_SLOT_WAIT_MESSAGE,
-} from "@/constants/fileTransfer";
+
 import {
   isTransferSessionLimitError,
   TransferSlotWaitTimeoutError,
@@ -26,6 +20,7 @@ import {
 import { bytes2Human, formatDate } from "@/utils/format";
 import { getAxiosErrorDetail } from "@/utils/apiError";
 import { AxiosError } from "axios";
+import { FatalTransferError } from "@/services/fileTransfer/transferFaults";
 
 export function isFolderRow(row: FileBrowserItem): boolean {
   return row.type === "folder";
@@ -53,8 +48,10 @@ export function compareNameAsc(
 }
 
 export function typeSortLabel(row: FileBrowserItem): string {
-  if (isFolderRow(row)) return "Folder";
-  return (row.extension || "File").toUpperCase();
+  if (isFolderRow(row)) return gettext.$gettext("Folder");
+  return (
+    row.extension || gettext.$pgettext("File browser", "File")
+  ).toUpperCase();
 }
 
 export function parseModifiedToTimestamp(modified?: string): number {
@@ -157,18 +154,18 @@ export function extractDestinationRule(
   platform?: string,
 ): true | string {
   const path = String(value ?? "").trim();
-  if (!path) return "Enter a destination folder";
+  if (!path) return gettext.$gettext("Enter a destination folder");
   const windows = (platform || "").toLowerCase() === "windows";
   const absolute = windows
     ? /^(?:[A-Za-z]:[\\/]|[\\/]{2}[^\\/]+[\\/][^\\/]+)/.test(path)
     : path.startsWith("/");
   if (!absolute) {
     return windows
-      ? "Enter a full path, for example C:\\Folder"
-      : "Enter a full path starting with /";
+      ? gettext.$gettext("Enter a full path, for example C:\\Folder")
+      : gettext.$gettext("Enter a full path starting with /");
   }
   if (path.split(windows ? /[\\/]+/ : "/").includes("..")) {
-    return "The path cannot contain ..";
+    return gettext.$gettext("The path cannot contain ..");
   }
   return true;
 }
@@ -260,20 +257,26 @@ export function mapApiItemsToFileBrowserItems(
   return items.map((item) => mapApiItemToFileBrowserItem(item, platform));
 }
 
-export function getListFilesErrorMessage(err: unknown): string {
+function knownListFilesErrorMessage(err: unknown): string | null {
+  if (err instanceof FatalTransferError)
+    return formatLiteralFileBrowserError(err.message);
   if (err instanceof AxiosError) {
     if (err.code === "ERR_NETWORK") {
-      return "Unable to reach the server. Check your connection.";
+      return gettext.$gettext(
+        "Unable to reach the server. Check your connection.",
+      );
     }
     if (err.code === "ERR_CANCELED") {
-      return "Request was cancelled.";
+      return gettext.$gettext("Request was cancelled.");
     }
     if (err.response?.status === 403) {
       const detail = getAxiosErrorDetail(err);
       if (detail) {
         return formatFileBrowserApiErrorMessage(detail);
       }
-      return "You do not have permission to use the file browser.";
+      return gettext.$gettext(
+        "You do not have permission to use the file browser.",
+      );
     }
     const detail = getAxiosErrorDetail(err);
     if (detail) {
@@ -282,7 +285,14 @@ export function getListFilesErrorMessage(err: unknown): string {
   } else if (err instanceof Error && err.message.trim()) {
     return formatFileBrowserApiErrorMessage(err.message);
   }
-  return "Unable to load directory contents.";
+  return null;
+}
+
+export function getListFilesErrorMessage(err: unknown): string {
+  return (
+    knownListFilesErrorMessage(err) ??
+    gettext.$gettext("Unable to load directory contents.")
+  );
 }
 
 export function formatFileBrowserApiErrorMessage(raw: string): string {
@@ -292,15 +302,15 @@ export function formatFileBrowserApiErrorMessage(raw: string): string {
   if (
     /destination already exists \(conflict_policy=skip\)/i.test(afterFailed)
   ) {
-    return "Skipped — file already exists.";
+    return gettext.$gettext("Skipped — file already exists.");
   }
   if (
     /this destination already contains a (file|folder) named/i.test(afterFailed)
   ) {
-    return ensureSentence(afterFailed);
+    return formatLiteralFileBrowserError(afterFailed);
   }
   if (/^a (file|folder) named .+ already exists\.?$/i.test(afterFailed)) {
-    return ensureSentence(afterFailed);
+    return formatLiteralFileBrowserError(afterFailed);
   }
 
   const namedDup =
@@ -308,13 +318,18 @@ export function formatFileBrowserApiErrorMessage(raw: string): string {
       afterFailed,
     );
   if (namedDup?.[1]) {
-    return `A file or folder named "${namedDup[1]}" already exists.`;
+    return gettext.$gettext(
+      'A file or folder named "%{name}" already exists.',
+      {
+        name: namedDup[1],
+      },
+    );
   }
   if (/already exists/i.test(afterFailed)) {
-    return "A file or folder with this name already exists.";
+    return gettext.$gettext("A file or folder with this name already exists.");
   }
 
-  return ensureSentence(afterFailed);
+  return formatLiteralFileBrowserError(afterFailed);
 }
 
 function unwrapApiErrorText(raw: string): string {
@@ -341,17 +356,25 @@ function unwrapApiErrorText(raw: string): string {
   return text;
 }
 
-function ensureSentence(message: string): string {
+export function formatLiteralFileBrowserError(message: string): string {
   const trimmed = message.trim();
   if (!trimmed) return trimmed;
   const capped = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
   return /[.!?]$/.test(capped) ? capped : `${capped}.`;
 }
 
-export function isDuplicateNameError(err: unknown, message?: string): boolean {
-  const text =
-    (message && message.trim()) || getFileBrowserErrorMessage(err, "");
-  return /already exists|already contains/i.test(text);
+function rawFileBrowserError(err: unknown): string {
+  if (err instanceof FatalTransferError) return "";
+  if (err instanceof AxiosError) return getAxiosErrorDetail(err) ?? "";
+  return err instanceof Error
+    ? err.message
+    : typeof err === "string"
+      ? err
+      : "";
+}
+
+export function isDuplicateNameError(err: unknown): boolean {
+  return /already exists|already contains/i.test(rawFileBrowserError(err));
 }
 
 function deletePathIdentityKey(
@@ -429,41 +452,43 @@ export function isLikelyProtectedDeletePath(
 export function fileBrowserDeleteErrorMessage(error?: string): string {
   const text = (error ?? "").trim();
   if (/^protected path$/i.test(text)) {
-    return "protected system or agent path";
+    return gettext.$gettext("protected system or agent path");
   }
   return text;
 }
 
 export function getFileBrowserErrorMessage(
   err: unknown,
-  fallback = "Unable to complete the operation.",
+  fallback = gettext.$gettext("Unable to complete the operation."),
 ): string {
   if (err instanceof TransferSlotWaitTimeoutError) {
-    return err.message;
+    return err.defaultMessage
+      ? gettext.$gettext(
+          "No transfer slot became available. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.",
+        )
+      : err.message;
   }
   if (isTransferSessionLimitError(err)) {
-    return "Too many concurrent file transfers. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.";
+    return gettext.$gettext(
+      "Too many concurrent file transfers. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.",
+    );
   }
   if (err instanceof AxiosError && err.response?.status === 429) {
     const detail = getAxiosErrorDetail(err);
     if (detail && detail.length < 200 && !detail.includes("<")) {
       return formatFileBrowserApiErrorMessage(detail);
     }
-    return TRANSFER_RATE_LIMIT_MESSAGE;
+    return gettext.$gettext("Too many requests. Try again later.");
   }
-  const message = getListFilesErrorMessage(err);
-  if (message === "Unable to load directory contents.") {
-    return fallback;
-  }
-  return message;
+  return knownListFilesErrorMessage(err) ?? fallback;
 }
 
 export function isListFilesPermissionError(err: unknown): boolean {
   return err instanceof AxiosError && err.response?.status === 403;
 }
 
-export function isListFilesAgentOfflineError(message: string): boolean {
-  return /unable to contact the agent/i.test(message);
+export function isListFilesAgentOfflineError(err: unknown): boolean {
+  return /unable to contact the agent/i.test(rawFileBrowserError(err));
 }
 
 export function sortFileBrowserRows(
@@ -691,24 +716,31 @@ export function formatDropOverlayTitle(
 ): string {
   switch (reason) {
     case "folders":
-      return "Folders cannot be uploaded";
+      return gettext.$gettext("Folders cannot be uploaded");
     case "unsupported":
-      return "This item cannot be uploaded";
+      return gettext.$gettext("This item cannot be uploaded");
     case "too-many":
-      return "Too many files selected";
+      return gettext.$gettext("Too many files selected");
     case "queue-full":
-      return "Upload queue is full";
+      return gettext.$gettext("Upload queue is full");
     case "size-limit":
-      return "File exceeds the upload limit";
+      return gettext.$gettext("File exceeds the upload limit");
     default:
       break;
   }
 
-  if (fileCount === 1) return "Drop file to upload";
+  if (fileCount === 1) return gettext.$gettext("Drop file to upload");
   if (fileCount != null && fileCount > 1) {
-    return `Drop ${fileCount} files to upload`;
+    return gettext.$ngettext(
+      "Drop %{count} file to upload",
+      "Drop %{count} files to upload",
+      fileCount,
+      {
+        count: fileCount,
+      },
+    );
   }
-  return "Drop files to upload";
+  return gettext.$gettext("Drop files to upload");
 }
 
 export function dropRejectToastMessage(
@@ -716,15 +748,19 @@ export function dropRejectToastMessage(
 ): string {
   switch (reason) {
     case "folders":
-      return "Folders cannot be uploaded. Drop files into this folder instead.";
+      return gettext.$gettext(
+        "Folders cannot be uploaded. Drop files into this folder instead.",
+      );
     case "unsupported":
-      return "This item cannot be uploaded.";
+      return gettext.$gettext("This item cannot be uploaded.");
     case "too-many":
-      return "Too many files selected for one upload.";
+      return gettext.$gettext("Too many files selected for one upload.");
     case "queue-full":
-      return "Upload queue is full. Clear finished items or cancel transfers, then try again.";
+      return gettext.$gettext(
+        "Upload queue is full. Clear finished items or cancel transfers, then try again.",
+      );
     case "size-limit":
-      return "File exceeds the upload limit.";
+      return gettext.$gettext("File exceeds the upload limit.");
   }
 }
 
@@ -762,7 +798,8 @@ export function fileBrowserPathLeaf(
   path: string,
   options?: { emptyFallback?: string; platform?: string },
 ): string {
-  const emptyFallback = options?.emptyFallback ?? "this folder";
+  const emptyFallback =
+    options?.emptyFallback ?? gettext.$gettext("this folder");
   const trimmed = path.trim();
   if (!trimmed) return emptyFallback;
 
@@ -852,7 +889,10 @@ export function formatUploadConflictNamePreview(
   return {
     visibleNames,
     remainingCount,
-    summaryLine: `${visibleNames.join(", ")}, and ${remainingCount} more`,
+    summaryLine: gettext.$gettext("%{names}, and %{count} more", {
+      names: visibleNames.join(", "),
+      count: remainingCount,
+    }),
   };
 }
 
@@ -861,17 +901,17 @@ export type UploadConflictAction = "cancel" | "skip" | "replace";
 export function uploadStatusLabel(status: UploadQueueStatus): string {
   switch (status) {
     case "queued":
-      return "Queued";
+      return gettext.$gettext("Queued");
     case "uploading":
-      return "Uploading";
+      return gettext.$gettext("Uploading");
     case "completed":
-      return "Uploaded";
+      return gettext.$gettext("Uploaded");
     case "failed":
-      return "Failed";
+      return gettext.$gettext("Failed");
     case "paused":
-      return "Paused";
+      return gettext.$gettext("Paused");
     case "cancelled":
-      return "Cancelled";
+      return gettext.$gettext("Cancelled");
     default:
       return status;
   }
@@ -912,21 +952,21 @@ export function classifyDownloadSelection(items: FileBrowserItem[]): {
 export function downloadStatusLabel(status: DownloadQueueStatus): string {
   switch (status) {
     case "queued":
-      return "Queued";
+      return gettext.$gettext("Queued");
     case "initializing":
-      return "Initializing…";
+      return gettext.$gettext("Initializing…");
     case "downloading":
-      return "Downloading…";
+      return gettext.$gettext("Downloading…");
     case "completing":
-      return "Verifying…";
+      return gettext.$gettext("Verifying…");
     case "completed":
-      return "Downloaded";
+      return gettext.$gettext("Downloaded");
     case "failed":
-      return "Failed";
+      return gettext.$gettext("Failed");
     case "paused":
-      return "Paused";
+      return gettext.$gettext("Paused");
     case "cancelled":
-      return "Cancelled";
+      return gettext.$gettext("Cancelled");
     default:
       return status;
   }
@@ -968,25 +1008,20 @@ export function transferQueueBadgeColor(status: string): string {
 
 export function transferQueueStatusLabelWithSlotWait(
   baseLabel: string,
-  errorMessage: string | undefined,
+  messageCode: TransferMessageCode | undefined,
   isActive: boolean,
 ): string {
-  if (!isActive || !errorMessage) {
-    return baseLabel;
+  if (!isActive) return baseLabel;
+  switch (messageCode) {
+    case "waiting-slot":
+      return gettext.$gettext("Waiting for slot…");
+    case "reconnecting":
+      return gettext.$gettext("Reconnecting…");
+    case "waiting-agent":
+      return gettext.$gettext("Waiting for agent…");
+    default:
+      return baseLabel;
   }
-  if (
-    errorMessage === TRANSFER_SLOT_WAIT_MESSAGE ||
-    /waiting for a free transfer slot/i.test(errorMessage)
-  ) {
-    return TRANSFER_SLOT_WAIT_LABEL;
-  }
-  if (errorMessage === TRANSFER_RECONNECTING_MESSAGE) {
-    return TRANSFER_RECONNECTING_LABEL;
-  }
-  if (errorMessage === TRANSFER_WAITING_FOR_AGENT_MESSAGE) {
-    return TRANSFER_WAITING_FOR_AGENT_LABEL;
-  }
-  return baseLabel;
 }
 
 export function isDownloadQueueItemTerminal(
@@ -1037,19 +1072,32 @@ export function nameSegmentBaseRule(
   platform?: string,
 ): true | string {
   const raw = String(v ?? "");
-  if (!raw.trim()) return "Name is required";
+  if (!raw.trim()) return gettext.$pgettext("File browser", "Name is required");
   const windows = !platform || platform === "windows";
   if (windows && (raw.endsWith(".") || raw.endsWith(" "))) {
-    return "Name cannot end with a space or a period";
+    return gettext.$gettext("Name cannot end with a space or a period");
   }
 
   const name = raw.trim();
-  if (name === "." || name === "..") return "The name cannot be . or ..";
+  if (name === "." || name === "..")
+    return gettext.$gettext("The name cannot be . or ..");
   if (FILE_BROWSER_INVALID_NAME_CHARS.test(name)) {
-    return 'Name cannot contain \\ / : * ? " < > | or control characters';
+    return gettext.$gettext(
+      "Name cannot contain %{characters} or control characters",
+      {
+        characters: '\\ / : * ? " < > |',
+      },
+    );
   }
   if (name.length > FILE_BROWSER_MAX_NAME_LENGTH) {
-    return `Name must be at most ${FILE_BROWSER_MAX_NAME_LENGTH} characters`;
+    return gettext.$ngettext(
+      "Name must be at most %{limit} character",
+      "Name must be at most %{limit} characters",
+      FILE_BROWSER_MAX_NAME_LENGTH,
+      {
+        limit: FILE_BROWSER_MAX_NAME_LENGTH,
+      },
+    );
   }
   return true;
 }
@@ -1066,5 +1114,7 @@ export function duplicateNameRule(
   const dup = existingNames.some(
     (n) => n.toLowerCase() === lower && n.toLowerCase() !== excludeLower,
   );
-  return !dup || "A file or folder with this name already exists";
+  return (
+    !dup || gettext.$gettext("A file or folder with this name already exists")
+  );
 }

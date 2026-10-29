@@ -33,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import { gettext } from "@/gettext";
 import { defineComponent } from "vue";
 export default defineComponent({
   inheritAttrs: false,
@@ -40,29 +41,32 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { type QTableColumn } from "quasar";
+
 const props = withDefaults(
   defineProps<{
     columns: QTableColumn[];
     columnSelect?: boolean;
     excludeColumns?: string[];
   }>(),
-  { columnSelect: false, excludeColumns: () => ["columnSelect"] }
+  { columnSelect: false, excludeColumns: () => ["columnSelect"] },
 );
-// save a non-reactive copy of columns to modify
-const localColumns: QTableColumn[] = Object.assign([], props.columns);
-if (props.columnSelect)
-  localColumns.push({
-    name: "columnSelect",
-    label: "Column Select",
-    field: "columnSelect",
-  });
-const visibleColumns = ref(localColumns.map((column) => column.name));
-const columnOptions = ref(
-  localColumns
+const localColumns = computed<QTableColumn[]>(() => {
+  const columns = [...props.columns];
+  if (props.columnSelect)
+    columns.push({
+      name: "columnSelect",
+      label: gettext.$gettext("Column Select"),
+      field: "columnSelect",
+    });
+  return columns;
+});
+const visibleColumns = ref(localColumns.value.map((column) => column.name));
+const columnOptions = computed(() =>
+  localColumns.value
     .filter((column) => !props.excludeColumns.includes(column.name))
-    .map((column) => ({ label: column.label, value: column.name }))
+    .map((column) => ({ label: column.label, value: column.name })),
 );
 </script>
 

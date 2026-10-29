@@ -1,0 +1,109 @@
+{
+  "before": [
+    {
+      "file": "src/composables/core.ts",
+      "code": 2322,
+      "message": "Type 'Option[]' is not assignable to type 'CustomFieldOption[] | { value: number; label: string; id: number; model: \"agent\" | \"client\" | \"site\"; name: string; type: string; required: boolean; default_value: string | number | boolean | string[]; }[]'.   Type 'Option[]' is not assignable to type 'CustomFieldOption[]'.     Type 'Option' is not assignable to type 'CustomFieldOption'.       Type 'string' is not assignable to type 'CustomFieldOption'."
+    },
+    {
+      "file": "src/composables/core.ts",
+      "code": 2322,
+      "message": "Type 'string[] | Option[]' is not assignable to type 'URLActionOption[] | { value: number; label: string; id: number; name: string; desc?: string | undefined; action_type: URLActionType; pattern: string; rest_method: RESTMethodType; rest_body: string; rest_headers: string; }[]'.   Type 'string[]' is not assignable to type 'URLActionOption[] | { value: number; label: string; id: number; name: string; desc?: string | undefined; action_type: URLActionType; pattern: string; rest_method: RESTMethodType; rest_body: string; rest_headers: string; }[]'.     Type 'string[]' is not assignable to type 'URLActionOption[]'.       Type 'string' is not assignable to type 'URLActionOption'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 2339,
+      "message": "Property 'showSaveFilePicker' does not exist on type 'Window & typeof globalThis'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'fileHandle' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 2345,
+      "message": "Argument of type 'FileSystemFileHandle | null' is not assignable to parameter of type 'FileSystemFileHandle'.   Type 'null' is not assignable to type 'FileSystemFileHandle'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "code": 18047,
+      "message": "'initData' is possibly 'null'."
+    },
+    {
+      "file": "src/services/fileTransfer/queueMessages.ts",
+      "code": 2305,
+      "message": "Module '\"@/types/filebrowser\"' has no exported member 'TransferMessageCode'."
+    },
+    {
+      "file": "src/services/fileTransfer/queueMessages.ts",
+      "code": 2305,
+      "message": "Module '\"@/types/filebrowser\"' has no exported member 'TransferMessageState'."
+    },
+    {
+      "file": "src/services/fileTransfer/queueMessages.ts",
+      "code": 2305,
+      "message": "Module '\"@/utils/filebrowser\"' has no exported member 'formatLiteralFileBrowserError'."
+    },
+    {
+      "file": "src/services/fileTransfer/queueMessages.ts",
+      "code": 2339,
+      "message": "Property 'defaultMessage' does not exist on type 'TransferSlotWaitTimeoutError'."
+    },
+    {
+      "file": "src/services/fileTransfer/resume.ts",
+      "code": 2339,
+      "message": "Property 'showSaveFilePicker' does not exist on type 'Window & typeof globalThis'."
+    },
+    {
+      "file": "src/services/fileTransfer/resume.ts",
+      "code": 2339,
+      "message": "Property 'showOpenFilePicker' does not exist on type 'Window & typeof globalThis'."
+    },
+    {
+      "file": "src/services/fileTransfer/resume.ts",
+      "code": 2339,
+      "message": "Property 'queryPermission' does not exist on type 'FileSystemFileHandle'."
+    },
+    {
+      "file": "src/services/fileTransfer/resume.ts",
+      "code": 2339,
+      "message": "Property 'requestPermission' does not exist on type 'FileSystemFileHandle'."
+    }
+  ]
+}

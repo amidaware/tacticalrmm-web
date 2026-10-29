@@ -14,16 +14,22 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        {{ props.dataQuery ? "Edit Data Query" : "New Data Query" }}
+        {{
+          props.dataQuery
+            ? $gettext("Edit Data Query")
+            : $gettext("New Data Query")
+        }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="Data Query Name"
+          :label="$gettext('Data Query Name')"
           filled
           dense
           style="width: 400px"
@@ -37,12 +43,12 @@ For details, see: https://license.tacticalrmm.com/ee
       ></div>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
         <q-btn
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="$gettext('Save')"
           color="primary"
           @click="submit"
         />
@@ -52,6 +58,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { reactive, ref } from "vue";
 import { useDialogPluginComponent, extend, useQuasar } from "quasar";
@@ -96,7 +103,11 @@ async function submit() {
   try {
     state.json_query = JSON.parse(json_string.value);
   } catch (e) {
-    notifyError(`There was an error parsing the json: ${e}`);
+    notifyError(
+      gettext.$gettext("There was an error parsing the JSON: %{error}", {
+        error: String(e),
+      }),
+    );
     return;
   }
 

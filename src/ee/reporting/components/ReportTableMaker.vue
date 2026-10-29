@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 80vw">
       <q-bar>
-        Insert Table
+        {{ $gettext("Insert Table") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -28,21 +30,28 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="arrayOptions"
           outlined
           dense
-          label="Data Source"
+          :label="$gettext('Data Source')"
         />
       </q-card-section>
       <q-card-section style="max-height: 60vh" class="scroll">
         <q-input v-model="output" filled type="textarea" autogrow />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
-        <q-btn dense flat label="Insert" color="primary" @click="insert" />
+        <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
+        <q-btn
+          dense
+          flat
+          :label="$gettext('Insert')"
+          color="primary"
+          @click="insert"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useSharedReportTemplates } from "../api/reporting";
@@ -56,10 +65,10 @@ const { variableAnalysis } = useSharedReportTemplates;
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
-const tableTypeOptions = [
-  { value: "blank", label: "Blank" },
-  { value: "variables", label: "From Variables" },
-];
+const tableTypeOptions = computed(() => [
+  { value: "blank", label: gettext.$gettext("Blank") },
+  { value: "variables", label: gettext.$gettext("From Variables") },
+]);
 
 const blankOutput = `<table>
   <thead>
@@ -129,7 +138,7 @@ function generateTable(columns: string[]) {
   });
 
   if (!headers) {
-    headers = "\t<th>Column Name</th>";
+    headers = `\t<th>${gettext.$gettext("Column Name")}</th>`;
   }
 
   if (!cells) {

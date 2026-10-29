@@ -2,10 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 90vw; max-width: 90vw">
       <q-bar>
-        {{ alertTemplate ? "Edit Alert Template" : "Add Alert Template" }}
+        {{
+          alertTemplate
+            ? $gettext("Edit Alert Template")
+            : $gettext("Add Alert Template")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-stepper
@@ -19,18 +25,18 @@
         <q-step
           :name="1"
           :error="!template.name && step > 1"
-          title="General Settings"
+          :title="$gettext('General Settings')"
           icon="settings"
         >
           <q-card flat>
             <q-card-section>
               <q-input
-                label="Name"
+                :label="$pgettext('Alert template configuration', 'Name')"
                 class="q-mb-none"
                 outlined
                 dense
                 v-model="template.name"
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[(val) => !!val || $gettext('*Required')]"
               />
             </q-card-section>
 
@@ -38,18 +44,18 @@
               <q-toggle
                 v-model="template.is_active"
                 color="green"
-                label="Enabled"
+                :label="$pgettext('Alert template configuration', 'Enabled')"
                 left-label
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
-              Email Settings (Overrides global email settings)
+              {{ $gettext("Email Settings (Overrides global email settings)") }}
             </div>
 
             <q-card-section>
               <q-input
-                label="Email From address"
+                :label="$gettext('Email From address')"
                 class="q-mb-sm"
                 outlined
                 dense
@@ -58,7 +64,11 @@
             </q-card-section>
 
             <q-card-section class="row">
-              <div class="col-2 q-mb-sm">Email recipients</div>
+              <div class="col-2 q-mb-sm">
+                {{
+                  $pgettext("Alert template configuration", "Email recipients")
+                }}
+              </div>
               <div class="col-4 q-mb-sm">
                 <q-list dense v-if="template.email_recipients.length !== 0">
                   <q-item
@@ -81,7 +91,7 @@
                 </q-list>
                 <q-list v-else>
                   <q-item-section>
-                    <q-item-label>No recipients</q-item-label>
+                    <q-item-label>{{ $gettext("No recipients") }}</q-item-label>
                   </q-item-section>
                 </q-list>
               </div>
@@ -91,18 +101,20 @@
                   size="sm"
                   icon="fas fa-plus"
                   color="secondary"
-                  label="Add email"
+                  :label="$gettext('Add email')"
                   @click="toggleAddEmail"
                 />
               </div>
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
-              SMS Settings (Overrides global SMS settings)
+              {{ $gettext("SMS Settings (Overrides global SMS settings)") }}
             </div>
 
             <q-card-section class="row">
-              <div class="col-2 q-mb-sm">SMS recipients</div>
+              <div class="col-2 q-mb-sm">
+                {{ $gettext("SMS recipients") }}
+              </div>
               <div class="col-4 q-mb-md">
                 <q-list dense v-if="template.text_recipients.length !== 0">
                   <q-item
@@ -125,7 +137,7 @@
                 </q-list>
                 <q-list v-else>
                   <q-item-section>
-                    <q-item-label>No recipients</q-item-label>
+                    <q-item-label>{{ $gettext("No recipients") }}</q-item-label>
                   </q-item-section>
                 </q-list>
               </div>
@@ -136,7 +148,7 @@
                   size="sm"
                   icon="fas fa-plus"
                   color="secondary"
-                  label="Add sms number"
+                  :label="$gettext('Add sms number')"
                   @click="toggleAddSMSNumber"
                 />
               </div>
@@ -144,13 +156,17 @@
           </q-card>
         </q-step>
 
-        <q-step :name="2" title="Alert Actions" icon="warning">
+        <q-step :name="2" :title="$gettext('Alert Actions')" icon="warning">
           <q-card flat>
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Failure Settings
+                >{{ $gettext("Alert Failure Settings") }}
                 <q-tooltip>
-                  The selected action will run when an alert is triggered.
+                  {{
+                    $gettext(
+                      "The selected action will run when an alert is triggered.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
@@ -167,20 +183,20 @@
               <tactical-dropdown
                 v-if="template.action_type == 'script'"
                 class="q-mb-sm"
-                label="Failure script"
+                :label="$gettext('Failure script')"
                 outlined
                 clearable
                 v-model="template.action"
                 :options="scriptOptions"
                 mapOptions
                 filterable
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[(val) => !!val || $gettext('*Required')]"
               />
 
               <tactical-dropdown
                 v-else-if="template.action_type == 'server'"
                 class="q-mb-sm"
-                label="Failure script"
+                :label="$gettext('Failure script')"
                 outlined
                 clearable
                 v-model="template.action"
@@ -192,7 +208,7 @@
               <tactical-dropdown
                 v-else
                 class="q-mb-sm"
-                label="Failure Web Hook"
+                :label="$gettext('Failure Web Hook')"
                 outlined
                 clearable
                 v-model="template.action_rest"
@@ -205,7 +221,11 @@
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Failure script arguments (press Enter after typing each argument)"
+                :label="
+                  $gettext(
+                    'Failure script arguments (press Enter after typing each argument)',
+                  )
+                "
                 filled
                 v-model="template.action_args"
                 use-input
@@ -220,7 +240,11 @@
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Failure script environment vars (press Enter after typing each key=value pair)"
+                :label="
+                  $gettext(
+                    'Failure script environment vars (press Enter after typing each key=value pair)',
+                  )
+                "
                 filled
                 v-model="template.action_env_vars"
                 use-input
@@ -234,22 +258,27 @@
               <q-input
                 v-if="template.action_type !== 'rest'"
                 class="q-mb-sm"
-                label="Failure script timeout (seconds)"
+                :label="$gettext('Failure script timeout (seconds)')"
                 outlined
                 type="number"
                 v-model.number="template.action_timeout"
                 dense
                 :rules="[
-                  (val) => !!val || 'Failure script timeout is required',
+                  (val) =>
+                    !!val || $gettext('Failure script timeout is required'),
                 ]"
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Resolved Settings
+                >{{ $gettext("Alert Resolved Settings") }}
                 <q-tooltip>
-                  The selected action will run when an alert is resolved.
+                  {{
+                    $gettext(
+                      "The selected action will run when an alert is resolved.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
@@ -266,7 +295,7 @@
               <tactical-dropdown
                 v-if="template.resolved_action_type === 'script'"
                 class="q-mb-sm"
-                label="Resolved Script"
+                :label="$gettext('Resolved Script')"
                 outlined
                 clearable
                 v-model="template.resolved_action"
@@ -278,7 +307,7 @@
               <tactical-dropdown
                 v-else-if="template.resolved_action_type === 'server'"
                 class="q-mb-sm"
-                label="Resolved Script"
+                :label="$gettext('Resolved Script')"
                 outlined
                 clearable
                 v-model="template.resolved_action"
@@ -290,7 +319,7 @@
               <tactical-dropdown
                 v-else
                 class="q-mb-sm"
-                label="Resolved Web Hook"
+                :label="$gettext('Resolved Web Hook')"
                 outlined
                 clearable
                 v-model="template.resolved_action_rest"
@@ -303,7 +332,11 @@
                 v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Resolved script arguments (press Enter after typing each argument)"
+                :label="
+                  $gettext(
+                    'Resolved script arguments (press Enter after typing each argument)',
+                  )
+                "
                 filled
                 v-model="template.resolved_action_args"
                 use-input
@@ -318,7 +351,11 @@
                 v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
                 dense
-                label="Resolved action environment vars (press Enter after typing each key=value pair)"
+                :label="
+                  $gettext(
+                    'Resolved action environment vars (press Enter after typing each key=value pair)',
+                  )
+                "
                 filled
                 v-model="template.resolved_action_env_vars"
                 use-input
@@ -332,23 +369,27 @@
               <q-input
                 v-if="template.resolved_action_type !== 'rest'"
                 class="q-mb-sm"
-                label="Resolved script timeout (seconds)"
+                :label="$gettext('Resolved script timeout (seconds)')"
                 outlined
                 type="number"
                 v-model.number="template.resolved_action_timeout"
                 dense
                 :rules="[
-                  (val) => !!val || 'Resolved script timeout is required',
+                  (val) =>
+                    !!val || $gettext('Resolved script timeout is required'),
                 ]"
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Run actions only on
+                >{{ $gettext("Run actions only on") }}
                 <q-tooltip>
-                  The selected action will only run on the following types of
-                  alerts
+                  {{
+                    $gettext(
+                      "The selected action will only run on the following types of alerts",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
@@ -356,21 +397,21 @@
             <q-card-section>
               <q-toggle
                 v-model="template.agent_script_actions"
-                label="Agents"
+                :label="$pgettext('Alert template configuration', 'Agents')"
                 color="green"
                 left-label
               />
 
               <q-toggle
                 v-model="template.check_script_actions"
-                label="Checks"
+                :label="$pgettext('Alert template configuration', 'Checks')"
                 color="green"
                 left-label
               />
 
               <q-toggle
                 v-model="template.task_script_actions"
-                label="Tasks"
+                :label="$gettext('Tasks')"
                 color="green"
                 left-label
               />
@@ -378,38 +419,42 @@
           </q-card>
         </q-step>
 
-        <q-step :name="3" title="Agent Overdue Settings" icon="devices">
+        <q-step
+          :name="3"
+          :title="$gettext('Agent Overdue Settings')"
+          icon="devices"
+        >
           <q-card flat>
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Failure Settings
+                >{{ $gettext("Alert Failure Settings") }}
                 <q-tooltip>
-                  Select what notifications should be sent when an agent is
-                  overdue. Enabled will override the agent notification settings
-                  and always notify. Not configured will use what notification
-                  settings are configured on the agent. Disabled will override
-                  the agent notification settings and never notify.
+                  {{
+                    $gettext(
+                      "Select what notifications should be sent when an agent is overdue. Enabled will override the agent notification settings and always notify. Not configured will use what notification settings are configured on the agent. Disabled will override the agent notification settings and never notify.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
             <q-card-section>
               <q-toggle
                 v-model="template.agent_always_email"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.agent_always_text"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.agent_always_alert"
-                label="Dashboard"
+                :label="$gettext('Dashboard')"
                 color="green"
                 left-label
                 toggle-indeterminate
@@ -417,36 +462,40 @@
             </q-card-section>
             <q-card-section>
               <q-input
-                label="Alert again if not resolved after (days)"
+                :label="$gettext('Alert again if not resolved after (days)')"
                 outlined
                 type="number"
                 v-model.number="template.agent_periodic_alert_days"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) =>
+                    val >= 0 || $gettext('Periodic days must be 0 or greater'),
                 ]"
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Resolved Settings
+                >{{ $gettext("Alert Resolved Settings") }}
                 <q-tooltip>
-                  Select what notifications should be sent when an overdue agent
-                  is back online.
+                  {{
+                    $gettext(
+                      "Select what notifications should be sent when an overdue agent is back online.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
             <q-card-section>
               <q-toggle
                 v-model="template.agent_email_on_resolved"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
               />
               <q-toggle
                 v-model="template.agent_text_on_resolved"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
               />
@@ -454,17 +503,21 @@
           </q-card>
         </q-step>
 
-        <q-step :name="4" title="Check Settings" icon="fas fa-check-double">
+        <q-step
+          :name="4"
+          :title="$gettext('Check Settings')"
+          icon="fas fa-check-double"
+        >
           <q-card flat>
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Failure Settings
+                >{{ $gettext("Alert Failure Settings") }}
                 <q-tooltip>
-                  Select what notifications are sent when a check fails. Enabled
-                  will override the check notification settings and always
-                  notify. Not configured will use the notification settings
-                  configured on the check. Disabled will override the check
-                  notification settings and never notify.
+                  {{
+                    $gettext(
+                      "Select what notifications are sent when a check fails. Enabled will override the check notification settings and always notify. Not configured will use the notification settings configured on the check. Disabled will override the check notification settings and never notify.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
@@ -472,21 +525,21 @@
             <q-card-section>
               <q-toggle
                 v-model="template.check_always_email"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.check_always_text"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.check_always_alert"
-                label="Dashboard"
+                :label="$gettext('Dashboard')"
                 color="green"
                 left-label
                 toggle-indeterminate
@@ -495,8 +548,12 @@
 
             <q-card-section>
               <q-select
-                label="Only email on alert severity"
-                hint="Defaults to 'error' and 'warning'"
+                :label="$gettext('Only email on alert severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027 and \u0027warning\u0027',
+                  )
+                "
                 v-model="template.check_email_alert_severity"
                 outlined
                 dense
@@ -511,8 +568,12 @@
 
             <q-card-section>
               <q-select
-                label="Only text on alert severity"
-                hint="Defaults to 'error' and 'warning'"
+                :label="$gettext('Only text on alert severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027 and \u0027warning\u0027',
+                  )
+                "
                 v-model="template.check_text_alert_severity"
                 outlined
                 dense
@@ -527,8 +588,12 @@
 
             <q-card-section>
               <q-select
-                label="Only show dashboard alert on severity"
-                hint="Defaults to 'error', 'warning', and 'info'"
+                :label="$gettext('Only show dashboard alert on severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027, \u0027warning\u0027, and \u0027info\u0027',
+                  )
+                "
                 v-model="template.check_dashboard_alert_severity"
                 outlined
                 dense
@@ -543,36 +608,40 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved after (days)"
+                :label="$gettext('Alert again if not resolved after (days)')"
                 outlined
                 type="number"
                 v-model.number="template.check_periodic_alert_days"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) =>
+                    val >= 0 || $gettext('Periodic days must be 0 or greater'),
                 ]"
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Resolved Settings
+                >{{ $gettext("Alert Resolved Settings") }}
                 <q-tooltip>
-                  Select what notifications are sent when a failed check is
-                  resolved.
+                  {{
+                    $gettext(
+                      "Select what notifications are sent when a failed check is resolved.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
             <q-card-section>
               <q-toggle
                 v-model="template.check_email_on_resolved"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
               />
               <q-toggle
                 v-model="template.check_text_on_resolved"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
               />
@@ -580,17 +649,21 @@
           </q-card>
         </q-step>
 
-        <q-step :name="5" title="Automated Task Settings" icon="fas fa-tasks">
+        <q-step
+          :name="5"
+          :title="$gettext('Automated Task Settings')"
+          icon="fas fa-tasks"
+        >
           <q-card flat>
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Failure Settings
+                >{{ $gettext("Alert Failure Settings") }}
                 <q-tooltip>
-                  Select what notifications are sent when an automated task
-                  fails. Enabled will override the task notification settings
-                  and always notify. Not configured will use the notification
-                  settings configured on the task. Disabled will override the
-                  task notification settings and never notify.
+                  {{
+                    $gettext(
+                      "Select what notifications are sent when an automated task fails. Enabled will override the task notification settings and always notify. Not configured will use the notification settings configured on the task. Disabled will override the task notification settings and never notify.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
@@ -598,21 +671,21 @@
             <q-card-section>
               <q-toggle
                 v-model="template.task_always_email"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.task_always_text"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
                 toggle-indeterminate
               />
               <q-toggle
                 v-model="template.task_always_alert"
-                label="Dashboard"
+                :label="$gettext('Dashboard')"
                 color="green"
                 left-label
                 toggle-indeterminate
@@ -621,8 +694,12 @@
 
             <q-card-section>
               <q-select
-                label="Only email on alert severity"
-                hint="Defaults to 'error' and 'warning'"
+                :label="$gettext('Only email on alert severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027 and \u0027warning\u0027',
+                  )
+                "
                 v-model="template.task_email_alert_severity"
                 outlined
                 dense
@@ -637,8 +714,12 @@
 
             <q-card-section>
               <q-select
-                label="Only text on alert severity"
-                hint="Defaults to 'error' and 'warning'"
+                :label="$gettext('Only text on alert severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027 and \u0027warning\u0027',
+                  )
+                "
                 v-model="template.task_text_alert_severity"
                 outlined
                 dense
@@ -653,8 +734,12 @@
 
             <q-card-section>
               <q-select
-                label="Only show dashboard alert on severity"
-                hint="Defaults to 'error', 'warning', and 'info'"
+                :label="$gettext('Only show dashboard alert on severity')"
+                :hint="
+                  $gettext(
+                    'Defaults to \u0027error\u0027, \u0027warning\u0027, and \u0027info\u0027',
+                  )
+                "
                 v-model="template.task_dashboard_alert_severity"
                 outlined
                 dense
@@ -669,36 +754,40 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved (days)"
+                :label="$gettext('Alert again if not resolved (days)')"
                 outlined
                 type="number"
                 v-model.number="template.task_periodic_alert_days"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) =>
+                    val >= 0 || $gettext('Periodic days must be 0 or greater'),
                 ]"
               />
             </q-card-section>
 
             <div class="q-pl-md text-subtitle1">
               <span style="text-decoration: underline; cursor: help"
-                >Alert Resolved Settings
+                >{{ $gettext("Alert Resolved Settings") }}
                 <q-tooltip>
-                  Select what notifications are sent when a failed task is
-                  resolved.
+                  {{
+                    $gettext(
+                      "Select what notifications are sent when a failed task is resolved.",
+                    )
+                  }}
                 </q-tooltip>
               </span>
             </div>
             <q-card-section>
               <q-toggle
                 v-model="template.task_email_on_resolved"
-                label="Email"
+                :label="$pgettext('Email notification channel', 'Email')"
                 color="green"
                 left-label
               />
               <q-toggle
                 v-model="template.task_text_on_resolved"
-                label="Text"
+                :label="$pgettext('SMS notification channel', 'Text')"
                 color="green"
                 left-label
               />
@@ -712,20 +801,20 @@
               flat
               color="primary"
               @click="stepper?.previous()"
-              label="Back"
+              :label="$gettext('Back')"
               class="q-mr-xs"
             />
             <q-btn
               v-if="step < 5"
               @click="stepper?.next()"
               color="primary"
-              label="Next"
+              :label="$gettext('Next')"
             />
             <q-space />
             <q-btn
               @click="onSubmit"
               color="primary"
-              label="Submit"
+              :label="$gettext('Submit')"
               :loading="loading"
             />
           </q-stepper-navigation>
@@ -736,6 +825,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { computed, ref, reactive, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useQuasar, useDialogPluginComponent, type QStepper } from "quasar";
@@ -905,27 +995,36 @@ if (props.alertTemplate) {
   );
 }
 
-const severityOptions = [
-  { label: "Error", value: "error" },
-  { label: "Warning", value: "warning" },
-  { label: "Informational", value: "info" },
-];
+const severityOptions = computed(() => [
+  {
+    label: gettext.$pgettext("Alert template configuration", "Error"),
+    value: "error",
+  },
+  {
+    label: gettext.$pgettext("Alert template configuration", "Warning"),
+    value: "warning",
+  },
+  {
+    label: gettext.$pgettext("Alert template configuration", "Informational"),
+    value: "info",
+  },
+]);
 
-const staticActionTypeOptions = [
-  { label: "Send a Web Hook", value: "rest" },
-  { label: "Run script on Agent", value: "script" },
-  { label: "Run script on TRMM Server", value: "server" },
-];
+const staticActionTypeOptions = computed(() => [
+  { label: gettext.$gettext("Send a Web Hook"), value: "rest" },
+  { label: gettext.$gettext("Run script on Agent"), value: "script" },
+  { label: gettext.$gettext("Run script on TRMM Server"), value: "server" },
+]);
 
 const actionTypeOptions = computed(() => {
   // don't show for hosted at all
   if (hosted.value) {
-    return staticActionTypeOptions.filter(
+    return staticActionTypeOptions.value.filter(
       (option) => option.value !== "server",
     );
   }
   // disable the server script radio button if feature is disabled globally
-  const modifiedOptions = staticActionTypeOptions.map((option) => {
+  const modifiedOptions = staticActionTypeOptions.value.map((option) => {
     if (!server_scripts_enabled.value && option.value === "server") {
       return { ...option, disable: true };
     }
@@ -938,14 +1037,14 @@ const actionTypeOptions = computed(() => {
 const stepper = ref<QStepper | null>(null);
 function toggleAddEmail() {
   $q.dialog({
-    title: "Add email",
     prompt: {
       model: "",
       isValid: (val) => isValidEmail(val),
       type: "email",
     },
     cancel: true,
-    ok: { label: "Add", color: "primary" },
+    title: gettext.$gettext("Add email"),
+    ok: { label: gettext.$gettext("Add"), color: "primary" },
     persistent: false,
   }).onOk((data) => {
     template.email_recipients.push(data);
@@ -954,15 +1053,17 @@ function toggleAddEmail() {
 
 function toggleAddSMSNumber() {
   $q.dialog({
-    title: "Add number",
-    message:
+    title: gettext.$gettext("Add number"),
+    message: gettext.$pgettext(
+      "Alert template configuration",
       "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>",
+    ),
     prompt: {
       model: "",
     },
     html: true,
     cancel: true,
-    ok: { label: "Add", color: "primary" },
+    ok: { label: gettext.$gettext("Add"), color: "primary" },
     persistent: false,
   }).onOk((data: string) => {
     template.text_recipients.push(data);
@@ -984,7 +1085,7 @@ const loading = ref(false);
 async function onSubmit() {
   // TODO rework this ghetto form validation
   if (!template.name) {
-    notifyError("Name needs to be set");
+    notifyError(gettext.$gettext("Name needs to be set"));
     return;
   }
 
@@ -993,7 +1094,7 @@ async function onSubmit() {
   if (props.alertTemplate) {
     try {
       await saveAlertTemplate(template.id, template);
-      notifySuccess("Alert Template edited!");
+      notifySuccess(gettext.$gettext("Alert Template edited!"));
       onDialogOK();
     } catch {
     } finally {
@@ -1002,7 +1103,7 @@ async function onSubmit() {
   } else {
     try {
       await addAlertTemplate(template);
-      notifySuccess("Alert Template edited!");
+      notifySuccess(gettext.$gettext("Alert Template created!"));
       onDialogOK();
     } catch {
     } finally {

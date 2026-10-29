@@ -8,7 +8,9 @@
       class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
     >
       <div class="row items-center">
-        <div class="text-subtitle1 text-body2 q-mr-md">Shell:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md">
+          {{ $pgettext("Background terminal", "Shell") }}:
+        </div>
         <q-option-group
           dense
           v-model="selectedShell"
@@ -21,7 +23,7 @@
         />
 
         <q-btn
-          label="Edit Path"
+          :label="$gettext('Edit Path')"
           color="primary"
           @click="handleCustomEdit"
           class="q-px-sm q-ml-lg q-pb-0 text-caption text-capitalize"
@@ -31,17 +33,19 @@
           flat
           dense
           icon="content_copy"
-          label="Copy"
+          :label="$gettext('Copy')"
           color="white"
           @click="copyTerminalOutput"
           class="q-ml-sm text-caption text-capitalize"
         >
-          <q-tooltip>Copy terminal output</q-tooltip>
+          <q-tooltip>{{ $gettext("Copy terminal output") }}</q-tooltip>
         </q-btn>
       </div>
 
       <div v-if="isWindows" class="row items-center q-ml-lg">
-        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">Run as:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">
+          {{ $gettext("Run as") }}:
+        </div>
 
         <q-option-group
           dense
@@ -63,17 +67,19 @@
           max-width="320px"
           content-class="terminal-shortcuts-tooltip"
         >
-          <div class="text-weight-medium q-mb-xs">Terminal shortcuts</div>
+          <div class="text-weight-medium q-mb-xs">
+            {{ $gettext("Terminal shortcuts") }}
+          </div>
 
           <div class="shortcut-row">
-            <span>Copy selected text</span>
+            <span>{{ $gettext("Copy selected text") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>Insert</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Paste</span>
+            <span>{{ $gettext("Paste") }}</span>
             <span class="shortcut-keys">
               <kbd>Shift</kbd><span>+</span><kbd>Insert</kbd>
             </span>
@@ -82,28 +88,28 @@
           <q-separator dark class="q-my-xs" />
 
           <div class="shortcut-row">
-            <span>Interrupt command</span>
+            <span>{{ $gettext("Interrupt command") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>C</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Previous command</span>
+            <span>{{ $gettext("Previous command") }}</span>
             <span class="shortcut-keys">
               <kbd>↑</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Next command</span>
+            <span>{{ $gettext("Next command") }}</span>
             <span class="shortcut-keys">
               <kbd>↓</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Move by word</span>
+            <span>{{ $gettext("Move by word") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>←</kbd>
               <span>/</span>
@@ -123,21 +129,25 @@
     <q-card style="min-width: 400px">
       <q-form @submit.prevent="startCustomShell">
         <q-card-section class="text-h6">
-          Enter Custom Shell Path
+          {{ $gettext("Enter Custom Shell Path") }}
         </q-card-section>
 
         <q-card-section>
           <q-input
             v-model="customShellInput"
-            label="Shell Path"
+            :label="$gettext('Shell Path')"
             dense
             autofocus
           />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" @click="cancelCustomShell" />
-          <q-btn color="primary" label="Start" type="submit" />
+          <q-btn flat :label="$gettext('Cancel')" @click="cancelCustomShell" />
+          <q-btn
+            color="primary"
+            :label="$pgettext('Background terminal', 'Start')"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -145,6 +155,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import {
   ref,
   onMounted,
@@ -190,6 +201,7 @@ interface TerminalDefaults {
 }
 
 const $q = useQuasar();
+
 const props = defineProps<{
   agent_id: string;
   agentPlatform: string;
@@ -212,10 +224,13 @@ const lastSelectedShell = ref<string>("");
 const pendingCustomShell = ref<string | null>(null);
 const runAsUser = ref(false);
 const isWindows = computed(() => props.agentPlatform === "windows");
-const runAsOptions = [
-  { label: "System", value: false },
-  { label: "User", value: true },
-];
+const runAsOptions = computed(() => [
+  {
+    label: gettext.$pgettext("Background terminal", "System"),
+    value: false,
+  },
+  { label: gettext.$pgettext("Background terminal", "User"), value: true },
+]);
 
 const shellOptions = computed<ShellOption[]>(() => {
   const isWindows = props.agentPlatform === "windows";
@@ -226,13 +241,15 @@ const shellOptions = computed<ShellOption[]>(() => {
       ]
     : [{ label: "Bash", value: "bash" }];
 
-  let customLabel = "Custom Shell";
+  let customLabel = gettext.$gettext("Custom Shell");
   if (loading.value && pendingCustomShell.value) {
-    customLabel = "Custom (Shell loading...)";
+    customLabel = gettext.$gettext("Custom (Shell loading...)");
   } else if (invalidCustomShell.value) {
-    customLabel = "Custom (Shell path doesn't exist)";
+    customLabel = gettext.$gettext("Custom (Shell path doesn't exist)");
   } else if (customShellPath.value) {
-    customLabel = `Custom (${customShellPath.value})`;
+    customLabel = gettext.$gettext("Custom (%{path})", {
+      path: customShellPath.value,
+    });
   }
 
   base.push({
@@ -366,7 +383,10 @@ function initWS(shell: string) {
 
       $q.notify({
         type: "negative",
-        message: msg.error || msg.data?.error || "Failed to start terminal",
+        message:
+          msg.error ||
+          msg.data?.error ||
+          gettext.$gettext("Failed to start terminal"),
       });
 
       if (isCustomAttempt) {
@@ -381,7 +401,8 @@ function initWS(shell: string) {
       runAsUser.value = false;
       $q.notify({
         type: "warning",
-        message: msg.message || "Run as user was not available..",
+        message:
+          msg.message || gettext.$gettext("Run as user was not available.."),
       });
 
       return;
@@ -399,7 +420,7 @@ function initWS(shell: string) {
       started = false;
       startRequested = false;
       loading.value = false;
-      term.write("\r\n[Session Ended]\r\n");
+      term.write(`\r\n[${gettext.$gettext("Session Ended")}]\r\n`);
     }
   });
 
@@ -750,12 +771,12 @@ async function copyTerminalOutput() {
 
     $q.notify({
       type: "positive",
-      message: "Terminal output copied to clipboard.",
+      message: gettext.$gettext("Terminal output copied to clipboard."),
     });
   } catch {
     $q.notify({
       type: "negative",
-      message: "Failed to copy terminal output.",
+      message: gettext.$gettext("Failed to copy terminal output."),
     });
   }
 }

@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import { Notify } from "quasar";
 
 export function isValidThreshold(
@@ -9,7 +10,9 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold or Error Threshold need to be set",
+      message: gettext.$gettext(
+        "Warning Threshold or Error Threshold need to be set",
+      ),
     });
     return false;
   }
@@ -18,7 +21,9 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold must be less than Error Threshold",
+      message: gettext.$gettext(
+        "Warning Threshold must be less than Error Threshold",
+      ),
     });
     return false;
   }
@@ -27,7 +32,9 @@ export function isValidThreshold(
     Notify.create({
       type: "negative",
       timeout: 2000,
-      message: "Warning Threshold must be more than Error Threshold",
+      message: gettext.$gettext(
+        "Warning Threshold must be more than Error Threshold",
+      ),
     });
     return false;
   }

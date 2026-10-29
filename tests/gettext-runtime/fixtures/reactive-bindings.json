@@ -1,0 +1,67 @@
+{
+  "src/components/FileBrowser.vue": ["tableColumns"],
+  "src/components/accounts/PermissionsManager.vue": ["columns"],
+  "src/components/accounts/UserSessionsTable.vue": ["columns"],
+  "src/components/agents/AutomatedTasksTab.vue": ["columns"],
+  "src/components/agents/remotebg/RegistryValueModal.vue": ["numericError"],
+  "src/components/agents/remotebg/ServiceDetail.vue": ["startupOptions"],
+  "src/components/agents/remotebg/ServicesManager.vue": [
+    "columns",
+    "startupOptions"
+  ],
+  "src/components/core/APIKeysTable.vue": ["columns"],
+  "src/components/logs/AuditManager.vue": [
+    "columns",
+    "agentActionOptions",
+    "actionOptions",
+    "objectOptions",
+    "timeOptions",
+    "filterTypeOptions"
+  ],
+  "src/components/logs/DebugLog.vue": ["logTypeOptions", "columns"],
+  "src/components/logs/PendingActions.vue": ["columns"],
+  "src/components/modals/alerts/AlertTemplateForm.vue": [
+    "severityOptions",
+    "staticActionTypeOptions"
+  ],
+  "src/components/modals/coresettings/ResetPatchPolicy.vue": ["targetOptions"],
+  "src/components/modals/coresettings/TestURLAction.vue": ["runAgainstOptions"],
+  "src/components/modals/coresettings/URLActionsTable.vue": ["columns"],
+  "src/components/scripts/ScriptSnippets.vue": ["columns"],
+  "src/components/software/InstallSoftware.vue": ["columns"],
+  "src/components/tasks/AutomatedTaskForm.vue": [
+    "severityOptions",
+    "dayOfWeekOptions",
+    "dayOfMonthOptions",
+    "monthOptions",
+    "weekOptions",
+    "taskTypeOptions",
+    "taskInstancePolicyOptions",
+    "plat_options"
+  ],
+  "src/components/ui/TacticalDropdown.vue": ["filteredOptions"],
+  "src/components/ui/TacticalTable.vue": ["localColumns", "columnOptions"],
+  "src/core/dashboard/ui/TacticalTable.vue": ["columnSelectCol"],
+  "src/core/settings/components/ScheduleForm.vue": [
+    "taskTypeOptions",
+    "dayOfWeekOptions",
+    "dayOfMonthOptions",
+    "monthOptions",
+    "weekOptions"
+  ],
+  "src/core/settings/components/ScheduleTable.vue": [
+    "months",
+    "weekDays",
+    "columns"
+  ],
+  "src/ee/reporting/components/ReportChartSelect.vue": [
+    "chartOptions",
+    "outputOptions"
+  ],
+  "src/ee/reporting/components/ReportScheduleForm.vue": ["formatOptions"],
+  "src/ee/reporting/components/ReportTableMaker.vue": ["tableTypeOptions"],
+  "src/ee/reporting/components/ReportTemplateForm.vue": ["formatOptions"],
+  "src/ee/sso/components/SSOAccountsTable.vue": ["columns"],
+  "src/ee/sso/components/SSOProvidersTable.vue": ["columns"],
+  "src/views/RemoteBackground.vue": ["fileBrowserError"]
+}

@@ -1,0 +1,3062 @@
+[
+  {
+    "file": "src/components/agents/ChecksTab.vue",
+    "kind": "phrase",
+    "text": "packet loss",
+    "reason": "Ключ packet loss в исходном результате ping; используется для выбора полей протокола, не подпись интерфейса."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadProgress.vue",
+    "kind": "return",
+    "text": "active",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadProgress.vue",
+    "kind": "return",
+    "text": "none",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadProgress.vue",
+    "kind": "return",
+    "text": "paused",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadProgress.vue",
+    "kind": "return",
+    "text": "terminal",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadQueue.vue",
+    "kind": "return",
+    "text": "active",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadQueue.vue",
+    "kind": "return",
+    "text": "none",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadQueue.vue",
+    "kind": "return",
+    "text": "paused",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadQueue.vue",
+    "kind": "return",
+    "text": "queued",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserDownloadQueue.vue",
+    "kind": "return",
+    "text": "terminal",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserManager.vue",
+    "kind": "notification/error",
+    "text": "`\"${item.name}\": ${gettext.$gettext(\"Connection lost. Click Resume to continue.\")}`",
+    "reason": "Пользовательское имя файла объединяется с уже переведённым gettext/transferItemMessage сообщением; имя не переводится."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserManager.vue",
+    "kind": "notification/error",
+    "text": "`\"${item.name}\": ${transferItemMessage(current)}`",
+    "reason": "Пользовательское имя файла объединяется с уже переведённым gettext/transferItemMessage сообщением; имя не переводится."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserManager.vue",
+    "kind": "return",
+    "text": "idle",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserManager.vue",
+    "kind": "return",
+    "text": "initializing",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserPropertiesDialog.vue",
+    "kind": "return",
+    "text": "`${parent}\\\\`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserUploadQueue.vue",
+    "kind": "return",
+    "text": "active",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserUploadQueue.vue",
+    "kind": "return",
+    "text": "none",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserUploadQueue.vue",
+    "kind": "return",
+    "text": "paused",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserUploadQueue.vue",
+    "kind": "return",
+    "text": "queued",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/FileBrowserUploadQueue.vue",
+    "kind": "return",
+    "text": "terminal",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/ProcessManager.vue",
+    "kind": "template-text",
+    "text": "GB",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/RegistryManager.vue",
+    "kind": "return",
+    "text": "`${parentId}__load_more__`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "field:label",
+    "text": "Bash",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "field:label",
+    "text": "CMD",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "field:label",
+    "text": "PowerShell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "phrase",
+    "text": "'Cascadia Mono', Consolas, 'Courier New', monospace",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "phrase",
+    "text": "`\\r\\n[${gettext.$gettext(\"Session Ended\")}]\\r\\n`",
+    "reason": "Терминальный маркер со своей gettext-подписью; CRLF и квадратные скобки сохраняют формат вывода."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "phrase",
+    "text": "Menlo, Monaco, 'SF Mono', 'Courier New', monospace",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "return",
+    "text": "cmd",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "return",
+    "text": "powershell",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "return",
+    "text": "pwsh7",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "template-text",
+    "text": "C",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "template-text",
+    "text": "Ctrl",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "template-text",
+    "text": "Insert",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/remotebg/TerminalManager.vue",
+    "kind": "template-text",
+    "text": "Shift",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/agents/SummaryTab.vue",
+    "kind": "return",
+    "text": "`${summary.value.cpu_model.length}x ${summary.value.cpu_model[0]}`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/AgentTable.vue",
+    "kind": "phrase",
+    "text": "fas fa-check-circle",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/components/AgentTable.vue",
+    "kind": "return",
+    "text": "agent-normal",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/AgentTable.vue",
+    "kind": "return",
+    "text": "agent-offline",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/AgentTable.vue",
+    "kind": "return",
+    "text": "agent-overdue",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/automation/PolicyChecksTab.vue",
+    "kind": "phrase",
+    "text": "fas fa-check-circle",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/components/graphs/CheckGraph.vue",
+    "kind": "phrase",
+    "text": "`${this.$gettext(\"Err Out\")}: ${this.results[dataPointIndex].results.errout}<br/>`",
+    "reason": "HTML tooltip с исходным output и уже переведёнными подписями либо формат даты. Терминальный вывод остаётся исходным."
+  },
+  {
+    "file": "src/components/graphs/CheckGraph.vue",
+    "kind": "phrase",
+    "text": "`${this.$gettext(\"Execution Time\")}: ${this.results[dataPointIndex].results.execution_time}<br/>`",
+    "reason": "HTML tooltip с исходным output и уже переведёнными подписями либо формат даты. Терминальный вывод остаётся исходным."
+  },
+  {
+    "file": "src/components/graphs/CheckGraph.vue",
+    "kind": "phrase",
+    "text": "`${this.$gettext(\"Return Code\")}: ${this.results[dataPointIndex].results.retcode}<br/>`",
+    "reason": "HTML tooltip с исходным output и уже переведёнными подписями либо формат даты. Терминальный вывод остаётся исходным."
+  },
+  {
+    "file": "src/components/graphs/CheckGraph.vue",
+    "kind": "phrase",
+    "text": "`${this.$gettext(\"Std Out\")}: ${this.results[dataPointIndex].results.stdout}<br/>`",
+    "reason": "HTML tooltip с исходным output и уже переведёнными подписями либо формат даты. Терминальный вывод остаётся исходным."
+  },
+  {
+    "file": "src/components/graphs/CheckGraph.vue",
+    "kind": "phrase",
+    "text": "dd MMM h:mm:sst",
+    "reason": "HTML tooltip с исходным output и уже переведёнными подписями либо формат даты. Терминальный вывод остаётся исходным."
+  },
+  {
+    "file": "src/components/logs/AuditManager.vue",
+    "kind": "return",
+    "text": "primary",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-cert \"C:\\\\<some folder or path>\\\\ca.pem\"",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-desc \"Desired custom description on agent\"",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-local-mesh \"C:\\\\<some folder or path>\\\\meshagent.exe\"",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-log debug",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-meshdir \"C:\\Program Files\\Your Company Name\\Mesh Agent\"",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-nomesh",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-proxy \"http://proxyserver:port\"",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/AgentDownload.vue",
+    "kind": "template-text",
+    "text": "-silent",
+    "reason": "Пример CLI-аргумента, пути или команды установки агента; должен оставаться копируемым исходным синтаксисом."
+  },
+  {
+    "file": "src/components/modals/agents/BulkAction.vue",
+    "kind": "attribute:placeholder",
+    "text": "/usr/bin/python3",
+    "reason": "Путь к интерпретатору/программе либо URL поддержки; сохраняется исходное значение."
+  },
+  {
+    "file": "src/components/modals/agents/EditAgent.vue",
+    "kind": "field:label",
+    "text": "Bash",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/agents/EditAgent.vue",
+    "kind": "field:label",
+    "text": "CMD",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/agents/EditAgent.vue",
+    "kind": "field:label",
+    "text": "PowerShell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/agents/EditAgent.vue",
+    "kind": "phrase",
+    "text": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "reason": "Путь к интерпретатору/программе либо URL поддержки; сохраняется исходное значение."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "always",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "approve",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "dailyWeekly",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "ignore",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "inherit",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "manual",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "monthly",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "never",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/PatchPolicyForm.vue",
+    "kind": "field:label",
+    "text": "whenRequired",
+    "reason": "Идентификатор конечного набора options; перед показом label преобразуется в gettext-подпись фабрикой вариантов политики. Значение enum не переводится."
+  },
+  {
+    "file": "src/components/modals/agents/SendCommand.vue",
+    "kind": "attribute:placeholder",
+    "text": "/usr/bin/python3",
+    "reason": "Путь к интерпретатору/программе либо URL поддержки; сохраняется исходное значение."
+  },
+  {
+    "file": "src/components/modals/agents/UpdateAgents.vue",
+    "kind": "field:label",
+    "text": "`${agent.hostname} (${agent.client} > ${agent.site})`",
+    "reason": "Пользовательские hostname/client/site, собранные в label без собственных слов."
+  },
+  {
+    "file": "src/components/modals/alerts/AlertsOverview.vue",
+    "kind": "return",
+    "text": "info",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/modals/alerts/AlertsOverview.vue",
+    "kind": "return",
+    "text": "orange",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/modals/alerts/AlertsOverview.vue",
+    "kind": "return",
+    "text": "red",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/modals/coresettings/EditCoreSettings.vue",
+    "kind": "field:label",
+    "text": "Bash",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/coresettings/EditCoreSettings.vue",
+    "kind": "field:label",
+    "text": "CMD",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/coresettings/EditCoreSettings.vue",
+    "kind": "field:label",
+    "text": "PowerShell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/components/modals/coresettings/URLActionsForm.vue",
+    "kind": "field:label",
+    "text": "DELETE",
+    "reason": "Исходный HTTP method; подпись совпадает с техническим значением API."
+  },
+  {
+    "file": "src/components/modals/coresettings/URLActionsForm.vue",
+    "kind": "field:label",
+    "text": "GET",
+    "reason": "Исходный HTTP method; подпись совпадает с техническим значением API."
+  },
+  {
+    "file": "src/components/modals/coresettings/URLActionsForm.vue",
+    "kind": "field:label",
+    "text": "PATCH",
+    "reason": "Исходный HTTP method; подпись совпадает с техническим значением API."
+  },
+  {
+    "file": "src/components/modals/coresettings/URLActionsForm.vue",
+    "kind": "field:label",
+    "text": "POST",
+    "reason": "Исходный HTTP method; подпись совпадает с техническим значением API."
+  },
+  {
+    "file": "src/components/modals/coresettings/URLActionsForm.vue",
+    "kind": "field:label",
+    "text": "PUT",
+    "reason": "Исходный HTTP method; подпись совпадает с техническим значением API."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "phrase",
+    "text": "`${lang.value} code that `",
+    "reason": "Shebang/исходный код либо редактируемый начальный prompt для генерации пользовательского скрипта. Это содержимое запроса/редактора, не подпись оболочки."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "return",
+    "text": "bat",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "return",
+    "text": "powershell",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "return",
+    "text": "python",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "return",
+    "text": "shell",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "return",
+    "text": "typescript",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "template-text",
+    "text": "#!/bin/bash",
+    "reason": "Shebang/исходный код либо редактируемый начальный prompt для генерации пользовательского скрипта. Это содержимое запроса/редактора, не подпись оболочки."
+  },
+  {
+    "file": "src/components/scripts/ScriptFormModal.vue",
+    "kind": "template-text",
+    "text": "#!/usr/bin/python3",
+    "reason": "Shebang/исходный код либо редактируемый начальный prompt для генерации пользовательского скрипта. Это содержимое запроса/редактора, не подпись оболочки."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "phrase",
+    "text": "`${lang.value} code that `",
+    "reason": "Shebang/исходный код либо редактируемый начальный prompt для генерации пользовательского скрипта. Это содержимое запроса/редактора, не подпись оболочки."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "return",
+    "text": "bat",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "return",
+    "text": "powershell",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "return",
+    "text": "python",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "return",
+    "text": "shell",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/scripts/ScriptSnippetFormModal.vue",
+    "kind": "return",
+    "text": "typescript",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/components/tasks/AutomatedTaskForm.vue",
+    "kind": "field:label",
+    "text": "`${i}`",
+    "reason": "Числовая подпись варианта расписания; не переводимое сообщение."
+  },
+  {
+    "file": "src/components/ui/CustomField.vue",
+    "kind": "phrase",
+    "text": "q-mb-xl q-mt-xl",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/composables/agents.js",
+    "kind": "field:label",
+    "text": "Linux",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/agents.js",
+    "kind": "field:label",
+    "text": "macOS",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/agents.js",
+    "kind": "field:label",
+    "text": "Windows",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Acronis Managed Machine Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "ActiveX Installer (AxInstSV)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Agent Activation Runtime_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "AllJoyn Router Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "App Readiness",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Application Identity",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Application Information",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Application Layer Gateway Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Application Management",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "AppX Deployment Service (AppXSVC)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "AssignedAccessManager Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Auto Time Zone Updater",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "AVCTP service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Background Intelligent Transfer Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Background Tasks Infrastructure Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Base Filtering Engine",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "BitLocker Drive Encryption Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Block Level Backup Engine Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Bluetooth Audio Gateway Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Bluetooth Support Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Bluetooth User Support Service_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Bonjour Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "BranchCache",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Capability Access Manager Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "CaptureService_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Cellular Time",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Certificate Propagation",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Client License Service (ClipSVC)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Clipboard User Service_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "CNG Key Isolation",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "COM+ Event System",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "COM+ System Application",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Connected Devices Platform Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Connected Devices Platform User Service_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Connected User Experiences and Telemetry",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "ConsentUX_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Contact Data_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "CoreMessaging",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Credential Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "CredentialEnrollmentManagerUserSvc_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Cryptographic Services",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Data Sharing Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Data Usage",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DCOM Server Process Launcher",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Delivery Optimization",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Device Association Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Device Install Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Device Management Enrollment Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Device Management Wireless Application Protocol (WAP) Push message Routing Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Device Setup Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DeviceAssociationBroker_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DevicePicker_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DevicesFlow_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DevQuery Background Discovery Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DHCP Client",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Diagnostic Execution Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Diagnostic Policy Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Diagnostic Service Host",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Diagnostic System Host",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Display Enhancement Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Display Policy Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Distributed Link Tracking Client",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Distributed Transaction Coordinator",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "DNS Client",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Downloaded Maps Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Embedded Mode",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Encrypting File System (EFS)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Enterprise App Management Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Extensible Authentication Protocol",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Fax",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "File History Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Function Discovery Provider Host",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Function Discovery Resource Publication",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "GameDVR and Broadcast User Service_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Geolocation Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Google Chrome Elevation Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "GraphicsPerfSvc",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Group Policy Client",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Host Network Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Human Interface Device Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "HV Host Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Data Exchange Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Guest Service Interface",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Guest Shutdown Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Heartbeat Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Host Compute Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V PowerShell Direct Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Remote Desktop Virtualization Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Time Synchronization Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Hyper-V Volume Shadow Copy Requestor",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "IKE and AuthIP IPsec Keying Modules",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Intel Bluetooth Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Intel(R) Content Protection HDCP Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Intel(R) Content Protection HECI Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Internet Connection Sharing (ICS)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "IP Helper",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "IP Translation Configuration Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "IPsec Policy Agent",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "KtmRm for Distributed Transaction Coordinator",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Language Experience Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Link-Layer Topology Discovery Mapper",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Local Profile Assistant Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Local Session Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "LxssManager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "LxssManagerUser_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Mesh Agent background service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "MessagingService_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft (R) Diagnostics Hub Standard Collector Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Account Sign-in Assistant",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft App-V Client",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft iSCSI Initiator Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Passport Container",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Passport",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Software Shadow Copy Provider",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Storage Spaces SMP",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Store Install Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Microsoft Windows SMS Router Service.",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Natural Authentication",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Net Driver HPZ12",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Net.Tcp Port Sharing Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Netlogon",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Connected Devices Auto-Setup",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Connection Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Connections",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Connectivity Assistant",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network List Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Location Awareness",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Setup Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Store Interface Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Network Virtualization Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Office 64 Source Engine",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Offline Files",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "OpenSSH Authentication Agent",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "OpenSSH SSH Server",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "OpenVPN Interactive Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "OpenVPN Legacy Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "OpenVPNService",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Optimize drives",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Parental Controls",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Payments and NFC/SE Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Peer Name Resolution Protocol",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Peer Networking Grouping",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Peer Networking Identity Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Performance Counter DLL Host",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Performance Logs & Alerts",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Phone Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Plug and Play",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Pml Driver HPZ12",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "PNRP Machine Name Publication Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Portable Device Enumerator Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Power",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Print Spooler",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Printer Extensions and Notifications",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "PrintWorkflow_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Problem Reports and Solutions Control Panel Support",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Program Compatibility Assistant Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Quality Windows Audio Video Experience",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Radio Management Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Recommended Troubleshooting Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Access Auto Connection Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Access Connection Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Configuration",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Connection Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Gateway",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Licensing",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Management",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Services UserMode Port Redirector",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Desktop Services",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Procedure Call (RPC) Locator",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Procedure Call (RPC)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Remote Registry",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Retail Demo Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Routing and Remote Access",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "RPC Endpoint Mapper",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "salt-minion",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Secondary Logon",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Secure Socket Tunneling Protocol Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Security Accounts Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Security Center",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Sensor Data Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Sensor Monitoring Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Sensor Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Server",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Shared PC Account Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Shell Hardware Detection",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Smart Card Device Enumeration Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Smart Card Removal Policy",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Smart Card",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "SNMP Trap",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Software Protection",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Spatial Data Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Spot Verifier",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "SSDP Discovery",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "State Repository Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Still Image Acquisition Events",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Storage Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Storage Tiers Management",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Sync Host_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "SynTPEnh Caller Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "SysMain",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "System Event Notification Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "System Events Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "System Guard Runtime Monitor Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Tactical RMM Agent",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Task Scheduler",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "TCP/IP NetBIOS Helper",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Telephony",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Themes",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Time Broker",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Touch Keyboard and Handwriting Panel Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Update Orchestrator Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "UPnP Device Host",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "User Data Access_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "User Data Storage_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "User Experience Virtualization Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "User Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "User Profile Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Virtual Disk",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Volume Shadow Copy",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Volumetric Audio Compositor Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WalletService",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WarpJITSvc",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Web Account Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WebClient",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WebEx Service Host for Support Center",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Wi-Fi Direct Services Connection Manager Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Audio Endpoint Builder",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Audio",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Backup",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Biometric Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Camera Frame Server",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Connect Now - Config Registrar",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Connection Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Defender Advanced Threat Protection Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Defender Antivirus Network Inspection Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Defender Antivirus Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Defender Firewall",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Encryption Provider Host Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Error Reporting Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Event Collector",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Event Log",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Font Cache Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Image Acquisition (WIA)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Insider Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Installer",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows License Manager Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Management Instrumentation",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Management Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Media Player Network Sharing Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Mobile Hotspot Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Modules Installer",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Perception Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Perception Simulation Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Push Notifications System Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Push Notifications User Service_35b28a",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows PushToInstall Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Remote Management (WS-Management)",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Search",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Security Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Time",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Update Medic Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Windows Update",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WinHTTP Web Proxy Auto-Discovery Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Wired AutoConfig",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WLAN AutoConfig",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WMI Performance Adapter",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Work Folders",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Workstation",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "WWAN AutoConfig",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Xbox Accessory Management Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Xbox Live Auth Manager",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Xbox Live Game Save",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "Xbox Live Networking Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "field:label",
+    "text": "YMC",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "phrase",
+    "text": "Bonjour Service",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "phrase",
+    "text": "Mesh Agent",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "phrase",
+    "text": "Net Driver HPZ12",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/checks.js",
+    "kind": "phrase",
+    "text": "Pml Driver HPZ12",
+    "reason": "Каноническое отображаемое имя встроенной службы Windows из defaultServiceOptions, связанное с системным service name. Не собственный статус или сообщение UI."
+  },
+  {
+    "file": "src/composables/filebrowser.ts",
+    "kind": "return",
+    "text": "`${driveOnly[1].toLowerCase()}\\\\`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Batch",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Deno",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Nushell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Powershell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Python",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/composables/scripts.ts",
+    "kind": "field:label",
+    "text": "Shell",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/core/settings/components/ScheduleForm.vue",
+    "kind": "field:label",
+    "text": "`${i}`",
+    "reason": "Числовая подпись варианта расписания; не переводимое сообщение."
+  },
+  {
+    "file": "src/core/settings/components/ScheduleTable.vue",
+    "kind": "return",
+    "text": "`${parts[0]}:${parts[1]}`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/ee/reporting/components/EditorToolbar.vue",
+    "kind": "attribute:label",
+    "text": "{% for ",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/EditorToolbar.vue",
+    "kind": "attribute:label",
+    "text": "{% if",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/EditorToolbar.vue",
+    "kind": "phrase",
+    "text": "`<a href=\"${linkUrl.value}\">${linkText.value}</a>`",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/EditorToolbar.vue",
+    "kind": "phrase",
+    "text": "for item in items",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportAssetSelect.vue",
+    "kind": "return",
+    "text": "`![${text}](${url})`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportAssetSelect.vue",
+    "kind": "return",
+    "text": "`<img src=\"${url}\" alt=\"${text}\">`",
+    "reason": "Внутренний enum/цвет/тип синтаксиса либо сборка исходных ID, пользовательских путей и данных. Значение не заменяется локализованной подписью."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportHTMLTemplateForm.vue",
+    "kind": "phrase",
+    "text": "`Copy of ${props.cloneTemplate.name}`",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportHTMLTemplateForm.vue",
+    "kind": "phrase",
+    "text": "<html>\n    <head>\n        <style>\n            {{ css }}\n        </style>\n    </head>\n    <body>\n        {% block content %}{% endblock %}\n    </body>\n</html>\n",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportTableMaker.vue",
+    "kind": "phrase",
+    "text": "`\\t<th>${gettext.$gettext(\"Column Name\")}</th>`",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportTableMaker.vue",
+    "kind": "phrase",
+    "text": "`<table>\n  <thead>\n    <tr>\n${headers}\n    </tr>\n  </thead>\n  <tbody>\n    {% for item in ${source.value} %}\n    <tr>\n${cells}\n    </tr>\n    {% endfor %}\n  </tbody>\n</table>\n`",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/ReportTemplateForm.vue",
+    "kind": "phrase",
+    "text": "`Copy of ${props.cloneTemplate.name}`",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/VariablesSelector.vue",
+    "kind": "phrase",
+    "text": "{% for item in ",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/ee/reporting/components/VariablesSelector.vue",
+    "kind": "phrase",
+    "text": "0 Results",
+    "reason": "Шаблон Jinja/HTML/Markdown, пользовательский исходный документ, редактируемое имя копии либо сборка HTML с отдельно переведёнными подписями. Содержимое редактора и данных сохраняется."
+  },
+  {
+    "file": "src/gettext/locale.ts",
+    "kind": "field:label",
+    "text": "English",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/gettext/locale.ts",
+    "kind": "field:label",
+    "text": "Italiano",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/gettext/locale.ts",
+    "kind": "field:label",
+    "text": "Русский",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/layouts/MainLayout.vue",
+    "kind": "template-text",
+    "text": "https://support.amidaware.com",
+    "reason": "Путь к интерпретатору/программе либо URL поддержки; сохраняется исходное значение."
+  },
+  {
+    "file": "src/layouts/MainLayout.vue",
+    "kind": "template-text",
+    "text": "Tactical RMM",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/layouts/MainLayout.vue",
+    "kind": "template-text",
+    "text": "v",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "1 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "1 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "10 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "10 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "11 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "11 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "12 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "12 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "2 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "2 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "3 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "3 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "4 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "4 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "5 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "5 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "6 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "6 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "7 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "7 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "8 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "8 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "9 AM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/data.js",
+    "kind": "field:label",
+    "text": "9 PM",
+    "reason": "Числовая подпись часа в стандартном 12-часовом формате AM/PM; значение расписания остаётся исходным часом."
+  },
+  {
+    "file": "src/mixins/mixins.js",
+    "kind": "phrase",
+    "text": "h:mm A",
+    "reason": "Формат даты/времени Quasar, не текст сообщения."
+  },
+  {
+    "file": "src/mixins/mixins.js",
+    "kind": "phrase",
+    "text": "MM DD YYYY HH:mm",
+    "reason": "Формат даты/времени Quasar, не текст сообщения."
+  },
+  {
+    "file": "src/mixins/mixins.js",
+    "kind": "phrase",
+    "text": "MMM D, YYYY",
+    "reason": "Формат даты/времени Quasar, не текст сообщения."
+  },
+  {
+    "file": "src/services/fileTransfer/download.ts",
+    "kind": "phrase",
+    "text": "Download aborted",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/hash.ts",
+    "kind": "phrase",
+    "text": "`SHA-256 failed: ${msg.message}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/hash.ts",
+    "kind": "phrase",
+    "text": "`SHA-256 worker failed: ${event.message}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/hash.ts",
+    "kind": "phrase",
+    "text": "SHA-256 hasher already released",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/queueMessages.ts",
+    "kind": "return",
+    "text": "archive-preparing",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/queueMessages.ts",
+    "kind": "return",
+    "text": "needs-destination",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/queueMessages.ts",
+    "kind": "return",
+    "text": "needs-permission",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/queueMessages.ts",
+    "kind": "return",
+    "text": "non-resumable",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`${agentId}:${destinationPath}:${file.name}:${file.size}:${file.lastModified}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`${agentId}:${sourcePath}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`${agentId}:archive:${paths.slice().sort().join(\"\\u0000\")}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`bytes:${agentId}:${resumeScopeKey}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`bytes:session:${sessionId}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`dl:${archiveDownloadResumeKey(agentId, paths)}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`dl:${downloadResumeKey(agentId, sourcePath)}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "`dl:session:${sessionId}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/resume.ts",
+    "kind": "return",
+    "text": "prompt",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/sessionLimit.ts",
+    "kind": "phrase",
+    "text": "Transfer aborted",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferQueuePersist.ts",
+    "kind": "return",
+    "text": "`${agentId}:${sessionId}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferQueuePersist.ts",
+    "kind": "return",
+    "text": "archive_preparing",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferQueuePersist.ts",
+    "kind": "return",
+    "text": "needs_destination",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferQueuePersist.ts",
+    "kind": "return",
+    "text": "needs_permission",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferQueuePersist.ts",
+    "kind": "return",
+    "text": "ready",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferTabSync.ts",
+    "kind": "return",
+    "text": "`${agentId}:${opts.sessionId}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferTabSync.ts",
+    "kind": "return",
+    "text": "`${agentId}:local:${opts.queueId}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/transferTabSync.ts",
+    "kind": "return",
+    "text": "`tab-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/services/fileTransfer/upload.ts",
+    "kind": "phrase",
+    "text": "Upload aborted",
+    "reason": "Внутренний код состояния/разрешения, идентификатор storage/сессии либо исходная техническая диагностика AbortError/SHA worker. Отображаемые собственные статусы переводятся отдельным renderer по коду."
+  },
+  {
+    "file": "src/store/index.js",
+    "kind": "phrase",
+    "text": "Remove-Item -Recurse -Force C:\\Windows\\System32",
+    "reason": "Исходная строка команды в denylist, используется для сравнения с пользовательским вводом. Изменение перевода нарушит проверку команды."
+  },
+  {
+    "file": "src/store/index.js",
+    "kind": "phrase",
+    "text": "rmdir /S /Q C:\\Windows\\System32",
+    "reason": "Исходная строка команды в denylist, используется для сравнения с пользовательским вводом. Изменение перевода нарушит проверку команды."
+  },
+  {
+    "file": "src/utils/csv.js",
+    "kind": "return",
+    "text": "`\"${formatted}\"`",
+    "reason": "CSV-экранирование исходного значения; содержимое экспортируемых данных не переводится."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "phrase",
+    "text": "c:\\program files (x86)",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "phrase",
+    "text": "c:\\program files",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "phrase",
+    "text": "YYYY-MM-DD h:mm A",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "`${driveOnly[0]}\\\\`",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "`${driveRoot[1]}:\\\\`",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "`${trimmed.slice(0, head)}${ellipsis}${trimmed.slice(-tail)}`",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "download.zip",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "folders",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "grey-5",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "grey-7",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "negative",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "positive",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "primary",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "queue-full",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "size-limit",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "too-many",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "unsupported",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/filebrowser.ts",
+    "kind": "return",
+    "text": "warning",
+    "reason": "Исходный путь, дата-формат, имя ZIP, цвет, enum или сокращение исходного пути; собственные статусы и ошибки переводятся отдельными gettext-вызовами."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "field:label",
+    "text": "hostname",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "field:label",
+    "text": "name",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "field:label",
+    "text": "readable_desc",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "field:label",
+    "text": "username",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#87cefa\">(</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#87cefa\">)</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#c586b6\">{</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#c586b6\">}</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#d4d4d4\">&gt;</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#d4d4d4\">&lt;</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#ffd70a\">[</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "<span style=\"color:#ffd70a\">]</span>",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "h:mm A",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "MMM D, YYYY",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "phrase",
+    "text": "MMM-DD-YYYY HH:mm",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/utils/format.ts",
+    "kind": "return",
+    "text": "0B",
+    "reason": "Имя поля данных, формат даты/единицы измерения либо HTML/CSS подсветки синтаксиса; не собственная текстовая подпись."
+  },
+  {
+    "file": "src/views/LoginView.vue",
+    "kind": "template-text",
+    "text": "Tactical RMM",
+    "reason": "Собственное название технологии/продукта/языка, единица измерения или обозначение клавиши/версии; сохраняется как техническая подпись."
+  },
+  {
+    "file": "src/views/RemoteBackground.vue",
+    "kind": "field:title",
+    "text": "`${pageTitlePrefix.value} | ${gettext.$gettext(\"Remote Background\")}`",
+    "reason": "Заголовок окна объединяет исходное имя агента с уже переведённой gettext-подписью."
+  },
+  {
+    "file": "src/views/TakeControl.vue",
+    "kind": "field:title",
+    "text": "`${pageTitlePrefix.value} | ${gettext.$pgettext(\"Remote control\", \"Take Control\")}`",
+    "reason": "Заголовок окна объединяет исходное имя агента с уже переведённой gettext-подписью."
+  },
+  {
+    "file": "src/views/TakeControl.vue",
+    "kind": "phrase",
+    "text": "mesh agent",
+    "reason": "Идентификатор службы Mesh, передаваемый API; не подпись."
+  },
+  {
+    "file": "src/views/WebTerminal.vue",
+    "kind": "phrase",
+    "text": "Menlo, Monaco, 'SF Mono', 'Courier New', monospace",
+    "reason": "Имя шрифта либо CSS/icon class, не текстовая подпись."
+  },
+  {
+    "file": "src/views/WebVNC.vue",
+    "kind": "field:title",
+    "text": "`${pageTitlePrefix.value} | ${gettext.$gettext(\"VNC\")}`",
+    "reason": "Заголовок окна объединяет исходное имя агента с уже переведённой gettext-подписью."
+  },
+  {
+    "file": "src/websocket/agent.ts",
+    "kind": "phrase",
+    "text": "[Error] Unable to parse server output",
+    "reason": "URL/исходная техническая диагностика WebSocket и разбора agent output. Вывод протокола и диагностические строки потока не используются как ключи переводов."
+  },
+  {
+    "file": "src/websocket/agent.ts",
+    "kind": "phrase",
+    "text": "`${parsed.error ? parsed.error : \"Unknown WebSocket error\"}`",
+    "reason": "URL/исходная техническая диагностика WebSocket и разбора agent output. Вывод протокола и диагностические строки потока не используются как ключи переводов."
+  },
+  {
+    "file": "src/websocket/agent.ts",
+    "kind": "phrase",
+    "text": "Unknown WebSocket error",
+    "reason": "URL/исходная техническая диагностика WebSocket и разбора agent output. Вывод протокола и диагностические строки потока не используются как ключи переводов."
+  },
+  {
+    "file": "src/websocket/websocket.ts",
+    "kind": "phrase",
+    "text": "Invalid websocket payload",
+    "reason": "URL/исходная техническая диагностика WebSocket и разбора agent output. Вывод протокола и диагностические строки потока не используются как ключи переводов."
+  },
+  {
+    "file": "src/websocket/websocket.ts",
+    "kind": "return",
+    "text": "`${proto}://${url}/ws/${path}/?access_token=${token}`",
+    "reason": "URL/исходная техническая диагностика WebSocket и разбора agent output. Вывод протокола и диагностические строки потока не используются как ключи переводов."
+  }
+]

@@ -70,15 +70,21 @@ export default {
       if (field.type === "multiple")
         value =
           field.default_values_multiple.length > 0
-            ? `Default value: ${field.default_values_multiple}`
+            ? this.$gettext("Default value: %{value}", {
+                value: field.default_values_multiple,
+              })
             : "";
       else if (field.type === "checkbox")
         value = field.default_value_bool
-          ? `Default value: ${field.default_value_bool}`
+          ? this.$gettext("Default value: %{value}", {
+              value: field.default_value_bool,
+            })
           : "";
       else
         value = field.default_value_string
-          ? `Default value: ${field.default_value_string}`
+          ? this.$gettext("Default value: %{value}", {
+              value: field.default_value_string,
+            })
           : "";
 
       return value.length > 100 ? truncateText(value, 100) : value;
@@ -95,7 +101,10 @@ export default {
       const rules = [];
 
       if (this.field.required) {
-        rules.push((val) => !!val || `${this.field.name} is required`);
+        const requiredMessage = this.$gettext("%{name} is required", {
+          name: this.field.name,
+        });
+        rules.push((val) => !!val || requiredMessage);
       }
 
       return rules;

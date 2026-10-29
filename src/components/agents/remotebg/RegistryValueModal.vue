@@ -7,16 +7,28 @@
     <q-card style="min-width: 420px; max-width: 480px">
       <q-card-section class="q-pb-none">
         <div class="text-subtitle1">
-          {{ row.name ? "Edit" : "Create" }}
-          <span v-if="row.type === 'REG_DWORD'">DWORD (32-bit) Value</span>
-          <span v-else-if="row.type === 'REG_QWORD'">QWORD (64-bit) Value</span>
-          <span v-else-if="row.type === 'REG_MULTI_SZ'">Multi-String</span>
-          <span v-else>String</span>
+          {{
+            row.name
+              ? $pgettext("Windows registry edit action", "Edit")
+              : $pgettext("Windows registry values", "Create")
+          }}
+          <span v-if="row.type === 'REG_DWORD'">{{
+            $gettext("DWORD (32-bit) Value")
+          }}</span>
+          <span v-else-if="row.type === 'REG_QWORD'">{{
+            $gettext("QWORD (64-bit) Value")
+          }}</span>
+          <span v-else-if="row.type === 'REG_MULTI_SZ'">{{
+            $gettext("Multi-String")
+          }}</span>
+          <span v-else>{{ $gettext("String") }}</span>
         </div>
       </q-card-section>
 
       <q-card-section class="q-pb-none">
-        <div class="text-body2 q-mb-xs">Value name:</div>
+        <div class="text-body2 q-mb-xs">
+          {{ $gettext("Value name:") }}
+        </div>
         <q-input
           v-model="localRow.name"
           ref="nameInputRef"
@@ -25,13 +37,18 @@
           :readonly="!!row.name"
           :disable="!!row.name"
           :autofocus="!row.name"
-          :rules="[(val) => !!val || 'Name is required']"
+          :rules="[
+            (val) =>
+              !!val || $pgettext('Windows registry values', 'Name is required'),
+          ]"
           lazy-rules
           class="q-pb-sm"
         />
       </q-card-section>
       <q-card-section>
-        <div class="text-body2 q-mb-sm">Value data:</div>
+        <div class="text-body2 q-mb-sm">
+          {{ $gettext("Value data:") }}
+        </div>
         <q-input
           v-if="row.type === 'REG_MULTI_SZ'"
           v-model="multiStringData"
@@ -57,12 +74,20 @@
             />
           </div>
           <div class="col-5 q-py-none">
-            <div class="text-body2 q-mb-xs">Base</div>
+            <div class="text-body2 q-mb-xs">
+              {{ $gettext("Base") }}
+            </div>
             <q-option-group
               v-model="localBase"
               :options="[
-                { label: 'Hexadecimal', value: 'hex' },
-                { label: 'Decimal', value: 'dec' },
+                {
+                  label: $gettext('Hexadecimal'),
+                  value: 'hex',
+                },
+                {
+                  label: $gettext('Decimal'),
+                  value: 'dec',
+                },
               ]"
               type="radio"
               dense
@@ -75,20 +100,26 @@
       </q-card-section>
       <q-card-actions align="right" class="q-gutter-sm">
         <q-btn
-          label="OK"
+          :label="$gettext('OK')"
           color="primary"
           unelevated
           @click="onSave"
           :loading="isSaving"
           :disable="isSaving"
         />
-        <q-btn label="Cancel" flat v-close-popup :disable="isSaving" />
+        <q-btn
+          :label="$gettext('Cancel')"
+          flat
+          v-close-popup
+          :disable="isSaving"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref, watch, computed } from "vue";
 import { QInput } from "quasar";
 import { RegistryValue } from "@/types/agents";
@@ -104,7 +135,25 @@ const emit = defineEmits<{
 }>();
 
 const nameInputRef = ref();
-const numericError = ref<string>("");
+const numericErrorCode = ref<
+  "" | "negative" | "dword-overflow" | "qword-overflow"
+>("");
+const numericError = computed(() => {
+  switch (numericErrorCode.value) {
+    case "negative":
+      return gettext.$gettext("Value cannot be negative.");
+    case "dword-overflow":
+      return gettext.$gettext(
+        "DWORD (32-bit) value cannot exceed 4,294,967,295.",
+      );
+    case "qword-overflow":
+      return gettext.$gettext(
+        "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991.",
+      );
+    default:
+      return "";
+  }
+});
 const isSaving = ref(false);
 const localRow = ref<RegistryValue>({ ...props.row });
 const localBase = ref<"hex" | "dec">("hex");
@@ -186,7 +235,7 @@ function onKeyPress(e: KeyboardEvent) {
 }
 
 async function onSave() {
-  numericError.value = "";
+  numericErrorCode.value = "";
   const input: QInput | null = nameInputRef.value;
   if (input && !(input.validate?.() ?? true)) return;
   if (
@@ -199,15 +248,15 @@ async function onSave() {
         : Number.MAX_SAFE_INTEGER; // 9,007,199,254,740,991 (safe 64-bit limit)
 
     if (numericValue.value < 0) {
-      numericError.value = "Value cannot be negative.";
+      numericErrorCode.value = "negative";
       return;
     }
 
     if (numericValue.value > maxValue) {
-      numericError.value =
+      numericErrorCode.value =
         localRow.value.type === "REG_DWORD"
-          ? "DWORD (32-bit) value cannot exceed 4,294,967,295."
-          : "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991.";
+          ? "dword-overflow"
+          : "qword-overflow";
       return;
     }
   }

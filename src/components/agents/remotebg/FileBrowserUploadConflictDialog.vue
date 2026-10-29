@@ -7,13 +7,7 @@
 
       <q-card-section class="q-pt-none">
         <div class="text-body2 q-mb-sm">
-          The following
-          {{
-            conflictNames.length === 1
-              ? "file already exists"
-              : "files already exist"
-          }}
-          in this folder:
+          {{ $gettext("The following files already exist in this folder:") }}
         </div>
 
         <div class="upload-conflict-names text-body2">
@@ -28,7 +22,11 @@
               </span></span
             >
             <span v-if="preview.remainingCount > 0">
-              , and {{ preview.remainingCount }} more
+              {{
+                $gettext(", and %{count} more", {
+                  count: preview.remainingCount,
+                })
+              }}
             </span>
           </template>
           <ul v-else class="upload-conflict-name-list q-mb-none">
@@ -46,13 +44,16 @@
           size="sm"
           color="primary"
           class="q-mt-xs q-ml-none"
-          :label="showAllNames ? 'Show less' : 'Show all'"
+          :label="showAllNames ? $gettext('Show less') : $gettext('Show all')"
           @click="showAllNames = !showAllNames"
         />
 
         <div class="text-body2 q-mt-md text-grey-7">
-          Choose how to handle these conflicts. Other files in this upload will
-          continue normally.
+          {{
+            $gettext(
+              "Choose how to handle these conflicts. Other files in this upload will continue normally.",
+            )
+          }}
         </div>
       </q-card-section>
 
@@ -62,21 +63,21 @@
         <q-btn
           flat
           no-caps
-          label="Cancel upload"
+          :label="$gettext('Cancel upload')"
           color="primary"
           @click="choose('cancel')"
         />
         <q-btn
           flat
           no-caps
-          label="Skip existing"
+          :label="$gettext('Skip existing')"
           color="primary"
           @click="choose('skip')"
         />
         <q-btn
           unelevated
           no-caps
-          label="Replace existing"
+          :label="$gettext('Replace existing')"
           color="primary"
           @click="choose('replace')"
         />
@@ -86,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { computed, ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 
@@ -111,7 +113,14 @@ const preview = computed(() =>
 
 const title = computed(() => {
   const count = props.conflictNames.length;
-  return count === 1 ? "1 file already exists" : `${count} files already exist`;
+  return count === 1
+    ? gettext.$gettext("1 file already exists")
+    : gettext.$ngettext(
+        "%{count} file already exists",
+        "%{count} files already exist",
+        count,
+        { count: count },
+      );
 });
 
 function choose(action: UploadConflictAction) {

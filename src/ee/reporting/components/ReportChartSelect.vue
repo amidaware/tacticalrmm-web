@@ -8,14 +8,21 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="unloadEditor" @show="loadEditor">
     <q-card style="width: 600px">
       <q-bar>
-        Add Chart
+        {{ $gettext("Add Chart") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
-        <q-input v-model="chartName" outlined dense label="Chart Name" />
+        <q-input
+          v-model="chartName"
+          outlined
+          dense
+          :label="$gettext('Chart Name')"
+        />
       </q-card-section>
       <q-card-section>
         <q-select
@@ -23,7 +30,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="chartOptions"
           outlined
           dense
-          label="Chart Type"
+          :label="$gettext('Chart Type')"
           map-options
           emit-value
         />
@@ -44,14 +51,21 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
       <q-card-actions>
         <q-space />
-        <q-btn dense flat label="Cancel" v-close-popup />
-        <q-btn @click="submit" dense flat label="Select" color="primary" />
+        <q-btn dense flat :label="$gettext('Cancel')" v-close-popup />
+        <q-btn
+          @click="submit"
+          dense
+          flat
+          :label="$gettext('Select')"
+          color="primary"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script lang="ts" setup>
+import { gettext } from "@/gettext";
 import { ref, computed } from "vue";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import * as monaco from "monaco-editor";
@@ -65,16 +79,19 @@ defineEmits([...useDialogPluginComponent.emits]);
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
-const chartOptions = [
-  { value: "bar", label: "Bar" },
-  { value: "pie", label: "Pie" },
-  { value: "line", label: "Line" },
-];
+const chartOptions = computed(() => [
+  { value: "bar", label: gettext.$gettext("Bar") },
+  { value: "pie", label: gettext.$gettext("Pie") },
+  { value: "line", label: gettext.$gettext("Line") },
+]);
 
-const outputOptions = [
-  { value: "image", label: "Image" },
-  { value: "html", label: "Html" },
-];
+const outputOptions = computed(() => [
+  {
+    value: "image",
+    label: gettext.$pgettext("Report chart configuration", "Image"),
+  },
+  { value: "html", label: gettext.$gettext("HTML") },
+]);
 
 const chartName = ref("");
 const chartType = ref("bar");

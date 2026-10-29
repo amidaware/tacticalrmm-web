@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { Notify } from "quasar";
@@ -78,9 +79,10 @@ export default function ({ app, router }) {
       if (error.code && error.code === "ERR_NETWORK") {
         Notify.create({
           color: "negative",
-          message: "Backend is offline (network error)",
-          caption:
+          message: gettext.$gettext("Backend is offline (network error)"),
+          caption: gettext.$gettext(
             "Open your browser's dev tools and check the console tab for more detailed error messages",
+          ),
           timeout: 5000,
         });
         return rejectAxios(error);

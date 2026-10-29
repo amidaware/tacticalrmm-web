@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 50">
       <q-bar>
-        SSO Settings
+        {{ $gettext("SSO Settings") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -19,7 +21,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Enable SSO"
+          :label="$gettext('Enable SSO')"
           v-model="ssoSettings.sso_enabled"
         />
       </q-card-section>
@@ -28,23 +30,28 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Block Local User Login"
+          :label="$gettext('Block Local User Login')"
           v-model="ssoSettings.block_local_user_logon"
           :disable="!ssoSettings.sso_enabled"
-          hint="When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts."
+          :hint="
+            $gettext(
+              'When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts.',
+            )
+          "
         >
-          <q-tooltip class="text-caption"
-            >When enabled, only users with SSO accounts can log in, with the
-            exception of local superuser accounts.</q-tooltip
-          >
+          <q-tooltip class="text-caption">{{
+            $gettext(
+              "When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts.",
+            )
+          }}</q-tooltip>
         </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="$gettext('Cancel')" v-close-popup />
         <q-btn
           flat
-          label="Submit"
+          :label="$gettext('Submit')"
           color="primary"
           :loading="loading"
           @click="submit"
@@ -55,6 +62,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, watch, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -86,7 +94,7 @@ async function submit() {
   loading.value = true;
   try {
     await updateSSOSettings(ssoSettings.value);
-    notifySuccess("Settings updated successfully");
+    notifySuccess(gettext.$gettext("Settings updated successfully"));
     onDialogOK(ssoSettings.value);
   } catch (e) {
     if (e.status === 423) {

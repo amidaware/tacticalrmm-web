@@ -15,22 +15,26 @@
               <q-input
                 filled
                 v-model="credentials.username"
-                label="Username"
+                :label="$pgettext('Login', 'Username')"
                 autocomplete="username"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) =>
+                    (val && val.length > 0) ||
+                    $gettext('This field is required'),
                 ]"
               />
               <q-input
                 v-model="credentials.password"
                 filled
                 :type="showPassword ? 'password' : 'text'"
-                label="Password"
+                :label="$pgettext('Login', 'Password')"
                 autocomplete="current-password"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
+                  (val) =>
+                    (val && val.length > 0) ||
+                    $gettext('This field is required'),
                 ]"
               >
                 <template v-slot:append>
@@ -43,7 +47,7 @@
               </q-input>
               <div>
                 <q-btn
-                  label="Login"
+                  :label="$gettext('Login')"
                   type="submit"
                   color="primary"
                   class="full-width"
@@ -53,7 +57,9 @@
           </q-card-section>
 
           <q-card-section v-if="ssoProviders?.length > 0">
-            <div class="text-h6 text-center q-mb-md">Log in with SSO</div>
+            <div class="text-h6 text-center q-mb-md">
+              {{ $gettext("Log in with SSO") }}
+            </div>
             <q-separator />
 
             <q-list dense bordered class="q-pa-sm">
@@ -83,9 +89,9 @@
         <q-dialog persistent v-model="prompt">
           <q-card style="min-width: 400px">
             <q-form ref="formToken" @submit.prevent="onSubmit">
-              <q-card-section class="text-center text-h6"
-                >Two-Factor Token</q-card-section
-              >
+              <q-card-section class="text-center text-h6">{{
+                $gettext("Two-Factor Token")
+              }}</q-card-section>
 
               <q-card-section>
                 <q-input
@@ -96,14 +102,15 @@
                   inputmode="numeric"
                   :rules="[
                     (val) =>
-                      (val && val.length > 0) || 'This field is required',
+                      (val && val.length > 0) ||
+                      $gettext('This field is required'),
                   ]"
                 />
               </q-card-section>
 
               <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Cancel" v-close-popup />
-                <q-btn flat label="Submit" type="submit" />
+                <q-btn flat :label="$gettext('Cancel')" v-close-popup />
+                <q-btn flat :label="$gettext('Submit')" type="submit" />
               </q-card-actions>
             </q-form>
           </q-card>

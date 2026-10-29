@@ -1,0 +1,34 @@
+{
+  "consoleOnly": [
+    {
+      "file": "src/api/agents.js",
+      "text": "Failed to delete registry value:",
+      "reason": "Диагностика console.error; пользовательский диалог RegistryManager переводится отдельно."
+    },
+    {
+      "file": "src/api/agents.js",
+      "text": "Failed to rename value:",
+      "reason": "Диагностика console.error с исходной ошибкой; не сообщение интерфейса."
+    },
+    {
+      "file": "src/api/agents.js",
+      "text": "Failed to modify registry value:",
+      "reason": "Диагностика console.error с исходной ошибкой; не сообщение интерфейса."
+    },
+    {
+      "file": "src/api/agents.js",
+      "text": "Failed to create registry value:",
+      "reason": "Диагностика console.error с исходной ошибкой; не сообщение интерфейса."
+    },
+    {
+      "file": "src/utils/format.ts",
+      "text": "Time period is invalid",
+      "reason": "Диагностика неверного входного периода, возвращаемое значение и правила парсинга сохранены."
+    },
+    {
+      "file": "src/services/fileTransfer/download.ts",
+      "text": "Download resume copy could not be stored; continuing without resume after reload.",
+      "reason": "console.warn о недоступности резервной копии IndexedDB; не постоянная подпись очереди."
+    }
+  ]
+}

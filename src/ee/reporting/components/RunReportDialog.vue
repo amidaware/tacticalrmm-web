@@ -8,24 +8,35 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        {{ download ? "Download" : "Run" }} {{ capitalize(type) }} Report
+        {{
+          download ? $gettext("Download") : $pgettext("Report execution", "Run")
+        }}
+        {{ capitalize(type) }} {{ $gettext("Report") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section v-if="reportTemplates.length === 0">
-        There are no report templates that depend on {{ capitalize(type) }}. You
-        must select a dependency in the Report Template of type {{ type }} using
-        the dependencies dropdown.
+        {{
+          $gettext(
+            "There are no report templates that depend on %{typeDisplay}. You must select a dependency in the report template of type %{type} using the dependencies dropdown.",
+            {
+              typeDisplay: capitalize(type),
+              type,
+            },
+          )
+        }}
       </q-card-section>
       <div v-else>
         <q-card-section>
           <tactical-dropdown
             v-model="reportTemplate"
             :options="reportTemplateOptions"
-            label="Report Template"
+            :label="$gettext('Report Template')"
             outlined
             mapOptions
             filterable
@@ -41,13 +52,13 @@ For details, see: https://license.tacticalrmm.com/ee
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn v-close-popup dense flat label="Cancel" />
+          <q-btn v-close-popup dense flat :label="$gettext('Cancel')" />
           <q-btn
             :loading="isLoading"
             :disable="!reportTemplate"
             dense
             flat
-            label="Run Report"
+            :label="$gettext('Run Report')"
             color="primary"
             @click="submit"
           />
@@ -58,6 +69,7 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, onBeforeMount } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -113,20 +125,23 @@ const reportFormatOptions = computed(() => {
   if (selectedTemplate.value) {
     if (selectedTemplate.value.type !== "plaintext")
       return [
-        { label: "PDF", value: "pdf" },
-        { label: "HTML", value: "html" },
+        { label: gettext.$gettext("PDF"), value: "pdf" },
+        { label: gettext.$gettext("HTML"), value: "html" },
       ];
     else
       return [
-        { label: "PDF", value: "pdf" },
-        { label: "Text", value: "plaintext" },
+        { label: gettext.$gettext("PDF"), value: "pdf" },
+        {
+          label: gettext.$pgettext("Report editing", "Text"),
+          value: "plaintext",
+        },
       ];
   } else return [];
 });
 
 async function submit() {
   if (reportTemplate.value === null) {
-    notifyError("Report Template is required.");
+    notifyError(gettext.$gettext("Report template is required."));
     return;
   }
 

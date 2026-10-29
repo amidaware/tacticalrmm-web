@@ -9,18 +9,20 @@
       <q-card-section class="scroll" style="max-height: 65vh">
         <q-splitter v-model="splitterModel">
           <template v-slot:before>
-            <div class="text-h6">Before</div>
+            <div class="text-h6">
+              {{ $gettext("Before") }}
+            </div>
             <pre>{{ JSON.stringify(log.before_value, null, 4) }}</pre>
           </template>
 
           <template v-slot:after>
-            <div class="text-h6">After</div>
+            <div class="text-h6">{{ $gettext("After") }}</div>
             <pre>{{ JSON.stringify(log.after_value, null, 4) }}</pre>
           </template>
         </q-splitter>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn flat dense push label="Cancel" v-close-popup />
+        <q-btn flat dense push :label="$gettext('Cancel')" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>

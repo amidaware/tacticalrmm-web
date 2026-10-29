@@ -21,7 +21,10 @@ export interface useScriptDropdownParams {
 
 // script dropdown
 export function useScriptDropdown(opts?: useScriptDropdownParams) {
-  const scriptOptions = ref([] as ScriptOption[]);
+  const scripts = ref([] as Script[]);
+  const scriptOptions = computed(
+    () => Object.freeze(formatScriptOptions(scripts.value)) as ScriptOption[],
+  );
   const defaultTimeout = ref(30);
   const defaultArgs = ref([] as string[]);
   const defaultEnvVars = ref([] as string[]);
@@ -35,28 +38,22 @@ export function useScriptDropdown(opts?: useScriptDropdownParams) {
 
   // specify parameters to filter out community scripts
   async function getScriptOptions() {
-    scriptOptions.value = Object.freeze(
-      formatScriptOptions(
-        await fetchScripts({
-          showCommunityScripts: showCommunityScripts.value,
-        }),
-      ),
-    ) as ScriptOption[];
+    scripts.value = await fetchScripts({
+      showCommunityScripts: showCommunityScripts.value,
+    });
   }
 
   // watch scriptPk for changes and update the default timeout and args
-  watch([script, scriptOptions], () => {
-    if (script.value && scriptOptions.value.length > 0) {
-      const tmpScript = scriptOptions.value.find(
-        (i) => i.value === script.value,
-      );
+  watch([script, scripts], () => {
+    if (script.value && scripts.value.length > 0) {
+      const tmpScript = scripts.value.find((i) => i.id === script.value);
 
       if (tmpScript) {
         defaultTimeout.value = tmpScript.default_timeout;
         defaultArgs.value = tmpScript.args;
         defaultEnvVars.value = tmpScript.env_vars;
         syntax.value = tmpScript.syntax;
-        scriptName.value = tmpScript.label;
+        scriptName.value = tmpScript.name;
         link.value =
           tmpScript.script_type === "builtin"
             ? `${baseUrl}${tmpScript.filename}`

@@ -5,12 +5,14 @@
         {{ modalTitle }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit.prevent="submit">
         <q-card-section>
-          <p>Choose Target</p>
+          <p>{{ $gettext("Choose Target") }}</p>
           <q-option-group
             v-model="state.target"
             :options="targetOptions"
@@ -24,30 +26,30 @@
         <q-card-section>
           <tactical-dropdown
             v-if="state.target === 'client'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
             v-model="state.client"
             :options="clientOptions"
-            label="Select Client"
+            :label="$gettext('Select Client')"
             outlined
             mapOptions
             filterable
           />
           <tactical-dropdown
             v-else-if="state.target === 'site'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
             v-model="state.site"
             :options="siteOptions"
-            label="Select Site"
+            :label="$gettext('Select Site')"
             outlined
             mapOptions
             filterable
           />
           <tactical-dropdown
             v-else-if="state.target === 'agents'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
             v-model="state.agents"
             :options="agentOptions"
-            label="Select Agents"
+            :label="$gettext('Select Agents')"
             filled
             multiple
             mapOptions
@@ -56,7 +58,7 @@
         </q-card-section>
 
         <q-card-section>
-          <p>Agent OS</p>
+          <p>{{ $gettext("Agent OS") }}</p>
           <q-option-group
             v-model="state.osType"
             :options="filteredOsTypeOptions"
@@ -68,7 +70,7 @@
         </q-card-section>
 
         <q-card-section v-show="state.target !== 'agents'">
-          <p>Agent Type</p>
+          <p>{{ $gettext("Agent Type") }}</p>
           <q-option-group
             v-model="state.monType"
             :options="monTypeOptions"
@@ -81,10 +83,10 @@
 
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
             v-model="state.script"
             :options="filterByPlatformOptions"
-            label="Select Script"
+            :label="$gettext('Select Script')"
             outlined
             mapOptions
             filterable
@@ -110,7 +112,12 @@
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
             v-model="state.args"
-            label="Script Arguments (press Enter after typing each argument)"
+            :label="
+              $pgettext(
+                'Bulk agent actions',
+                'Script Arguments (press Enter after typing each argument)',
+              )
+            "
             filled
             use-input
             multiple
@@ -122,7 +129,11 @@
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
             v-model="state.env_vars"
-            :label="envVarsLabel"
+            :label="
+              $gettext(
+                'Environment vars (press Enter after typing each key=value pair)',
+              )
+            "
             filled
             use-input
             multiple
@@ -133,7 +144,7 @@
         </q-card-section>
 
         <q-card-section v-if="mode === 'command'">
-          <p>Shell</p>
+          <p>{{ $pgettext("Bulk agent actions", "Shell") }}</p>
           <q-option-group
             v-model="state.shell"
             :options="shellOptions"
@@ -148,32 +159,39 @@
           <q-input
             v-model="state.custom_shell"
             outlined
-            label="Custom shell"
+            :label="$gettext('Custom shell')"
             stack-label
             placeholder="/usr/bin/python3"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
           />
         </q-card-section>
         <q-card-section v-if="mode === 'command'">
           <q-input
             v-model="state.cmd"
             outlined
-            label="Command"
+            :label="$gettext('Command')"
             stack-label
             :placeholder="cmdPlaceholder(state.shell)"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
           />
         </q-card-section>
         <q-card-section v-if="supportsRunAsUser()" class="q-pt-none">
-          <q-checkbox v-model="state.run_as_user" label="Run As User">
-            <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
+          <q-checkbox
+            v-model="state.run_as_user"
+            :label="$gettext('Run As User')"
+          >
+            <q-tooltip>{{
+              $gettext(
+                "Run in the context of the logged in user. If no user is logged in, the command will run as SYSTEM",
+              )
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
 
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <div class="q-gutter-sm">
             <q-checkbox
-              label="Save results to Custom Field"
+              :label="$gettext('Save results to Custom Field')"
               v-model="collector"
               @update:model-value="
                 state.custom_field = null;
@@ -182,24 +200,24 @@
             />
             <q-checkbox
               v-model="state.save_to_agent_note"
-              label="Save results to Agent Note"
+              :label="$gettext('Save results to Agent Note')"
             />
           </div>
         </q-card-section>
 
         <q-card-section v-if="mode === 'script' && collector">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $gettext('*Required')]"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
-            label="Select custom field"
+            :label="$gettext('Select custom field')"
             mapOptions
             filterable
           />
           <q-checkbox
             v-model="state.collector_all_output"
-            label="Save all output"
+            :label="$gettext('Save all output')"
           />
         </q-card-section>
 
@@ -210,17 +228,24 @@
             outlined
             type="number"
             style="max-width: 150px"
-            label="Timeout (seconds)"
+            :label="$gettext('Timeout (seconds)')"
             stack-label
             :rules="[
-              (val) => !!val || '*Required',
-              (val) => val >= 5 || 'Minimum is 5 seconds',
+              (val) => !!val || $gettext('*Required'),
+              (val) =>
+                val >= 5 ||
+                $ngettext(
+                  'Minimum is %{min} second',
+                  'Minimum is %{min} seconds',
+                  5,
+                  { min: 5 },
+                ),
             ]"
           />
         </q-card-section>
 
         <q-card-section v-if="mode === 'patch'">
-          <p>Action</p>
+          <p>{{ $pgettext("Bulk agent actions", "Action") }}</p>
           <q-option-group
             v-model="state.patchMode"
             :options="patchModeOptions"
@@ -234,19 +259,20 @@
         <q-card-section v-show="false">
           <q-checkbox
             v-model="state.offlineAgents"
-            label="Offline Agents (Run on next checkin)"
+            :label="$gettext('Offline Agents (Run on next checkin)')"
           >
-            <q-tooltip
-              >If the agent is offline, a pending action will be created to run
-              on agent checkin</q-tooltip
-            >
+            <q-tooltip>{{
+              $gettext(
+                "If the agent is offline, a pending action will be created to run on agent checkin",
+              )
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn label="Cancel" v-close-popup />
+          <q-btn :label="$gettext('Cancel')" v-close-popup />
           <q-btn
-            label="Run"
+            :label="$pgettext('Bulk agent actions', 'Run')"
             color="primary"
             type="submit"
             :disable="loading"
@@ -259,6 +285,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import {
   ref,
@@ -276,36 +303,9 @@ import { useCustomFieldDropdown } from "@/composables/core";
 import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
-import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
-
-// static data
-const monTypeOptions = [
-  { label: "All", value: "all" },
-  { label: "Servers", value: "servers" },
-  { label: "Workstations", value: "workstations" },
-];
-
-const osTypeOptions = [
-  { label: "Windows", value: "windows" },
-  { label: "Linux", value: "linux" },
-  { label: "macOS", value: "darwin" },
-  { label: "All", value: "all" },
-];
-
-const targetOptions = [
-  { label: "Client", value: "client" },
-  { label: "Site", value: "site" },
-  { label: "Selected Agents", value: "agents" },
-  { label: "All", value: "all" },
-];
-
-const patchModeOptions = [
-  { label: "Scan", value: "scan" },
-  { label: "Install", value: "install" },
-];
 
 export default defineComponent({
   name: "BulkAction",
@@ -315,26 +315,66 @@ export default defineComponent({
     mode: !String,
   },
   setup(props) {
+    const monTypeOptions = computed(() => [
+      { label: gettext.$pgettext("Bulk agent actions", "All"), value: "all" },
+      { label: gettext.$gettext("Servers"), value: "servers" },
+      {
+        label: gettext.$gettext("Workstations"),
+        value: "workstations",
+      },
+    ]);
+
+    const osTypeOptions = computed(() => [
+      { label: gettext.$gettext("Windows"), value: "windows" },
+      { label: gettext.$gettext("Linux"), value: "linux" },
+      { label: gettext.$gettext("macOS"), value: "darwin" },
+      { label: gettext.$pgettext("Bulk agent actions", "All"), value: "all" },
+    ]);
+
+    const targetOptions = computed(() => [
+      {
+        label: gettext.$pgettext("Bulk agent actions", "Client"),
+        value: "client",
+      },
+      { label: gettext.$pgettext("Bulk agent actions", "Site"), value: "site" },
+      { label: gettext.$gettext("Selected Agents"), value: "agents" },
+      { label: gettext.$pgettext("Bulk agent actions", "All"), value: "all" },
+    ]);
+
+    const patchModeOptions = computed(() => [
+      { label: gettext.$gettext("Scan"), value: "scan" },
+      {
+        label: gettext.$pgettext("Bulk agent actions", "Install"),
+        value: "install",
+      },
+    ]);
+
     const shellOptions = computed(() => {
       if (state.osType === "windows") {
         return [
-          { label: "CMD", value: "cmd" },
-          { label: "Powershell", value: "powershell" },
+          { label: gettext.$gettext("CMD"), value: "cmd" },
+          {
+            label: gettext.$gettext("Powershell"),
+            value: "powershell",
+          },
         ];
       } else {
         return [
-          { label: "Bash", value: "/bin/bash" },
-          { label: "Custom", value: "custom" },
+          { label: gettext.$gettext("Bash"), value: "/bin/bash" },
+          {
+            label: gettext.$pgettext("Bulk agent actions", "Custom"),
+            value: "custom",
+          },
         ];
       }
     });
 
     const filteredOsTypeOptions = computed(() => {
       if (props.mode === "command")
-        return osTypeOptions.filter((i) => i.value !== "all");
+        return osTypeOptions.value.filter((i) => i.value !== "all");
       else if (props.mode === "patch")
-        return osTypeOptions.filter((i) => i.value === "windows");
-      return osTypeOptions;
+        return osTypeOptions.value.filter((i) => i.value === "windows");
+      return osTypeOptions.value;
     });
 
     // quasar dialog setup
@@ -436,11 +476,11 @@ export default defineComponent({
     // set modal title and caption
     const modalTitle = computed(() => {
       return props.mode === "command"
-        ? "Run Bulk Command"
+        ? gettext.$gettext("Run Bulk Command")
         : props.mode === "script"
-          ? "Run Bulk Script"
+          ? gettext.$gettext("Run Bulk Script")
           : props.mode === "patch"
-            ? "Bulk Patch Management"
+            ? gettext.$gettext("Bulk Patch Management")
             : "";
     });
 
@@ -470,8 +510,6 @@ export default defineComponent({
       osTypeOptions,
       targetOptions,
       patchModeOptions,
-      runAsUserToolTip,
-      envVarsLabel,
       syntax,
 
       //computed

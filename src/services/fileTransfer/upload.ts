@@ -1,4 +1,9 @@
 import {
+  FatalTransferError,
+  BackendTransferError,
+} from "@/services/fileTransfer/transferFaults";
+import { gettext } from "@/gettext";
+import {
   cancelAgentFileUpload,
   completeAgentFileUpload,
   getUploadChunkReady,
@@ -121,11 +126,14 @@ async function waitForUploadPipelineSlot(
       if (ready.status !== "failed" && ready.accepted_offset > offset) {
         return ready;
       }
-      throw new Error(
-        ready.status === "failed"
-          ? ready.error || "Upload failed"
-          : `Upload session is ${ready.status}`,
-      );
+      throw ready.status === "failed"
+        ? ready.error
+          ? new BackendTransferError(ready.error)
+          : new FatalTransferError({ code: "upload-rejected" })
+        : new FatalTransferError({
+            code: "upload-session",
+            status: ready.status,
+          });
     }
     if (ready.accepted_offset > offset || ready.can_put) {
       return ready;
@@ -163,7 +171,9 @@ async function waitForUploadCommitted(
       { signal, onRetry },
     );
     if (ready.status === "failed") {
-      throw new Error(ready.error || "Upload failed");
+      throw ready.error
+        ? new BackendTransferError(ready.error)
+        : new FatalTransferError({ code: "upload-rejected" });
     }
     if (
       ready.committed_offset >= totalSize ||
@@ -302,7 +312,9 @@ export async function runFileUploadTransfer(
         putAttempts += 1;
         if (putAttempts > FILE_TRANSFER_TRANSIENT_RETRY_HARD_CAP) {
           throw new RetryableTransferError(
-            "Timed out waiting for agent to commit previous chunk",
+            gettext.$gettext(
+              "Timed out waiting for agent to commit previous chunk",
+            ),
           );
         }
         try {
@@ -326,7 +338,7 @@ export async function runFileUploadTransfer(
           if (isRelayOffsetMismatch(err)) {
             // e.g. redis restarted, resuming re-syncs the offset
             throw new TransferStalledError(
-              "The server lost track of this upload",
+              gettext.$gettext("The server lost track of this upload"),
             );
           }
           if (!isTransferAckWaitError(err)) {

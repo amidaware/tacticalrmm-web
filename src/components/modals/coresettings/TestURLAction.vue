@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 80vw">
       <q-bar>
-        Testing {{ urlAction.name }}
+        {{ $gettext("Testing %{name}", { name: urlAction.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -22,7 +24,7 @@
         <tactical-dropdown
           v-model="agent"
           :options="agentOptions"
-          label="Agents"
+          :label="$pgettext('HTTP action testing', 'Agents')"
           mapOptions
           filterable
           dense
@@ -34,7 +36,7 @@
         <tactical-dropdown
           v-model="site"
           :options="siteOptions"
-          label="Sites"
+          :label="$pgettext('HTTP action testing', 'Sites')"
           mapOptions
           filterable
           dense
@@ -46,7 +48,7 @@
         <tactical-dropdown
           v-model="client"
           :options="clientOptions"
-          label="Client"
+          :label="$pgettext('HTTP action testing', 'Client')"
           mapOptions
           filterable
           dense
@@ -56,29 +58,29 @@
 
       <q-card-section style="height: 60vh" class="scroll">
         <div>
-          URL:
+          {{ $pgettext("HTTP action testing", "URL") }}:
           <code>{{ return_url }}</code>
         </div>
         <br />
         <div>
-          Body
+          {{ $pgettext("HTTP action testing", "Body") }}
           <q-separator />
           <code>{{ return_request }}</code>
         </div>
         <br />
         <div>
-          Response
+          {{ $gettext("Response") }}
           <q-separator />
           <code>{{ return_result }}</code>
         </div>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Close" v-close-popup />
+        <q-btn flat :label="$gettext('Close')" v-close-popup />
         <q-btn
           :loading="loading"
           flat
-          label="Run"
+          :label="$pgettext('HTTP action testing', 'Run')"
           color="primary"
           @click="submit"
         />
@@ -88,6 +90,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, reactive, computed } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -115,12 +118,15 @@ const { site, siteOptions } = useSiteDropdown(true);
 
 const runAgainst = ref<"agent" | "site" | "client" | "none">("none");
 
-const runAgainstOptions = [
-  { label: "Agent", value: "agent" },
-  { label: "Site", value: "site" },
-  { label: "Client", value: "client" },
-  { label: "None", value: "none" },
-];
+const runAgainstOptions = computed(() => [
+  { label: gettext.$pgettext("HTTP action testing", "Agent"), value: "agent" },
+  { label: gettext.$pgettext("HTTP action testing", "Site"), value: "site" },
+  {
+    label: gettext.$pgettext("HTTP action testing", "Client"),
+    value: "client",
+  },
+  { label: gettext.$pgettext("HTTP action testing", "None"), value: "none" },
+]);
 const loading = ref(false);
 
 const runAgainstID = computed(() => {

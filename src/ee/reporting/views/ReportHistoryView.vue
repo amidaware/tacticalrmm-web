@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <div>
     <q-inner-loading
       :showing="isLoading"
-      label="Please wait..."
+      :label="$gettext('Please wait...')"
       label-class="text-teal"
       label-style="font-size: 1.1em"
     />

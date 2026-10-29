@@ -1,3 +1,4 @@
+import { gettext } from "@/gettext";
 import { ref } from "vue";
 import axios from "axios";
 
@@ -34,7 +35,7 @@ export function useSchedule() {
       .post(`${baseUrl}/schedules/`, schedule)
       .then(({ data }: { data: Schedule }) => {
         schedules.value.push(data);
-        notifySuccess("Schedule was added successfully.");
+        notifySuccess(gettext.$gettext("Schedule was added successfully."));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -53,7 +54,7 @@ export function useSchedule() {
         if (index !== -1) {
           schedules.value[index] = data;
         }
-        notifySuccess("Schedule was modified successfully.");
+        notifySuccess(gettext.$gettext("Schedule was modified successfully."));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));
@@ -69,7 +70,7 @@ export function useSchedule() {
         schedules.value = schedules.value.filter(
           (schedule) => schedule.id !== id,
         );
-        notifySuccess("Schedule successfully deleted.");
+        notifySuccess(gettext.$gettext("Schedule successfully deleted."));
       })
       .catch(() => (isError.value = true))
       .finally(() => (isLoading.value = false));

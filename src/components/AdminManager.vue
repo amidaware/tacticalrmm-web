@@ -9,17 +9,19 @@
         flat
         push
         icon="refresh"
-      />User Administration
+      />{{ $gettext("User Administration") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $gettext("Close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <div class="q-pa-md">
       <div class="q-gutter-sm">
         <q-btn
           ref="new"
-          label="New"
+          :label="$pgettext('User administration', 'New')"
           dense
           flat
           push
@@ -43,7 +45,7 @@
         <template v-slot:header-cell-is_active="props">
           <q-th :props="props" auto-width>
             <q-icon name="power_settings_new" size="1.5em">
-              <q-tooltip>Enable User</q-tooltip>
+              <q-tooltip>{{ $gettext("Enable User") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -55,7 +57,7 @@
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
-            <span v-if="users.length === 0">No Users</span>
+            <span v-if="users.length === 0">{{ $gettext("No Users") }}</span>
           </div>
         </template>
 
@@ -77,7 +79,9 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{
+                    $pgettext("General edit action", "Edit")
+                  }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -88,7 +92,7 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -103,7 +107,9 @@
                   <q-item-section side>
                     <q-icon name="autorenew" />
                   </q-item-section>
-                  <q-item-section>Reset Password</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Reset Password")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -116,7 +122,9 @@
                   <q-item-section side>
                     <q-icon name="autorenew" />
                   </q-item-section>
-                  <q-item-section>Reset Two-Factor Auth</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Reset Two-Factor Auth")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -131,7 +139,9 @@
                   <q-item-section side>
                     <q-icon name="groups" />
                   </q-item-section>
-                  <q-item-section>Show Connected SSO Accounts</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Show Connected SSO Accounts")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -143,13 +153,15 @@
                   <q-item-section side>
                     <q-icon name="groups" />
                   </q-item-section>
-                  <q-item-section>Show Active Sessions</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Show Active Sessions")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -167,7 +179,7 @@
                 v-if="props.row.social_accounts.length > 0"
                 color="primary"
                 dense
-                >SSO</q-chip
+                >{{ $gettext("SSO") }}</q-chip
               >
             </q-td>
             <q-td>{{ props.row.username }}</q-td>
@@ -176,7 +188,7 @@
             <q-td v-if="props.row.last_login">{{
               formatDate(props.row.last_login)
             }}</q-td>
-            <q-td v-else>Never</q-td>
+            <q-td v-else>{{ $gettext("Never") }}</q-td>
             <q-td>{{ props.row.last_login_ip }}</q-td>
           </q-tr>
         </template>
@@ -235,56 +247,7 @@ export default {
   data() {
     return {
       users: [],
-      columns: [
-        {
-          name: "is_active",
-          label: "Active",
-          field: "is_active",
-          align: "left",
-        },
-        {
-          name: "sso",
-          label: "",
-          field: "sso",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "username",
-          label: "Username",
-          field: "username",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "name",
-          label: "Name",
-          field: "name",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "email",
-          label: "Email",
-          field: "email",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "last_login",
-          label: "Last Login",
-          field: "last_login",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "last_login_ip",
-          label: "Last Logon From",
-          field: "last_login_ip",
-          align: "left",
-          sortable: true,
-        },
-      ],
+
       pagination: {
         rowsPerPage: 0,
         sortBy: "username",
@@ -308,14 +271,20 @@ export default {
     deleteUser(user) {
       this.$q
         .dialog({
-          title: `Delete user ${user.username}?`,
+          title: this.$gettext("Delete user %{username}?", {
+            username: user.username,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$gettext("Delete"), color: "negative" },
         })
         .onOk(() => {
           this.$axios.delete(`/accounts/${user.id}/users/`).then(() => {
             this.getUsers();
-            this.notifySuccess(`User ${user.username} was deleted!`);
+            this.notifySuccess(
+              this.$gettext("User %{username} was deleted!", {
+                username: user.username,
+              }),
+            );
           });
         });
     },
@@ -345,8 +314,8 @@ export default {
         return;
       }
       let text = !user.is_active
-        ? "User enabled successfully"
-        : "User disabled successfully";
+        ? this.$gettext("User enabled successfully")
+        : this.$gettext("User disabled successfully");
 
       const data = {
         id: user.id,
@@ -376,9 +345,14 @@ export default {
 
       this.$q
         .dialog({
-          title: `Reset 2FA for ${user.username}?`,
+          title: this.$gettext("Reset 2FA for %{username}?", {
+            username: user.username,
+          }),
           cancel: true,
-          ok: { label: "Reset", color: "positive" },
+          ok: {
+            label: this.$pgettext("Reset action", "Reset"),
+            color: "positive",
+          },
         })
         .onOk(() => {
           this.$axios
@@ -390,6 +364,59 @@ export default {
     },
   },
   computed: {
+    columns() {
+      return [
+        {
+          name: "is_active",
+          label: this.$pgettext("User account active state", "Active"),
+          field: "is_active",
+          align: "left",
+        },
+        {
+          name: "sso",
+          label: "",
+          field: "sso",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "username",
+          label: this.$pgettext("User administration", "Username"),
+          field: "username",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "name",
+          label: this.$pgettext("Settings actions", "Name"),
+          field: "name",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "email",
+          label: this.$pgettext("User account email", "Email"),
+          field: "email",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "last_login",
+          label: this.$gettext("Last Login"),
+          field: "last_login",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "last_login_ip",
+          label: this.$gettext("Last Logon From"),
+          field: "last_login_ip",
+          align: "left",
+          sortable: true,
+        },
+      ];
+    },
+
     ...piniaMapState(useAuthStore, {
       logged_in_user: (state) => state.username,
     }),

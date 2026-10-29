@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportHistory"
-        />Report History
+        />{{ $gettext("Report History") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -49,7 +51,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$pgettext('Report editing', 'Search')"
             dense
             outlined
             clearable
@@ -78,7 +80,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-file-pdf-box" />
                   </q-item-section>
-                  <q-item-section>Open PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Open PDF Report")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -103,15 +107,14 @@ For details, see: https://license.tacticalrmm.com/ee
                       "
                     />
                   </q-item-section>
-                  <q-item-section
-                    >Open
-                    {{
-                      props.row.report_template_type !== "plaintext"
-                        ? "HTML"
-                        : "Text"
-                    }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    $gettext("Open %{format} Report", {
+                      format:
+                        props.row.report_template_type !== "plaintext"
+                          ? $gettext("HTML")
+                          : $pgettext("Report editing", "Text"),
+                    })
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -131,7 +134,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-download" />
                   </q-item-section>
-                  <q-item-section>Download PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $gettext("Download PDF Report")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -151,15 +156,14 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-download" />
                   </q-item-section>
-                  <q-item-section
-                    >Download
-                    {{
-                      props.row.report_template_type !== "plaintext"
-                        ? "HTML"
-                        : "Text"
-                    }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    $gettext("Download %{format} Report", {
+                      format:
+                        props.row.report_template_type !== "plaintext"
+                          ? $gettext("HTML")
+                          : $pgettext("Report editing", "Text"),
+                    })
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -172,12 +176,12 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $gettext("Delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator />
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $gettext("Close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -206,16 +210,17 @@ For details, see: https://license.tacticalrmm.com/ee
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { gettext } from "@/gettext";
+import { ref, onMounted, computed } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
 import { formatDate, capitalize } from "@/utils/format";
 import { useSharedReportHistory } from "../api/reporting";
 import type { ReportHistory } from "../types/reporting";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "report_template_name",
-    label: "Template",
+    label: gettext.$gettext("Template"),
     field: "report_template_name",
     align: "left",
     sortable: true,
@@ -229,7 +234,7 @@ const columns: QTableColumn[] = [
   },
   {
     name: "report_template_type",
-    label: "Template Type",
+    label: gettext.$gettext("Template Type"),
     field: "report_template_type",
     align: "left",
     sortable: true,
@@ -237,13 +242,13 @@ const columns: QTableColumn[] = [
   },
   {
     name: "date_created",
-    label: "Date Created",
+    label: gettext.$gettext("Date Created"),
     field: "date_created",
     align: "left",
     sortable: true,
     format: (val: string) => formatDate(val),
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -265,11 +270,15 @@ const search = ref("");
 // Confirm and delete
 function deleteHistory(entry: ReportHistory) {
   $q.dialog({
-    title: `Delete History for ${entry.report_template_name}?`,
-    message: "This will remove the history entry permanently.",
+    title: gettext.$gettext("Delete History for %{name}?", {
+      name: entry.report_template_name,
+    }),
+    message: gettext.$gettext(
+      "This will remove the history entry permanently.",
+    ),
     color: "primary",
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(() => {
     deleteReportHistory(entry.id);
   });

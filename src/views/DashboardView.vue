@@ -28,13 +28,13 @@
               <q-item-section avatar>
                 <q-icon name="fas fa-home" />
               </q-item-section>
-              <q-item-section>All Clients</q-item-section>
+              <q-item-section>{{ $gettext("All Clients") }}</q-item-section>
             </q-item>
             <q-tree
               ref="tree"
               :nodes="clientsTree"
               node-key="raw"
-              no-nodes-label="No Clients"
+              :no-nodes-label="$gettext('No Clients')"
               selected-color="primary"
               v-model:selected="selectedTree"
               @update:selected="$store.dispatch('refreshDashboard')"
@@ -49,8 +49,8 @@
                   <div>
                     {{ props.node.label }}
                     <q-tooltip :delay="600">
-                      ID: {{ props.node.id }}<br />
-                      Agent Count:
+                      {{ $gettext("ID") }}: {{ props.node.id }}<br />
+                      {{ $gettext("Agent Count") }}:
                       {{
                         props.node.children
                           ? props.node.client.agent_count
@@ -69,7 +69,9 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{
+                          $pgettext("Dashboard agent actions", "Edit")
+                        }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
@@ -79,7 +81,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Delete")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-separator></q-separator>
@@ -93,7 +97,9 @@
                         <q-item-section side>
                           <q-icon name="add" />
                         </q-item-section>
-                        <q-item-section>Add Site</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Add Site")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -106,8 +112,8 @@
                         </q-item-section>
                         <q-item-section>{{
                           props.node.color === "green"
-                            ? "Disable Maintenance Mode"
-                            : "Enable Maintenance Mode"
+                            ? $gettext("Disable Maintenance Mode")
+                            : $gettext("Enable Maintenance Mode")
                         }}</q-item-section>
                       </q-item>
 
@@ -120,7 +126,9 @@
                         <q-item-section side>
                           <q-icon name="cloud_download" />
                         </q-item-section>
-                        <q-item-section>Install Agent</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Install Agent")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -131,9 +139,9 @@
                         <q-item-section side>
                           <q-icon name="policy" />
                         </q-item-section>
-                        <q-item-section
-                          >Assign Automation Policy</q-item-section
-                        >
+                        <q-item-section>
+                          {{ $gettext("Assign Automation Policy") }}
+                        </q-item-section>
                       </q-item>
 
                       <q-item
@@ -144,14 +152,21 @@
                         <q-item-section side>
                           <q-icon name="error" />
                         </q-item-section>
-                        <q-item-section>Assign Alert Template</q-item-section>
+                        <q-item-section>{{
+                          $pgettext(
+                            "Dashboard agent actions",
+                            "Assign Alert Template",
+                          )
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item clickable v-ripple @click="getURLActions">
                         <q-item-section side>
                           <q-icon name="open_in_new" />
                         </q-item-section>
-                        <q-item-section>Run URL Action</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Run URL Action")
+                        }}</q-item-section>
                         <q-item-section side>
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
@@ -186,7 +201,9 @@
                         <q-item-section side>
                           <q-icon name="fas fa-check-double" />
                         </q-item-section>
-                        <q-item-section>Run Checks</q-item-section>
+                        <q-item-section>{{
+                          $pgettext("Dashboard agent actions", "Run Checks")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -202,7 +219,9 @@
                         <q-item-section side>
                           <q-icon name="analytics" />
                         </q-item-section>
-                        <q-item-section>Reporting</q-item-section>
+                        <q-item-section>{{
+                          $pgettext("Dashboard agent actions", "Reporting")
+                        }}</q-item-section>
                         <q-item-section side>
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
@@ -215,7 +234,7 @@
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
-                        <q-item-section>Close</q-item-section>
+                        <q-item-section>{{ $gettext("Close") }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -250,19 +269,23 @@
                 align="left"
                 narrow-indicator
               >
-                <q-tab name="server" icon="fas fa-server" label="Servers" />
+                <q-tab
+                  name="server"
+                  icon="fas fa-server"
+                  :label="$gettext('Servers')"
+                />
                 <q-tab
                   name="workstation"
                   icon="computer"
-                  label="Workstations"
+                  :label="$gettext('Workstations')"
                 />
-                <q-tab name="mixed" label="Mixed" />
+                <q-tab name="mixed" :label="$gettext('Mixed')" />
               </q-tabs>
               <q-space />
               <q-input
                 v-model="search"
                 style="width: 450px"
-                label="Search"
+                :label="$pgettext('Agent filters', 'Search')"
                 dense
                 outlined
                 clearable
@@ -282,7 +305,9 @@
                   >
                     <q-menu>
                       <q-list dense>
-                        <q-item-label header>Filter Agent Table</q-item-label>
+                        <q-item-label header>{{
+                          $gettext("Filter Agent Table")
+                        }}</q-item-label>
 
                         <q-item>
                           <q-item-section side>
@@ -290,7 +315,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Checks Failing</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Checks Failing")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -300,7 +327,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Patches Pending</q-item-label>
+                            <q-item-label>{{
+                              $pgettext("Agent filters", "Patches Pending")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -310,7 +339,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Actions Pending</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Actions Pending")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -320,11 +351,15 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Reboot Needed</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Reboot Needed")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
-                        <q-item-label header>Availability</q-item-label>
+                        <q-item-label header>{{
+                          $gettext("Availability")
+                        }}</q-item-label>
 
                         <q-item>
                           <q-item-section side>
@@ -332,7 +367,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show All Agents</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Show All Agents")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -345,7 +382,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Online Only</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Show Online Only")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -358,7 +397,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Offline Only</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Show Offline Only")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -371,7 +412,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Overdue Only</q-item-label>
+                            <q-item-label>{{
+                              $gettext("Show Overdue Only")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -384,9 +427,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label
-                              >Show Offline for over 30 days</q-item-label
-                            >
+                            <q-item-label>{{
+                              $gettext("Show Offline for over 30 days")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
                       </q-list>
@@ -395,14 +438,17 @@
                         <div class="column">
                           <q-btn
                             v-close-popup
-                            label="Apply"
+                            :label="$gettext('Apply')"
                             color="primary"
                             @click="applyFilter"
                           />
                         </div>
                         <q-space />
                         <div class="column">
-                          <q-btn label="Clear" @click="clearFilter" />
+                          <q-btn
+                            :label="$gettext('Clear')"
+                            @click="clearFilter"
+                          />
                         </div>
                       </div>
                     </q-menu>
@@ -528,35 +574,35 @@ export default {
         },
         {
           name: "client_name",
-          label: "Client",
+          label: this.$pgettext("Agent table", "Client"),
           field: "client_name",
           sortable: true,
           align: "left",
         },
         {
           name: "site_name",
-          label: "Site",
+          label: this.$pgettext("Agent table", "Site"),
           field: "site_name",
           sortable: true,
           align: "left",
         },
         {
           name: "hostname",
-          label: "Hostname",
+          label: this.$gettext("Hostname"),
           field: "hostname",
           sortable: true,
           align: "left",
         },
         {
           name: "description",
-          label: "Description",
+          label: this.$pgettext("Agent table", "Description"),
           field: "description",
           sortable: true,
           align: "left",
         },
         {
           name: "user",
-          label: "User",
+          label: this.$pgettext("Agent table", "User"),
           field: "logged_username",
           sortable: true,
           align: "left",
@@ -599,14 +645,14 @@ export default {
         },
         {
           name: "last_seen",
-          label: "Last Response",
+          label: this.$gettext("Last Response"),
           field: "last_seen",
           sortable: true,
           align: "left",
         },
         {
           name: "boot_time",
-          label: "Boot Time",
+          label: this.$gettext("Boot Time"),
           field: "boot_time",
           sortable: true,
           align: "left",
@@ -644,8 +690,33 @@ export default {
     tab() {
       this.$store.dispatch("loadAgents");
     },
+    "$language.current"() {
+      this.setColumnLabels();
+    },
   },
   methods: {
+    setColumnLabels() {
+      const labels = {
+        client_name: this.$pgettext("Agent table", "Client"),
+        site_name: this.$pgettext("Agent table", "Site"),
+        hostname: this.$gettext("Hostname"),
+        description: this.$pgettext("Agent table", "Description"),
+        user: this.$pgettext("Agent table", "User"),
+        last_seen: this.$gettext("Last Response"),
+        boot_time: this.$gettext("Boot Time"),
+      };
+
+      this.columns = this.columns.map((column) => {
+        if (labels[column.name]) {
+          return {
+            ...column,
+            label: labels[column.name],
+          };
+        }
+
+        return column;
+      });
+    },
     getTree() {
       this.$store.dispatch("loadTree");
     },
@@ -708,10 +779,15 @@ export default {
       } else {
         this.$q
           .dialog({
-            title: "Are you sure?",
-            message: `Delete ${node.children ? "client" : "site"}: ${node.label}.`,
+            title: this.$gettext("Are you sure?"),
+            message: this.$gettext("Delete %{type}: %{name}.", {
+              type: node.children
+                ? this.$pgettext("Agent table", "Client").toLowerCase()
+                : this.$pgettext("Agent table", "Site").toLowerCase(),
+              name: node.label,
+            }),
             cancel: true,
-            ok: { label: "Delete", color: "negative" },
+            ok: { label: this.$gettext("Delete"), color: "negative" },
           })
           .onOk(async () => {
             this.$q.loading.show();
@@ -839,7 +915,9 @@ export default {
           .sort((a, b) => a.name.localeCompare(b.name));
         if (this.urlActions.length === 0) {
           this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+            this.$gettext(
+              "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+            ),
           );
         }
       });
@@ -905,6 +983,7 @@ export default {
     },
   },
   mounted() {
+    this.setColumnLabels();
     this.getTree();
 
     // set initial value for agent table and agent tabs

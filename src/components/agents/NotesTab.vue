@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $gettext("No agent selected") }}
+  </div>
   <div v-else>
     <q-table
       grid
@@ -13,7 +15,7 @@
       :loading="loading"
       hide-bottom
       virtual-scroll
-      no-data-label="No notes"
+      :no-data-label="$gettext('No notes')"
     >
       <template v-slot:top>
         <q-btn
@@ -26,7 +28,7 @@
         />
         <q-btn
           icon="add"
-          label="Add Note"
+          :label="$gettext('Add Note')"
           no-caps
           dense
           flat
@@ -63,7 +65,9 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{
+                          $pgettext("General edit action", "Edit")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -74,7 +78,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $gettext("Delete")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -92,6 +98,7 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
 import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -106,25 +113,6 @@ import { notifySuccess } from "@/utils/notify";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
-
-// static data
-const columns = [
-  {
-    name: "entry_time",
-    label: "Date",
-    field: "entry_time",
-  },
-  {
-    name: "username",
-    label: "User",
-    field: "username",
-  },
-  {
-    name: "note",
-    label: "Note",
-    field: "note",
-  },
-];
 
 export default {
   name: "NotesTab",
@@ -151,6 +139,20 @@ export default {
       descending: false,
     });
 
+    const columns = computed(() => [
+      {
+        name: "entry_time",
+        label: gettext.$gettext("Date"),
+        field: "entry_time",
+      },
+      {
+        name: "username",
+        label: gettext.$pgettext("Agent notes", "User"),
+        field: "username",
+      },
+      { name: "note", label: gettext.$gettext("Note"), field: "note" },
+    ]);
+
     async function getNotes() {
       loading.value = true;
       notes.value = await fetchAgentNotes(selectedAgent.value);
@@ -160,14 +162,14 @@ export default {
     function addNote() {
       noteText.value = "";
       $q.dialog({
-        title: "Add Note",
+        title: gettext.$gettext("Add Note"),
         prompt: {
           model: noteText,
           type: "textarea",
           isValid: (val) => !!val,
         },
         style: "width: 90vw; max-width: 90vw",
-        ok: { label: "Add" },
+        ok: { label: gettext.$gettext("Add Note") },
         cancel: true,
       }).onOk(async () => {
         loading.value = true;
@@ -187,14 +189,14 @@ export default {
 
     function editNote(note) {
       $q.dialog({
-        title: "Edit Note",
+        title: gettext.$gettext("Edit Note"),
         prompt: {
           model: note.note,
           type: "textarea",
           isValid: (val) => !!val,
         },
         style: "width: 90vw; max-width: 90vw",
-        ok: { label: "Save" },
+        ok: { label: gettext.$gettext("Save") },
         cancel: true,
       }).onOk(async (data) => {
         loading.value = true;
@@ -211,9 +213,9 @@ export default {
 
     function deleteNote(note) {
       $q.dialog({
-        title: "Delete note?",
+        title: gettext.$gettext("Delete note?"),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: gettext.$gettext("Delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

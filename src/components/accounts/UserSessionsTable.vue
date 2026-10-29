@@ -2,10 +2,14 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 60vw; max-width: 90vw; min-height: 40vh">
       <q-bar>
-        User Sessions for {{ user.username }}
+        {{
+          $gettext("User Sessions for %{username}", { username: user.username })
+        }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -28,7 +32,7 @@
         <template #top>
           <q-space />
           <q-btn
-            label="Remove All Sessions"
+            :label="$gettext('Remove All Sessions')"
             @click="removeAllSessions"
             size="sm"
             color="negative"
@@ -43,7 +47,7 @@
               <q-btn
                 size="sm"
                 @click="removeSession(props.row)"
-                label="Disconnect"
+                :label="$gettext('Disconnect')"
                 color="negative"
               ></q-btn>
             </td>
@@ -55,8 +59,9 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 // composition imports
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useDialogPluginComponent, useQuasar, type QTableColumn } from "quasar";
 import { notifySuccess } from "@/utils/notify";
 import { formatDate } from "@/utils/format";
@@ -70,17 +75,17 @@ import {
 import type { SSOUser } from "@/ee/sso/types/sso";
 import type { AuthToken } from "@/types/accounts";
 
-const columns: QTableColumn[] = [
+const columns = computed<QTableColumn[]>(() => [
   {
     name: "created",
-    label: "Created",
+    label: gettext.$pgettext("User sessions", "Created"),
     field: "created",
     align: "left",
     sortable: true,
   },
   {
     name: "expiry",
-    label: "Expires",
+    label: gettext.$gettext("Expires"),
     field: "expiry",
     align: "left",
     sortable: true,
@@ -92,7 +97,7 @@ const columns: QTableColumn[] = [
     align: "left",
     sortable: true,
   },
-];
+]);
 
 // emits
 defineEmits([...useDialogPluginComponent.emits]);
@@ -110,15 +115,17 @@ const loading = ref(false);
 
 function removeSession(token: AuthToken) {
   $q.dialog({
-    title: `Disconnect session for ${token.user}?`,
-    message: "This user will be signed out immediately.",
+    title: gettext.$gettext("Disconnect session for %{user}?", {
+      user: token.user,
+    }),
+    message: gettext.$gettext("This user will be signed out immediately."),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await deleteUserSession(token.digest);
-      notifySuccess("Login session deleted successfully");
+      notifySuccess(gettext.$gettext("Login session deleted successfully"));
     } finally {
       loading.value = false;
       await getSessions();
@@ -128,14 +135,16 @@ function removeSession(token: AuthToken) {
 
 function removeAllSessions() {
   $q.dialog({
-    title: `Disconnect all sessions for ${props.user.username}?`,
+    title: gettext.$gettext("Disconnect all sessions for %{username}?", {
+      username: props.user.username,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: gettext.$gettext("Delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await deleteAllUserSessions(props.user.id);
-      notifySuccess("Login sessions deleted successfully");
+      notifySuccess(gettext.$gettext("Login sessions deleted successfully"));
     } finally {
       loading.value = false;
       onDialogHide();

@@ -1,4 +1,5 @@
-import { ref, onMounted } from "vue";
+import { gettext } from "@/gettext";
+import { ref, computed, onMounted } from "vue";
 import { updateCheck, saveCheck } from "@/api/checks";
 import { fetchAgentChecks } from "@/api/agents";
 import { fetchPolicyChecks } from "@/api/automation";
@@ -25,7 +26,7 @@ export function useCheckModal({ editCheck, initialState }) {
       if (
         !isValidThreshold(
           check.value.warning_threshold,
-          check.value.error_threshold
+          check.value.error_threshold,
         )
       )
         return;
@@ -34,7 +35,7 @@ export function useCheckModal({ editCheck, initialState }) {
         !isValidThreshold(
           check.value.warning_threshold,
           check.value.error_threshold,
-          true
+          true,
         )
       )
         return;
@@ -56,22 +57,22 @@ export function useCheckModal({ editCheck, initialState }) {
   // dropdown options
   const failOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  const severityOptions = [
-    { label: "Informational", value: "info" },
-    { label: "Warning", value: "warning" },
-    { label: "Error", value: "error" },
-  ];
+  const severityOptions = computed(() => [
+    { label: gettext.$gettext("Informational"), value: "info" },
+    { label: gettext.$gettext("Warning"), value: "warning" },
+    { label: gettext.$gettext("Error"), value: "error" },
+  ]);
 
   const logNameOptions = ["Application", "System", "Security"];
-  const failWhenOptions = [
-    { label: "Log contains", value: "contains" },
-    { label: "Log does not contain", value: "not_contains" },
-  ];
+  const failWhenOptions = computed(() => [
+    { label: gettext.$gettext("Log contains"), value: "contains" },
+    { label: gettext.$gettext("Log does not contain"), value: "not_contains" },
+  ]);
 
   const diskOptions = ref(
     "A:,B:,C:,D:,E:,F:,G:,H:,I:,J:,K:,L:,M:,N:,O:,P:,Q:,R:,S:,T:,U:,V:,W:,X:,Y:,Z:".split(
-      ","
-    )
+      ",",
+    ),
   );
 
   const serviceOptions = ref(Object.freeze(defaultServiceOptions));
@@ -90,7 +91,7 @@ export function useCheckModal({ editCheck, initialState }) {
       value: service.name,
     }));
     serviceOptions.value = Object.freeze(
-      tmp.sort((a, b) => a.label.localeCompare(b.label))
+      tmp.sort((a, b) => a.label.localeCompare(b.label)),
     );
     check.value.svc_name = serviceOptions.value[0].value;
     check.value.svc_display_name = serviceOptions.value[0].label;
@@ -136,13 +137,13 @@ export function useCheckDropdown() {
   async function getCheckOptions({ agent, policy }, flat = false) {
     if (!agent && !policy) {
       console.error(
-        "Need to specify agent or policy object when calling getCheckOptions"
+        "Need to specify agent or policy object when calling getCheckOptions",
       );
       return;
     }
     checkOptions.value = formatCheckOptions(
       agent ? await fetchAgentChecks(agent) : await fetchPolicyChecks(policy),
-      flat
+      flat,
     );
   }
 

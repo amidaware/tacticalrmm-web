@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import { gettext } from "@/gettext";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useMeta } from "quasar";
@@ -18,15 +19,20 @@ import { useMeta } from "quasar";
 import { fetchAgentWebVNCUrl } from "@/api/agents";
 
 const { params } = useRoute();
+const pageTitlePrefix = ref("");
+useMeta(() =>
+  pageTitlePrefix.value
+    ? { title: `${pageTitlePrefix.value} | ${gettext.$gettext("VNC")}` }
+    : {},
+);
+
 const vnc = ref("");
 
 async function getVNCUrl() {
   try {
     const data = await fetchAgentWebVNCUrl(params.agent_id, params.port);
     vnc.value = data.vnc;
-    useMeta({
-      title: `${data.hostname} - ${data.client} - ${data.site} | VNC`,
-    });
+    pageTitlePrefix.value = `${data.hostname} - ${data.client} - ${data.site}`;
   } catch (e) {
     console.error(e);
   }

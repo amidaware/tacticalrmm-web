@@ -1,7 +1,8 @@
+import { gettext } from "@/gettext";
 import { Notify, date } from "quasar";
 import axios from "axios";
 
-import { formatAgentOptions } from "@/utils/format";
+import { formatAgentOptions, groupScriptsByCategory } from "@/utils/format";
 
 function getTimeLapse(unixtime) {
   var previous = unixtime * 1000;
@@ -13,17 +14,59 @@ function getTimeLapse(unixtime) {
   var msPerYear = msPerDay * 365;
   var elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return gettext.$ngettext(
+      "%{count} second ago",
+      "%{count} seconds ago",
+      Math.round(elapsed / 1000),
+      {
+        count: Math.round(elapsed / 1000),
+      },
+    );
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return gettext.$ngettext(
+      "%{count} minute ago",
+      "%{count} minutes ago",
+      Math.round(elapsed / msPerMinute),
+      {
+        count: Math.round(elapsed / msPerMinute),
+      },
+    );
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return gettext.$ngettext(
+      "%{count} hour ago",
+      "%{count} hours ago",
+      Math.round(elapsed / msPerHour),
+      {
+        count: Math.round(elapsed / msPerHour),
+      },
+    );
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return gettext.$ngettext(
+      "%{count} day ago",
+      "%{count} days ago",
+      Math.round(elapsed / msPerDay),
+      {
+        count: Math.round(elapsed / msPerDay),
+      },
+    );
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return gettext.$ngettext(
+      "%{count} month ago",
+      "%{count} months ago",
+      Math.round(elapsed / msPerMonth),
+      {
+        count: Math.round(elapsed / msPerMonth),
+      },
+    );
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return gettext.$ngettext(
+      "%{count} year ago",
+      "%{count} years ago",
+      Math.round(elapsed / msPerYear),
+      {
+        count: Math.round(elapsed / msPerYear),
+      },
+    );
   }
 }
 
@@ -69,7 +112,9 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold or Error Threshold need to be set",
+          message: gettext.$gettext(
+            "Warning Threshold or Error Threshold need to be set",
+          ),
         });
         return false;
       }
@@ -78,7 +123,9 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be less than Error Threshold",
+          message: gettext.$gettext(
+            "Warning Threshold must be less than Error Threshold",
+          ),
         });
         return false;
       }
@@ -87,7 +134,9 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be more than Error Threshold",
+          message: gettext.$gettext(
+            "Warning Threshold must be more than Error Threshold",
+          ),
         });
         return false;
       }
@@ -171,43 +220,22 @@ export default {
         scripts = data.filter((i) => i.script_type !== "builtin");
       }
 
-      let categories = [];
-      let create_unassigned = false;
-      scripts.forEach((script) => {
-        if (!!script.category && !categories.includes(script.category)) {
-          categories.push(script.category);
-        } else if (!script.category) {
-          create_unassigned = true;
-        }
-      });
-
-      if (create_unassigned) categories.push("Unassigned");
-
-      categories.sort().forEach((cat) => {
-        options.push({ category: cat });
-        let tmp = [];
-        scripts.forEach((script) => {
-          if (script.category === cat) {
-            tmp.push({
+      groupScriptsByCategory(scripts).forEach(
+        ({ category, scripts: grouped }) => {
+          options.push({
+            category: category ?? gettext.$gettext("Unassigned"),
+          });
+          options.push(
+            ...grouped.map((script) => ({
               label: script.name,
               value: script.id,
               timeout: script.default_timeout,
               args: script.args,
               env_vars: script.env_vars,
-            });
-          } else if (cat === "Unassigned" && !script.category) {
-            tmp.push({
-              label: script.name,
-              value: script.id,
-              timeout: script.default_timeout,
-              args: script.args,
-              env_vars: script.env_vars,
-            });
-          }
-        });
-        const sorted = tmp.sort((a, b) => a.label.localeCompare(b.label));
-        options.push(...sorted);
-      });
+            })),
+          );
+        },
+      );
 
       return options;
     },
@@ -227,7 +255,7 @@ export default {
       }
       const a = date.formatDate(ret, "MMM D, YYYY");
       const b = date.formatDate(ret, "h:mm A");
-      return `${a} at ${b}`;
+      return gettext.$gettext("%{date} at %{time}", { date: a, time: b });
     },
     truncateText(txt) {
       if (txt) return txt.length >= 60 ? txt.substring(0, 60) + "..." : txt;

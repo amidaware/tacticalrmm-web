@@ -1,6 +1,6 @@
 <template>
   <div v-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $gettext("Only supported for Windows agents at this time") }}
   </div>
   <q-table
     v-else
@@ -23,7 +23,13 @@
     <template v-slot:top>
       <q-btn dense flat push @click="getServices" icon="refresh" />
       <q-space />
-      <q-input v-model="filter" outlined label="Search" dense clearable>
+      <q-input
+        v-model="filter"
+        outlined
+        :label="$pgettext('General actions', 'Search')"
+        dense
+        clearable
+      >
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>
@@ -45,21 +51,23 @@
         <q-menu context-menu auto-close>
           <q-list dense style="min-width: 200px">
             <q-item clickable @click="sendServiceAction(props.row, 'start')">
-              <q-item-section>Start</q-item-section>
+              <q-item-section>{{
+                $pgettext("Windows services", "Start")
+              }}</q-item-section>
             </q-item>
             <q-item clickable @click="sendServiceAction(props.row, 'stop')">
-              <q-item-section>Stop</q-item-section>
+              <q-item-section>{{ $gettext("Stop") }}</q-item-section>
             </q-item>
             <q-item clickable @click="sendServiceAction(props.row, 'restart')">
-              <q-item-section>Restart</q-item-section>
+              <q-item-section>{{ $gettext("Restart") }}</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable @click="showServiceDetail(props.row)">
-              <q-item-section>Service Details</q-item-section>
+              <q-item-section>{{ $gettext("Service Details") }}</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $gettext("Close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -71,7 +79,7 @@
         <q-td key="start_type" :props="props">{{
           props.row.start_type.toLowerCase() === "automatic" &&
           props.row.autodelay
-            ? `${props.row.start_type} (Delayed)`
+            ? `${props.row.start_type} (${$gettext("Delayed")})`
             : `${props.row.start_type}`
         }}</q-td>
         <q-td key="pid" :props="props">{{
@@ -79,7 +87,7 @@
         }}</q-td>
         <q-td key="status" :props="props">{{ props.row.status }}</q-td>
         <q-td key="username" :props="props">{{
-          props.row.username ? props.row.username : "LocalSystem"
+          props.row.username ? props.row.username : $gettext("LocalSystem")
         }}</q-td>
       </q-tr>
     </template>
@@ -87,8 +95,9 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { getAgentServices, sendAgentServiceAction } from "@/api/services";
 import { notifySuccess } from "@/utils/notify";
@@ -97,72 +106,6 @@ import { truncateText } from "@/utils/format";
 // ui imports
 import ServiceDetail from "@/components/agents/remotebg/ServiceDetail.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
-
-// static data
-const columns = [
-  {
-    name: "display_name",
-    label: "Display Name",
-    field: "display_name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "name",
-    label: "Name",
-    field: "name",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "start_type",
-    label: "Startup",
-    field: "start_type",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "pid",
-    label: "PID",
-    field: "pid",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "status",
-    label: "Status",
-    field: "status",
-    align: "left",
-    sortable: true,
-  },
-  {
-    name: "username",
-    label: "Log On As",
-    field: "username",
-    align: "left",
-    sortable: true,
-  },
-];
-
-// static data
-const startupOptions = [
-  {
-    label: "Automatic (Delayed Start)",
-    value: "autodelay",
-  },
-  {
-    label: "Automatic",
-    value: "automatic",
-  },
-  {
-    label: "Manual",
-    value: "manual",
-  },
-  {
-    label: "Disabled",
-    value: "disabled",
-  },
-];
 
 export default {
   name: "ServicesManager",
@@ -181,6 +124,70 @@ export default {
     const services = ref([]);
     const filter = ref("");
     const loading = ref(false);
+
+    const columns = computed(() => [
+      {
+        name: "display_name",
+        label: gettext.$pgettext("Windows services", "Display Name"),
+        field: "display_name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "name",
+        label: gettext.$pgettext("Windows services", "Name"),
+        field: "name",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "start_type",
+        label: gettext.$gettext("Startup"),
+        field: "start_type",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "pid",
+        label: gettext.$gettext("PID"),
+        field: "pid",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "status",
+        label: gettext.$pgettext("Windows services", "Status"),
+        field: "status",
+        align: "left",
+        sortable: true,
+      },
+      {
+        name: "username",
+        label: gettext.$gettext("Log On As"),
+        field: "username",
+        align: "left",
+        sortable: true,
+      },
+    ]);
+
+    const startupOptions = computed(() => [
+      {
+        label: gettext.$gettext("Automatic (Delayed Start)"),
+        value: "autodelay",
+      },
+      {
+        label: gettext.$gettext("Automatic"),
+        value: "automatic",
+      },
+      {
+        label: gettext.$gettext("Manual"),
+        value: "manual",
+      },
+      {
+        label: gettext.$pgettext("Windows service configuration", "Disabled"),
+        value: "disabled",
+      },
+    ]);
 
     function showServiceDetail(service) {
       $q.dialog({
@@ -205,7 +212,7 @@ export default {
         const result = await sendAgentServiceAction(
           props.agent_id,
           service.name,
-          { sv_action: action }
+          { sv_action: action },
         );
         notifySuccess(result);
         await getServices();

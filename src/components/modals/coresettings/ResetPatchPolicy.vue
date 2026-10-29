@@ -2,16 +2,20 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="min-width: 40vw">
       <q-bar>
-        Reset Agent Patch Policy
+        {{ $gettext("Reset Agent Patch Policy") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $gettext("Close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section class="text-subtitle3">
-        Reset the patch policies for agents in a specific client or site. You
-        can also leave the client and site blank to reset the patch policy for
-        all agents. (This might take a while)
+        {{
+          $gettext(
+            "Reset the patch policies for agents in a specific client or site. You can also leave the client and site blank to reset the patch policy for all agents. (This might take a while)",
+          )
+        }}
       </q-card-section>
 
       <q-card-section>
@@ -27,8 +31,8 @@
       <q-form @submit="submit">
         <q-card-section v-if="target == 'client'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
-            label="Clients"
+            :rules="[(val) => !!val || $gettext('Required')]"
+            :label="$pgettext('Reset Windows update policy', 'Clients')"
             mapOptions
             filterable
             clearable
@@ -39,8 +43,8 @@
         </q-card-section>
         <q-card-section v-if="target == 'site'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
-            label="Sites"
+            :rules="[(val) => !!val || $gettext('Required')]"
+            :label="$pgettext('Reset Windows update policy', 'Sites')"
             mapOptions
             filterable
             clearable
@@ -50,7 +54,7 @@
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat push dense label="Cancel" v-close-popup />
+          <q-btn flat push dense :label="$gettext('Cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             flat
@@ -58,8 +62,8 @@
             push
             :label="
               target == 'all'
-                ? 'Clear Policies for ALL Agents'
-                : 'Clear Policies'
+                ? $gettext('Clear Policies for ALL Agents')
+                : $gettext('Clear Policies')
             "
             color="primary"
             type="submit"
@@ -71,8 +75,9 @@
 </template>
 
 <script>
+import { gettext } from "@/gettext";
 // composition imports
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 import { sendPatchPolicyReset } from "@/api/automation";
@@ -80,13 +85,6 @@ import { notifySuccess } from "@/utils/notify";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
-
-// static data
-const targetOptions = [
-  { label: "All", value: "all" },
-  { label: "Client", value: "client" },
-  { label: "Site", value: "site" },
-];
 
 export default {
   name: "ResetPatchPolicy",
@@ -97,6 +95,21 @@ export default {
   setup() {
     // setup quasar dialog plugin
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+
+    const targetOptions = computed(() => [
+      {
+        label: gettext.$pgettext("Reset Windows update policy", "All"),
+        value: "all",
+      },
+      {
+        label: gettext.$pgettext("Reset Windows update policy", "Client"),
+        value: "client",
+      },
+      {
+        label: gettext.$pgettext("Reset Windows update policy", "Site"),
+        value: "site",
+      },
+    ]);
 
     // setup dropdowns
     const { client, clientOptions } = useClientDropdown(true);

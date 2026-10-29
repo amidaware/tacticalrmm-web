@@ -4,13 +4,19 @@
       <q-splitter v-model="splitterModel">
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
-            <q-tab name="ui" label="User Interface" />
+            <q-tab
+              name="ui"
+              :label="$gettext('User Interface')"
+              style="white-space: normal"
+            />
           </q-tabs>
         </template>
         <template v-slot:after>
           <q-form @submit.prevent="editUserPrefs">
             <q-card-section class="row items-center">
-              <div class="text-h6">Preferences</div>
+              <div class="text-h6">
+                {{ $pgettext("User preferences", "Preferences") }}
+              </div>
               <q-space />
               <q-btn icon="close" flat round dense v-close-popup />
             </q-card-section>
@@ -22,10 +28,14 @@
             >
               <!-- UI -->
               <q-tab-panel name="ui">
-                <div class="text-subtitle2">User Interface</div>
+                <div class="text-subtitle2">
+                  {{ $gettext("User Interface") }}
+                </div>
                 <q-separator />
                 <q-card-section class="row">
-                  <div class="col-6">Agent double-click action:</div>
+                  <div class="col-6">
+                    {{ $gettext("Agent double-click action") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     map-options
@@ -43,7 +53,9 @@
                   class="row"
                   v-if="agentDblClickAction === 'urlaction'"
                 >
-                  <div class="col-6">URL Action:</div>
+                  <div class="col-6">
+                    {{ $pgettext("User preferences", "URL Action") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     map-options
@@ -57,7 +69,9 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-6">Agent table default tab:</div>
+                  <div class="col-6">
+                    {{ $gettext("Agent table default tab") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-select
                     map-options
@@ -71,19 +85,23 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-4">Loading Bar Color:</div>
+                  <div class="col-4">{{ $gettext("Loading Bar Color") }}:</div>
                   <div class="col-4"></div>
                   <q-select
+                    map-options
+                    emit-value
                     outlined
                     dense
                     options-dense
                     v-model="loading_bar_color"
-                    :options="loadingBarColors"
+                    :options="loadingBarColorOptions"
                     class="col-4"
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Dashboard Info Color:</div>
+                  <div class="col-2">
+                    {{ $gettext("Dashboard Info Color") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -100,13 +118,17 @@
                         icon="info"
                         @click="openURL(quasar_color_url)"
                       >
-                        <q-tooltip>Click to see color options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see color options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Dashboard Positive Color:</div>
+                  <div class="col-2">
+                    {{ $gettext("Dashboard Positive Color") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -123,13 +145,17 @@
                         icon="info"
                         @click="openURL(quasar_color_url)"
                       >
-                        <q-tooltip>Click to see color options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see color options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Dashboard Negative Color:</div>
+                  <div class="col-2">
+                    {{ $gettext("Dashboard Negative Color") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -146,13 +172,17 @@
                         icon="info"
                         @click="openURL(quasar_color_url)"
                       >
-                        <q-tooltip>Click to see color options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see color options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Dashboard Warning Color:</div>
+                  <div class="col-2">
+                    {{ $gettext("Dashboard Warning Color") }}:
+                  </div>
                   <div class="col-2"></div>
                   <q-input
                     outlined
@@ -169,13 +199,29 @@
                         icon="info"
                         @click="openURL(quasar_color_url)"
                       >
-                        <q-tooltip>Click to see color options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see color options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Client Sort:</div>
+                  <div class="col-2">{{ $gettext("Language") }}:</div>
+                  <div class="col-2"></div>
+                  <q-select
+                    map-options
+                    emit-value
+                    outlined
+                    dense
+                    options-dense
+                    v-model="locale"
+                    :options="localeOptions"
+                    class="col-8"
+                  />
+                </q-card-section>
+                <q-card-section class="row">
+                  <div class="col-2">{{ $gettext("Client Sort") }}:</div>
                   <div class="col-2"></div>
                   <q-select
                     map-options
@@ -189,7 +235,7 @@
                   />
                 </q-card-section>
                 <q-card-section class="row">
-                  <div class="col-2">Date Format:</div>
+                  <div class="col-2">{{ $gettext("Date Format") }}:</div>
                   <div class="col-2"></div>
                   <q-input outlined dense v-model="date_format" class="col-8">
                     <template v-slot:after>
@@ -205,7 +251,9 @@
                           )
                         "
                       >
-                        <q-tooltip>Click to see formatting options</q-tooltip>
+                        <q-tooltip>{{
+                          $gettext("Click to see formatting options")
+                        }}</q-tooltip>
                       </q-btn>
                     </template>
                   </q-input>
@@ -213,14 +261,16 @@
                 <q-card-section class="row">
                   <q-checkbox
                     v-model="clear_search_when_switching"
-                    label="Clear search field when switching client/site"
+                    :label="
+                      $gettext('Clear search field when switching client/site')
+                    "
                   />
                 </q-card-section>
               </q-tab-panel>
             </q-tab-panels>
 
             <q-card-section class="row items-center">
-              <q-btn label="Save" color="primary" type="submit" />
+              <q-btn :label="$gettext('Save')" color="primary" type="submit" />
             </q-card-section>
           </q-form>
         </template>
@@ -231,6 +281,14 @@
 
 <script>
 import { openURL } from "quasar";
+import {
+  setLocale,
+  locales,
+  getLocalePreference,
+  setLocalePreference,
+  resolveSystemLocale,
+  clearStoredLocale,
+} from "@/gettext/locale";
 import { loadingBarColors } from "@/mixins/data";
 import mixins from "@/mixins/mixins";
 
@@ -244,6 +302,8 @@ export default {
       agentDblClickAction: "",
       defaultAgentTblTab: "",
       clientTreeSort: "",
+      locale: "system",
+      localeFieldKey: null,
       url_action: null,
       tab: "ui",
       splitterModel: 20,
@@ -256,48 +316,6 @@ export default {
       clear_search_when_switching: true,
       date_format: "",
       quasar_color_url: "https://quasar.dev/style/color-palette",
-      clientTreeSortOptions: [
-        {
-          label: "Sort alphabetically, moving failing clients to the top",
-          value: "alphafail",
-        },
-        {
-          label: "Sort alphabetically only",
-          value: "alpha",
-        },
-      ],
-      agentDblClickOptions: [
-        {
-          label: "Edit Agent",
-          value: "editagent",
-        },
-        {
-          label: "Take Control",
-          value: "takecontrol",
-        },
-        {
-          label: "Remote Background",
-          value: "remotebg",
-        },
-        {
-          label: "Run URL Action",
-          value: "urlaction",
-        },
-      ],
-      defaultAgentTblTabOptions: [
-        {
-          label: "Servers",
-          value: "server",
-        },
-        {
-          label: "Workstations",
-          value: "workstation",
-        },
-        {
-          label: "Mixed",
-          value: "mixed",
-        },
-      ],
     };
   },
   watch: {
@@ -305,6 +323,94 @@ export default {
       if (new_value === "urlaction") {
         this.getURLActions();
       }
+    },
+  },
+  computed: {
+    clientTreeSortOptions() {
+      return [
+        {
+          label: this.$gettext(
+            "Sort alphabetically, moving failing clients to the top",
+          ),
+          value: "alphafail",
+        },
+        {
+          label: this.$gettext("Sort alphabetically only"),
+          value: "alpha",
+        },
+      ];
+    },
+    agentDblClickOptions() {
+      return [
+        {
+          label: this.$gettext("Edit Agent"),
+          value: "editagent",
+        },
+        {
+          label: this.$pgettext("User preferences", "Take Control"),
+          value: "takecontrol",
+        },
+        {
+          label: this.$gettext("Remote Background"),
+          value: "remotebg",
+        },
+        {
+          label: this.$gettext("Run URL Action"),
+          value: "urlaction",
+        },
+      ];
+    },
+    defaultAgentTblTabOptions() {
+      return [
+        {
+          label: this.$gettext("Servers"),
+          value: "server",
+        },
+        {
+          label: this.$gettext("Workstations"),
+          value: "workstation",
+        },
+        {
+          label: this.$gettext("Mixed"),
+          value: "mixed",
+        },
+      ];
+    },
+    localeOptions() {
+      return [
+        {
+          label: this.$gettext("System (auto)"),
+          value: "system",
+        },
+        ...locales,
+      ];
+    },
+    loadingBarColorOptions() {
+      return this.loadingBarColors.map((color) => ({
+        label:
+          {
+            amber: this.$gettext("Amber"),
+            blue: this.$gettext("Blue"),
+            "blue-grey": this.$gettext("Blue Grey"),
+            brown: this.$gettext("Brown"),
+            cyan: this.$gettext("Cyan"),
+            "deep-orange": this.$gettext("Deep Orange"),
+            "deep-purple": this.$gettext("Deep Purple"),
+            green: this.$gettext("Green"),
+            grey: this.$gettext("Grey"),
+            indigo: this.$gettext("Indigo"),
+            "light-blue": this.$gettext("Light Blue"),
+            "light-green": this.$gettext("Light Green"),
+            lime: this.$gettext("Lime"),
+            orange: this.$gettext("Orange"),
+            pink: this.$gettext("Pink"),
+            purple: this.$gettext("Purple"),
+            red: this.$gettext("Red"),
+            teal: this.$gettext("Teal"),
+            yellow: this.$gettext("Yellow"),
+          }[color] ?? color,
+        value: color,
+      }));
     },
   },
   methods: {
@@ -323,13 +429,19 @@ export default {
 
         if (this.urlActions.length === 0) {
           this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+            this.$gettext(
+              "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+            ),
           );
         }
       });
     },
     getUserPrefs() {
       this.$axios.get("/core/dashinfo/").then((r) => {
+        this.localeFieldKey = ["locale", "language", "lang", "ui_locale"].find(
+          (key) => key in r.data,
+        );
+        this.locale = getLocalePreference();
         this.agentDblClickAction = r.data.dbl_click_action;
         this.url_action = r.data.url_action;
         this.defaultAgentTblTab = r.data.default_agent_tbl_tab;
@@ -343,12 +455,12 @@ export default {
         this.date_format = r.data.date_format;
       });
     },
-    editUserPrefs() {
+    async editUserPrefs() {
       if (
         this.agentDblClickAction === "urlaction" &&
         this.url_action === null
       ) {
-        this.notifyError("Select a URL Action");
+        this.notifyError(this.$gettext("Select a URL Action"));
         return;
       }
       const data = {
@@ -364,8 +476,21 @@ export default {
         clear_search_when_switching: this.clear_search_when_switching,
         date_format: this.date_format,
       };
-      this.$axios.patch("/accounts/users/ui/", data).then(() => {
-        this.notifySuccess("Preferences were saved!");
+      if (this.localeFieldKey) {
+        data[this.localeFieldKey] =
+          this.locale === "system" ? resolveSystemLocale() : this.locale;
+      }
+
+      this.$axios.patch("/accounts/users/ui/", data).then(async () => {
+        if (this.locale === "system") {
+          setLocalePreference("system");
+          await setLocale(resolveSystemLocale(), { persist: false });
+          clearStoredLocale();
+        } else {
+          setLocalePreference(this.locale);
+          await setLocale(this.locale, { persist: true });
+        }
+        this.notifySuccess(this.$gettext("Preferences were saved!"));
         this.$store.dispatch("loadTree");
         this.onOk();
       });

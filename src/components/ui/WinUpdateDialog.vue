@@ -6,11 +6,13 @@
       </q-card-section>
       <q-card-section>
         <div>
-          <strong>Categories:</strong>
+          <strong>{{ $gettext("Categories") }}:</strong>
           {{ categories.join(", ") }}
         </div>
         <div class="q-mt-md">
-          <strong>Description</strong>
+          <strong>{{
+            $pgettext("Windows update details", "Description")
+          }}</strong>
           <div
             v-for="(para, i) in descriptionParagraphs"
             :key="i"
@@ -20,7 +22,7 @@
           </div>
         </div>
         <div class="q-mt-md">
-          <strong>Support URLs</strong>
+          <strong>{{ $gettext("Support URLs") }}</strong>
           <div v-for="url in supportUrls" :key="url" class="q-mt-xs">
             <a :href="url" target="_blank" rel="noopener" :class="linkClass">{{
               url
@@ -29,7 +31,7 @@
         </div>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn label="OK" @click="onDialogOK" />
+        <q-btn :label="$gettext('OK')" @click="onDialogOK" />
       </q-card-actions>
     </q-card>
   </q-dialog>
