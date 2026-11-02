@@ -198,8 +198,8 @@
           </q-markup-table>
           <div class="text-caption text-grey-6 q-mt-sm">
             Opening a session claims it for you, so other techs see you are
-            helping. The customer is not asked to accept: they see a notice and a
-            bar with <b>Disconnect</b> while you are connected.
+            helping. The customer sees no prompt or pop-up when you connect;
+            closing Quick Support on their PC ends the session.
           </div>
         </template>
       </q-page>
