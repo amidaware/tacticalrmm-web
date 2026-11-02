@@ -91,8 +91,8 @@
             <q-icon name="check_circle" size="48px" color="positive" />
             <div class="text-h6 q-mt-sm">Nobody is waiting</div>
             <div>
-              When a customer opens BlueCloud Quick Support and clicks
-              <b>Request Help</b>, they appear here within a few seconds.
+              When a customer opens BlueCloud Quick Support, they appear here
+              within a few seconds.
             </div>
           </div>
 
@@ -137,7 +137,7 @@
                     {{
                       e.status === "left"
                         ? "Closed Quick Support"
-                        : "No help request (cancelled)"
+                        : "Opened Quick Support (no message)"
                     }}
                   </div>
                 </td>
@@ -198,7 +198,8 @@
           </q-markup-table>
           <div class="text-caption text-grey-6 q-mt-sm">
             Opening a session claims it for you, so other techs see you are
-            helping. The customer still has to click <b>Allow</b> on their PC.
+            helping. The customer is not asked to accept: they see a notice and a
+            bar with <b>Disconnect</b> while you are connected.
           </div>
         </template>
       </q-page>
@@ -337,8 +338,6 @@ export default {
           return "Waiting";
         case "helping":
           return helper(e) === me.value ? "You are helping" : `${helper(e)} is helping`;
-        case "idle":
-          return "Online, no request";
         default:
           return "Left";
       }

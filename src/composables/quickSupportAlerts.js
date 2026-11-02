@@ -33,8 +33,9 @@ export function disableNotifications() {
   localStorage.setItem(NOTIFY_KEY, "off");
 }
 
+// one request = one run of the Assistant (node + connect time), with or without a typed message
 function requestKey(e) {
-  return `${e.id}|${e.help_text || ""}`;
+  return e.request_id || `${e.id}|${e.help_text || ""}`;
 }
 
 function loadNotified() {
@@ -76,7 +77,7 @@ export function alertNewRequests(entries, router) {
   const now = Date.now();
   const fresh = [];
   for (const e of entries) {
-    if (e.status !== "waiting" || !e.help_text) continue;
+    if (e.status !== "waiting") continue;
     const k = requestKey(e);
     if (!notified[k]) {
       notified[k] = now;
@@ -93,7 +94,7 @@ export function alertNewRequests(entries, router) {
   if (notifyEnabled()) {
     for (const e of fresh) {
       const n = new Notification("Quick Support: someone needs help", {
-        body: `${e.help_text}\n${e.name}`,
+        body: `${e.help_text || "Opened Quick Support"}\n${e.help_user || (e.users || []).join(", ")} on ${e.name}`,
         tag: `qs-${e.id}`,
         requireInteraction: true,
       });
