@@ -228,17 +228,18 @@
 
       <template v-slot:after>
         <q-splitter
+          ref="innerSplitter"
           v-model="innerModel"
           reverse
           unit="px"
           horizontal
-          @update:model-value="$store.commit('SET_SPLITTER', innerModel)"
+          @update:model-value="onSplitterMove"
           after-class="hide-scrollbar"
           before-class="hide-scrollbar"
           emit-immediately
         >
           <template v-slot:before>
-            <div class="row">
+            <div ref="agentFilterRow" class="row">
               <q-tabs
                 v-model="tab"
                 dense
@@ -479,6 +480,7 @@ export default {
   data() {
     return {
       showInstallAgentModal: false,
+      paneObserver: null,
       sitePk: null,
       innerModel: (this.$q.screen.height - 82) / 2,
       search: this.$route.query.search ? this.$route.query.search : "",
@@ -634,6 +636,11 @@ export default {
     };
   },
   watch: {
+    "$q.screen.height"(h) {
+      // keep the agent list visible when the window gets shorter
+      const maxTabs = Math.max(h - 300, 100);
+      if (this.innerModel > maxTabs) this.innerModel = maxTabs;
+    },
     search(newVal) {
       if (newVal === "") this.clearFilter();
       else if (newVal.length < this.filterTextLength) this.clearFilter();
@@ -646,6 +653,40 @@ export default {
     },
   },
   methods: {
+    onSplitterMove() {
+      // the pane observer resizes the table; this is the fallback without it
+      if (!this.paneObserver)
+        this.$store.commit("SET_SPLITTER", this.innerModel);
+    },
+    observePanes() {
+      const root = this.$refs.innerSplitter && this.$refs.innerSplitter.$el;
+      if (!root || typeof window.ResizeObserver === "undefined") return;
+      const before = root.querySelector(":scope > .q-splitter__before");
+      const after = root.querySelector(":scope > .q-splitter__after");
+      if (!before || !after) return;
+      // size the agent table and agent tabs from the panes they sit in, so they
+      // follow window resizes, rotation and zoom, not only splitter drags
+      this.paneObserver = new ResizeObserver(() =>
+        this.updatePaneHeights(before, after),
+      );
+      this.paneObserver.observe(before);
+      this.paneObserver.observe(after);
+      if (this.$refs.agentFilterRow)
+        this.paneObserver.observe(this.$refs.agentFilterRow);
+    },
+    updatePaneHeights(before, after) {
+      const filterRow = this.$refs.agentFilterRow
+        ? this.$refs.agentFilterRow.offsetHeight
+        : 0;
+      const tableBottom = before.querySelector(".q-table__bottom");
+      const footer = tableBottom ? tableBottom.offsetHeight : 33;
+      const subTabsHeader = after.querySelector(".q-header");
+      const tabsBar = subTabsHeader ? subTabsHeader.offsetHeight : 37;
+      this.$store.commit("SET_PANE_HEIGHTS", {
+        table: Math.max(before.clientHeight - filterRow - footer, 100),
+        tab: Math.max(after.clientHeight - tabsBar, 50),
+      });
+    },
     getTree() {
       this.$store.dispatch("loadTree");
     },
@@ -909,6 +950,10 @@ export default {
 
     // set initial value for agent table and agent tabs
     this.$store.commit("SET_SPLITTER", this.innerModel);
+    this.$nextTick(() => this.observePanes());
+  },
+  beforeUnmount() {
+    if (this.paneObserver) this.paneObserver.disconnect();
   },
 };
 </script>

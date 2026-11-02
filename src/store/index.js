@@ -95,6 +95,10 @@ export default function () {
         // q-tabs are 37px
         state.tabHeight = `${val - 37}px`;
       },
+      SET_PANE_HEIGHTS(state, { table, tab }) {
+        state.tableHeight = `${Math.floor(table)}px`;
+        state.tabHeight = `${Math.floor(tab)}px`;
+      },
       SET_CLIENT_SPLITTER(state, val) {
         state.clientTreeSplitter = val;
       },
