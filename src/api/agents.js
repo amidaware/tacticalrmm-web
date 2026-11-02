@@ -180,6 +180,13 @@ export async function fetchPiHistory(agent_id) {
   return data;
 }
 
+// AI desktop control for ONE computer - the chat hamburger switch. The RMM owns the decision
+// (it edits the Operator allowlist) and pushes it to every live chat about this computer.
+export async function setPiDesktopControl(agent_id, enabled) {
+  const { data } = await axios.post(`${baseUrl}/${agent_id}/pi/desktop-control/`, { enabled: !!enabled, via: "chat" });
+  return data;
+}
+
 export async function deletePiHistory(agent_id, session_id) {
   const { data } = await axios.delete(`${baseUrl}/${agent_id}/pi/history/`, {
     data: { session_id },

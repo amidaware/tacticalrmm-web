@@ -64,7 +64,7 @@
     <!-- THEN -->
     <div class="rule-branch">
       <div class="rule-kw rule-kw--sm">THEN</div>
-      <Steps :steps="block.then" :vocab="vocab" :procedures="procedures" :depth="depth" />
+      <Steps :steps="block.then" :vocab="vocab" :procedures="procedures" :actions="actions" :depth="depth" />
       <div class="q-gutter-xs q-mt-xs">
         <q-btn dense flat no-caps size="sm" color="primary" icon="add" label="action" @click="addAction('then')" />
         <q-btn
@@ -88,6 +88,7 @@
       :block="e"
       :vocab="vocab"
       :procedures="procedures"
+      :actions="actions"
       :depth="depth"
       :first="false"
       :removable="true"
@@ -101,7 +102,7 @@
         <q-space />
         <q-btn dense flat round size="xs" color="negative" icon="close" @click="block.else = null" />
       </div>
-      <Steps :steps="block.else" :vocab="vocab" :procedures="procedures" :depth="depth" />
+      <Steps :steps="block.else" :vocab="vocab" :procedures="procedures" :actions="actions" :depth="depth" />
       <div class="q-gutter-xs q-mt-xs">
         <q-btn dense flat no-caps size="sm" color="primary" icon="add" label="action" @click="addAction('else')" />
       </div>
@@ -138,6 +139,8 @@ const props = defineProps({
   block: { type: Object, required: true },
   vocab: { type: Object, required: true },
   procedures: { type: Array, default: () => [] },
+  // The subject's attached reviewed actions, threaded down so a run_script step can name one.
+  actions: { type: Array, default: () => [] },
   depth: { type: Number, default: 1 },
   first: { type: Boolean, default: true },
   removable: { type: Boolean, default: false },

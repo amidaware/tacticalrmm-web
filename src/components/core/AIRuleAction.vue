@@ -19,58 +19,94 @@
         @update:model-value="onVerb"
       />
       <div class="col">
-        <div class="row q-col-gutter-sm">
-          <template v-for="p in params" :key="p.name">
+        <!-- RUN_SCRIPT NAMES AN ATTACHED ACTION (owner, 2026-10-06): the command body lives in
+             Reviewed actions below, so the rule stays short and there is one home for the script.
+             The author picks the action by name; the resolved command and its parameters are the
+             library's. -->
+        <template v-if="step.action === 'run_script'">
+          <div class="row q-col-gutter-sm">
             <q-select
-              v-if="p.type === 'procedure'"
-              class="col-12 col-sm-6"
-              dense
-              outlined
-              clearable
-              options-dense
-              emit-value
-              map-options
-              v-model="step.args[p.name]"
-              :options="procedureOptions"
-              :label="p.name"
-            />
-            <q-select
-              v-else-if="p.type === 'choice'"
-              class="col-12 col-sm-6"
+              class="col-12 col-sm-8"
               dense
               outlined
               options-dense
               emit-value
               map-options
-              v-model="step.args[p.name]"
-              :options="(p.choices || []).map((c) => ({ label: c, value: c }))"
-              :label="p.name"
+              :model-value="step.args.name"
+              :options="actionChoices"
+              :label="actionChoices.length ? 'reviewed action' : 'no reviewed actions attached yet'"
+              :hint="actionChoices.length
+                ? 'The command lives on the action - the rule only names it.'
+                : 'Add one under Reviewed actions below, then choose it here.'"
+              @update:model-value="onPickAction"
             />
             <q-input
-              v-else-if="p.type === 'int'"
               class="col-6 col-sm-3"
               dense
               outlined
               type="number"
-              v-model.number="step.args[p.name]"
-              :label="p.name"
+              :model-value="step.args.wait"
+              label="wait (s) after"
+              hint="optional pause after it finishes"
+              @update:model-value="(v) => (step.args.wait = v)"
             />
-          </template>
-        </div>
-        <!-- A SCRIPT BODY IS THE ONE THING HERE THAT RUNS VERBATIM. It gets its own full-width
-             monospace box rather than being crammed into a text input, because it is the part a
-             person must actually read before approving the rule. -->
-        <q-input
-          v-if="scriptParam"
-          class="q-mt-sm"
-          dense
-          outlined
-          autogrow
-          type="textarea"
-          input-style="font-family:monospace;font-size:12px"
-          v-model="step.args[scriptParam.name]"
-          :label="`${step.args.name || scriptParam.name} - this exact text runs on the device`"
-        />
+          </div>
+        </template>
+        <template v-else>
+          <div class="row q-col-gutter-sm">
+            <template v-for="p in params" :key="p.name">
+              <q-select
+                v-if="p.type === 'procedure'"
+                class="col-12 col-sm-6"
+                dense
+                outlined
+                clearable
+                options-dense
+                emit-value
+                map-options
+                v-model="step.args[p.name]"
+                :options="procedureOptions"
+                :label="p.name"
+              />
+              <q-select
+                v-else-if="p.type === 'choice'"
+                class="col-12 col-sm-6"
+                dense
+                outlined
+                options-dense
+                emit-value
+                map-options
+                v-model="step.args[p.name]"
+                :options="(p.choices || []).map((c) => ({ label: c, value: c }))"
+                :label="p.name"
+              />
+              <q-input
+                v-else-if="p.type === 'int'"
+                class="col-6 col-sm-3"
+                dense
+                outlined
+                type="number"
+                v-model.number="step.args[p.name]"
+                :label="p.name"
+              />
+            </template>
+          </div>
+          <!-- A SCRIPT BODY IS THE ONE THING HERE THAT RUNS VERBATIM. It gets its own full-width
+               monospace box rather than being crammed into a text input, because it is the part a
+               person must actually read before approving the rule. Only used by an inline body on
+               a one-off action; a rule normally names an attached action instead. -->
+          <q-input
+            v-if="scriptParam"
+            class="q-mt-sm"
+            dense
+            outlined
+            autogrow
+            type="textarea"
+            input-style="font-family:monospace;font-size:12px"
+            v-model="step.args[scriptParam.name]"
+            :label="`${step.args.name || scriptParam.name} - this exact text runs on the device`"
+          />
+        </template>
         <div v-if="spec && spec.plain" class="rule-hint">
           {{ spec.plain }}
           <span v-if="spec.needs_ai" class="text-amber-8">Runs the AI at this step, every time.</span>
@@ -90,6 +126,9 @@ const props = defineProps({
   step: { type: Object, required: true },
   vocab: { type: Object, required: true },
   procedures: { type: Array, default: () => [] },
+  // The subject's attached reviewed actions. A run_script step NAMES one of these; the command
+  // body is not in the rule (owner, 2026-10-06).
+  actions: { type: Array, default: () => [] },
 });
 defineEmits(["remove"]);
 
@@ -105,6 +144,19 @@ const scriptParam = computed(() => params.value.find((p) => p.name === "script")
 const procedureOptions = computed(() =>
   (props.procedures || []).map((p) => ({ label: `#${p.id} ${p.title}`, value: p.id })),
 );
+
+// The attached reviewed actions, by name. The rule references one; it never carries the body.
+const actionChoices = computed(() =>
+  (props.actions || []).map((a) => (typeof a === "string" ? a : a.name)).filter(Boolean),
+);
+
+// Choosing an action keeps a deliberate `wait` override if the author already set one.
+function onPickAction(v) {
+  const next = { name: v };
+  const w = props.step.args && props.step.args.wait;
+  if (w !== undefined && w !== null && w !== "") next.wait = w;
+  props.step.args = next;
+}
 
 // Changing the verb invalidates the old arguments - "procedure 412" means nothing to
 // "run the script" - so they are cleared rather than left behind to look meaningful.

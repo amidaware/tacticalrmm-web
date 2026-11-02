@@ -246,15 +246,73 @@
           <q-select v-model="edit.mode" dense outlined emit-value map-options :options="modeOptions" label="Mode" />
           <div class="sec-note q-mt-sm">{{ modeNote }}</div>
 
+          <!-- MAY THIS SUBJECT FILE THE TICKET TO "AI Closed"? (owner, 2026-10-05)
+               It used to close every ticket it answered, including INTAKE subjects whose job is to
+               acknowledge a request and ask for details - TICKET/62168/62169 went to AI Closed
+               minutes after arriving while a technician still had to create the account and do an
+               on-site visit, and on 62169 the technician had to tell the customer "please ignore
+               the last reply, that was by AI". A subject with no rule has nothing that says the
+               job is done, so closing is OFF until someone turns it on here. -->
+          <q-toggle
+            class="q-mt-md"
+            dense
+            v-model="edit.may_close_ticket"
+            :label="edit.may_close_ticket
+              ? 'May file the ticket to AI Closed once it has answered'
+              : 'Leaves the ticket open for a human (recommended for intake subjects)'"
+          >
+            <q-tooltip max-width="340px">
+              On: after it replies, the ticket is filed to <b>AI Closed</b> for review - use this only
+              when the subject actually finishes the job (it ran its script, or nothing was needed).
+              <br />Off: the ticket stays open and tagged for a person. Right for intake subjects that
+              acknowledge a request, ask for details, or leave on-site work to a technician.
+            </q-tooltip>
+          </q-toggle>
+          <div class="sec-note q-mt-xs" :class="{ 'sec-note--warn': !edit.may_close_ticket && isFixMode }">
+            <template v-if="edit.may_close_ticket">Finished tickets are filed to AI Closed for a person to promote to Closed.</template>
+            <template v-else>A reply is sent and the ticket STAYS OPEN, tagged for input, until a person closes it.</template>
+          </div>
+
+          <!-- ────── IMMUTABLE ACTIONS: NO APPROVAL NEEDED (owner, 2026-10-15) ──────
+               "a non approved contact [can] put a ticket in and get an automation running, as long as
+               it's immutable... restarting of services / updates of their computer". Only reviewed
+               actions marked Read-only / Restart / Update may skip the approval; anything marked
+               "Changes data" still waits for a person, whatever this switch says (enforced in the
+               bridge, autowork-rule.js). -->
+          <template v-if="isFixMode">
+            <q-toggle
+              class="q-mt-md"
+              dense
+              color="deep-orange"
+              v-model="edit.allow_safe_bypass"
+              :label="edit.allow_safe_bypass
+                ? 'Immutable actions run without approval - anyone at this customer can trigger them'
+                : 'Every action waits for a support contact or a technician to approve'"
+            >
+              <q-tooltip max-width="380px">
+                On: a reviewed action marked <b>Read-only</b>, <b>Restart</b> or <b>Update</b> runs as soon as
+                the rule reaches it - even when whoever filed the ticket is not an approved contact.
+                <br />Actions marked <b>Changes data</b> (files, licences, accounts, config) still need a
+                person's approval, always.
+              </q-tooltip>
+            </q-toggle>
+            <div class="sec-note q-mt-xs" :class="{ 'sec-note--warn': edit.allow_safe_bypass && !safeActionCount }">
+              <template v-if="!edit.allow_safe_bypass">Off: nothing runs until a support contact or a technician approves it.</template>
+              <template v-else-if="!safeActionCount">On - but no reviewed action is marked Read-only / Restart / Update yet, so nothing can run without approval. Set "What it does" on the actions below.</template>
+              <template v-else>{{ safeActionCount }} of {{ (edit.fix_actions || []).length }} reviewed action(s) can run without approval. The rest still wait for a person.</template>
+            </div>
+          </template>
+
           <!-- ────── FIX: THE RULE ────────────────────────────────────────
                Fix means the system may act by itself, so Fix is where a rule lives. The rule is
                the only thing that grants action, it is walked step by step, and the approval gate
                at the top is not the author's to remove. -->
           <template v-if="isFixMode">
-            <div v-if="!ruleBlocks.length && !(edit.fix_actions || []).length" class="sec-note sec-note--warn q-mt-md">
-              Fix is selected but there is <b>nothing to run</b> yet. Until you add a rule or a
-              reviewed action below, this subject can only investigate - the automation will not
-              change anything.
+            <div v-if="!ruleBlocks.length" class="sec-note sec-note--warn q-mt-md">
+              Fix is selected but there is <b>no rule</b>, so <b>nothing will run</b> on any device.
+              The reviewed actions below are stored library data, not authority. A script only executes
+              from inside an IF in the rule - write one that reaches the script (or press "Have an AI
+              help write this") and the automation can act. Until then it can only investigate.
             </div>
             <div class="sec-subtitle q-mt-lg">Rule — what it may do on its own</div>
             <div class="text-caption text-grey-7 q-mb-sm">
@@ -276,13 +334,14 @@
                 :block="b"
                 :vocab="vocab"
                 :procedures="procOptions"
+                :actions="ruleActions"
                 :depth="1"
                 :first="true"
                 :removable="true"
                 @remove="ruleBlocks.splice(i, 1)"
               />
               <div v-if="!ruleBlocks.length" class="rule-empty-block">
-                No rule yet. Until there is one, Fix runs from the reviewed actions below.
+                No rule yet. Nothing runs: a script only executes from inside an IF here.
               </div>
 
               <div class="q-gutter-xs q-mt-sm">
@@ -320,22 +379,24 @@
               </div>
             </div>
 
-            <!-- THE PRE-RULE PATH, STILL THE ONE THAT EXECUTES TODAY. Kept, collapsed, and labelled
-                 honestly: server.js still derives the run from mode + these actions until the rule
-                 interpreter is switched on, so hiding them would hide what actually runs. -->
+            <!-- THE SCRIPT LIBRARY. The rule NAMES one of these; the command body lives here
+                 (owner, 2026-10-06: "call the action's name in the Rule so the rule isn't so long").
+                 A named action still only runs when a rule reaches it inside a TRUE IF - the library
+                 on its own executes nothing. -->
             <q-expansion-item
               class="legacy-box q-mt-md"
               dense
               switch-toggle-side
               icon="settings_backup_restore"
-              :default-opened="!ruleBlocks.length"
-              :label="`Reviewed actions - what executes today (${(edit.fix_actions || []).length})`"
-              caption="Until the rule interpreter is on, Fix still runs these by name on the pinned machine. A rule above is not executed yet."
+              :default-opened="false"
+              :label="`Reviewed actions - the script library (${(edit.fix_actions || []).length})`"
+              caption="The command bodies the rule runs. Add or edit one here, then name it in a rule above; only a rule that reaches it inside a true IF can run it."
             >
               <div class="q-pa-sm">
                 <div class="text-caption text-grey-7">
-                  The AI may run <b>one of these by name</b> and nothing else: it cannot edit, combine
-                  or invent a command.
+                  A <b>run the reviewed action</b> step in the rule above names one of these. The command,
+                  shell, timeout and the values it reads from the ticket live here, so the rule stays short
+                  and the script has one home. Editing a command here changes what the rule runs.
                 </div>
                 <div v-for="(a, i) in edit.fix_actions" :key="`fix${i}`" class="action-card q-mt-md">
                   <div class="row items-center">
@@ -350,11 +411,14 @@
                       :options="shellOptions" label="Shell" />
                     <q-input class="col-6 col-sm-3" dense outlined type="number" v-model.number="a.wait" label="Wait (s)" />
                   </div>
+                  <q-select class="q-mt-sm" dense outlined v-model="a.safety" emit-value map-options
+                    :options="safetyOptions" label="What it does - decides whether it needs approval"
+                    :hint="safetyHint(a.safety)" />
                   <q-input class="q-mt-sm" dense outlined autogrow type="textarea" v-model="a.command"
                     label="Command - exactly what will run" input-style="font-family:monospace;font-size:12px" />
                 </div>
                 <q-btn class="q-mt-md" dense no-caps outline color="primary" icon="add" label="Add action"
-                  @click="edit.fix_actions.push({ name: '', shell: 'powershell', command: '', wait: 5 })" />
+                  @click="edit.fix_actions.push({ name: '', shell: 'powershell', command: '', wait: 5, safety: 'mutating' })" />
                 <div class="row q-col-gutter-md q-mt-md">
                   <q-select class="col-12 col-sm-8" dense outlined use-input input-debounce="0" clearable
                     v-model="fixAgent" :options="fixAgentOptions" @filter="filterFixAgents"
@@ -648,6 +712,11 @@ export default defineComponent({
     });
     const isFixMode = computed(() => edit.value.mode === "device_fix");
     const isInvestigateMode = computed(() => edit.value.mode === "device_readonly");
+    // The attached reviewed actions, by name, for the rule editor's run_script picker. The rule
+    // NAMES an action; the command body stays in the library (owner, 2026-10-06).
+    const ruleActions = computed(() => (edit.value.fix_actions || [])
+      .filter((a) => a && a.name)
+      .map((a) => ({ name: a.name, what: a.what || "" })));
 
     // Plain-language statement of the ceiling, shown right under the Mode select, because the
     // difference between these three is the whole safety model and it should not live only in a
@@ -655,7 +724,9 @@ export default defineComponent({
     const modeNote = computed(() => {
       if (isFixMode.value) {
         return "Fix: the system may act by itself on a matching ticket - it runs this subject's rule " +
-               "step by step, after the approval gate. That is the only mode where a rule is used.";
+               "step by step, after the approval gate. WITHOUT A RULE IT RUNS NOTHING: the reviewed " +
+               "actions below are stored library data, not authority, and a script only executes from " +
+               "inside an IF that is true (owner, 2026-10-06).";
       }
       if (isInvestigateMode.value) {
         return "Investigate: read-only probes on the customer's devices, then a reply. Nothing is " +
@@ -675,6 +746,22 @@ export default defineComponent({
       { label: "Command Prompt", value: "cmd" },
       { label: "Bash", value: "bash" },
     ];
+    // WHAT A REVIEWED ACTION DOES - decides whether it may run without a person's approval (the
+    // server's core/ai_rules.py ACTION_SAFETY). Unset is treated as "Changes data" everywhere, so a
+    // new or old action can never slip past the gate by being unlabelled.
+    const safetyOptions = [
+      { label: "Read-only - only looks, changes nothing", value: "read" },
+      { label: "Restart - a service, task or the computer", value: "restart" },
+      { label: "Update - installs OS / software updates", value: "update" },
+      { label: "Changes data - files, licences, accounts, config (always needs approval)", value: "mutating" },
+    ];
+    function safetyHint(v) {
+      if (v === "read" || v === "restart" || v === "update")
+        return "Immutable - may run without approval when this subject allows it.";
+      return "Needs a support contact or a technician to approve before it runs.";
+    }
+    const safeActionCount = computed(() => (edit.value.fix_actions || [])
+      .filter((a) => a && ["read", "restart", "update"].includes(a.safety)).length);
     const procSel = ref([]);
     const procOptions = ref([]);
     const procFiltered = ref([]);
@@ -941,7 +1028,8 @@ export default defineComponent({
     function openNew() {
       edit.value = { name: "", description: "", mode: "advise", status: "approved", instructions: "", agent_group: null,
         all_clients: true, clients: [], domains: [], baseline_minutes: null, match: {}, procedures: [], kb_article_ids: [],
-        fix_actions: [], fix_target: {}, fix_cooldown_minutes: 60, statements: {} };
+        fix_actions: [], fix_target: {}, fix_cooldown_minutes: 60, statements: {}, may_close_ticket: false,
+        allow_safe_bypass: false };
       matchText.value = JSON.stringify({ subject_regex: "", body_any: [] }, null, 2);
       kbText.value = "";
       procSel.value = [];
@@ -1017,6 +1105,18 @@ export default defineComponent({
         }
         if (r.statements && Array.isArray(r.statements.blocks)) {
           edit.value.statements = { blocks: r.statements.blocks };
+        }
+        // The draft may have written a script body; the server folded it into a reviewed action and
+        // left the rule naming it, so show the new action in the library (owner, 2026-10-06).
+        if (Array.isArray(r.added_actions) && r.added_actions.length) {
+          const have = new Set((edit.value.fix_actions || []).map((a) => a && a.name));
+          for (const a of r.added_actions) {
+            if (a && a.name && !have.has(a.name)) {
+              if (!Array.isArray(edit.value.fix_actions)) edit.value.fix_actions = [];
+              edit.value.fix_actions.push(a);
+              have.add(a.name);
+            }
+          }
         }
         draftNotes.value = r.notes || "";
         draftErrors.value = r.errors || [];
@@ -1113,8 +1213,9 @@ export default defineComponent({
       procSel, procFiltered, procLoading, filterProcedures, modeOptions,
       procDialog, procDetail, procDetailLoading, procProbe, procStatusColor, procLabel, openProcedure,
       fixAgent, fixAgentOptions, filterFixAgents, groupDisplay, modeNote, statusOptions, shellOptions,
+      safetyOptions, safetyHint, safeActionCount,
       vocab, ruleBlocks, addRuleBlock, clearRule, draftOpen, draftText, draftBusy, draftNotes, draftErrors, runDraft,
-      isFixMode, isInvestigateMode,
+      isFixMode, isInvestigateMode, ruleActions,
       live, proposed, columns, statusColor, statusLabel, load, openNew, openEdit, submit, save, decide, remove };
   },
 });

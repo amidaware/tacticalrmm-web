@@ -14,6 +14,7 @@
         :block="s"
         :vocab="vocab"
         :procedures="procedures"
+        :actions="actions"
         :depth="depth + 1"
         :first="true"
         :removable="true"
@@ -24,6 +25,7 @@
         :step="s"
         :vocab="vocab"
         :procedures="procedures"
+        :actions="actions"
         @remove="steps.splice(i, 1)"
       />
     </template>
@@ -39,6 +41,8 @@ defineProps({
   steps: { type: Array, required: true },
   vocab: { type: Object, required: true },
   procedures: { type: Array, default: () => [] },
+  // The subject's attached reviewed actions, so a run_script step can name one.
+  actions: { type: Array, default: () => [] },
   depth: { type: Number, default: 1 },
 });
 </script>

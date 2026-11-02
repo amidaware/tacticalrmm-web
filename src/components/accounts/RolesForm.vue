@@ -183,6 +183,21 @@
                 </q-tooltip>
               </q-checkbox>
               <q-checkbox
+                v-model="localRole.can_use_ai_desktop"
+                label="Switch AI desktop control on/off for a computer"
+              >
+                <q-tooltip>
+                  Adds an "AI desktop control" switch to a computer's AI chat menu. When on,
+                  the AI can drive that computer's real screen, mouse and keyboard (the Pi AI
+                  Operator) from every chat about it, until someone switches it off. Only for
+                  computers this role can already reach, Windows only, and Operator must be
+                  enabled in Global Settings. The Operator's own rules still apply (InPrivate
+                  sign-ins, no delete, brokered passwords). An admin can also grant the switch
+                  to one technician for one computer from the chat's Access dialog.
+                  Superusers always have this.
+                </q-tooltip>
+              </q-checkbox>
+              <q-checkbox
                 v-model="localRole.can_use_ai_sales"
                 label="Use Sales / ERP quotation tools"
               >
@@ -593,6 +608,7 @@ export default {
           can_use_ai_autocredential: false,
           can_take_over_ai_session: false,
           can_use_ai_sales: false,
+          can_use_ai_desktop: false,
           can_manage_all_ai_tasks: false,
           can_view_ai_cost: false,
           ai_allowed_models: [],

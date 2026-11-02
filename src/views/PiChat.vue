@@ -60,6 +60,30 @@
                 />
               </q-item-section>
             </q-item>
+            <!-- AI DESKTOP CONTROL for this computer (2026-10-19). Shown in a device chat whose
+                 computer can be driven at all (Windows, Operator on). Only someone with the
+                 permission (role or an admin grant for this device) can flip it; everyone else
+                 sees the state. The RMM owns it and every chat on this computer follows. -->
+            <q-item v-for="dm in desktopMachines" :key="'desk-' + dm.agent_id" tag="label" dense
+                    :disable="!desktopAllowed || desktopBusy">
+              <q-item-section>
+                <q-item-label>AI desktop control{{ desktopMachines.length > 1 ? ` (${dm.hostname})` : "" }}</q-item-label>
+                <q-item-label caption>
+                  {{ desktopAllowed
+                    ? "Let the AI drive this computer's screen, mouse and keyboard. Applies to every chat on this computer until switched off."
+                    : "Needs the AI desktop control permission - ask an admin." }}
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle
+                  :model-value="!!dm.enabled"
+                  dense
+                  color="red-5"
+                  :disable="!desktopAllowed || desktopBusy"
+                  @update:model-value="(v) => sendDesktopControl(dm, v)"
+                />
+              </q-item-section>
+            </q-item>
             <q-item v-if="isDecision && autototpAllowed" tag="label" dense>
               <q-item-section>
                 <q-item-label>Auto-TOTP</q-item-label>
@@ -689,7 +713,7 @@
               />
             </div>
             <div class="q-mb-sm">
-              <div v-for="c in capCatalog" :key="c.id" class="row items-start no-wrap">
+              <div v-for="c in capCatalogHere" :key="c.id" class="row items-start no-wrap">
                 <q-checkbox dense v-model="capPicked" :val="c.id" class="q-mr-xs q-mt-xs" />
                 <div class="cap-opt">
                   <div class="text-body2">{{ c.label }}</div>
@@ -772,9 +796,19 @@
                   :title="`${f.name} (${humanSize(f.size)}) - click to open`"
                   @click="openPreview(f)"
                 />
-                <q-chip v-else dense square color="blue-grey-8" text-color="white" icon="description">
+                <q-chip
+                  v-else
+                  dense
+                  square
+                  color="blue-grey-8"
+                  text-color="white"
+                  :icon="fileIcon(f)"
+                  :clickable="!!f.html"
+                  @click="f.html && openPreview(f)"
+                >
                   {{ f.name }}
                   <span class="text-grey-4 q-ml-xs">{{ humanSize(f.size) }}</span>
+                  <q-tooltip v-if="f.html">Click to view the page as it renders</q-tooltip>
                 </q-chip>
               </template>
             </div>
@@ -1111,7 +1145,7 @@
         type="file"
         multiple
         class="hidden"
-        :accept="imagesSupported ? undefined : '.txt,.log,.csv,.json,.xml,.md,.ps1,.reg,.ini,.conf,.yaml,.yml,.html,.sql,text/*'"
+        :accept="imagesSupported ? undefined : '.txt,.log,.csv,.json,.xml,.md,.ps1,.reg,.ini,.conf,.yaml,.yml,.html,.sql,.pdf,application/pdf,text/*'"
         @change="onFilePicked"
       />
       <q-btn
@@ -1201,7 +1235,17 @@
           <q-btn v-close-popup flat dense round icon="close" />
         </q-card-section>
         <q-card-section class="q-pt-none">
-          <img :src="previewFile.preview" style="max-width: 84vw; max-height: 78vh" />
+          <!-- An attached HTML page, rendered. sandbox="" = no scripts, no forms, no
+               same-origin access: it is somebody's file, shown, never run. Inline images
+               were replaced with a note by the bridge before the model saw the file. -->
+          <iframe
+            v-if="previewFile.html"
+            :srcdoc="previewFile.html"
+            sandbox=""
+            referrerpolicy="no-referrer"
+            style="width: 84vw; height: 78vh; border: 0; background: #fff"
+          />
+          <img v-else :src="previewFile.preview" style="max-width: 84vw; max-height: 78vh" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -1353,8 +1397,8 @@
               outlined
               color="orange-5"
               class="col"
-              placeholder="Your answer&hellip;  (Enter sends)"
-              :disable="!connected || streaming"
+              :placeholder="streaming ? 'Your answer\u2026  (Enter sends it into the work in progress)' : 'Your answer\u2026  (Enter sends)'"
+              :disable="!connected"
               data-test="pi-queue-reply"
               @keydown.enter.exact.prevent="queueAnswer(q)"
             />
@@ -1364,11 +1408,11 @@
               color="orange-8"
               icon="send"
               class="q-ml-xs"
-              :disable="!connected || streaming || !(queueAnswerText[q.id] || '').trim()"
+              :disable="!connected || !(queueAnswerText[q.id] || '').trim()"
               data-test="pi-queue-answer"
               @click="queueAnswer(q)"
             >
-              <q-tooltip>Send this answer and continue</q-tooltip>
+              <q-tooltip>{{ streaming ? "Send now - the assistant reads it at its next step, without stopping" : "Send this answer and continue" }}</q-tooltip>
             </q-btn>
           </div>
         </div>
@@ -1462,7 +1506,7 @@
             type="file"
             multiple
             class="hidden"
-            :accept="imagesSupported ? undefined : '.txt,.log,.csv,.json,.xml,.md,.ps1,.reg,.ini,.conf,.yaml,.yml,.html,.sql,text/*'"
+            :accept="imagesSupported ? undefined : '.txt,.log,.csv,.json,.xml,.md,.ps1,.reg,.ini,.conf,.yaml,.yml,.html,.sql,.pdf,application/pdf,text/*'"
             @change="onQueueFilePicked"
           />
           <q-btn
@@ -1628,7 +1672,7 @@
                   size="sm"
                   color="blue-grey-8"
                   text-color="white"
-                  :icon="a.kind === 'image' ? 'image' : 'description'"
+                  :icon="a.kind === 'image' ? 'image' : fileIcon(a)"
                 >
                   {{ a.name }}<span v-if="a.bytes" class="text-grey-4 q-ml-xs">{{ humanSize(a.bytes) }}</span>
                 </q-chip>
@@ -1884,6 +1928,7 @@ import {
   createPiSession,
   saveAIAutoApprove,
   saveAIAutoCredential,
+  setPiDesktopControl,
   createPiMultiSession,
   decodePiMachines,
   encodePiMachines,
@@ -2104,7 +2149,11 @@ export default {
     }
 
     function fileIcon(f) {
-      return (f.mime || "").startsWith("image/") ? "image" : "description";
+      if ((f.mime || "").startsWith("image/")) return "image";
+      // An HTML page is a page, not "a text file": say so at a glance.
+      if (f.mime === "text/html" || /\.html?$/i.test(f.name || "")) return "html";
+      if (/\.pdf$/i.test(f.name || "")) return "picture_as_pdf";
+      return "description";
     }
 
     const pendingBytes = computed(() =>
@@ -2207,13 +2256,28 @@ export default {
     // reload the transcript comes back with those bodies in it; re-rendering a 200 KB
     // log inside a chat bubble is unreadable, so pull them back out into chips. The
     // model's copy is untouched - this is display only.
-    const ATTACH_BLOCK_RE = /\[\[pi-attachment:([^\]|]*)\|(\d+)\]\]\n?[\s\S]*?\[\[\/pi-attachment\]\]/g;
+    //
+    // A block with NO closing marker is a body that was cut short somewhere upstream (the
+    // queue used to store only the first few KB of a prompt). It still becomes a chip -
+    // the `$` alternative runs it to the end - instead of dumping the remaining text into
+    // the panel, which is what a 150 KB HTML quote did on TICKET/63160.
+    const ATTACH_BLOCK_RE = /\[\[pi-attachment:([^\]|]*)\|(\d+)\]\]\n?([\s\S]*?)(?:\n?\[\[\/pi-attachment\]\]|$)/g;
+    function attachMime(name) {
+      const ext = String(name || "").split(".").pop().toLowerCase();
+      if (ext === "html" || ext === "htm") return "text/html";
+      if (ext === "pdf") return "application/pdf";
+      return "text/plain";
+    }
     function splitAttachments(raw) {
       const text = String(raw || "");
       if (!text.includes("[[pi-attachment:")) return { text: text.trim(), files: [] };
       const files = [];
-      let stripped = text.replace(ATTACH_BLOCK_RE, (_m, name, bytes) => {
-        files.push({ name, size: Number(bytes) || 0, mime: "text/plain", preview: "" });
+      let stripped = text.replace(ATTACH_BLOCK_RE, (m, name, bytes, body) => {
+        const mime = attachMime(name);
+        const complete = /\[\[\/pi-attachment\]\]$/.test(m);
+        // An HTML file keeps its (complete) body so the chip can open it rendered.
+        files.push({ name, size: Number(bytes) || 0, mime, preview: "",
+          html: mime === "text/html" && complete ? body : "" });
         return "";
       });
       // Drop the bridge's "The technician attached N file(s)..." preamble too - the
@@ -2235,9 +2299,9 @@ export default {
     }
 
     const previewOpen = ref(false);
-    const previewFile = ref({ name: "", preview: "" });
+    const previewFile = ref({ name: "", preview: "", html: "" });
     function openPreview(f) {
-      if (!f?.preview) return;
+      if (!f?.preview && !f?.html) return;
       previewFile.value = f;
       previewOpen.value = true;
     }
@@ -2542,6 +2606,9 @@ export default {
     // agent id; the RMM stores the same ref on the row so it re-applies when the window reopens.
     const capScopeRef = computed(() => (isDecision ? String(decisionRef.value || "") : String(agentId || "")));
     const capCatalog = ref([]);
+    // Some capabilities only exist in one kind of window (AI desktop control = a device chat).
+    const capCatalogHere = computed(() =>
+      capCatalog.value.filter((c) => !Array.isArray(c.scopes) || c.scopes.includes(capScopeKind.value)));
     const capPicked = ref([]);
     const capExisting = ref([]);       // already granted to this person in this scope
     const capRoleAllowed = ref({});    // cap id -> their role covers it anyway
@@ -2635,6 +2702,9 @@ export default {
         capMessage.value = r.bridge_notified
           ? "Granted and switched on in their window."
           : "Granted. It applies the next time they open this chat.";
+        // Desktop control is a setting of the COMPUTER, switched on by the RMM as part of the grant.
+        if (r.desktop && r.desktop.error) capMessage.value += ` AI desktop control was NOT switched on: ${r.desktop.error}`;
+        else if (r.desktop && r.desktop.enabled) capMessage.value += " AI desktop control is now on for this computer.";
         notifySuccess(capMessage.value);
         capPicked.value = [];
         await loadCapsForUser();
@@ -2788,6 +2858,10 @@ export default {
     // server-side on every toggle and every credential read.
     const autocredentialAllowed = ref(false);
     const autoCredential = ref(false);
+    // AI desktop control: this chat's computers and whether each is on; may the driver flip it.
+    const desktopAllowed = ref(false);
+    const desktopMachines = ref([]);
+    const desktopBusy = ref(false);
     // Auto-TOTP (ticket windows): the bridge owns the value and remembers it per window.
     const autototpAllowed = ref(false);
     const autoTotp = ref(false);
@@ -3401,6 +3475,8 @@ export default {
               if (m.auto_credential !== undefined) autoCredential.value = !!m.auto_credential;
               if (m.autototp_allowed !== undefined) autototpAllowed.value = !!m.autototp_allowed;
               if (m.auto_totp !== undefined) autoTotp.value = !!m.auto_totp;
+              if (m.desktop_allowed !== undefined) desktopAllowed.value = !!m.desktop_allowed;
+              if (Array.isArray(m.desktop_machines)) desktopMachines.value = m.desktop_machines;
               applySummarizeState(m.auto_summarize, m.auto_summarize_tokens, m.auto_summarize_inherited, m.auto_summarize_inherited_tokens);
               // A resumed chat keeps the label it was given, so "Continue" from AI History
               // lands in a window that still knows what it is.
@@ -3589,6 +3665,10 @@ export default {
               applyWindowTitle();
             } else if (m.type === "auto_summarize_state") {
               applySummarizeState(m.enabled, m.tokens, m.inherited, m.inherited_tokens);
+            } else if (m.type === "desktop_state") {
+              // The RMM switched AI desktop control for this computer (from this window, another
+              // chat, or an admin's grant). The transcript line arrives as a system_note.
+              if (Array.isArray(m.machines)) desktopMachines.value = m.machines;
             } else if (m.type === "autototp_state") {
               autoTotp.value = !!m.value;
             } else if (m.type === "autocredential_state") {
@@ -3813,6 +3893,15 @@ export default {
                 });
                 scrollToBottom();
               }
+            } else if (m.type === "queue_answer_steered") {
+              // A Queue-panel answer given while the assistant was still working went INTO
+              // the running turn. Show it in the transcript where it happened, marked as
+              // such, without disturbing the reply that is streaming.
+              messages.value.push({ role: "user", text: m.text, steered: true,
+                via: `${m.by ? m.by + " \u00b7 " : ""}answered in the queue \u00b7 steered into the running turn` });
+              // Same as a steer typed in the chat: what the assistant says next is a new bubble.
+              currentIdx = -1;
+              scrollToBottom();
             } else if (m.type === "queued_instead") {
               // The bridge queued a message this window sent as a live prompt, because the
               // assistant was still busy (its own busy flag covered a window ours did not).
@@ -3894,7 +3983,11 @@ export default {
               if (m.autoapprove_allowed !== undefined) autoapproveAllowed.value = !!m.autoapprove_allowed;
               if (m.autocredential_allowed !== undefined) autocredentialAllowed.value = !!m.autocredential_allowed;
               if (m.autototp_allowed !== undefined) autototpAllowed.value = !!m.autototp_allowed;
+              if (m.desktop_allowed !== undefined) desktopAllowed.value = !!m.desktop_allowed;
               grantedCaps.value = Array.isArray(m.caps_granted) ? m.caps_granted : [];
+              // The seat moved and the session now runs on the new driver's permissions: the
+              // hamburger simply updates (the "X is now driving" note already says why).
+              if (m.reason === "driver") return;
               const names = grantedCaps.value.join(", ");
               messages.value.push({
                 role: "system",
@@ -4161,8 +4254,10 @@ export default {
     }
     function queueRemove(it) { queueSend({ type: "queue_remove", id: it.id }); }
     function queueAnswer(q) {
+      // Allowed while it is still working (owner, 2026-10-25): the assistant often asks and
+      // carries on with what it can do; the bridge steers the answer into that turn.
       const text = String(queueAnswerText.value[q.id] || "").trim();
-      if (!text || streaming.value) return;
+      if (!text) return;
       queueSend({ type: "queue_answer", id: q.id, text });
       queueAnswerText.value[q.id] = "";
     }
@@ -4373,6 +4468,24 @@ export default {
       approvalQueue.value = [];
     }
 
+    // Goes to the RMM, not the socket: the RMM checks the permission, changes the computer's
+    // setting, audits it, and pushes the result to every live chat on it (desktop_state).
+    async function sendDesktopControl(dm, val) {
+      desktopBusy.value = true;
+      try {
+        const r = await setPiDesktopControl(dm.agent_id, !!val);
+        desktopMachines.value = desktopMachines.value.map((x) =>
+          x.agent_id === dm.agent_id ? { ...x, enabled: !!r.enabled } : x);
+        if (!r.bridge_notified && r.changed) {
+          notifySuccess(`AI desktop control ${r.enabled ? "on" : "off"} for ${dm.hostname}. Reopen this chat if the AI does not see it yet.`);
+        }
+      } catch (e) {
+        notifyError(e?.response?.data || "Could not change AI desktop control");
+      } finally {
+        desktopBusy.value = false;
+      }
+    }
+
     function sendAutoTotp(val) {
       if (ws) ws.send(JSON.stringify({ type: "set_autototp", value: !!val }));
     }
@@ -4574,7 +4687,7 @@ export default {
       grantedCaps, canGrantCaps, decisionRef,
       capScopeKind, capScopeRef, capCatalog, capPicked, capExisting, capRoleAllowed,
       capPeopleOptions, capPeopleHint, capUsername, capMinutes, capDurations, capSaving,
-      capMessage, grantCapabilities, withdrawCapabilities,
+      capMessage, grantCapabilities, withdrawCapabilities, capCatalogHere,
       approval, approvalBusy, approvalError, loadApproval, requestApprovalPlan, decideApproval,
       lastTurnCost,
       costTurns,
@@ -4739,6 +4852,10 @@ export default {
       sendAllowEmail,
       autocredentialAllowed,
       autoCredential,
+      desktopAllowed,
+      desktopMachines,
+      desktopBusy,
+      sendDesktopControl,
       autototpAllowed,
       autoTotp,
       sendAutoTotp,

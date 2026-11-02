@@ -306,6 +306,66 @@ export async function autoResolveTicket(ticketRef: string) {
   return data as { queued: boolean };
 }
 
+// ---- "Complete this ticket" (Ticket Console magic button) -------------------
+export interface AITicketCompletionEvent {
+  t: string;
+  type: string;
+  text?: string;
+  tool?: string;
+  args?: string;
+  result?: string;
+  isError?: boolean;
+}
+
+export interface AITicketCompletion {
+  id: number;
+  ticket_ref: string;
+  mode: "readonly" | "fix";
+  status: "running" | "awaiting_review" | "approved" | "declined" | "error";
+  started_by: string;
+  run_id: string;
+  subject: number | null;
+  subject_name: string;
+  summary: string;
+  verdict: { kind?: string; confidence?: string; findings?: string[] };
+  fix_applied: string[];
+  fix_broken: Record<string, unknown>;
+  proposed_procedures: { title: string; fix?: string; symptom?: string; verification?: string }[];
+  proposed_rule: { name?: string; mode?: string; statements?: unknown; fix_actions?: { name: string; safety?: string }[] };
+  applied_procedure_ids: number[];
+  applied_subject_id: number | null;
+  error_detail: string;
+  created: string;
+  updated: string;
+  rule_english: string[];
+  live?: { status: string; events: AITicketCompletionEvent[] } | null;
+}
+
+export async function startTicketCompletion(ticketRef: string, mode: "readonly" | "fix") {
+  const { data } = await axios.post(`${baseUrl}/ai/ticket-console/${ticketRef}/complete/`, { mode });
+  return data as AITicketCompletion;
+}
+
+export async function getTicketCompletion(id: number) {
+  const { data } = await axios.get(`${baseUrl}/ai/ticket-completion/${id}/`);
+  return data as AITicketCompletion;
+}
+
+export async function approveTicketCompletion(id: number) {
+  const { data } = await axios.post(`${baseUrl}/ai/ticket-completion/${id}/approve/`, {});
+  return data as AITicketCompletion & { procedure_ids: number[]; subject_id: number | null; created_subject: boolean };
+}
+
+export async function declineTicketCompletion(id: number) {
+  const { data } = await axios.post(`${baseUrl}/ai/ticket-completion/${id}/decline/`, {});
+  return data as AITicketCompletion;
+}
+
+export async function attemptFixTicketCompletion(id: number) {
+  const { data } = await axios.post(`${baseUrl}/ai/ticket-completion/${id}/attempt-fix/`, {});
+  return data as AITicketCompletion;
+}
+
 export interface AIProcedure {
   id?: number;
   code?: string;

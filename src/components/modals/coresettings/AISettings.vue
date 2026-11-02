@@ -208,6 +208,39 @@
       </div>
     </q-card-section>
 
+    <!-- WHO WRITES THE AUTO-SUMMARY WHEN A CHAT RUNS ON A SINGLE MODEL (no agent group). Stored
+         as two columns (provider + model_id) because the bridge resolves it by name, so the model
+         does not have to be in the Models table. Cleared = both columns blank = old behaviour. -->
+    <settings-section
+      title="Auto-summary for single-model chats"
+      tip="When a chat runs on one model instead of an agent group, the bridge needs a model to write the auto-summary. Chats on an agent group always use that group's own summarizer; this setting does not change them."
+    />
+    <q-card-section class="q-gutter-md">
+      <q-select
+        :model-value="defaultSummarizerValue"
+        :options="summarizerOptions"
+        emit-value
+        map-options
+        clearable
+        outlined
+        dense
+        use-input
+        input-debounce="0"
+        label="Default summarizer (single-model chats)"
+        hint="Writes the auto-summary when a chat runs on a single model instead of an agent group. Blank = use the default agent group's summarizer."
+        :display-value="defaultSummarizerDisplay"
+        :loading="loadingAvailable"
+        @filter="filterSummarizer"
+        @update:model-value="setDefaultSummarizer"
+      >
+        <template #no-option>
+          <q-item>
+            <q-item-section class="text-grey">No model matches</q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+    </q-card-section>
+
     <!-- standalone desktop / browser execution policy -->
     <settings-section
       title="Pi AI Operator — Desktop Access"
@@ -1403,6 +1436,7 @@ import {
   editAIModel,
   deleteAIModel,
   fetchAvailableAIModels,
+  fetchAIAgentGroups,
   fetchNativeAIProviders,
   helpdeskAssist,
   helpdeskCaps,
@@ -1754,6 +1788,53 @@ export default {
       if (!found) return "Use the default";
       return `Use default (${String(found.label).split(" - ")[0]})`;
     });
+    // Default summarizer for chats on a single model. Options are everything the providers serve
+    // (same list the agent-group role pickers use), plus the saved value if it is not in that list
+    // (e.g. the catalogue failed to load) so the field never shows blank while a model is set.
+    const summarizerFilter = ref("");
+    const defaultSummarizerValue = computed(() => {
+      const p = props.settings.ai_default_summarizer_provider;
+      const m = props.settings.ai_default_summarizer_model_id;
+      return p && m ? `${p}/${m}` : null;
+    });
+    const summarizerAll = computed(() => {
+      const list = (availableModels.value || []).map((m) => ({
+        value: `${m.provider}/${m.model_id}`,
+        label: `${m.display_name || m.model_id}  (${m.provider}/${m.model_id})`,
+        provider: m.provider,
+        model_id: m.model_id,
+      }));
+      const cur = defaultSummarizerValue.value;
+      if (cur && !list.some((o) => o.value === cur)) {
+        list.unshift({
+          value: cur,
+          label: cur,
+          provider: props.settings.ai_default_summarizer_provider,
+          model_id: props.settings.ai_default_summarizer_model_id,
+        });
+      }
+      return list;
+    });
+    const summarizerOptions = computed(() => {
+      const q = (summarizerFilter.value || "").toLowerCase();
+      return summarizerAll.value.filter((o) => !q || o.label.toLowerCase().includes(q));
+    });
+    const defaultSummarizerDisplay = computed(() => {
+      const cur = defaultSummarizerValue.value;
+      if (!cur) return "";
+      const hit = summarizerAll.value.find((o) => o.value === cur);
+      return hit ? hit.label : cur;
+    });
+    function filterSummarizer(val, doneFn) {
+      doneFn(() => {
+        summarizerFilter.value = val || "";
+      });
+    }
+    function setDefaultSummarizer(val) {
+      const hit = val ? summarizerAll.value.find((o) => o.value === val) : null;
+      update("ai_default_summarizer_provider", hit ? hit.provider : "");
+      update("ai_default_summarizer_model_id", hit ? hit.model_id : "");
+    }
     const operatorModelOptions = computed(() =>
       models.value
         .filter((model) => model.enabled)
@@ -2198,6 +2279,14 @@ export default {
       models,
       operatorAgentOptions,
       operatorModelOptions,
+      defaultSummarizerValue,
+      summarizerOptions,
+      defaultSummarizerDisplay,
+      filterSummarizer,
+      setDefaultSummarizer,
+      // The routing table's template reads groups.length; without this it threw on render
+      // and the table drew no rows at all.
+      groups,
       agentGroupOptions,
       surfaces,
       routingRows,

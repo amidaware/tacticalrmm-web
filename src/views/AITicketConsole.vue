@@ -122,6 +122,27 @@
             >
               <q-tooltip>Open the AI chat for this ticket</q-tooltip>
             </q-btn>
+            <q-btn-dropdown
+              dense flat size="sm" color="deep-purple" icon="auto_fix_high" no-caps
+              @click.stop
+            >
+              <q-list dense>
+                <q-item clickable v-close-popup @click="startCompletion(props.row, 'readonly')">
+                  <q-item-section avatar><q-icon name="visibility" color="primary" /></q-item-section>
+                  <q-item-section>
+                    <q-item-label>Read-only &amp; Report</q-item-label>
+                    <q-item-label caption>Investigate and report — changes nothing</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="startCompletion(props.row, 'fix')">
+                  <q-item-section avatar><q-icon name="build" color="deep-orange" /></q-item-section>
+                  <q-item-section>
+                    <q-item-label>Fix &amp; Report</q-item-label>
+                    <q-item-label caption>Try the fix, then report</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
             <q-btn
               dense
               flat
@@ -158,6 +179,24 @@
               dense no-caps size="sm" color="primary" icon="forum" label="Open chat"
               @click="openConsole(detailRow)"
             />
+            <q-btn-dropdown dense no-caps size="sm" color="deep-purple" icon="auto_fix_high" label="Complete with AI">
+              <q-list dense>
+                <q-item clickable v-close-popup @click="startCompletion(detailRow, 'readonly')">
+                  <q-item-section avatar><q-icon name="visibility" color="primary" /></q-item-section>
+                  <q-item-section>
+                    <q-item-label>Read-only &amp; Report</q-item-label>
+                    <q-item-label caption>Investigate and report — changes nothing</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="startCompletion(detailRow, 'fix')">
+                  <q-item-section avatar><q-icon name="build" color="deep-orange" /></q-item-section>
+                  <q-item-section>
+                    <q-item-label>Fix &amp; Report</q-item-label>
+                    <q-item-label caption>Try the fix, then report</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
             <q-btn
               dense no-caps size="sm" color="deep-orange" icon="auto_fix_high" label="Auto-resolve"
               :loading="detailRow && resolving[detailRow.ticket_ref]"
@@ -187,12 +226,101 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <!-- "Complete this ticket": live log, then the proposed rule + procedures to approve -->
+    <q-dialog v-model="completionDialog">
+      <q-card style="width: 1000px; max-width: 96vw; max-height: 92vh; display: flex; flex-direction: column">
+        <q-card-section class="row items-center bg-grey-2">
+          <q-icon name="auto_fix_high" color="deep-purple" class="q-mr-sm" />
+          <div class="text-subtitle1">{{ completion.ticket_ref }}</div>
+          <q-badge class="q-ml-sm" :color="completion.mode === 'fix' ? 'deep-orange' : 'primary'"
+                   :label="completion.mode === 'fix' ? 'Fix & Report' : 'Read-only & Report'" />
+          <q-space />
+          <q-badge :color="completionColor(completion.status)" :label="completion.status" class="q-mr-sm" />
+          <q-btn dense flat icon="close" v-close-popup />
+        </q-card-section>
+        <q-separator />
+
+        <q-card-section v-if="completion.status === 'running'" style="flex: 1; min-height: 0; overflow: auto">
+          <div class="text-caption text-grey q-mb-xs">Live log — what the AI is doing</div>
+          <div v-for="(e, i) in completionLog" :key="i" class="q-mb-xs">
+            <span class="text-caption text-grey">{{ fmt(e.t) }}</span>
+            <span v-if="e.type === 'tool_start'"> ▸ <b>{{ e.tool }}</b> <span class="text-grey">{{ (e.args || '').slice(0, 160) }}</span></span>
+            <span v-else-if="e.type === 'tool_end'"> ↳ <span :class="e.isError ? 'text-negative' : 'text-grey-8'">{{ (e.result || '').slice(0, 300) }}</span></span>
+            <span v-else> {{ e.text }}</span>
+          </div>
+          <q-spinner-dots color="primary" size="28px" class="q-mt-sm" />
+        </q-card-section>
+
+        <q-card-section v-else style="flex: 1; min-height: 0; overflow: auto">
+          <div v-if="completion.error_detail" class="text-negative q-mb-sm">{{ completion.error_detail }}</div>
+          <div v-if="completion.summary" class="q-mb-md">
+            <div class="text-caption text-grey">What it found</div>
+            <div style="white-space: pre-wrap">{{ completion.summary }}</div>
+          </div>
+          <div v-if="(completion.verdict && completion.verdict.findings || []).length" class="q-mb-md">
+            <div class="text-caption text-grey">Evidence</div>
+            <ul class="q-pl-md q-my-none">
+              <li v-for="(f, i) in completion.verdict.findings" :key="i">{{ f }}</li>
+            </ul>
+          </div>
+          <div v-if="(completion.fix_applied || []).length" class="q-mb-md">
+            <div class="text-caption text-grey">Reviewed fixes run</div>
+            <div>{{ completion.fix_applied.join(", ") }}</div>
+          </div>
+
+          <q-separator class="q-my-md" />
+          <div class="text-subtitle2 q-mb-xs">Proposed automation rule
+            <span v-if="!completion.proposed_rule || !completion.proposed_rule.name" class="text-grey text-caption">— none proposed</span>
+          </div>
+          <div v-if="completion.proposed_rule && completion.proposed_rule.name">
+            <div><b>{{ completion.proposed_rule.name }}</b>
+              <q-badge class="q-ml-xs" color="grey-7" :label="completion.proposed_rule.mode || ''" /></div>
+            <pre v-if="(completion.rule_english || []).length" style="background:#f6f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:12px;white-space:pre-wrap;margin:4px 0 0">{{ completion.rule_english.join("\n") }}</pre>
+            <div v-if="(completion.proposed_rule.fix_actions || []).length" class="text-caption q-mt-xs">
+              Reviewed actions:
+              <q-badge v-for="(a, i) in completion.proposed_rule.fix_actions" :key="i" outline color="deep-orange"
+                       class="q-mr-xs" :label="a.name + ' [' + (a.safety || 'mutating') + ']'" />
+            </div>
+          </div>
+
+          <div class="text-subtitle2 q-mt-md q-mb-xs">Procedures used / learned
+            <span v-if="!(completion.proposed_procedures || []).length" class="text-grey text-caption">— none</span>
+          </div>
+          <div v-for="(p, i) in completion.proposed_procedures" :key="i" class="q-mb-xs">
+            <b>{{ p.title }}</b>
+            <div v-if="p.fix" class="text-caption text-grey-8">{{ p.fix }}</div>
+          </div>
+        </q-card-section>
+
+        <q-separator />
+        <q-card-actions align="right" class="q-pa-md">
+          <q-btn v-if="completion.status === 'awaiting_review' && completion.mode === 'readonly'"
+                 no-caps color="deep-orange" icon="build" label="Attempt Fix"
+                 :loading="completionBusy" @click="attemptFix" />
+          <q-btn v-if="completion.status === 'awaiting_review'" no-caps flat color="grey-8"
+                 label="Decline" :loading="completionBusy" @click="declineCompletion" />
+          <q-btn v-if="completion.status === 'awaiting_review'" no-caps color="primary"
+                 icon="check" label="Approve everything" :loading="completionBusy" @click="approveCompletion" />
+          <template v-if="completion.status === 'approved'">
+            <q-btn no-caps flat color="primary" icon="menu_book" label="Review procedures" @click="openProcedures" />
+            <q-btn no-caps flat color="primary" icon="rule" label="Review rule" @click="openRule" />
+            <q-btn no-caps color="deep-orange" icon="replay" label="Run again"
+                   @click="startCompletion({ ticket_ref: completion.ticket_ref }, completion.mode)" />
+          </template>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { getTicketConsole, getTicketConsoleItem, autoResolveTicket } from "@/api/core";
+import {
+  getTicketConsole, getTicketConsoleItem, autoResolveTicket,
+  startTicketCompletion, getTicketCompletion, approveTicketCompletion,
+  declineTicketCompletion, attemptFixTicketCompletion,
+} from "@/api/core";
 import { notifyError, notifySuccess } from "@/utils/notify";
 
 export default {
@@ -203,7 +331,13 @@ export default {
     const filter = ref("");
     const resolving = ref({});
     const statusFilter = ref("open");
-    const TERMINAL = ["cancelled_clean", "cancelled", "closed", "done", "resolved"];
+    const TERMINAL = ["cancelled_clean", "cancelled", "closed", "done", "resolved",
+      "auto_closed", "auto_closed_duplicate"];
+    // Finished = our status says so OR the ticket's own stage in the helpdesk does. Decided here
+    // rather than by rewriting the stored status: the server used to overwrite "auto_closed" with
+    // "closed" just to make this list look right, and that erased the marker the reply handler
+    // needs to re-close a ticket by itself when the customer says "thanks, it's working".
+    const isTerminal = (x) => TERMINAL.includes(x.status) || /closed|cancel|done|billing/i.test(x.odoo_status || "");
     const statusOptions = [
       { label: "Open", value: "open" },
       { label: "All", value: "all" },
@@ -216,8 +350,8 @@ export default {
       const r = rows.value;
       const f = statusFilter.value;
       if (f === "all") return r;
-      if (f === "open") return r.filter((x) => !TERMINAL.includes(x.status));
-      if (f === "terminal") return r.filter((x) => TERMINAL.includes(x.status));
+      if (f === "open") return r.filter((x) => !isTerminal(x));
+      if (f === "terminal") return r.filter((x) => isTerminal(x));
       if (f === "actionable")
         return r.filter((x) => x.status === "actionable_unassigned" || x.status === "actionable_claimed");
       if (f === "triaged") return r.filter((x) => x.status === "triaged" || x.status === "baseline");
@@ -286,6 +420,7 @@ export default {
         cancelled_clean: "blue-grey", cancelled: "blue-grey", closed: "green", done: "green",
         resolved: "green", actionable_claimed: "teal", actionable_unassigned: "orange",
         needs_input: "deep-orange", triaged: "amber", error: "red", baseline: "grey",
+        auto_closed: "green", auto_closed_duplicate: "green", auto_replied: "teal", escalated: "red",
       }[s] || "grey";
     }
     function statusLabel(s) {
@@ -294,6 +429,8 @@ export default {
         done: "done", resolved: "resolved", actionable_claimed: "claimed",
         actionable_unassigned: "actionable", needs_input: "needs input",
         triaged: "triaged", error: "error", baseline: "baseline",
+        auto_closed: "AI closed", auto_closed_duplicate: "AI closed (duplicate)",
+        auto_replied: "AI replied", escalated: "escalated to a human",
       }[s] || s;
     }
 
@@ -333,11 +470,84 @@ export default {
       }, 20000);
     }
 
+    // ---- "Complete this ticket" (magic button) ----------------
+    const completionDialog = ref(false);
+    const completion = ref({});
+    const completionBusy = ref(false);
+    let completionTimer = null;
+
+    function completionColor(s) {
+      return { running: "primary", awaiting_review: "orange", approved: "green",
+               declined: "grey", error: "red" }[s] || "grey";
+    }
+    const completionLog = computed(() => {
+      const live = completion.value && completion.value.live;
+      const evs = (live && live.events) || completion.value.events || [];
+      return evs.slice(-250);
+    });
+    async function startCompletion(row, mode) {
+      if (!row || !row.ticket_ref) return;
+      try {
+        completion.value = await startTicketCompletion(row.ticket_ref, mode);
+        completionDialog.value = true;
+        pollCompletion();
+      } catch (e) {
+        notifyError((e && e.response && e.response.data && e.response.data.error) || "Could not start the AI completion run");
+      }
+    }
+    async function pollCompletion() {
+      if (completionTimer) { clearTimeout(completionTimer); completionTimer = null; }
+      const id = completion.value && completion.value.id;
+      if (!id) return;
+      try {
+        completion.value = await getTicketCompletion(id);
+      } catch (e) { /* keep the last known state */ }
+      if (completion.value && completion.value.status === "running") {
+        completionTimer = setTimeout(pollCompletion, 2000);
+      }
+    }
+    async function approveCompletion() {
+      completionBusy.value = true;
+      try {
+        const r = await approveTicketCompletion(completion.value.id);
+        completion.value = r;
+        notifySuccess(`Saved ${(r.procedure_ids || []).length} procedure(s)` + (r.subject_id ? " and the automation rule." : "."));
+      } catch (e) {
+        notifyError((e && e.response && e.response.data && e.response.data.error) || "Could not approve");
+      }
+      completionBusy.value = false;
+    }
+    async function declineCompletion() {
+      completionBusy.value = true;
+      try { completion.value = await declineTicketCompletion(completion.value.id); }
+      catch (e) { notifyError("Could not decline"); }
+      completionBusy.value = false;
+    }
+    async function attemptFix() {
+      completionBusy.value = true;
+      try {
+        completion.value = await attemptFixTicketCompletion(completion.value.id);
+        completionDialog.value = true;
+        pollCompletion();
+      } catch (e) {
+        notifyError((e && e.response && e.response.data && e.response.data.error) || "Could not start the fix run");
+      }
+      completionBusy.value = false;
+    }
+    function openRule() {
+      const id = completion.value.applied_subject_id || completion.value.subject;
+      const url = `/ai-procedures?tab=subjects${id ? "&subject=" + id : ""}`;
+      window.open(url, "pi-subject",
+        "width=1500,height=950,menubar=no,toolbar=no,resizable=yes,scrollbars=yes");
+    }
+
     onMounted(load);
     return {
       rows, loading, filter, columns, resolving,
       statusFilter, statusOptions, displayRows, stats,
       detailDialog, detail, detailRow, openProcedures,
+      completionDialog, completion, completionBusy, completionLog, completionColor,
+      startCompletion, approveCompletion, declineCompletion, attemptFix, openRule,
       fmt, odooColor, statusColor, statusLabel, load, openDetail, openConsole, autoResolve,
     };
   },
