@@ -107,6 +107,25 @@ const routes = [
   },
 
   {
+    // BlueCloud Quick Support tech entry (TICKET/63164). Linked from www.blueuc.com/support "Tech Login".
+    // requireAuth: not logged in -> Login page -> back here (auth.next).
+    path: "/quick-support",
+    name: "QuickSupport",
+    component: () => import("@/views/QuickSupport.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
+    // One Quick Support session embedded in the RMM (opened from the queue or a Teams card).
+    path: "/quick-support/session/:node",
+    name: "QuickSupportSession",
+    component: () => import("@/views/QuickSupportSession.vue"),
+    meta: {
+      requireAuth: true,
+    },
+  },
+  {
     path: "/ai-ticket-console",
     name: "AITicketConsole",
     component: () => import("@/views/AITicketConsole.vue"),

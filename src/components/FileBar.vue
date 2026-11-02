@@ -227,6 +227,8 @@
           </q-menu>
         </q-btn>
       </q-btn-group>
+      <!-- BlueCloud Quick Support queue (Support Techs only) -->
+      <QuickSupportButton class="q-ml-sm" />
       <q-space />
       <!-- edit core settings modal -->
       <q-dialog v-model="showEditCoreSettingsModal">
@@ -278,6 +280,7 @@ import SitesForm from "@/components/clients/SitesForm.vue";
 import UpdateAgents from "@/components/modals/agents/UpdateAgents.vue";
 import ScriptManager from "@/components/scripts/ScriptManager.vue";
 import EditCoreSettings from "@/components/modals/coresettings/EditCoreSettings.vue";
+import QuickSupportButton from "@/components/QuickSupportButton.vue";
 import AlertsManager from "@/components/AlertsManager.vue";
 import AutomationManager from "@/components/automation/AutomationManager.vue";
 import AdminManager from "@/components/AdminManager.vue";
@@ -297,6 +300,7 @@ export default {
   name: "FileBar",
   mixins: [mixins],
   components: {
+    QuickSupportButton,
     UpdateAgents,
     EditCoreSettings,
     InstallAgent,

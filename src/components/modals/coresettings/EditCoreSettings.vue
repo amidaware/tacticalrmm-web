@@ -20,6 +20,7 @@
           <q-tab name="sso" label="Single Sign-On (SSO)" />
           <q-tab name="schedules" label="Schedules" />
           <q-tab name="ai" label="Pi.dev AI" />
+          <q-tab name="quicksupport" label="Quick Support" />
           <!-- <q-tab name="openai" label="Open AI" /> -->
         </q-tabs>
       </template>
@@ -673,6 +674,14 @@
                 />
               </q-tab-panel>
 
+              <q-tab-panel name="quicksupport">
+                <QuickSupportSettings
+                  v-if="ready"
+                  :settings="settings"
+                  @update="settings[$event.key] = $event.val"
+                />
+              </q-tab-panel>
+
               <!-- Open AI -->
               <!-- <q-tab-panel name="openai">
                 <div class="text-subtitle2">Open AI</div>
@@ -766,6 +775,7 @@ import SSOProvidersTable from "@/ee/sso/components/SSOProvidersTable.vue";
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 import ScheduleTable from "@/core/settings/components/ScheduleTable.vue";
 import AISettings from "@/components/modals/coresettings/AISettings.vue";
+import QuickSupportSettings from "@/components/modals/coresettings/QuickSupportSettings.vue";
 
 export default {
   name: "EditCoreSettings",
@@ -779,6 +789,7 @@ export default {
     TacticalDropdown,
     ScheduleTable,
     AISettings,
+    QuickSupportSettings,
   },
   mixins: [mixins],
   data() {
