@@ -1035,10 +1035,12 @@
     <!-- approval banner (queued: parallel/multi-machine turns can raise several) -->
     <q-banner v-if="pendingApproval" class="bg-orange-9 text-white">
       <template #avatar><q-icon name="warning" /></template>
-      <span v-if="approvalQueue.length > 1" class="text-weight-bold q-mr-xs">
-        ({{ approvalQueue.length }} pending)
-      </span>
-      Pi wants to run: <strong>{{ pendingApproval.summary }}</strong>
+      <div class="pi-approval-ask">
+        <span v-if="approvalQueue.length > 1" class="text-weight-bold q-mr-xs">
+          ({{ approvalQueue.length }} pending)
+        </span>
+        Pi wants to run: <strong>{{ pendingApproval.summary }}</strong>
+      </div>
       <template #action>
         <!-- WHO ANSWERS: only the technician driving the session. The bridge enforces this, so
              showing a viewer buttons they cannot use would just produce a refusal; they get the
@@ -5440,6 +5442,17 @@ export default {
 }
 
 /* ---- THE APPROVAL CARD: what the automation is about to do ---------------------------- */
+/* The ask is a command, a reply draft or a note, so keep its own line breaks - and keep the
+   band from growing past a screenful on the occasions it is still long. The bridge shortens a
+   long one before it ever gets here (pibridge/src/approval-text.js): a giant command in this
+   band pushed the Approve button off the screen, which is what the owner hit on 2026-11-05.
+   This is the belt to that braces. */
+.pi-approval-ask {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 8.5em;
+  overflow-y: auto;
+}
 .automation-card {
   border-left: 3px solid #4db6ac;
 }
