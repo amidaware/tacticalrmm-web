@@ -22,9 +22,15 @@
         <div class="q-mt-md">
           <strong>Support URLs</strong>
           <div v-for="url in supportUrls" :key="url" class="q-mt-xs">
-            <a :href="url" target="_blank" rel="noopener" :class="linkClass">{{
-              url
-            }}</a>
+            <a
+              v-if="isWebUrl(url)"
+              :href="url"
+              target="_blank"
+              rel="noopener"
+              :class="linkClass"
+              >{{ url }}</a
+            >
+            <template v-else>{{ url }}</template>
           </div>
         </div>
       </q-card-section>
@@ -60,6 +66,14 @@ const descriptionParagraphs = computed(() =>
     .split(/\. +/)
     .map((para) => (para.endsWith(".") ? para : para + ".")),
 );
+
+function isWebUrl(url) {
+  try {
+    return ["http:", "https:"].includes(new URL(url).protocol);
+  } catch {
+    return false;
+  }
+}
 
 const linkClass = computed(() =>
   $q.dark.isActive ? "text-white" : "text-primary",

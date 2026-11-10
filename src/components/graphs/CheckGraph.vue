@@ -40,8 +40,21 @@
         type="line"
         height="70%"
         :options="chartOptions"
-        :series="[{ name: seriesName, data: history }]"
+        :series="series"
       />
+      <div
+        v-if="showChart && hoveredResults !== null"
+        class="q-px-md q-pb-md"
+        style="white-space: pre-wrap; word-break: break-all"
+      >
+        <template v-if="check.check_type === 'script'">
+          <div>Return Code: {{ hoveredResults.retcode }}</div>
+          <div>Std Out: {{ hoveredResults.stdout }}</div>
+          <div>Err Out: {{ hoveredResults.stderr }}</div>
+          <div>Execution Time: {{ hoveredResults.execution_time }}</div>
+        </template>
+        <div v-else>{{ hoveredResults }}</div>
+      </div>
     </q-card>
   </q-dialog>
 </template>
@@ -61,6 +74,7 @@ export default {
     return {
       history: [],
       results: [],
+      hoveredIndex: null,
       timeFilter: 1,
       timeFilterOptions: [
         { value: 1, label: "Last 24 Hours" },
@@ -119,6 +133,14 @@ export default {
     showChart() {
       return !this.$q.loading.isActive && this.history.length > 0;
     },
+    // computed so the chart doesn't redraw when hoveredIndex changes
+    series() {
+      return [{ name: this.seriesName, data: this.history }];
+    },
+    hoveredResults() {
+      const point = this.results[this.hoveredIndex];
+      return point && point.results != null ? point.results : null;
+    },
     seriesName() {
       if (this.check.check_type === "cpuload") return "CPU Load";
       else if (this.check.check_type === "memory") return "Memory Usage";
@@ -140,6 +162,7 @@ export default {
           timeFilter: this.timeFilter,
         })
         .then((r) => {
+          this.hoveredIndex = null;
           this.history = Object.freeze(r.data);
 
           // save copy of data to reference results in chart tooltip
@@ -257,29 +280,8 @@ export default {
           },
         },
         formatter: (value, { dataPointIndex }) => {
-          let formatted = "";
-          if (this.check.check_type === "script") {
-            formatted +=
-              "Return Code: " +
-              this.results[dataPointIndex].results.retcode +
-              "<br/>";
-            formatted +=
-              "Std Out: " +
-              this.results[dataPointIndex].results.stdout +
-              "<br/>";
-            formatted +=
-              "Err Out: " +
-              this.results[dataPointIndex].results.errout +
-              "<br/>";
-            formatted +=
-              "Execution Time: " +
-              this.results[dataPointIndex].results.execution_time +
-              "<br/>";
-          } else {
-            formatted += this.results[dataPointIndex].results;
-          }
-
-          return formatted;
+          this.hoveredIndex = dataPointIndex;
+          return value === 1 ? "Failing" : "Passing";
         },
       };
     }

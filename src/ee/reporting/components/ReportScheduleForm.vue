@@ -200,7 +200,7 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <script lang="ts" setup>
 import { ref, watch, unref, reactive, computed, onMounted } from "vue";
-import { useQuasar, useDialogPluginComponent, extend } from "quasar";
+import { useQuasar, useDialogPluginComponent } from "quasar";
 import { until } from "@vueuse/shared";
 import {
   useSharedReportSchedules,
@@ -255,7 +255,7 @@ const formatOptions: { label: string; value: ReportFormat }[] = [
 
 const localSchedule = reactive<ReportSchedule>(
   props.schedule
-    ? extend(true, {}, props.schedule)
+    ? JSON.parse(JSON.stringify(props.schedule))
     : {
         id: 0,
         name: "",
