@@ -5,6 +5,7 @@
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
             <q-tab name="ui" label="User Interface" />
+            <q-tab name="security" label="Security" />
           </q-tabs>
         </template>
         <template v-slot:after>
@@ -217,6 +218,12 @@
                   />
                 </q-card-section>
               </q-tab-panel>
+
+              <q-tab-panel name="security">
+                <div class="text-subtitle2">Passkeys</div>
+                <q-separator class="q-mb-md" />
+                <PasskeyManager />
+              </q-tab-panel>
             </q-tab-panels>
 
             <q-card-section class="row items-center">
@@ -233,11 +240,20 @@
 import { openURL } from "quasar";
 import { loadingBarColors } from "@/mixins/data";
 import mixins from "@/mixins/mixins";
+import PasskeyManager from "@/components/accounts/PasskeyManager.vue";
 
 export default {
   name: "UserPreferences",
   emits: ["hide", "ok", "cancel"],
   mixins: [mixins],
+  components: { PasskeyManager },
+  props: {
+    initialTab: {
+      type: String,
+      default: "ui",
+      validator: (value) => ["ui", "security"].includes(value),
+    },
+  },
   data() {
     return {
       loadingBarColors,
@@ -245,7 +261,7 @@ export default {
       defaultAgentTblTab: "",
       clientTreeSort: "",
       url_action: null,
-      tab: "ui",
+      tab: this.initialTab,
       splitterModel: 20,
       loading_bar_color: "",
       dash_info_color: "",
