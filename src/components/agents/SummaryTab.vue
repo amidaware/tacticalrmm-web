@@ -123,10 +123,25 @@
           </q-item>
           <q-item>
             <q-item-section avatar>
-              <q-icon name="fas fa-globe-americas" />
+             <q-icon name="fas fa-globe-americas" />
             </q-item-section>
-            <q-item-section>Public IP: {{ summary.public_ip }}</q-item-section>
-          </q-item>
+             <q-item-section>
+              Public IP: {{ summary.public_ip }}
+            </q-item-section>
+             <q-item-section side top>
+             <q-btn
+              round
+              dense
+              flat
+              size="sm"
+              icon="info"
+              @click="openURL(`https://ipapi.co/${summary.public_ip}/`)"
+             >
+            <q-tooltip>Get Info on IP</q-tooltip>
+          </q-btn>
+       </q-item-section>
+      </q-item>
+
           <q-item>
             <q-item-section avatar>
               <q-icon name="fas fa-network-wired" />
@@ -303,6 +318,11 @@ export default {
       });
     });
 
+   // Define the openURL method within setup
+    const openURL = (url) => {
+      window.open(url, '_blank');
+    };
+
     const customFields = computed(() => {
       if (!summary.value.custom_fields) {
         return [];
@@ -384,7 +404,8 @@ export default {
       serial_number,
       cpu,
       store,
-
+      openURL,
+      
       // methods
       getSummary,
       refreshSummary,
