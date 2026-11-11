@@ -1,14 +1,18 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">Global Key Store</div>
+      <div class="text-subtitle2">{{ $t("settings.keyStore.title") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         text-color="black"
         class="q-mr-sm"
-        :label="isPwd ? 'Show values' : 'Hide values'"
+        :label="
+          isPwd
+            ? $t('settings.keyStore.showValues')
+            : $t('settings.keyStore.hideValues')
+        "
         :icon="isPwd ? 'visibility_off' : 'visibility'"
         @click="isPwd = !isPwd"
       />
@@ -17,7 +21,7 @@
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add key"
+        :label="$t('settings.keyStore.addKey')"
         @click="addKey"
       />
     </div>
@@ -32,7 +36,7 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No Keys added yet"
+      :no-data-label="$t('settings.keyStore.noData')"
     >
       <!-- body slots -->
       <template v-slot:body="props">
@@ -48,19 +52,19 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ $t("common.edit") }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="deleteKey(props.row)">
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $t("common.delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $t("common.close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -97,14 +101,14 @@ export default {
       columns: [
         {
           name: "name",
-          label: "Name",
+          label: this.$t("common.name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "value",
-          label: "Value",
+          label: this.$t("settings.keyStore.value"),
           field: "value",
           align: "left",
           sortable: true,
@@ -150,9 +154,9 @@ export default {
     deleteKey(key) {
       this.$q
         .dialog({
-          title: `Delete key: ${key.name}?`,
+          title: this.$t("settings.keyStore.deleteConfirm", { name: key.name }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -161,7 +165,9 @@ export default {
             .then(() => {
               this.getKeyStore();
               this.$q.loading.hide();
-              this.notifySuccess(`key: ${key.name} was deleted!`);
+              this.notifySuccess(
+                this.$t("settings.keyStore.deleted", { name: key.name }),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

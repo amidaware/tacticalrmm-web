@@ -1,0 +1,15 @@
+{
+  "install": {
+    "title": "Install Software",
+    "install": "Install",
+    "confirm": "Install {name}?"
+  },
+  "uninstall": {
+    "title": "Uninstalling {name}",
+    "confirmCommand": "Confirm or edit the uninstall command:",
+    "timeoutSeconds": "Timeout (seconds)",
+    "timeoutRequired": "Timeout is required",
+    "runAsUser": "Run as user",
+    "uninstall": "Uninstall"
+  }
+}

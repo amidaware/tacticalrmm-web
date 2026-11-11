@@ -25,7 +25,7 @@
           push
           @click="stopPoll"
           icon="stop"
-          label="Stop Live Refresh"
+          :label="$t('remoteBg.processes.stopLiveRefresh')"
         />
         <q-btn
           v-else
@@ -34,13 +34,13 @@
           push
           @click="startPoll"
           icon="play_arrow"
-          label="Resume Live Refresh"
+          :label="$t('remoteBg.processes.resumeLiveRefresh')"
         />
 
         <div class="flex flex-center q-ml-md">
           <q-icon name="fas fa-microchip" class="q-mr-xs" />
           <div class="text-caption q-mr-sm">
-            CPU Usage:
+            {{ $t("remoteBg.processes.cpuUsage") }}
             <span class="text-body1 text-weight-medium"
               >{{ totalCpuUsage }}%</span
             >
@@ -48,7 +48,7 @@
 
           <q-icon name="fas fa-memory" class="q-mr-xs" />
           <div class="text-caption">
-            RAM Usage:
+            {{ $t("remoteBg.processes.ramUsage") }}
             <span class="text-body1 text-weight-medium"
               >{{ bytes2Human(totalRamUsage) }}/{{ total_ram }} GB</span
             >
@@ -85,12 +85,18 @@
             color="blue"
             :label="pollInterval"
           />
-          Refresh interval (seconds)
+          {{ $t("remoteBg.processes.refreshInterval") }}
         </div>
 
         <q-space />
 
-        <q-input v-model="filter" outlined label="Search" dense clearable>
+        <q-input
+          v-model="filter"
+          outlined
+          :label="$t('common.search')"
+          dense
+          clearable
+        >
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
@@ -108,11 +114,13 @@
               <q-item-section side>
                 <q-icon name="fas fa-trash-alt" size="xs" />
               </q-item-section>
-              <q-item-section>End Process</q-item-section>
+              <q-item-section>{{
+                $t("remoteBg.processes.endProcess")
+              }}</q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $t("common.close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -135,11 +143,12 @@ import {
 } from "@/api/agents";
 import { bytes2Human } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 const columns = [
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
@@ -154,14 +163,14 @@ const columns = [
   },
   {
     name: "membytes",
-    label: "Memory",
+    label: t("remoteBg.processes.columns.memory"),
     field: "membytes",
     align: "left",
     sortable: true,
   },
   {
     name: "username",
-    label: "User",
+    label: t("common.user"),
     field: "username",
     align: "left",
     sortable: true,

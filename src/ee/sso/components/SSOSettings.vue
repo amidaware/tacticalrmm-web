@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 50">
       <q-bar>
-        SSO Settings
+        {{ $t("sso.settings.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -19,7 +21,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Enable SSO"
+          :label="$t('sso.settings.enable')"
           v-model="ssoSettings.sso_enabled"
         />
       </q-card-section>
@@ -28,23 +30,22 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section>
         <q-checkbox
           dense
-          label="Block Local User Login"
+          :label="$t('sso.settings.blockLocal')"
           v-model="ssoSettings.block_local_user_logon"
           :disable="!ssoSettings.sso_enabled"
-          hint="When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts."
+          :hint="$t('sso.settings.blockLocalHint')"
         >
-          <q-tooltip class="text-caption"
-            >When enabled, only users with SSO accounts can log in, with the
-            exception of local superuser accounts.</q-tooltip
-          >
+          <q-tooltip class="text-caption">{{
+            $t("sso.settings.blockLocalHint")
+          }}</q-tooltip>
         </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="$t('common.cancel')" v-close-popup />
         <q-btn
           flat
-          label="Submit"
+          :label="$t('common.submit')"
           color="primary"
           :loading="loading"
           @click="submit"
@@ -60,6 +61,7 @@ import { ref, watch, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { notifySuccess, notifyWarning } from "@/utils/notify";
 import { fetchSSOSettings, updateSSOSettings } from "@/ee/sso/api/sso";
+import { useI18n } from "vue-i18n";
 
 // types
 import { SSOSettingsType } from "../types/sso";
@@ -68,6 +70,7 @@ import { SSOSettingsType } from "../types/sso";
 defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
+const { t } = useI18n();
 
 const ssoSettings = ref({} as SSOSettingsType);
 const loading = ref(false);
@@ -86,7 +89,7 @@ async function submit() {
   loading.value = true;
   try {
     await updateSSOSettings(ssoSettings.value);
-    notifySuccess("Settings updated successfully");
+    notifySuccess(t("sso.settings.updated"));
     onDialogOK(ssoSettings.value);
   } catch (e) {
     if (e.status === 423) {

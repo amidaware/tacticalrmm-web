@@ -5,12 +5,14 @@
         {{ modalTitle }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit.prevent="submit">
         <q-card-section>
-          <p>Choose Target</p>
+          <p>{{ $t("agentModals.bulkAction.chooseTarget") }}</p>
           <q-option-group
             v-model="state.target"
             :options="targetOptions"
@@ -24,30 +26,30 @@
         <q-card-section>
           <tactical-dropdown
             v-if="state.target === 'client'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
             v-model="state.client"
             :options="clientOptions"
-            label="Select Client"
+            :label="$t('agentModals.bulkAction.selectClient')"
             outlined
             mapOptions
             filterable
           />
           <tactical-dropdown
             v-else-if="state.target === 'site'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
             v-model="state.site"
             :options="siteOptions"
-            label="Select Site"
+            :label="$t('agentModals.bulkAction.selectSite')"
             outlined
             mapOptions
             filterable
           />
           <tactical-dropdown
             v-else-if="state.target === 'agents'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
             v-model="state.agents"
             :options="agentOptions"
-            label="Select Agents"
+            :label="$t('agentModals.bulkAction.selectAgents')"
             filled
             multiple
             mapOptions
@@ -56,7 +58,7 @@
         </q-card-section>
 
         <q-card-section>
-          <p>Agent OS</p>
+          <p>{{ $t("agentModals.bulkAction.agentOs") }}</p>
           <q-option-group
             v-model="state.osType"
             :options="filteredOsTypeOptions"
@@ -68,7 +70,7 @@
         </q-card-section>
 
         <q-card-section v-show="state.target !== 'agents'">
-          <p>Agent Type</p>
+          <p>{{ $t("agentModals.bulkAction.agentType") }}</p>
           <q-option-group
             v-model="state.monType"
             :options="monTypeOptions"
@@ -81,10 +83,10 @@
 
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
             v-model="state.script"
             :options="filterByPlatformOptions"
-            label="Select Script"
+            :label="$t('agentModals.shared.selectScript')"
             outlined
             mapOptions
             filterable
@@ -110,7 +112,7 @@
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <tactical-dropdown
             v-model="state.args"
-            label="Script Arguments (press Enter after typing each argument)"
+            :label="$t('agentModals.shared.scriptArgs')"
             filled
             use-input
             multiple
@@ -133,7 +135,7 @@
         </q-card-section>
 
         <q-card-section v-if="mode === 'command'">
-          <p>Shell</p>
+          <p>{{ $t("agentModals.shared.shell") }}</p>
           <q-option-group
             v-model="state.shell"
             :options="shellOptions"
@@ -148,24 +150,27 @@
           <q-input
             v-model="state.custom_shell"
             outlined
-            label="Custom shell"
+            :label="$t('agentModals.shared.customShell')"
             stack-label
             placeholder="/usr/bin/python3"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
           />
         </q-card-section>
         <q-card-section v-if="mode === 'command'">
           <q-input
             v-model="state.cmd"
             outlined
-            label="Command"
+            :label="$t('agentModals.shared.command')"
             stack-label
             :placeholder="cmdPlaceholder(state.shell)"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
           />
         </q-card-section>
         <q-card-section v-if="supportsRunAsUser()" class="q-pt-none">
-          <q-checkbox v-model="state.run_as_user" label="Run As User">
+          <q-checkbox
+            v-model="state.run_as_user"
+            :label="$t('agentModals.shared.runAsUser')"
+          >
             <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
@@ -173,7 +178,7 @@
         <q-card-section v-if="mode === 'script'" class="q-pt-none">
           <div class="q-gutter-sm">
             <q-checkbox
-              label="Save results to Custom Field"
+              :label="$t('agentModals.shared.saveToCustomField')"
               v-model="collector"
               @update:model-value="
                 state.custom_field = null;
@@ -182,24 +187,24 @@
             />
             <q-checkbox
               v-model="state.save_to_agent_note"
-              label="Save results to Agent Note"
+              :label="$t('agentModals.shared.saveToAgentNote')"
             />
           </div>
         </q-card-section>
 
         <q-card-section v-if="mode === 'script' && collector">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('agentModals.shared.required')]"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
-            label="Select custom field"
+            :label="$t('agentModals.shared.selectCustomField')"
             mapOptions
             filterable
           />
           <q-checkbox
             v-model="state.collector_all_output"
-            label="Save all output"
+            :label="$t('agentModals.shared.saveAllOutput')"
           />
         </q-card-section>
 
@@ -210,17 +215,17 @@
             outlined
             type="number"
             style="max-width: 150px"
-            label="Timeout (seconds)"
+            :label="$t('agentModals.shared.timeoutSeconds')"
             stack-label
             :rules="[
-              (val) => !!val || '*Required',
-              (val) => val >= 5 || 'Minimum is 5 seconds',
+              (val) => !!val || $t('agentModals.shared.required'),
+              (val) => val >= 5 || $t('agentModals.shared.minTimeout'),
             ]"
           />
         </q-card-section>
 
         <q-card-section v-if="mode === 'patch'">
-          <p>Action</p>
+          <p>{{ $t("agentModals.bulkAction.action") }}</p>
           <q-option-group
             v-model="state.patchMode"
             :options="patchModeOptions"
@@ -234,19 +239,18 @@
         <q-card-section v-show="false">
           <q-checkbox
             v-model="state.offlineAgents"
-            label="Offline Agents (Run on next checkin)"
+            :label="$t('agentModals.bulkAction.offlineAgents')"
           >
-            <q-tooltip
-              >If the agent is offline, a pending action will be created to run
-              on agent checkin</q-tooltip
-            >
+            <q-tooltip>{{
+              $t("agentModals.bulkAction.offlineAgentsTooltip")
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn label="Cancel" v-close-popup />
+          <q-btn :label="$t('common.cancel')" v-close-popup />
           <q-btn
-            label="Run"
+            :label="$t('common.run')"
             color="primary"
             type="submit"
             :disable="loading"
@@ -277,34 +281,35 @@ import { runBulkAction } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { cmdPlaceholder } from "@/composables/agents";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
+import { t } from "@/i18n";
 
 // ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // static data
 const monTypeOptions = [
-  { label: "All", value: "all" },
-  { label: "Servers", value: "servers" },
-  { label: "Workstations", value: "workstations" },
+  { label: t("common.all"), value: "all" },
+  { label: t("agentModals.shared.servers"), value: "servers" },
+  { label: t("agentModals.shared.workstations"), value: "workstations" },
 ];
 
 const osTypeOptions = [
   { label: "Windows", value: "windows" },
   { label: "Linux", value: "linux" },
   { label: "macOS", value: "darwin" },
-  { label: "All", value: "all" },
+  { label: t("common.all"), value: "all" },
 ];
 
 const targetOptions = [
-  { label: "Client", value: "client" },
-  { label: "Site", value: "site" },
-  { label: "Selected Agents", value: "agents" },
-  { label: "All", value: "all" },
+  { label: t("common.client"), value: "client" },
+  { label: t("common.site"), value: "site" },
+  { label: t("agentModals.bulkAction.selectedAgents"), value: "agents" },
+  { label: t("common.all"), value: "all" },
 ];
 
 const patchModeOptions = [
-  { label: "Scan", value: "scan" },
-  { label: "Install", value: "install" },
+  { label: t("agentModals.bulkAction.scan"), value: "scan" },
+  { label: t("agentModals.bulkAction.install"), value: "install" },
 ];
 
 export default defineComponent({
@@ -324,7 +329,7 @@ export default defineComponent({
       } else {
         return [
           { label: "Bash", value: "/bin/bash" },
-          { label: "Custom", value: "custom" },
+          { label: t("agentModals.shared.custom"), value: "custom" },
         ];
       }
     });
@@ -436,11 +441,11 @@ export default defineComponent({
     // set modal title and caption
     const modalTitle = computed(() => {
       return props.mode === "command"
-        ? "Run Bulk Command"
+        ? t("agentModals.bulkAction.titleCommand")
         : props.mode === "script"
-          ? "Run Bulk Script"
+          ? t("agentModals.bulkAction.titleScript")
           : props.mode === "patch"
-            ? "Bulk Patch Management"
+            ? t("agentModals.bulkAction.titlePatch")
             : "";
     });
 

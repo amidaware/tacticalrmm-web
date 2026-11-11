@@ -1,0 +1,15 @@
+{
+  "install": {
+    "title": "Instalar Software",
+    "install": "Instalar",
+    "confirm": "Instalar {name}?"
+  },
+  "uninstall": {
+    "title": "Desinstalando {name}",
+    "confirmCommand": "Confirme ou edite o comando de desinstalação:",
+    "timeoutSeconds": "Tempo limite (segundos)",
+    "timeoutRequired": "O tempo limite é obrigatório",
+    "runAsUser": "Executar como usuário",
+    "uninstall": "Desinstalar"
+  }
+}

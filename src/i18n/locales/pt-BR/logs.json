@@ -1,0 +1,95 @@
+{
+  "shared": {
+    "time": "Data/hora",
+    "message": "Mensagem"
+  },
+  "auditDetail": {
+    "before": "Antes",
+    "after": "Depois"
+  },
+  "auditManager": {
+    "title": "Gerenciador de Auditoria",
+    "tableTitle": "Logs de Auditoria",
+    "action": "Ação",
+    "object": "Objeto",
+    "noDataFound": "Nenhum dado encontrado. Tente refinar sua pesquisa",
+    "clickSearch": "Clique em pesquisar para encontrar logs de auditoria",
+    "columns": {
+      "clientIp": "IP do cliente"
+    },
+    "actions": {
+      "addObject": "Adicionar objeto",
+      "modifyObject": "Modificar objeto",
+      "executeCommand": "Executar comando",
+      "executeScript": "Executar script",
+      "remoteSession": "Sessão remota",
+      "urlAction": "Ação de URL",
+      "agentInstalls": "Instalações de agente",
+      "bulkActions": "Ações em massa",
+      "deleteObject": "Excluir objeto",
+      "failedLogin": "Falha de login de usuário",
+      "userLogin": "Login de usuário",
+      "taskRunResults": "Resultados de execução de tarefas",
+      "fileTransfer": "Transferência de arquivo"
+    },
+    "objects": {
+      "automatedTask": "Tarefa Automatizada",
+      "bulkActions": "Ações em massa",
+      "coreSettings": "Configurações principais",
+      "check": "Verificação",
+      "policy": "Política",
+      "script": "Script",
+      "patchPolicy": "Política de Patches",
+      "alertTemplate": "Modelo de Alerta",
+      "role": "Função",
+      "urlAction": "Ação de URL",
+      "globalKeyStore": "Repositório de Chaves global",
+      "customField": "Campo Personalizado",
+      "schedule": "Agendamento",
+      "reportSchedule": "Agendamento de relatório"
+    },
+    "times": {
+      "oneDay": "1 dia atrás",
+      "oneWeek": "1 semana atrás",
+      "thirtyDays": "30 dias atrás",
+      "threeMonths": "3 meses atrás",
+      "sixMonths": "6 meses atrás",
+      "oneYear": "1 ano atrás",
+      "everything": "Tudo"
+    }
+  },
+  "debugLog": {
+    "title": "Log de Depuração",
+    "tableTitle": "Logs de Depuração",
+    "agentsFilter": "Filtro de agentes",
+    "logTypeFilter": "Filtro de tipo de log",
+    "info": "Informação",
+    "critical": "Crítico",
+    "warning": "Aviso",
+    "resultsLimited": "Os resultados são limitados a 1000 linhas.",
+    "logTypes": {
+      "agentUpdate": "Atualização de agente",
+      "agentIssues": "Problemas de agente",
+      "windowsUpdates": "Atualizações do Windows",
+      "systemIssues": "Problemas de sistema",
+      "scripting": "Scripts"
+    },
+    "columns": {
+      "logLevel": "Nível de log",
+      "logType": "Tipo de log"
+    }
+  },
+  "pendingActions": {
+    "titleAgent": "Ações Pendentes de {hostname}",
+    "titleAll": "Todas as Ações Pendentes",
+    "noPendingActions": "Nenhuma ação pendente",
+    "hideCompleted": "Ocultar {count} concluídas",
+    "showCompleted": "Mostrar {count} concluídas",
+    "cancelAction": "Cancelar ação",
+    "completed": "Concluída",
+    "viewOutput": "Ver saída",
+    "due": "Previsto para",
+    "outputDetails": "Detalhes da saída da ação pendente",
+    "deleteConfirm": "Excluir esta ação pendente?"
+  }
+}

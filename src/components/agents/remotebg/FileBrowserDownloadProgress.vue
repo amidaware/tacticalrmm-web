@@ -5,7 +5,7 @@
   >
     <div class="row items-center justify-between q-mb-xs">
       <div class="text-subtitle2 text-weight-medium download-progress-title">
-        Download
+        {{ $t("fileBrowser.downloadProgress.title") }}
       </div>
       <FileBrowserTransferQueueActions
         :mode="actionMode"
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 import { useQuasar } from "quasar";
 
@@ -64,6 +65,7 @@ import {
   transferQueueProgressColor,
 } from "@/utils/filebrowser";
 
+const { t } = useI18n();
 const $q = useQuasar();
 
 const props = defineProps<{
@@ -129,16 +131,16 @@ const statusLabel = computed(() => {
   }
 
   if (props.status === "initializing" && props.buildingArchive) {
-    return "Building archive…";
+    return t("fileBrowser.downloadProgress.buildingArchive");
   }
   if (props.status === "completed") {
-    return "Complete";
+    return t("fileBrowser.downloadProgress.complete");
   }
   if (props.status === "failed") {
-    return props.errorMessage || "Download failed";
+    return props.errorMessage || t("fileBrowser.downloadProgress.failed");
   }
   if (props.status === "paused" && props.ownedByOtherTab) {
-    return "Open in another tab";
+    return t("fileBrowser.queue.openInAnotherTab");
   }
   if (props.status === "idle") {
     return "";

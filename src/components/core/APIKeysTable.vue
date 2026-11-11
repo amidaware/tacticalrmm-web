@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">API Keys</div>
+      <div class="text-subtitle2">{{ $t("admin.apiKeys.title") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add key"
+        :label="$t('admin.apiKeys.addKey')"
         @click="addAPIKey"
       />
     </div>
@@ -23,7 +23,7 @@
       hide-pagination
       virtual-scroll
       :rows-per-page-options="[0]"
-      no-data-label="No API tokens added yet"
+      :no-data-label="$t('admin.apiKeys.noData')"
     >
       <!-- header slots -->
       <template v-slot:header-cell-actions="props">
@@ -44,19 +44,19 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ $t("common.edit") }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup @click="deleteAPIKey(props.row)">
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $t("common.delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $t("common.close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -81,7 +81,7 @@
               name="content_copy"
               @click="copyKeyToClipboard(props.row.key)"
             >
-              <q-tooltip>Copy API Key to clipboard</q-tooltip>
+              <q-tooltip>{{ $t("admin.apiKeys.copyTooltip") }}</q-tooltip>
             </q-icon>
           </q-td>
         </q-tr>
@@ -98,32 +98,33 @@ import { fetchAPIKeys, removeAPIKey } from "@/api/accounts";
 import { useQuasar, copyToClipboard } from "quasar";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import APIKeysForm from "@/components/core/APIKeysForm.vue";
+import { t } from "@/i18n";
 
 const columns = [
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "username",
-    label: "User",
+    label: t("common.user"),
     field: "username",
     align: "left",
     sortable: true,
   },
   {
     name: "expiration",
-    label: "Expiration",
+    label: t("admin.apiKeys.expiration"),
     field: "expiration",
     align: "left",
     sortable: true,
   },
   {
     name: "created_time",
-    label: "Created",
+    label: t("admin.apiKeys.created"),
     field: "created_time",
     align: "left",
     sortable: true,
@@ -158,10 +159,10 @@ export default {
     function copyKeyToClipboard(apikey) {
       copyToClipboard(apikey)
         .then(() => {
-          notifySuccess("Key was copied to clipboard!");
+          notifySuccess(t("admin.apiKeys.copied"));
         })
         .catch(() => {
-          notifyError("Unable to copy to clipboard!");
+          notifyError(t("admin.apiKeys.copyFailed"));
         });
     }
 
@@ -174,9 +175,9 @@ export default {
 
     async function deleteAPIKey(key) {
       $q.dialog({
-        title: `Delete API key: ${key.name}?`,
+        title: t("admin.apiKeys.deleteConfirm", { name: key.name }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

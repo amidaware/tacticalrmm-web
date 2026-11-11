@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 80vw">
       <q-bar>
-        Insert Table
+        {{ $t("reporting.reportTableMaker.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -28,15 +30,21 @@ For details, see: https://license.tacticalrmm.com/ee
           :options="arrayOptions"
           outlined
           dense
-          label="Data Source"
+          :label="$t('reporting.reportTableMaker.dataSource')"
         />
       </q-card-section>
       <q-card-section style="max-height: 60vh" class="scroll">
         <q-input v-model="output" filled type="textarea" autogrow />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
-        <q-btn dense flat label="Insert" color="primary" @click="insert" />
+        <q-btn v-close-popup dense flat :label="$t('common.cancel')" />
+        <q-btn
+          dense
+          flat
+          :label="$t('reporting.reportTableMaker.insert')"
+          color="primary"
+          @click="insert"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -45,6 +53,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useSharedReportTemplates } from "../api/reporting";
 import { capitalize } from "@/utils/format";
 
@@ -53,12 +62,14 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 const { variableAnalysis } = useSharedReportTemplates;
 
+const { t } = useI18n();
+
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 const tableTypeOptions = [
-  { value: "blank", label: "Blank" },
-  { value: "variables", label: "From Variables" },
+  { value: "blank", label: t("reporting.reportTableMaker.blank") },
+  { value: "variables", label: t("reporting.reportTableMaker.fromVariables") },
 ];
 
 const blankOutput = `<table>

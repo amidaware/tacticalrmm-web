@@ -2,6 +2,7 @@ import { Notify, date } from "quasar";
 import axios from "axios";
 
 import { formatAgentOptions } from "@/utils/format";
+import { t } from "@/i18n";
 
 function getTimeLapse(unixtime) {
   var previous = unixtime * 1000;
@@ -13,17 +14,17 @@ function getTimeLapse(unixtime) {
   var msPerYear = msPerDay * 365;
   var elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return t("utils.timeAgo.seconds", { n: Math.round(elapsed / 1000) });
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return t("utils.timeAgo.minutes", { n: Math.round(elapsed / msPerMinute) });
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return t("utils.timeAgo.hours", { n: Math.round(elapsed / msPerHour) });
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return t("utils.timeAgo.days", { n: Math.round(elapsed / msPerDay) });
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return t("utils.timeAgo.months", { n: Math.round(elapsed / msPerMonth) });
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return t("utils.timeAgo.years", { n: Math.round(elapsed / msPerYear) });
   }
 }
 
@@ -69,7 +70,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold or Error Threshold need to be set",
+          message: t("utils.validation.thresholdRequired"),
         });
         return false;
       }
@@ -78,7 +79,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be less than Error Threshold",
+          message: t("utils.validation.warningLessThanError"),
         });
         return false;
       }
@@ -87,7 +88,7 @@ export default {
         Notify.create({
           type: "negative",
           timeout: 2000,
-          message: "Warning Threshold must be more than Error Threshold",
+          message: t("utils.validation.warningMoreThanError"),
         });
         return false;
       }
@@ -181,7 +182,8 @@ export default {
         }
       });
 
-      if (create_unassigned) categories.push("Unassigned");
+      const unassigned = t("utils.unassigned");
+      if (create_unassigned) categories.push(unassigned);
 
       categories.sort().forEach((cat) => {
         options.push({ category: cat });
@@ -195,7 +197,7 @@ export default {
               args: script.args,
               env_vars: script.env_vars,
             });
-          } else if (cat === "Unassigned" && !script.category) {
+          } else if (cat === unassigned && !script.category) {
             tmp.push({
               label: script.name,
               value: script.id,
@@ -227,7 +229,7 @@ export default {
       }
       const a = date.formatDate(ret, "MMM D, YYYY");
       const b = date.formatDate(ret, "h:mm A");
-      return `${a} at ${b}`;
+      return t("utils.dateAtTime", { date: a, time: b });
     },
     truncateText(txt) {
       if (txt) return txt.length >= 60 ? txt.substring(0, 60) + "..." : txt;

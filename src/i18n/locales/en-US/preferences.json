@@ -1,0 +1,33 @@
+{
+  "title": "Preferences",
+  "userInterface": "User Interface",
+  "agentDblClick": "Agent double-click action:",
+  "urlAction": "URL Action:",
+  "agentTableTab": "Agent table default tab:",
+  "loadingBarColor": "Loading Bar Color:",
+  "infoColor": "Dashboard Info Color:",
+  "positiveColor": "Dashboard Positive Color:",
+  "negativeColor": "Dashboard Negative Color:",
+  "warningColor": "Dashboard Warning Color:",
+  "colorHelp": "Click to see color options",
+  "clientSort": "Client Sort:",
+  "dateFormat": "Date Format:",
+  "dateFormatHelp": "Click to see formatting options",
+  "clearSearch": "Clear search field when switching client/site",
+  "sortAlphaFail": "Sort alphabetically, moving failing clients to the top",
+  "sortAlpha": "Sort alphabetically only",
+  "dblClick": {
+    "editAgent": "Edit Agent",
+    "takeControl": "Take Control",
+    "remoteBg": "Remote Background",
+    "urlAction": "Run URL Action"
+  },
+  "tabs": {
+    "servers": "Servers",
+    "workstations": "Workstations",
+    "mixed": "Mixed"
+  },
+  "noUrlActions": "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
+  "selectUrlAction": "Select a URL Action",
+  "saved": "Preferences were saved!"
+}

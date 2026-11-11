@@ -1,5 +1,9 @@
 import { sha256 } from "js-sha256";
 
+// sha256.worker.ts only imports types from this file, so @/i18n is never
+// loaded inside the worker.
+import { t } from "@/i18n";
+
 export type Sha256WorkerRequest =
   | { type: "bytes"; bytes: ArrayBuffer | Uint8Array }
   | { type: "blob"; blob: Blob; blockSize: number }
@@ -37,18 +41,31 @@ class WorkerSha256Hasher implements Sha256Hasher {
       this.dispose();
       if (!pending) return;
       if (msg.type === "hex") pending.resolve(msg.hex);
-      else pending.reject(new Error(`SHA-256 failed: ${msg.message}`));
+      else
+        pending.reject(
+          new Error(
+            t("fileBrowser.transfer.sha256Failed", { message: msg.message }),
+          ),
+        );
     };
     worker!.onerror = (event) => {
       const pending = this.pending;
       this.pending = null;
       this.dispose();
-      pending?.reject(new Error(`SHA-256 worker failed: ${event.message}`));
+      pending?.reject(
+        new Error(
+          t("fileBrowser.transfer.sha256WorkerFailed", {
+            message: event.message,
+          }),
+        ),
+      );
     };
   }
 
   private post(msg: Sha256WorkerRequest): void {
-    if (!this.worker) throw new Error("SHA-256 hasher already released");
+    if (!this.worker) {
+      throw new Error(t("fileBrowser.transfer.sha256Released"));
+    }
     this.worker.postMessage(msg);
   }
 

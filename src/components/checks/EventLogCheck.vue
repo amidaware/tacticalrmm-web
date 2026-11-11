@@ -2,10 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? "Edit Event Log Check" : "Add Event Log Check" }}
+        {{
+          check
+            ? $t("checks.eventLog.editTitle")
+            : $t("checks.eventLog.addTitle")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -16,8 +22,8 @@
               dense
               outlined
               v-model="state.name"
-              label="Descriptive Name"
-              :rules="[(val) => !!val || '*Required']"
+              :label="$t('checks.form.descriptiveName')"
+              :rules="[(val) => !!val || $t('checks.form.required')]"
             />
           </q-card-section>
           <q-card-section>
@@ -27,7 +33,7 @@
               outlined
               v-model="state.log_name"
               :options="logNameOptions"
-              label="Event log to query"
+              :label="$t('checks.eventLog.logToQuery')"
             />
           </q-card-section>
           <q-card-section>
@@ -37,7 +43,7 @@
               outlined
               v-model="state.fail_when"
               :options="failWhenOptions"
-              label="Fail When"
+              :label="$t('checks.eventLog.failWhen')"
               emit-value
               map-options
             />
@@ -47,12 +53,18 @@
               dense
               outlined
               v-model="state.event_id"
-              label="Event ID (Use * to match every event ID)"
-              :rules="[(val) => validateEventID(val) || 'Invalid Event ID']"
+              :label="$t('checks.eventLog.eventId')"
+              :rules="[
+                (val) =>
+                  validateEventID(val) || $t('checks.eventLog.invalidEventId'),
+              ]"
             />
           </q-card-section>
           <q-card-section>
-            <q-checkbox v-model="eventSource" label="Event source" />
+            <q-checkbox
+              v-model="eventSource"
+              :label="$t('checks.eventLog.eventSource')"
+            />
             <q-input
               dense
               outlined
@@ -63,7 +75,7 @@
           <q-card-section>
             <q-checkbox
               v-model="eventMessage"
-              label="Message contains string"
+              :label="$t('checks.eventLog.messageContains')"
             />
             <q-input
               dense
@@ -77,46 +89,46 @@
               dense
               outlined
               v-model.number="state.search_last_days"
-              label="How many previous days to search (Enter 0 for the entire log)"
+              :label="$t('checks.eventLog.searchLastDays')"
               :rules="[
-                (val) => !!val.toString() || '*Required',
-                (val) => val >= 0 || 'Min 0',
-                (val) => val <= 9999 || 'Max 9999',
+                (val) => !!val.toString() || $t('checks.form.required'),
+                (val) => val >= 0 || $t('checks.eventLog.min0'),
+                (val) => val <= 9999 || $t('checks.eventLog.max9999'),
               ]"
             />
           </q-card-section>
           <q-card-section>
-            <span>Event Type:</span>
+            <span>{{ $t("checks.eventLog.eventType") }}</span>
             <div class="q-gutter-sm">
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="INFO"
-                label="Information"
+                :label="$t('checks.eventLog.types.info')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="WARNING"
-                label="Warning"
+                :label="$t('checks.eventLog.types.warning')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="ERROR"
-                label="Error"
+                :label="$t('checks.eventLog.types.error')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="AUDIT_SUCCESS"
-                label="Success Audit"
+                :label="$t('checks.eventLog.types.auditSuccess')"
               />
               <q-radio
                 dense
                 v-model="state.event_type"
                 val="AUDIT_FAILURE"
-                label="Failure Audit"
+                :label="$t('checks.eventLog.types.auditFailure')"
               />
             </div>
           </q-card-section>
@@ -129,12 +141,12 @@
               emit-value
               v-model="state.alert_severity"
               :options="severityOptions"
-              label="Alert Severity"
+              :label="$t('checks.form.alertSeverity')"
             />
           </q-card-section>
           <q-card-section>
             <q-input
-              label="Number of events found before alert"
+              :label="$t('checks.eventLog.eventsBeforeAlert')"
               dense
               outlined
               type="number"
@@ -148,7 +160,7 @@
               options-dense
               v-model="state.fails_b4_alert"
               :options="failOptions"
-              label="Number of consecutive failures before alert"
+              :label="$t('checks.form.failsBeforeAlert')"
             />
           </q-card-section>
           <q-card-section>
@@ -157,18 +169,18 @@
               dense
               type="number"
               v-model.number="state.run_interval"
-              label="Run this check every (seconds)"
-              hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+              :label="$t('checks.form.runInterval')"
+              :hint="$t('checks.form.runIntervalHint')"
             />
           </q-card-section>
         </div>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$t('common.save')"
             color="primary"
             type="submit"
           />

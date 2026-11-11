@@ -2,7 +2,7 @@
   <q-card style="min-width: 35vw">
     <q-card-section class="row">
       <q-card-actions align="left">
-        <div class="text-h6">Add an agent</div>
+        <div class="text-h6">{{ $t("agentModals.installAgent.title") }}</div>
       </q-card-actions>
       <q-space />
       <q-card-actions align="right">
@@ -16,7 +16,7 @@
             outlined
             dense
             options-dense
-            label="Client"
+            :label="$t('common.client')"
             v-model="client"
             :options="client_options"
             @update:model-value="site = sites[0]"
@@ -27,7 +27,7 @@
             dense
             options-dense
             outlined
-            label="Site"
+            :label="$t('common.site')"
             v-model="site"
             :options="sites"
           />
@@ -68,13 +68,13 @@
             <q-radio
               v-model="agenttype"
               val="server"
-              label="Server"
+              :label="$t('agentModals.installAgent.server')"
               @update:model-value="power = false"
             />
             <q-radio
               v-model="agenttype"
               val="workstation"
-              label="Workstation"
+              :label="$t('agentModals.installAgent.workstation')"
             />
           </div>
         </q-card-section>
@@ -85,7 +85,7 @@
               dense
               type="number"
               filled
-              label="Token expiration (hours)"
+              :label="$t('agentModals.installAgent.tokenExpiration')"
               style="max-width: 200px"
               stack-label
             />
@@ -93,22 +93,30 @@
         </q-card-section>
         <q-card-section v-show="agentOS === 'windows'">
           <div class="q-gutter-sm">
-            <q-checkbox v-model="rdp" dense label="Enable RDP" />
-            <q-checkbox v-model="ping" dense label="Enable Ping">
+            <q-checkbox
+              v-model="rdp"
+              dense
+              :label="$t('agentModals.installAgent.enableRdp')"
+            />
+            <q-checkbox
+              v-model="ping"
+              dense
+              :label="$t('agentModals.installAgent.enablePing')"
+            >
               <q-tooltip>
-                Enable ICMP echo requests in the local firewall
+                {{ $t("agentModals.installAgent.enablePingTooltip") }}
               </q-tooltip>
             </q-checkbox>
             <q-checkbox
               v-model="power"
               dense
               v-show="agenttype === 'workstation'"
-              label="Disable sleep/hibernate"
+              :label="$t('agentModals.installAgent.disableSleep')"
             />
           </div>
         </q-card-section>
         <q-card-section>
-          Arch
+          {{ $t("agentModals.installAgent.arch") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="goarch"
@@ -149,13 +157,13 @@
           </div>
         </q-card-section>
         <q-card-section>
-          Installation Method
+          {{ $t("agentModals.installAgent.installMethod") }}
           <div class="q-gutter-sm">
             <q-radio
               v-model="installMethod"
               val="manual"
               v-show="agentOS === 'windows'"
-              label="Standard EXE"
+              :label="$t('agentModals.installAgent.standardExe')"
             />
             <q-radio
               v-model="installMethod"
@@ -167,7 +175,7 @@
               v-model="installMethod"
               val="exe"
               v-show="agentOS === 'windows'"
-              label="Generated EXE"
+              :label="$t('agentModals.installAgent.generatedExe')"
             />
           </div>
         </q-card-section>
@@ -288,32 +296,36 @@ export default {
       } else if (this.installMethod === "exe") {
         this.$q
           .dialog({
-            title: "Warning",
+            title: this.$t("agentModals.installAgent.warning"),
             style: {
               width: "40vw",
               maxWidth: "50vw",
             },
-            message: `
-              This installation method may trigger Antivirus (AV), Windows SmartScreen, or Untrusted Publisher warnings.<br><br>
-              We strongly recommend using the Standard EXE or PowerShell installer instead.<br><br>
-              This method may also expose your environment to the risk of unauthorized or unexpected agents appearing. Please read <a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">this guidance</a> before continuing.<br><br>
-              Proceed only if you understand and accept these risks.
-              `,
+            message: [
+              this.$t("agentModals.installAgent.exeWarning1"),
+              this.$t("agentModals.installAgent.exeWarning2"),
+              this.$t("agentModals.installAgent.exeWarning3", {
+                link: `<a target="_blank" rel="noopener noreferrer" href="https://docs.tacticalrmm.com/faq/#help-ive-been-hacked-and-there-are-weird-agents-appearing-in-my-tactical-rmm">${this.$t("agentModals.installAgent.thisGuidance")}</a>`,
+              }),
+              this.$t("agentModals.installAgent.exeWarning4"),
+            ].join("<br><br>"),
             color: "negative",
             ok: {
-              label: "Yes, continue",
+              label: this.$t("agentModals.installAgent.yesContinue"),
               color: "negative",
               unelevated: true,
             },
             cancel: {
-              label: "Cancel",
+              label: this.$t("common.cancel"),
               color: "grey",
             },
             persistent: true,
             html: true,
           })
           .onOk(() => {
-            this.$q.loading.show({ message: "Generating executable..." });
+            this.$q.loading.show({
+              message: this.$t("agentModals.installAgent.generating"),
+            });
             this.$axios
               .post("/agents/installer/", data, { responseType: "blob" })
               .then((r) => {
@@ -356,8 +368,12 @@ export default {
     },
     showDLMessage() {
       this.$q.dialog({
-        message: `Installer for ${this.client.label}, ${this.site.label} (${this.agenttype}) will now be downloaded.
-              You may reuse this installer for ${this.expires} hours before it expires. No command line arguments are needed.`,
+        message: this.$t("agentModals.installAgent.downloadMessage", {
+          client: this.client.label,
+          site: this.site.label,
+          type: this.agenttype,
+          hours: this.expires,
+        }),
       });
     },
   },
@@ -369,19 +385,19 @@ export default {
       let text;
       switch (this.installMethod) {
         case "exe":
-          text = "Generate and download exe";
+          text = this.$t("agentModals.installAgent.btnGenerateExe");
           break;
         case "powershell":
-          text = "Download powershell script";
+          text = this.$t("agentModals.installAgent.btnPowershell");
           break;
         case "manual":
-          text = "Show installation instructions";
+          text = this.$t("agentModals.installAgent.btnShowInstructions");
           break;
         case "bash":
-          text = "Download linux install script";
+          text = this.$t("agentModals.installAgent.btnLinux");
           break;
         case "mac":
-          text = "Show installation instructions";
+          text = this.$t("agentModals.installAgent.btnShowInstructions");
           break;
       }
 

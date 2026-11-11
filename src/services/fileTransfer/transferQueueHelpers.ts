@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type { TransferAbortIntent } from "@/types/fileTransfer";
 import { getFileBrowserErrorMessage } from "@/utils/filebrowser";
 import {
@@ -85,8 +86,8 @@ export function transferIntegrityFailMessage(
   direction: TransferDirection,
 ): string {
   return direction === "upload"
-    ? "Upload failed: file integrity check did not match."
-    : "Download failed: file integrity check did not match.";
+    ? t("fileBrowser.transfer.uploadIntegrityFailed")
+    : t("fileBrowser.transfer.downloadIntegrityFailed");
 }
 
 export function transferFailureErrorMessage(
@@ -98,6 +99,8 @@ export function transferFailureErrorMessage(
   }
   return getFileBrowserErrorMessage(
     err,
-    direction === "upload" ? "Upload failed." : "Download failed.",
+    direction === "upload"
+      ? t("fileBrowser.transfer.uploadFailedSentence")
+      : t("fileBrowser.transfer.downloadFailedSentence"),
   );
 }

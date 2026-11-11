@@ -1,0 +1,165 @@
+{
+  "tabs": {
+    "checks": "Verificações",
+    "tasks": "Tarefas"
+  },
+  "seeStatus": "Ver status",
+  "alerts": {
+    "smsAlert": "Alerta por SMS",
+    "emailAlert": "Alerta por e-mail",
+    "dashboardAlert": "Alerta no painel",
+    "alertsEnabled": "Alertas de {type} ativados",
+    "alertsDisabled": "Alertas de {type} desativados",
+    "types": {
+      "text": "SMS",
+      "email": "e-mail",
+      "dashboard": "painel"
+    }
+  },
+  "manager": {
+    "title": "Gerenciador de Automação",
+    "new": "Novo",
+    "policyOverview": "Visão geral das políticas",
+    "noPolicies": "Nenhuma política",
+    "enablePolicy": "Ativar política",
+    "enforcePolicyTooltip": "Impor política (substitui tarefas/verificações do agente)",
+    "showRelations": "Mostrar relações",
+    "policyExclusions": "Exclusões da política",
+    "defaultServer": "Padrão para servidores",
+    "defaultWorkstation": "Padrão para estações de trabalho",
+    "showRelationsCount": "Mostrar relações ({count})",
+    "showExclusionsCount": "Mostrar exclusões da política ({count})",
+    "copyTooltip": "Criar uma cópia desta política",
+    "columns": {
+      "active": "Ativa",
+      "enforced": "Imposta",
+      "relations": "Relações",
+      "exclusions": "Exclusões",
+      "patchPolicy": "Política de Patches",
+      "alertTemplate": "Modelo de Alerta"
+    },
+    "deleteTitle": "Excluir política?",
+    "notify": {
+      "deleted": "Política excluída!",
+      "enabled": "Política ativada com sucesso",
+      "disabled": "Política desativada com sucesso",
+      "enforced": "Política imposta com sucesso",
+      "enforcementDisabled": "Imposição da política desativada"
+    },
+    "editPatchPolicy": "Editar Política de Patches",
+    "addPatchPolicy": "Adicionar Política de Patches",
+    "modifyPatchPolicy": "Modificar Política de Patches",
+    "createPatchPolicy": "Criar Política de Patches",
+    "modifyAlertTemplate": "Modificar Modelo de Alerta",
+    "assignAlertTemplate": "Atribuir Modelo de Alerta"
+  },
+  "overview": {
+    "title": "Visão geral das políticas",
+    "serversPolicy": "{name} (Servidores)",
+    "serversPolicyDisabled": "{name} (Servidores) (desativada)",
+    "workstationsPolicy": "{name} (Estações de trabalho)",
+    "workstationsPolicyDisabled": "{name} (Estações de trabalho) (desativada)"
+  },
+  "checksTab": {
+    "selectPolicy": "Clique em uma política para ver as verificações",
+    "noChecks": "Não há verificações adicionadas a esta política",
+    "tasksCount": "{count} tarefas",
+    "columns": {
+      "assignedTasks": "Tarefas atribuídas"
+    },
+    "deleteTitle": "Excluir verificação {type}?",
+    "notify": {
+      "deleted": "Verificação excluída!"
+    }
+  },
+  "tasksTab": {
+    "addTask": "Adicionar tarefa",
+    "selectPolicy": "Clique em uma política para ver as tarefas",
+    "noTasks": "Não há tarefas adicionadas a esta política",
+    "collectorTask": "Tarefa Coletora",
+    "collectorTooltip": "A tarefa atualiza um campo personalizado no agente",
+    "runTaskNow": "Executar tarefa agora",
+    "columns": {
+      "collector": "Coletora",
+      "schedule": "Agendamento",
+      "moreInfo": "Mais informações",
+      "assignedCheck": "Verificação atribuída"
+    },
+    "notify": {
+      "runDisabled": "A tarefa não pode ser executada enquanto estiver desativada. Ative-a primeiro.",
+      "initiated": "A tarefa foi iniciada em todos os agentes afetados",
+      "deleted": "Tarefa excluída com sucesso"
+    },
+    "runConfirm": "Executar a tarefa {name}",
+    "deleteConfirm": "Excluir a tarefa {name}"
+  },
+  "policyStatus": {
+    "menuItem": "Status da política",
+    "title": "Status de {name}",
+    "noAgents": "Não há agentes nesta política",
+    "sync": {
+      "awaitingFirst": "Aguardando primeira sincronização",
+      "notSynced": "Será sincronizado no próximo check-in do agente",
+      "synced": "Sincronizado com o agente",
+      "pendingDeletion": "Exclusão pendente no agente",
+      "initial": "Aguardando criação da tarefa no agente"
+    },
+    "output": "saída",
+    "awaitingOutput": "Aguardando saída",
+    "never": "Nunca",
+    "columns": {
+      "dateTime": "Data / Hora"
+    }
+  },
+  "policyAdd": {
+    "title": "Editar políticas atribuídas a {type}",
+    "types": {
+      "agent": "agente",
+      "site": "site",
+      "client": "cliente"
+    },
+    "serverPolicy": "Política para servidores",
+    "workstationPolicy": "Política para estações de trabalho",
+    "policy": "Política",
+    "blockInheritance": "Bloquear herança de políticas",
+    "blockInheritanceTooltip": {
+      "agent": "Este agente não herdará políticas de níveis superiores",
+      "site": "Este site não herdará políticas de níveis superiores",
+      "client": "Este cliente não herdará políticas de níveis superiores"
+    },
+    "noPolicies": "Nenhuma política de automação foi configurada. Vá em Configurações > Gerenciador de Automação",
+    "notify": {
+      "updated": "Políticas atualizadas com sucesso!"
+    }
+  },
+  "exclusions": {
+    "title": "Exclusões da política {name}",
+    "excludedClients": "Clientes excluídos",
+    "excludedSites": "Sites excluídos",
+    "excludedAgents": "Agentes excluídos",
+    "notify": {
+      "added": "Exclusões da política adicionadas"
+    }
+  },
+  "policyForm": {
+    "copyNotice": "Você está copiando verificações e tarefas da política: {name} para uma nova política.",
+    "name": "Nome:",
+    "description": "Descrição:",
+    "active": "Ativa:",
+    "enforced": "Imposta:",
+    "required": "*Obrigatório",
+    "editTitle": "Editar política",
+    "addTitle": "Adicionar política",
+    "notify": {
+      "edited": "Política editada!",
+      "added": "Política adicionada. Agora você pode adicionar tarefas e verificações!"
+    }
+  },
+  "relations": {
+    "title": "Relações de {name}",
+    "defaultServer": "Esta política está definida como a política padrão para servidores.",
+    "defaultWorkstation": "Esta política está definida como a política padrão para estações de trabalho.",
+    "appliedToServers": "Aplicada a servidores",
+    "appliedToWorkstations": "Aplicada a estações de trabalho"
+  }
+}

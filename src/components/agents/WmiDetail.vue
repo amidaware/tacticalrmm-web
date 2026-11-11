@@ -16,7 +16,7 @@
             icon="content_copy"
             @click="copyValueToClip(v)"
           >
-            <q-tooltip>Copy to Clipboard</q-tooltip>
+            <q-tooltip>{{ $t("agentTabs.copyToClipboard") }}</q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -31,6 +31,7 @@ import { notifySuccess } from "@/utils/notify";
 // composition imports
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import { uid } from "quasar";
 
 export default {
@@ -39,11 +40,12 @@ export default {
   setup() {
     // setup vuex
     const store = useStore();
+    const { t } = useI18n();
     const tabHeight = computed(() => store.state.tabHeight);
 
     function copyValueToClip(val) {
       copyToClipboard(val).then(() => {
-        notifySuccess("Copied to clipboard");
+        notifySuccess(t("common.copiedToClipboard"));
       });
     }
 

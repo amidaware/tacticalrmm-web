@@ -18,7 +18,7 @@
       virtual-scroll
       v-model:pagination="pagination"
       :rows-per-page-options="[0]"
-      no-data-label="No Agents"
+      :no-data-label="$t('agentTable.noAgents')"
       :loading="agentTableLoading"
     >
       <!-- header slots -->
@@ -52,35 +52,35 @@
       <template v-slot:header-cell-checks-status="props">
         <q-th :props="props">
           <q-icon name="fas fa-check-double" size="1.2em">
-            <q-tooltip>Checks Status</q-tooltip>
+            <q-tooltip>{{ $t("agentTable.headers.checksStatus") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-patchespending="props">
         <q-th auto-width :props="props">
           <q-icon name="verified_user" size="1.5em">
-            <q-tooltip>Patches Pending</q-tooltip>
+            <q-tooltip>{{ $t("agentTable.headers.patchesPending") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-pendingactions="props">
         <q-th auto-width :props="props">
           <q-icon name="far fa-clock" size="1.5em">
-            <q-tooltip>Pending Actions</q-tooltip>
+            <q-tooltip>{{ $t("agentTable.headers.pendingActions") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-agentstatus="props">
         <q-th auto-width :props="props">
           <q-icon name="fas fa-signal" size="1.2em">
-            <q-tooltip>Agent Status</q-tooltip>
+            <q-tooltip>{{ $t("agentTable.headers.agentStatus") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
       <template v-slot:header-cell-needs_reboot="props">
         <q-th auto-width :props="props">
           <q-icon name="fas fa-power-off" size="1.2em">
-            <q-tooltip>Reboot</q-tooltip>
+            <q-tooltip>{{ $t("agentTable.headers.reboot") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -107,8 +107,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTable.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -134,8 +137,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTable.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -161,8 +167,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTable.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -216,10 +225,10 @@
               size="sm"
               color="primary"
             >
-              <q-tooltip>Server</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.monType.server") }}</q-tooltip>
             </q-icon>
             <q-icon v-else name="computer" size="sm" color="primary">
-              <q-tooltip>Workstation</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.monType.workstation") }}</q-tooltip>
             </q-icon>
           </q-td>
 
@@ -230,7 +239,7 @@
               size="1.2em"
               :color="dash_positive_color"
             >
-              <q-tooltip>Maintenance Mode Enabled</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.checks.maintenance") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.checks.failing > 0"
@@ -238,7 +247,7 @@
               size="1.2em"
               :color="dash_negative_color"
             >
-              <q-tooltip>Checks failing</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.checks.failing") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.checks.warning > 0"
@@ -246,7 +255,7 @@
               size="1.2em"
               :color="dash_warning_color"
             >
-              <q-tooltip>Checks warning</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.checks.warning") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.checks.info > 0"
@@ -254,7 +263,7 @@
               size="1.2em"
               :color="dash_info_color"
             >
-              <q-tooltip>Checks info</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.checks.info") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
@@ -262,7 +271,7 @@
               size="1.2em"
               :color="dash_positive_color"
             >
-              <q-tooltip>Checks passing</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.checks.passing") }}</q-tooltip>
             </q-icon>
           </q-td>
 
@@ -287,7 +296,9 @@
               size="1.5em"
               color="primary"
             >
-              <q-tooltip>Patches Pending</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTable.headers.patchesPending")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td :props="props" key="pendingactions">
@@ -299,10 +310,11 @@
               :color="dash_warning_color"
               class="cursor-pointer"
             >
-              <q-tooltip
-                >Pending Action Count:
-                {{ props.row.pending_actions_count }}</q-tooltip
-              >
+              <q-tooltip>{{
+                $t("agentTable.pendingActionCount", {
+                  count: props.row.pending_actions_count,
+                })
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <!-- needs reboot -->
@@ -312,7 +324,7 @@
               name="fas fa-power-off"
               color="primary"
             >
-              <q-tooltip>Reboot required</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.rebootRequired") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td key="agentstatus">
@@ -322,7 +334,7 @@
               size="1.2em"
               :color="dash_negative_color"
             >
-              <q-tooltip>Agent overdue</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.status.overdue") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.status === 'offline'"
@@ -330,7 +342,7 @@
               size="1.2em"
               :color="dash_warning_color"
             >
-              <q-tooltip>Agent offline</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.status.offline") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
@@ -338,7 +350,7 @@
               size="1.2em"
               :color="dash_positive_color"
             >
-              <q-tooltip>Agent online</q-tooltip>
+              <q-tooltip>{{ $t("agentTable.status.online") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td key="last_seen" :props="props">{{
@@ -362,7 +374,6 @@ import PendingActions from "@/components/logs/PendingActions.vue";
 import AgentActionMenu from "@/components/agents/AgentActionMenu.vue";
 import { runURLAction } from "@/api/core";
 import { runTakeControl, runRemoteBackground } from "@/api/agents";
-import { capitalize } from "@vue/shared";
 
 export default {
   name: "AgentTable",
@@ -379,9 +390,9 @@ export default {
         sortBy: "hostname",
         descending: false,
       },
-      dashboard_overdue_text: "Show a dashboard alert when agent is overdue",
-      email_overdue_text: "Send an email alert when agent is overdue",
-      sms_overdue_text: "Send a SMS alert when agent is overdue",
+      dashboard_overdue_text: this.$t("agentTable.overdueTooltip.dashboard"),
+      email_overdue_text: this.$t("agentTable.overdueTooltip.email"),
+      sms_overdue_text: this.$t("agentTable.overdueTooltip.sms"),
     };
   },
   methods: {
@@ -519,9 +530,9 @@ export default {
           color: alertColor,
           textColor: "black",
           icon: "fas fa-check-circle",
-          message: `${capitalize(category)} alerts will now be ${action} when ${
-            agent.hostname
-          } is overdue.`,
+          message: this.$t(`agentTable.overdueNotify.${category}.${action}`, {
+            hostname: agent.hostname,
+          }),
           timeout: 5000,
         });
       });

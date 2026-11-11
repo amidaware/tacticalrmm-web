@@ -2,26 +2,28 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 40vw">
       <q-bar>
-        Add Script
+        {{ $t("scripts.upload.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form id="scriptUploadForm" @submit="submitForm">
         <q-card-section>
           <q-input
-            label="Name"
+            :label="$t('common.name')"
             outlined
             dense
             v-model="script.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('scripts.validation.required')]"
           />
         </q-card-section>
 
         <q-card-section>
           <q-input
-            label="Description"
+            :label="$t('common.description')"
             outlined
             dense
             v-model="script.description"
@@ -32,8 +34,8 @@
           <tactical-dropdown
             v-model="script.category"
             :options="categories"
-            label="Category"
-            hint="Press Enter or Tab when adding a new value"
+            :label="$t('scripts.shared.category')"
+            :hint="$t('scripts.upload.categoryHint')"
             outlined
             filterable
             clearable
@@ -42,7 +44,13 @@
         </q-card-section>
 
         <q-card-section>
-          <q-file label="Script Upload" v-model="file" filled dense counter>
+          <q-file
+            :label="$t('scripts.upload.scriptUpload')"
+            v-model="file"
+            filled
+            dense
+            counter
+          >
             <template v-slot:prepend>
               <q-icon name="attach_file" />
             </template>
@@ -53,7 +61,7 @@
           <tactical-dropdown
             v-model="script.shell"
             :options="shellOptions"
-            label="Type"
+            :label="$t('common.type')"
             outlined
             mapOptions
           />
@@ -63,7 +71,7 @@
           <tactical-dropdown
             v-model="script.supported_platforms"
             :options="agentPlatformOptions"
-            label="Supported Platforms (All supported if blank)"
+            :label="$t('scripts.shared.supportedPlatforms')"
             clearable
             mapOptions
             filled
@@ -74,8 +82,8 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.args"
-            label="Script Arguments"
-            placeholder="(press Enter after typing each argument)"
+            :label="$t('scripts.upload.scriptArgs')"
+            :placeholder="$t('scripts.upload.scriptArgsPlaceholder')"
             filled
             use-input
             multiple
@@ -88,8 +96,8 @@
         <q-card-section>
           <tactical-dropdown
             v-model="script.env_vars"
-            label="Environment Variables"
-            placeholder="(press Enter after typing each key=value pair)"
+            :label="$t('scripts.upload.envVars')"
+            :placeholder="$t('scripts.upload.envVarsPlaceholder')"
             filled
             use-input
             multiple
@@ -101,23 +109,23 @@
 
         <q-card-section>
           <q-input
-            label="Default Timeout"
+            :label="$t('scripts.upload.defaultTimeout')"
             type="number"
             outlined
             dense
             v-model.number="script.default_timeout"
-            :rules="[(val) => val >= 5 || 'Minimum is 5']"
+            :rules="[(val) => val >= 5 || $t('scripts.validation.minTimeout')]"
           />
         </q-card-section>
 
         <q-card-actions>
           <q-space />
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Add"
+            :label="$t('common.add')"
             color="primary"
             type="submit"
           />

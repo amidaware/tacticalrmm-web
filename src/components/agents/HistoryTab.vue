@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else>
     <q-table
       :table-class="{
@@ -23,7 +25,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -49,7 +51,7 @@
                 ? showCommandOutput(props.row.command, props.row.results)
                 : showScriptOutput(props.row.script_results)
             "
-            >Output
+            >{{ $t("agentTabs.history.output") }}
           </span>
         </q-td>
       </template>
@@ -70,6 +72,7 @@ import { useStore } from "vuex";
 import { useQuasar, Notify } from "quasar";
 import { formatTableColumnText, truncateText } from "@/utils/format";
 import { fetchAgentHistory } from "@/api/agents";
+import { t } from "@/i18n";
 
 // ui imports
 import ScriptOutput from "@/components/checks/ScriptOutput.vue";
@@ -80,14 +83,14 @@ import PreDialog from "@/components/ui/PreDialog.vue";
 const columns = [
   {
     name: "time",
-    label: "Time",
+    label: t("agentTabs.history.columns.time"),
     field: "time",
     align: "left",
     sortable: true,
   },
   {
     name: "type",
-    label: "Action",
+    label: t("agentTabs.history.columns.action"),
     field: "type",
     align: "left",
     sortable: true,
@@ -103,7 +106,7 @@ const columns = [
   }, */
   {
     name: "command",
-    label: "Script/Command",
+    label: t("agentTabs.history.columns.command"),
     field: (row) => (row.type === "script_run" ? row.script_name : row.command),
     align: "left",
     sortable: true,
@@ -111,14 +114,14 @@ const columns = [
   },
   {
     name: "username",
-    label: "Initiated By",
+    label: t("agentTabs.history.columns.initiatedBy"),
     field: "username",
     align: "left",
     sortable: true,
   },
   {
     name: "output",
-    label: "Output",
+    label: t("agentTabs.history.output"),
     field: "output",
     align: "left",
     sortable: false,
@@ -199,7 +202,7 @@ export default {
     function showScriptOutput(output) {
       if (!output) {
         Notify.create({
-          message: "No output is available yet",
+          message: t("agentTabs.history.noOutput"),
           type: "negative",
         });
         return;

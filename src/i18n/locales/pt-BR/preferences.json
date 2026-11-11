@@ -1,0 +1,33 @@
+{
+  "title": "Preferências",
+  "userInterface": "Interface do Usuário",
+  "agentDblClick": "Ação ao clicar duas vezes no agente:",
+  "urlAction": "Ação de URL:",
+  "agentTableTab": "Aba padrão da tabela de agentes:",
+  "loadingBarColor": "Cor da barra de carregamento:",
+  "infoColor": "Cor de informação do painel:",
+  "positiveColor": "Cor positiva do painel:",
+  "negativeColor": "Cor negativa do painel:",
+  "warningColor": "Cor de aviso do painel:",
+  "colorHelp": "Clique para ver as opções de cores",
+  "clientSort": "Ordenação de clientes:",
+  "dateFormat": "Formato de data:",
+  "dateFormatHelp": "Clique para ver as opções de formatação",
+  "clearSearch": "Limpar o campo de pesquisa ao trocar de cliente/site",
+  "sortAlphaFail": "Ordem alfabética, movendo clientes com falha para o topo",
+  "sortAlpha": "Somente ordem alfabética",
+  "dblClick": {
+    "editAgent": "Editar Agente",
+    "takeControl": "Assumir Controle",
+    "remoteBg": "Segundo Plano Remoto",
+    "urlAction": "Executar Ação de URL"
+  },
+  "tabs": {
+    "servers": "Servidores",
+    "workstations": "Estações de trabalho",
+    "mixed": "Misto"
+  },
+  "noUrlActions": "Nenhuma Ação de URL configurada. Vá em Configurações > Configurações Globais > Ações de URL",
+  "selectUrlAction": "Selecione uma Ação de URL",
+  "saved": "Preferências salvas!"
+}

@@ -1,0 +1,95 @@
+{
+  "shared": {
+    "time": "Time",
+    "message": "Message"
+  },
+  "auditDetail": {
+    "before": "Before",
+    "after": "After"
+  },
+  "auditManager": {
+    "title": "Audit Manager",
+    "tableTitle": "Audit Logs",
+    "action": "Action",
+    "object": "Object",
+    "noDataFound": "No data found. Try to refine you search",
+    "clickSearch": "Click search to find audit logs",
+    "columns": {
+      "clientIp": "Client IP"
+    },
+    "actions": {
+      "addObject": "Add Object",
+      "modifyObject": "Modify Object",
+      "executeCommand": "Execute Command",
+      "executeScript": "Execute Script",
+      "remoteSession": "Remote Session",
+      "urlAction": "URL Action",
+      "agentInstalls": "Agent Installs",
+      "bulkActions": "Bulk Actions",
+      "deleteObject": "Delete Object",
+      "failedLogin": "Failed User login",
+      "userLogin": "User Login",
+      "taskRunResults": "Task Run Results",
+      "fileTransfer": "File Transfer"
+    },
+    "objects": {
+      "automatedTask": "Automated Task",
+      "bulkActions": "Bulk Actions",
+      "coreSettings": "Core Settings",
+      "check": "Check",
+      "policy": "Policy",
+      "script": "Script",
+      "patchPolicy": "Patch Policy",
+      "alertTemplate": "Alert Template",
+      "role": "Role",
+      "urlAction": "URL Action",
+      "globalKeyStore": "Global Key Store",
+      "customField": "Custom Field",
+      "schedule": "Schedule",
+      "reportSchedule": "Report Schedule"
+    },
+    "times": {
+      "oneDay": "1 Day Ago",
+      "oneWeek": "1 Week Ago",
+      "thirtyDays": "30 Days Ago",
+      "threeMonths": "3 Months Ago",
+      "sixMonths": "6 Months Ago",
+      "oneYear": "1 Year Ago",
+      "everything": "Everything"
+    }
+  },
+  "debugLog": {
+    "title": "Debug Log",
+    "tableTitle": "Debug Logs",
+    "agentsFilter": "Agents Filter",
+    "logTypeFilter": "Log Type Filter",
+    "info": "Info",
+    "critical": "Critical",
+    "warning": "Warning",
+    "resultsLimited": "Results are limited to 1000 rows.",
+    "logTypes": {
+      "agentUpdate": "Agent Update",
+      "agentIssues": "Agent Issues",
+      "windowsUpdates": "Windows Updates",
+      "systemIssues": "System Issues",
+      "scripting": "Scripting"
+    },
+    "columns": {
+      "logLevel": "Log Level",
+      "logType": "Log Type"
+    }
+  },
+  "pendingActions": {
+    "titleAgent": "Pending Actions for {hostname}",
+    "titleAll": "All Pending Actions",
+    "noPendingActions": "No Pending Actions",
+    "hideCompleted": "Hide {count} Completed",
+    "showCompleted": "Show {count} Completed",
+    "cancelAction": "Cancel Action",
+    "completed": "Completed",
+    "viewOutput": "View output",
+    "due": "Due",
+    "outputDetails": "Pending Action Output Details",
+    "deleteConfirm": "Delete this pending action?"
+  }
+}

@@ -1,0 +1,314 @@
+{
+  "core": {
+    "title": "Configurações Globais",
+    "tabs": {
+      "general": "Geral",
+      "emailAlerts": "Alertas por E-mail",
+      "smsAlerts": "Alertas por SMS",
+      "customFields": "Campos Personalizados",
+      "keyStore": "Repositório de Chaves",
+      "urlActions": "Ações de URL",
+      "webhooks": "Webhooks",
+      "retention": "Retenção",
+      "apiKeys": "Chaves de API",
+      "sso": "Login Único (SSO)",
+      "schedules": "Agendamentos"
+    },
+    "zeroDisables": "Definir este valor como 0 desativa este recurso",
+    "recipients": "Destinatários",
+    "noRecipients": "Nenhum destinatário",
+    "usernameLabel": "Usuário:",
+    "passwordLabel": "Senha:",
+    "general": {
+      "agentAutoUpdate": "Ativar atualização automática dos agentes",
+      "agentAutoUpdateTooltip": "Executa aos 35 minutos de cada hora",
+      "serverScripts": "Ativar scripts no servidor",
+      "serverScriptsTooltip": "Permite executar scripts no servidor do TRMM para ações de falha/resolução de alertas",
+      "webTerminal": "Ativar terminal web",
+      "webTerminalTooltip": "Ativa o terminal web",
+      "defaultTimezone": "Fuso horário padrão dos agentes:",
+      "defaultDateFormat": "Formato de data padrão:",
+      "dateFormatTooltip": "Clique para ver as opções de formatação",
+      "defaultServerPolicy": "Política padrão para servidores:",
+      "defaultWorkstationPolicy": "Política padrão para estações de trabalho:",
+      "defaultAlertTemplate": "Modelo de alerta padrão:",
+      "receiveNotificationsOn": "Receber notificações de:",
+      "infoAlerts": "Alertas informativos",
+      "warningAlerts": "Alertas de aviso",
+      "agentDebugLevel": "Nível de depuração do agente:",
+      "clearFaultsDays": "Limpar falhas de agentes que não se comunicam há (dias):",
+      "minimumZero": "O mínimo é 0",
+      "terminalExperience": "Experiência do terminal",
+      "useNewTerminal": "Usar o novo terminal",
+      "useLegacyTerminal": "Usar o terminal antigo",
+      "windowsDefaultTerminal": "Terminal padrão do Windows",
+      "linuxDefaultTerminal": "Terminal padrão do Linux",
+      "macosDefaultTerminal": "Terminal padrão do macOS",
+      "custom": "Personalizado",
+      "customShellPath": "Informe o caminho do shell personalizado",
+      "customShellPathExample": "Informe o caminho do shell personalizado (ex.: {example})",
+      "resetPatchPolicy": "Redefinir Política de Patches nos agentes:",
+      "fileBrowserExperience": "Experiência do navegador de arquivos",
+      "useNewFileBrowser": "Usar o novo navegador de arquivos",
+      "useLegacyFileBrowser": "Usar o navegador de arquivos antigo"
+    },
+    "logLevels": {
+      "info": "Informação",
+      "warning": "Aviso",
+      "error": "Erro",
+      "critical": "Crítico"
+    },
+    "email": {
+      "routing": "Roteamento de alertas por e-mail",
+      "addEmails": "Adicionar e-mails",
+      "addEmail": "Adicionar e-mail",
+      "smtpSettings": "Configurações de SMTP",
+      "fromEmail": "E-mail do remetente:",
+      "invalidEmail": "E-mail inválido",
+      "fromName": "Nome do remetente:",
+      "host": "Host:",
+      "port": "Porta:",
+      "invalidPort": "Porta inválida",
+      "requiresAuth": "Meu servidor requer autenticação",
+      "saveAndTest": "Salvar e testar e-mail",
+      "sendingTest": "Enviando e-mail de teste..."
+    },
+    "sms": {
+      "routing": "Roteamento de alertas por SMS",
+      "addNumbers": "Adicionar números",
+      "addNumber": "Adicionar número",
+      "twilioSettings": "Configurações do Twilio",
+      "twilioNumber": "Número do Twilio:",
+      "twilioAccountSid": "Account SID do Twilio:",
+      "twilioAuthToken": "Auth Token do Twilio:",
+      "saveAndTest": "Salvar e testar SMS",
+      "sendingTest": "Enviando SMS de teste...",
+      "e164Help": "Use o formato E.164: deve conter o símbolo <b>+</b> e o <span class='text-red'>código do país</span>, seguido do <span class='text-green'>número de telefone</span>, ex.: <b>+<span class='text-red'>55</span><span class='text-green'>11912345678</span></b>"
+    },
+    "mesh": {
+      "title": "Configurações do MeshCentral",
+      "usernameLowercase": "O usuário deve estar todo em minúsculas",
+      "site": "Site do Mesh:",
+      "token": "Token do Mesh:",
+      "deviceGroup": "Nome do grupo de dispositivos do Mesh:",
+      "syncPerms": "Sincronizar permissões do Mesh com o TRMM:",
+      "syncPermsTooltip": "Recomendamos manter esta opção ativada; caso contrário, todos os usuários do TRMM terão permissões totais no MeshCentral, independentemente das permissões no TRMM.",
+      "companyName": "Nome da empresa:",
+      "companyNameTooltip": "O nome da empresa informado aqui será adicionado ao nome completo do usuário exibido durante uma sessão de controle remoto, por exemplo: 'João Silva - Amidaware Inc.'",
+      "syncConfirm": "Esta operação pode levar vários minutos para ser concluída em segundo plano e pode consumir muita CPU/disco, dependendo do seu hardware e da quantidade de agentes. Aguarde até que a sincronização seja totalmente concluída."
+    },
+    "retention": {
+      "checkHistory": "Histórico de verificações (dias):",
+      "resolvedAlerts": "Alertas resolvidos (dias):",
+      "agentHistory": "Histórico dos agentes (dias):",
+      "debugLogs": "Logs de depuração (dias):",
+      "auditLogs": "Logs de auditoria (dias):",
+      "reportHistory": "Histórico de relatórios (dias):"
+    },
+    "notify": {
+      "edited": "Configurações editadas!"
+    }
+  },
+  "codeSign": {
+    "title": "Assinatura de Código",
+    "signAll": "Assinar o código de todos os agentes",
+    "signAllTooltip": "Força a atualização de todos os agentes existentes para a versão com código assinado",
+    "token": "Token:",
+    "tokenRequired": "O token é obrigatório",
+    "deleted": "Token excluído!",
+    "deleteConfirm": "Excluir token?"
+  },
+  "customFields": {
+    "title": "Campos Personalizados",
+    "add": "Adicionar campo personalizado",
+    "noData": "Nenhum campo personalizado",
+    "columns": {
+      "type": "Tipo do campo",
+      "hideInUi": "Ocultar na interface",
+      "hideInSummary": "Ocultar na aba Resumo",
+      "defaultValue": "Valor padrão",
+      "required": "Obrigatório"
+    },
+    "deleteConfirm": "Excluir o campo personalizado {name}?",
+    "deleted": "Campo personalizado {name} excluído!",
+    "form": {
+      "target": "Destino",
+      "inputOptions": "Opções de entrada (pressione Enter após digitar cada opção)",
+      "defaultValues": "Valor(es) padrão",
+      "hideInDashboard": "Ocultar no Painel",
+      "types": {
+        "text": "Texto",
+        "number": "Número",
+        "single": "Lista de seleção única",
+        "multiple": "Lista de seleção múltipla",
+        "datetime": "Data e hora",
+        "checkbox": "Caixa de seleção"
+      },
+      "editTitle": "Editar Campo Personalizado",
+      "addTitle": "Adicionar Campo Personalizado",
+      "defaultRequired": "O valor padrão deve ser definido para campos obrigatórios",
+      "edited": "Campo personalizado editado!",
+      "added": "Campo personalizado adicionado!"
+    }
+  },
+  "required": "*Obrigatório",
+  "keyStore": {
+    "value": "Valor",
+    "editTitle": "Editar Chave Global",
+    "addTitle": "Adicionar Chave Global",
+    "edited": "Chave editada!",
+    "added": "Chave adicionada!",
+    "title": "Repositório de Chaves Global",
+    "showValues": "Mostrar valores",
+    "hideValues": "Ocultar valores",
+    "addKey": "Adicionar chave",
+    "noData": "Nenhuma chave adicionada ainda",
+    "deleteConfirm": "Excluir a chave: {name}?",
+    "deleted": "Chave {name} excluída!"
+  },
+  "resetPatchPolicy": {
+    "title": "Redefinir Política de Patches dos Agentes",
+    "description": "Redefine as políticas de patches dos agentes de um cliente ou site específico. Você também pode deixar o cliente e o site em branco para redefinir a política de patches de todos os agentes. (Isso pode demorar um pouco)",
+    "clearAll": "Limpar políticas de TODOS os agentes",
+    "clear": "Limpar políticas"
+  },
+  "urlActions": {
+    "test": {
+      "title": "Testando {name}",
+      "body": "Corpo",
+      "response": "Resposta"
+    },
+    "editUrlAction": "Editar Ação de URL",
+    "editWebhook": "Editar Webhook",
+    "addUrlAction": "Adicionar Ação de URL",
+    "addWebhook": "Adicionar Webhook",
+    "pattern": "Padrão de URL",
+    "method": "Método",
+    "requestBody": "Corpo da requisição",
+    "requestHeaders": "Cabeçalhos da requisição",
+    "testButton": "Testar",
+    "edited": "Ação de URL editada!",
+    "title": "Ações de URL",
+    "webhooksTitle": "Webhooks para ações de falha/resolução de alertas",
+    "noUrlActions": "Nenhuma ação de URL adicionada ainda",
+    "noWebhooks": "Nenhum webhook adicionado ainda",
+    "deleteConfirm": "Excluir a ação de URL: {name}?",
+    "deleted": "Ação de URL {name} excluída!"
+  },
+  "serverMaintenance": {
+    "title": "Manutenção do Servidor",
+    "auditLog": "Log de Auditoria",
+    "auditLogTooltip": "Remove os resultados das verificações dos agentes",
+    "pendingActions": "Ações Pendentes",
+    "pendingActionsTooltip": "Remove as ações pendentes concluídas",
+    "alerts": "Alertas",
+    "alertsTooltip": "Remove todos os alertas",
+    "reloadNats": "Recarregar configuração do NATS",
+    "removeOrphanedTasks": "Remover tarefas órfãs",
+    "pruneDb": "Limpar tabelas do banco de dados"
+  },
+  "schedules": {
+    "added": "Agendamento adicionado com sucesso.",
+    "modified": "Agendamento modificado com sucesso.",
+    "deleted": "Agendamento excluído com sucesso.",
+    "title": "Agendamentos",
+    "add": "Adicionar Agendamento",
+    "monthsShort": {
+      "jan": "Jan",
+      "feb": "Fev",
+      "mar": "Mar",
+      "apr": "Abr",
+      "may": "Mai",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Ago",
+      "sep": "Set",
+      "oct": "Out",
+      "nov": "Nov",
+      "dec": "Dez"
+    },
+    "weekdaysShort": {
+      "sun": "Dom",
+      "mon": "Seg",
+      "tue": "Ter",
+      "wed": "Qua",
+      "thu": "Qui",
+      "fri": "Sex",
+      "sat": "Sáb"
+    },
+    "types": {
+      "daily": "Diário",
+      "weekly": "Semanal",
+      "monthly": "Mensal"
+    },
+    "columns": {
+      "scheduleType": "Tipo de agendamento",
+      "runTime": "Horário de execução",
+      "weekdays": "Dias da semana",
+      "months": "Meses",
+      "daysOfMonth": "Dias do mês",
+      "weeksOfMonth": "Semanas do mês"
+    },
+    "everyWeekday": "Todos os dias da semana",
+    "everyMonth": "Todos os meses",
+    "everyDay": "Todos os dias",
+    "everyWeek": "Todas as semanas",
+    "lastDayShort": "Último",
+    "weekOrdinals": {
+      "first": "1ª",
+      "second": "2ª",
+      "third": "3ª",
+      "fourth": "4ª",
+      "last": "Última"
+    },
+    "deleteConfirm": "Tem certeza de que deseja excluir o agendamento: {name}?",
+    "form": {
+      "editTitle": "Editar Agendamento",
+      "addTitle": "Adicionar Agendamento",
+      "runType": "Tipo de execução",
+      "hourMinute": "Hora:Minuto",
+      "runOnDaysLabel": "Executar nos dias:",
+      "onDays": "Por dias",
+      "onWeeks": "Por semanas",
+      "runOnMonths": "Executar nos meses",
+      "allMonths": "Todos os meses",
+      "runOnDays": "Executar nos dias",
+      "allDays": "Todos os dias",
+      "runOnWeeks": "Executar nas semanas",
+      "lastDay": "Último dia",
+      "weekdays": {
+        "monday": "Segunda-feira",
+        "tuesday": "Terça-feira",
+        "wednesday": "Quarta-feira",
+        "thursday": "Quinta-feira",
+        "friday": "Sexta-feira",
+        "saturday": "Sábado",
+        "sunday": "Domingo"
+      },
+      "months": {
+        "january": "Janeiro",
+        "february": "Fevereiro",
+        "march": "Março",
+        "april": "Abril",
+        "may": "Maio",
+        "june": "Junho",
+        "july": "Julho",
+        "august": "Agosto",
+        "september": "Setembro",
+        "october": "Outubro",
+        "november": "Novembro",
+        "december": "Dezembro"
+      },
+      "weeks": {
+        "first": "Primeira semana",
+        "second": "Segunda semana",
+        "third": "Terceira semana",
+        "fourth": "Quarta semana",
+        "last": "Última semana"
+      }
+    }
+  },
+  "table": {
+    "columnSelect": "Seleção de colunas"
+  }
+}

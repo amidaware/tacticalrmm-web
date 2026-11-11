@@ -4,16 +4,34 @@
       <q-splitter v-model="splitterModel">
         <template v-slot:before>
           <q-tabs dense v-model="tab" vertical class="text-primary">
-            <q-tab name="general" label="General" />
-            <q-tab name="customfields" label="Custom Fields" />
-            <q-tab name="patch" label="Patches" />
-            <q-tab name="policies" label="Automation Policies" />
+            <q-tab
+              name="general"
+              :label="$t('agentModals.editAgent.tabs.general')"
+            />
+            <q-tab
+              name="customfields"
+              :label="$t('agentModals.editAgent.tabs.customFields')"
+            />
+            <q-tab
+              name="patch"
+              :label="$t('agentModals.editAgent.tabs.patches')"
+            />
+            <q-tab
+              name="policies"
+              :label="$t('agentModals.editAgent.tabs.policies')"
+            />
           </q-tabs>
         </template>
         <template v-slot:after>
           <q-form @submit.prevent="editAgent">
             <q-card-section class="row items-center">
-              <div class="text-h6">Edit {{ agent.hostname }}</div>
+              <div class="text-h6">
+                {{
+                  $t("agentModals.editAgent.title", {
+                    hostname: agent.hostname,
+                  })
+                }}
+              </div>
               <q-space />
               <q-btn icon="close" flat round dense v-close-popup />
             </q-card-section>
@@ -27,7 +45,9 @@
                 <!-- general -->
                 <q-tab-panel name="general">
                   <q-card-section class="row">
-                    <div class="col-2">Site:</div>
+                    <div class="col-2">
+                      {{ $t("agentModals.editAgent.site") }}
+                    </div>
                     <div class="col-2"></div>
                     <tactical-dropdown
                       class="col-8"
@@ -39,7 +59,9 @@
                     />
                   </q-card-section>
                   <q-card-section class="row">
-                    <div class="col-2">Type:</div>
+                    <div class="col-2">
+                      {{ $t("agentModals.editAgent.type") }}
+                    </div>
                     <div class="col-2"></div>
                     <q-select
                       dense
@@ -51,7 +73,9 @@
                     />
                   </q-card-section>
                   <q-card-section class="row">
-                    <div class="col-2">Description:</div>
+                    <div class="col-2">
+                      {{ $t("agentModals.editAgent.description") }}
+                    </div>
                     <div class="col-2"></div>
                     <q-input
                       outlined
@@ -61,7 +85,9 @@
                     />
                   </q-card-section>
                   <q-card-section class="row">
-                    <div class="col-2">Timezone:</div>
+                    <div class="col-2">
+                      {{ $t("agentModals.editAgent.timezone") }}
+                    </div>
                     <div class="col-2"></div>
                     <tactical-dropdown
                       filterable
@@ -74,7 +100,9 @@
                     />
                   </q-card-section>
                   <q-card-section class="row items-start content-between">
-                    <div class="col-4">Default Terminal</div>
+                    <div class="col-4">
+                      {{ $t("agentModals.editAgent.defaultTerminal") }}
+                    </div>
                     <div class="col-8">
                       <q-option-group
                         v-if="agent && agent.plat"
@@ -91,7 +119,9 @@
                         class="q-mt-md"
                         dense
                         outlined
-                        placeholder="Enter custom shell path"
+                        :placeholder="
+                          $t('agentModals.editAgent.customShellPath')
+                        "
                         bottom-slots
                       >
                         <template v-slot:hint>
@@ -103,18 +133,24 @@
                     </div>
                   </q-card-section>
                   <q-card-section class="row">
-                    <div class="col-10">Run checks every:</div>
+                    <div class="col-10">
+                      {{ $t("agentModals.editAgent.runChecksEvery") }}
+                    </div>
                     <q-input
                       dense
                       type="number"
                       filled
-                      label="Seconds"
+                      :label="$t('agentModals.editAgent.seconds')"
                       v-model.number="agent.check_interval"
                       class="col-2"
                       :rules="[
-                        (val) => !!val || '*Required',
-                        (val) => val >= 15 || 'Minimum is 15 seconds',
-                        (val) => val <= 86400 || 'Maximum is 86400 seconds',
+                        (val) => !!val || $t('agentModals.shared.required'),
+                        (val) =>
+                          val >= 15 ||
+                          $t('agentModals.editAgent.minSeconds', { n: 15 }),
+                        (val) =>
+                          val <= 86400 ||
+                          $t('agentModals.editAgent.maxSeconds', { n: 86400 }),
                       ]"
                     />
                   </q-card-section>
@@ -126,21 +162,31 @@
                         size="1.2em"
                         :color="dash_warning_color"
                       />
-                      Mark an agent as
-                      <span class="text-weight-bold">offline</span> if it has
-                      not checked in after:
+                      <i18n-t keypath="agentModals.editAgent.markAs" tag="span">
+                        <template #status>
+                          <span class="text-weight-bold">{{
+                            $t("agentModals.editAgent.offlineWord")
+                          }}</span>
+                        </template>
+                      </i18n-t>
                     </div>
                     <q-input
                       dense
                       type="number"
                       filled
-                      label="Minutes"
+                      :label="$t('agentModals.editAgent.minutes')"
                       v-model.number="agent.offline_time"
                       class="col-2"
                       :rules="[
-                        (val) => !!val || '*Required',
-                        (val) => val >= 2 || 'Minimum is 2 minutes',
-                        (val) => val < 9999999 || 'Maximum is 9999999 minutes',
+                        (val) => !!val || $t('agentModals.shared.required'),
+                        (val) =>
+                          val >= 2 ||
+                          $t('agentModals.editAgent.minMinutes', { n: 2 }),
+                        (val) =>
+                          val < 9999999 ||
+                          $t('agentModals.editAgent.maxMinutes', {
+                            n: 9999999,
+                          }),
                       ]"
                     />
                   </q-card-section>
@@ -152,36 +198,46 @@
                         size="1.2em"
                         :color="dash_negative_color"
                       />
-                      Mark an agent as
-                      <span class="text-weight-bold">overdue</span> if it has
-                      not checked in after:
+                      <i18n-t keypath="agentModals.editAgent.markAs" tag="span">
+                        <template #status>
+                          <span class="text-weight-bold">{{
+                            $t("agentModals.editAgent.overdueWord")
+                          }}</span>
+                        </template>
+                      </i18n-t>
                     </div>
                     <q-input
                       dense
                       type="number"
                       filled
-                      label="Minutes"
+                      :label="$t('agentModals.editAgent.minutes')"
                       v-model.number="agent.overdue_time"
                       class="col-2"
                       :rules="[
-                        (val) => !!val || '*Required',
-                        (val) => val >= 3 || 'Minimum is 3 minutes',
-                        (val) => val < 9999999 || 'Maximum is 9999999 minutes',
+                        (val) => !!val || $t('agentModals.shared.required'),
+                        (val) =>
+                          val >= 3 ||
+                          $t('agentModals.editAgent.minMinutes', { n: 3 }),
+                        (val) =>
+                          val < 9999999 ||
+                          $t('agentModals.editAgent.maxMinutes', {
+                            n: 9999999,
+                          }),
                       ]"
                     />
                   </q-card-section>
                   <q-card-section class="row">
                     <q-checkbox
                       v-model="agent.overdue_email_alert"
-                      label="Get overdue email alerts"
+                      :label="$t('agentModals.editAgent.overdueEmail')"
                     />
                     <q-checkbox
                       v-model="agent.overdue_text_alert"
-                      label="Get overdue sms alerts"
+                      :label="$t('agentModals.editAgent.overdueSms')"
                     />
                     <q-checkbox
                       v-model="agent.overdue_dashboard_alert"
-                      label="Get overdue dashboard alerts"
+                      :label="$t('agentModals.editAgent.overdueDashboard')"
                     />
                   </q-card-section>
                 </q-tab-panel>
@@ -189,8 +245,7 @@
                 <!-- custom fields -->
                 <q-tab-panel name="customfields">
                   <div class="text-subtitle" v-if="customFields.length === 0">
-                    No agent custom fields found. Go to **Settings > Global
-                    Settings > Custom Settings**
+                    {{ $t("agentModals.editAgent.noCustomFields") }}
                   </div>
                   <q-card-section v-for="field in customFields" :key="field.id">
                     <CustomField
@@ -207,7 +262,9 @@
 
                 <!-- automation policies -->
                 <q-tab-panel name="policies">
-                  <div class="text-subtitle2">Policies</div>
+                  <div class="text-subtitle2">
+                    {{ $t("agentModals.editAgent.policies") }}
+                  </div>
                   <q-list separator padding dense>
                     <q-item
                       v-for="(policy, key) in agent.applied_policies"
@@ -218,91 +275,113 @@
                           {{ capitalize(key).split("_").join(" ") }}
                         </q-item-label>
                         <q-item-label>{{
-                          policy ? policy.name : "None"
+                          policy ? policy.name : $t("common.none")
                         }}</q-item-label>
                       </q-item-section>
                       <q-item-section side v-if="policy">
                         <q-item-label>
-                          <i>{{ policy.active ? "" : "disabled" }}</i>
+                          <i>{{
+                            policy.active
+                              ? ""
+                              : $t("agentModals.editAgent.disabledLower")
+                          }}</i>
                         </q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
 
-                  <div class="text-subtitle2">Alert Template</div>
+                  <div class="text-subtitle2">
+                    {{ $t("agentModals.editAgent.alertTemplate") }}
+                  </div>
                   <q-list dense padding>
                     <q-item>
                       <q-item-section>
                         <q-item-label>{{
                           agent.alert_template
                             ? agent.alert_template.name
-                            : "None"
+                            : $t("common.none")
                         }}</q-item-label>
                       </q-item-section>
                       <q-item-section side v-if="agent.alert_template">
                         <q-item-label>
                           <i>{{
-                            agent.alert_template.is_active ? "" : "disabled"
+                            agent.alert_template.is_active
+                              ? ""
+                              : $t("agentModals.editAgent.templateDisabled")
                           }}</i>
                         </q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
-                  <div class="text-subtitle2">Effective Patch Policy</div>
+                  <div class="text-subtitle2">
+                    {{ $t("agentModals.editAgent.effectivePatchPolicy") }}
+                  </div>
                   <q-list separator padding dense>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Critical</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.patchPolicy.critical")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.critical !== "inherit"
                             ? capitalize(agent.effective_patch_policy.critical)
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Important</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.patchPolicy.important")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.important !== "inherit"
                             ? capitalize(agent.effective_patch_policy.important)
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Moderate</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.patchPolicy.moderate")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.moderate !== "inherit"
                             ? capitalize(agent.effective_patch_policy.moderate)
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Low</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.patchPolicy.low")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.low !== "inherit"
                             ? capitalize(agent.effective_patch_policy.low)
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Other</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.patchPolicy.other")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.other !== "inherit"
                             ? capitalize(agent.effective_patch_policy.other)
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline>Run Time Frequency</q-item-label>
+                        <q-item-label overline>{{
+                          $t("agentModals.editAgent.runTimeFrequency")
+                        }}</q-item-label>
                         <q-item-label>{{
                           capitalize(
                             agent.effective_patch_policy.run_time_frequency,
@@ -316,13 +395,13 @@
                         "
                       >
                         <q-item-label>
-                          <b>week days:</b>
+                          <b>{{ $t("agentModals.editAgent.weekDays") }}</b>
                           {{
                             weekDaystoString(
                               agent.effective_patch_policy.run_time_days,
                             )
                           }}
-                          <b>at hour:</b>
+                          <b>{{ $t("agentModals.editAgent.atHour") }}</b>
                           {{ agent.effective_patch_policy.run_time_hour }}
                         </q-item-label>
                       </q-item-section>
@@ -333,21 +412,23 @@
                         "
                       >
                         <q-item-label>
-                          <b>Every month on day:</b>
+                          <b>{{
+                            $t("agentModals.editAgent.everyMonthOnDay")
+                          }}</b>
                           {{ agent.effective_patch_policy.run_time_day }}
-                          <b>at hour:</b>
+                          <b>{{ $t("agentModals.editAgent.atHour") }}</b>
                           {{ agent.effective_patch_policy.run_time_hour }}
                         </q-item-label>
                       </q-item-section>
                       <q-item-section v-else>
-                        <q-item-label>None</q-item-label>
+                        <q-item-label>{{ $t("common.none") }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline
-                          >Reboot after installation</q-item-label
-                        >
+                        <q-item-label overline>{{
+                          $t("agentModals.editAgent.rebootAfterInstall")
+                        }}</q-item-label>
                         <q-item-label>{{
                           agent.effective_patch_policy.reboot_after_install !==
                           "inherit"
@@ -355,35 +436,39 @@
                                 agent.effective_patch_policy
                                   .reboot_after_install,
                               )
-                            : "Do Nothing"
+                            : $t("agentModals.editAgent.doNothing")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item>
                       <q-item-section>
-                        <q-item-label overline
-                          >Failed patch options</q-item-label
-                        >
+                        <q-item-label overline>{{
+                          $t("agentModals.editAgent.failedPatchOptions")
+                        }}</q-item-label>
                         <q-item-label
                           v-if="
                             agent.effective_patch_policy
                               .reprocess_failed_inherit
                           "
-                          >Do Nothing</q-item-label
+                          >{{
+                            $t("agentModals.editAgent.doNothing")
+                          }}</q-item-label
                         >
                         <q-item-label v-else>
-                          <b>Reprocess failed patches:</b>
+                          <b>{{
+                            $t("agentModals.editAgent.reprocessFailed")
+                          }}</b>
                           {{
                             agent.effective_patch_policy.reprocess_failed
                               ? agent.effective_patch_policy
                                   .reprocess_failed_times
-                              : "Never"
+                              : $t("agentModals.editAgent.never")
                           }}
-                          <b>Email on fail:</b>
+                          <b>{{ $t("agentModals.editAgent.emailOnFail") }}</b>
                           {{
                             agent.effective_patch_policy.email_if_fail
-                              ? "Yes"
-                              : "Never"
+                              ? $t("common.yes")
+                              : $t("agentModals.editAgent.never")
                           }}
                         </q-item-label>
                       </q-item-section>
@@ -393,7 +478,7 @@
               </q-tab-panels>
             </div>
             <q-card-section class="row items-center">
-              <q-btn label="Save" color="primary" type="submit" />
+              <q-btn :label="$t('common.save')" color="primary" type="submit" />
             </q-card-section>
           </q-form>
         </template>
@@ -568,21 +653,28 @@ export default {
         .then(() => {
           this.$refs.dialogRef.hide();
           this.$emit("ok");
-          this.notifySuccess("Agent was edited!");
+          this.notifySuccess(this.$t("agentModals.editAgent.edited"));
         });
     },
     weekDaystoString(array) {
-      if (array.length === 0) return "not set";
+      if (array.length === 0) return this.$t("agentModals.editAgent.notSet");
 
       let result = "";
       for (let day in array) {
-        if (day === 1) result += "Mon, ";
-        else if (day === 2) result += "Tue, ";
-        else if (day === 3) result += "Wed, ";
-        else if (day === 4) result += "Thur, ";
-        else if (day === 5) result += "Fri, ";
-        else if (day === 6) result += "Sat, ";
-        else if (day === 0) result += "Sun, ";
+        if (day === 1)
+          result += this.$t("agentModals.editAgent.days.mon") + ", ";
+        else if (day === 2)
+          result += this.$t("agentModals.editAgent.days.tue") + ", ";
+        else if (day === 3)
+          result += this.$t("agentModals.editAgent.days.wed") + ", ";
+        else if (day === 4)
+          result += this.$t("agentModals.editAgent.days.thu") + ", ";
+        else if (day === 5)
+          result += this.$t("agentModals.editAgent.days.fri") + ", ";
+        else if (day === 6)
+          result += this.$t("agentModals.editAgent.days.sat") + ", ";
+        else if (day === 0)
+          result += this.$t("agentModals.editAgent.days.sun") + ", ";
       }
 
       return result.trimEnd(",");
@@ -591,23 +683,26 @@ export default {
   computed: {
     ...mapState(["dash_warning_color", "dash_negative_color"]),
     customShellPlaceholder() {
-      const start = "Enter custom shell path (e.g. ";
+      const key = "agentModals.editAgent.customShellPathExample";
       if (this.agent?.plat === "windows")
-        return start + `C:\\Program Files\\PowerShell\\7\\pwsh.exe)`; // eslint-disable-line quotes
+        return this.$t(key, {
+          path: `C:\\Program Files\\PowerShell\\7\\pwsh.exe`, // eslint-disable-line quotes
+        });
       else if (this.agent?.plat === "linux")
-        return start + `/usr/bin/fish)`; // eslint-disable-line quotes
-      else if (this.agent?.plat === "darwin") return start + `/bin/zsh)`; // eslint-disable-line quotes
-      return "Enter custom shell path";
+        return this.$t(key, { path: `/usr/bin/fish` }); // eslint-disable-line quotes
+      else if (this.agent?.plat === "darwin")
+        return this.$t(key, { path: `/bin/zsh` }); // eslint-disable-line quotes
+      return this.$t("agentModals.editAgent.customShellPath");
     },
     defaultShellOptions() {
       if (!this.agent?.plat) return [];
-      const inheritText = "Inherit from Global Setting";
+      const inheritText = this.$t("agentModals.editAgent.inheritGlobal");
       if (this.agent.plat === "windows") {
         return [
           { label: inheritText, value: "use_global" },
           { label: "CMD", value: "cmd" },
           { label: "PowerShell", value: "powershell" },
-          { label: "Custom", value: "custom" },
+          { label: this.$t("agentModals.shared.custom"), value: "custom" },
         ];
       }
 
@@ -615,7 +710,7 @@ export default {
         return [
           { label: inheritText, value: "use_global" },
           { label: "Bash", value: "bash" },
-          { label: "Custom", value: "custom" },
+          { label: this.$t("agentModals.shared.custom"), value: "custom" },
         ];
       }
 
@@ -623,7 +718,7 @@ export default {
         return [
           { label: inheritText, value: "use_global" },
           { label: "Bash", value: "bash" },
-          { label: "Custom", value: "custom" },
+          { label: this.$t("agentModals.shared.custom"), value: "custom" },
         ];
       }
       return [];

@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 80vw">
       <q-bar>
-        Testing {{ urlAction.name }}
+        {{ $t("settings.urlActions.test.title", { name: urlAction.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -22,7 +24,7 @@
         <tactical-dropdown
           v-model="agent"
           :options="agentOptions"
-          label="Agents"
+          :label="$t('common.agents')"
           mapOptions
           filterable
           dense
@@ -34,7 +36,7 @@
         <tactical-dropdown
           v-model="site"
           :options="siteOptions"
-          label="Sites"
+          :label="$t('common.sites')"
           mapOptions
           filterable
           dense
@@ -46,7 +48,7 @@
         <tactical-dropdown
           v-model="client"
           :options="clientOptions"
-          label="Client"
+          :label="$t('common.client')"
           mapOptions
           filterable
           dense
@@ -61,24 +63,24 @@
         </div>
         <br />
         <div>
-          Body
+          {{ $t("settings.urlActions.test.body") }}
           <q-separator />
           <code>{{ return_request }}</code>
         </div>
         <br />
         <div>
-          Response
+          {{ $t("settings.urlActions.test.response") }}
           <q-separator />
           <code>{{ return_result }}</code>
         </div>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Close" v-close-popup />
+        <q-btn flat :label="$t('common.close')" v-close-popup />
         <q-btn
           :loading="loading"
           flat
-          label="Run"
+          :label="$t('common.run')"
           color="primary"
           @click="submit"
         />
@@ -91,6 +93,7 @@
 // composition imports
 import { ref, reactive, computed } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useAgentDropdown } from "@/composables/agents";
 import { useSiteDropdown, useClientDropdown } from "@/composables/clients";
 import { runTestURLAction } from "@/api/core";
@@ -107,6 +110,7 @@ const props = defineProps<{ urlAction: URLAction }>();
 
 // setup quasar
 const { dialogRef, onDialogHide } = useDialogPluginComponent();
+const { t } = useI18n();
 
 // setup dropdowns
 const { agent, agentOptions } = useAgentDropdown({ onMount: true });
@@ -116,10 +120,10 @@ const { site, siteOptions } = useSiteDropdown(true);
 const runAgainst = ref<"agent" | "site" | "client" | "none">("none");
 
 const runAgainstOptions = [
-  { label: "Agent", value: "agent" },
-  { label: "Site", value: "site" },
-  { label: "Client", value: "client" },
-  { label: "None", value: "none" },
+  { label: t("common.agent"), value: "agent" },
+  { label: t("common.site"), value: "site" },
+  { label: t("common.client"), value: "client" },
+  { label: t("common.none"), value: "none" },
 ];
 const loading = ref(false);
 

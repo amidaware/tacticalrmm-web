@@ -7,16 +7,22 @@
     <q-card style="min-width: 420px; max-width: 480px">
       <q-card-section class="q-pb-none">
         <div class="text-subtitle1">
-          {{ row.name ? "Edit" : "Create" }}
-          <span v-if="row.type === 'REG_DWORD'">DWORD (32-bit) Value</span>
-          <span v-else-if="row.type === 'REG_QWORD'">QWORD (64-bit) Value</span>
-          <span v-else-if="row.type === 'REG_MULTI_SZ'">Multi-String</span>
-          <span v-else>String</span>
+          {{
+            row.name
+              ? $t("remoteBg.registry.valueModal.editTitle", {
+                  type: typeLabel,
+                })
+              : $t("remoteBg.registry.valueModal.createTitle", {
+                  type: typeLabel,
+                })
+          }}
         </div>
       </q-card-section>
 
       <q-card-section class="q-pb-none">
-        <div class="text-body2 q-mb-xs">Value name:</div>
+        <div class="text-body2 q-mb-xs">
+          {{ $t("remoteBg.registry.valueModal.valueName") }}
+        </div>
         <q-input
           v-model="localRow.name"
           ref="nameInputRef"
@@ -25,13 +31,17 @@
           :readonly="!!row.name"
           :disable="!!row.name"
           :autofocus="!row.name"
-          :rules="[(val) => !!val || 'Name is required']"
+          :rules="[
+            (val) => !!val || $t('remoteBg.registry.valueModal.nameRequired'),
+          ]"
           lazy-rules
           class="q-pb-sm"
         />
       </q-card-section>
       <q-card-section>
-        <div class="text-body2 q-mb-sm">Value data:</div>
+        <div class="text-body2 q-mb-sm">
+          {{ $t("remoteBg.registry.valueModal.valueData") }}
+        </div>
         <q-input
           v-if="row.type === 'REG_MULTI_SZ'"
           v-model="multiStringData"
@@ -57,12 +67,20 @@
             />
           </div>
           <div class="col-5 q-py-none">
-            <div class="text-body2 q-mb-xs">Base</div>
+            <div class="text-body2 q-mb-xs">
+              {{ $t("remoteBg.registry.valueModal.base") }}
+            </div>
             <q-option-group
               v-model="localBase"
               :options="[
-                { label: 'Hexadecimal', value: 'hex' },
-                { label: 'Decimal', value: 'dec' },
+                {
+                  label: $t('remoteBg.registry.valueModal.hexadecimal'),
+                  value: 'hex',
+                },
+                {
+                  label: $t('remoteBg.registry.valueModal.decimal'),
+                  value: 'dec',
+                },
               ]"
               type="radio"
               dense
@@ -75,14 +93,19 @@
       </q-card-section>
       <q-card-actions align="right" class="q-gutter-sm">
         <q-btn
-          label="OK"
+          :label="$t('common.ok')"
           color="primary"
           unelevated
           @click="onSave"
           :loading="isSaving"
           :disable="isSaving"
         />
-        <q-btn label="Cancel" flat v-close-popup :disable="isSaving" />
+        <q-btn
+          :label="$t('common.cancel')"
+          flat
+          v-close-popup
+          :disable="isSaving"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -91,6 +114,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { QInput } from "quasar";
+import { useI18n } from "vue-i18n";
 import { RegistryValue } from "@/types/agents";
 
 const props = defineProps<{
@@ -102,6 +126,21 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
   (e: "save", row: RegistryValue & { base?: "hex" | "dec" }): void;
 }>();
+
+const { t } = useI18n();
+
+const typeLabel = computed(() => {
+  switch (props.row.type) {
+    case "REG_DWORD":
+      return t("remoteBg.registry.valueModal.types.dword");
+    case "REG_QWORD":
+      return t("remoteBg.registry.valueModal.types.qword");
+    case "REG_MULTI_SZ":
+      return t("remoteBg.registry.valueModal.types.multiString");
+    default:
+      return t("remoteBg.registry.valueModal.types.string");
+  }
+});
 
 const nameInputRef = ref();
 const numericError = ref<string>("");
@@ -199,15 +238,15 @@ async function onSave() {
         : Number.MAX_SAFE_INTEGER; // 9,007,199,254,740,991 (safe 64-bit limit)
 
     if (numericValue.value < 0) {
-      numericError.value = "Value cannot be negative.";
+      numericError.value = t("remoteBg.registry.valueModal.negative");
       return;
     }
 
     if (numericValue.value > maxValue) {
       numericError.value =
         localRow.value.type === "REG_DWORD"
-          ? "DWORD (32-bit) value cannot exceed 4,294,967,295."
-          : "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991.";
+          ? t("remoteBg.registry.valueModal.dwordMax")
+          : t("remoteBg.registry.valueModal.qwordMax");
       return;
     }
   }

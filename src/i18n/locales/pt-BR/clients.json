@@ -1,0 +1,70 @@
+{
+  "validation": {
+    "required": "*Obrigatório"
+  },
+  "shared": {
+    "new": "Novo",
+    "customFields": "Campos Personalizados",
+    "totalAgents": "Total de Agentes"
+  },
+  "clientsForm": {
+    "editing": "Editando {name}",
+    "adding": "Adicionando Cliente",
+    "defaultFirstSite": "Primeiro site padrão"
+  },
+  "clientsManager": {
+    "title": "Gerenciador de Clientes",
+    "noClients": "Nenhum cliente",
+    "addSite": "Adicionar Site",
+    "showSites": "Mostrar sites ({count})",
+    "deleteConfirm": "Excluir o cliente: {name}."
+  },
+  "deleteClient": {
+    "title": "Excluir {name}",
+    "noValidSites": "Não há sites válidos para onde mover os agentes. Adicione outro site e tente novamente",
+    "siteToMove": "Site para onde mover os agentes",
+    "selectSite": "Selecione o site para onde os agentes devem ser movidos",
+    "hint": "O cliente que você está excluindo possui agentes atribuídos. Selecione abaixo um site para onde mover os agentes.",
+    "move": "Mover",
+    "deletingClient": "Excluindo o cliente {name}. {count} agentes serão movidos para o site selecionado",
+    "deletingSite": "Excluindo o site {name}. {count} agentes serão movidos para o site selecionado"
+  },
+  "deploymentTable": {
+    "title": "Gerenciar Implantações",
+    "noDeployments": "Nenhuma implantação",
+    "viewFlags": "Ver flags",
+    "columns": {
+      "arch": "Arquitetura",
+      "expiry": "Expiração",
+      "created": "Criado em",
+      "flags": "Flags",
+      "downloadLink": "Link de download"
+    },
+    "deleteConfirm": "Excluir implantação?",
+    "linkCopied": "Link copiado para a área de transferência"
+  },
+  "newDeployment": {
+    "title": "Adicionar Implantação",
+    "agentType": "Tipo de agente",
+    "server": "Servidor",
+    "workstation": "Estação de trabalho",
+    "expiry": "Expiração",
+    "enableRdp": "Ativar RDP",
+    "enablePing": "Ativar Ping",
+    "disableSleep": "Desativar suspensão/hibernação",
+    "arch": "Arquitetura",
+    "bit64": "64 bits",
+    "bit32": "32 bits"
+  },
+  "sitesForm": {
+    "editing": "Editando {name}",
+    "adding": "Adicionando Site",
+    "clientRequired": "O cliente é obrigatório",
+    "nameRequired": "O nome é obrigatório"
+  },
+  "sitesTable": {
+    "title": "Sites de {name}",
+    "noSites": "Nenhum site",
+    "deleteConfirm": "Excluir o site: {name}."
+  }
+}

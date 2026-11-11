@@ -1,0 +1,48 @@
+{
+  "noAgents": "Nenhum agente",
+  "headers": {
+    "checksStatus": "Status das Verificações",
+    "patchesPending": "Patches Pendentes",
+    "pendingActions": "Ações Pendentes",
+    "agentStatus": "Status do Agente",
+    "reboot": "Reiniciar"
+  },
+  "overriddenByTemplate": "Configuração substituída pelo modelo de alerta: {name}",
+  "monType": {
+    "server": "Servidor",
+    "workstation": "Estação de trabalho"
+  },
+  "checks": {
+    "maintenance": "Modo de Manutenção Ativado",
+    "failing": "Verificações com falha",
+    "warning": "Verificações com aviso",
+    "info": "Verificações informativas",
+    "passing": "Verificações OK"
+  },
+  "pendingActionCount": "Ações pendentes: {count}",
+  "rebootRequired": "Reinicialização necessária",
+  "status": {
+    "overdue": "Agente atrasado",
+    "offline": "Agente offline",
+    "online": "Agente online"
+  },
+  "overdueTooltip": {
+    "dashboard": "Exibir um alerta no painel quando o agente estiver atrasado",
+    "email": "Enviar um alerta por e-mail quando o agente estiver atrasado",
+    "sms": "Enviar um alerta por SMS quando o agente estiver atrasado"
+  },
+  "overdueNotify": {
+    "email": {
+      "enabled": "Alertas por e-mail agora serão ativados quando {hostname} estiver atrasado.",
+      "disabled": "Alertas por e-mail agora serão desativados quando {hostname} estiver atrasado."
+    },
+    "text": {
+      "enabled": "Alertas por SMS agora serão ativados quando {hostname} estiver atrasado.",
+      "disabled": "Alertas por SMS agora serão desativados quando {hostname} estiver atrasado."
+    },
+    "dashboard": {
+      "enabled": "Alertas no painel agora serão ativados quando {hostname} estiver atrasado.",
+      "disabled": "Alertas no painel agora serão desativados quando {hostname} estiver atrasado."
+    }
+  }
+}

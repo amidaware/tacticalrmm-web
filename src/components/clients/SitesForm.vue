@@ -2,49 +2,55 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ !!site ? `Editing ${site.name}` : "Adding Site" }}
+        {{
+          !!site
+            ? $t("clients.sitesForm.editing", { name: site.name })
+            : $t("clients.sitesForm.adding")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <q-card-section>
           <tactical-dropdown
             v-model="state.client"
-            label="Client"
+            :label="$t('common.client')"
             :options="clientOptions"
             outlined
             mapOptions
-            :rules="[(val) => !!val || 'Client is required']"
+            :rules="[(val) => !!val || $t('clients.sitesForm.clientRequired')]"
             filterable
           />
         </q-card-section>
         <q-card-section>
           <q-input
-            :rules="[(val) => !!val || 'Name is required']"
+            :rules="[(val) => !!val || $t('clients.sitesForm.nameRequired')]"
             outlined
             dense
             v-model="state.name"
-            label="Name"
+            :label="$t('common.name')"
           />
         </q-card-section>
 
         <div class="q-pl-sm text-h6" v-if="customFields.length > 0">
-          Custom Fields
+          {{ $t("clients.shared.customFields") }}
         </div>
         <q-card-section v-for="field in customFields" :key="field.id">
           <CustomField v-model="custom_fields[field.name]" :field="field" />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn dense flat push label="Cancel" v-close-popup />
+          <q-btn dense flat push :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
             push
-            label="Save"
+            :label="$t('common.save')"
             color="primary"
             type="submit"
           />
@@ -101,7 +107,7 @@ export default {
         site: state.value,
         custom_fields: formatCustomFields(
           customFields.value,
-          custom_fields.value
+          custom_fields.value,
         ),
       };
       try {
@@ -122,7 +128,7 @@ export default {
 
       for (let field of customFields.value) {
         const value = data.custom_fields.find(
-          (value) => value.field === field.id
+          (value) => value.field === field.id,
         );
 
         if (field.type === "multiple") {

@@ -1,29 +1,36 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="min-width: 25vw; max-width: 70vw">
-      <q-card-section class="text-h6">{{ title }}</q-card-section>
+      <q-card-section class="text-h6">{{
+        title || $t("agentMenu.confirmYes.defaultTitle")
+      }}</q-card-section>
 
       <q-card-section>
-        Please type <span class="text-negative text-h5">yes</span> in the box
-        below to confirm {{ actionVerb }} of
-        <span class="text-negative text-h5">{{ hostname }}</span
-        >.
+        <i18n-t keypath="agentMenu.confirmYes.message" tag="span">
+          <template #yes>
+            <span class="text-negative text-h5">yes</span>
+          </template>
+          <template #action>{{ actionVerb }}</template>
+          <template #hostname>
+            <span class="text-negative text-h5">{{ hostname }}</span>
+          </template>
+        </i18n-t>
       </q-card-section>
 
       <q-card-section>
         <q-input
           v-model="model"
           autofocus
-          label="Type yes to confirm"
+          :label="$t('agentMenu.confirmYes.inputLabel')"
           :rules="[(val) => (val || '').toLowerCase() === 'yes']"
         />
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" @click="onDialogCancel" />
+        <q-btn flat :label="$t('common.cancel')" @click="onDialogCancel" />
         <q-btn
           :color="okColor"
-          :label="okLabel"
+          :label="okLabel || $t('common.confirm')"
           :disable="(model || '').toLowerCase() !== 'yes'"
           @click="onDialogOK()"
         />
@@ -39,8 +46,8 @@ import { useDialogPluginComponent } from "quasar";
 defineProps({
   hostname: { type: String, required: true },
   actionVerb: { type: String, required: true },
-  title: { type: String, default: "Confirm action" },
-  okLabel: { type: String, default: "Confirm" },
+  title: { type: String, default: "" },
+  okLabel: { type: String, default: "" },
   okColor: { type: String, default: "negative" },
 });
 

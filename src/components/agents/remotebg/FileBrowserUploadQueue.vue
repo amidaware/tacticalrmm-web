@@ -5,7 +5,7 @@
   >
     <div class="row items-center justify-between q-mb-xs">
       <div class="text-subtitle2 text-weight-medium upload-queue-title">
-        Upload queue
+        {{ $t("fileBrowser.queue.uploadQueue") }}
       </div>
       <div class="row items-center q-gutter-xs">
         <q-btn
@@ -13,7 +13,7 @@
           flat
           no-caps
           size="sm"
-          label="Clear finished"
+          :label="$t('fileBrowser.queue.clearFinished')"
           :disable="!canClearFinished"
           @click="emit('clear-finished')"
         >
@@ -24,7 +24,7 @@
           flat
           no-caps
           size="sm"
-          label="Hide all"
+          :label="$t('fileBrowser.queue.hideAll')"
           :disable="!canHideAll"
           @click="emit('hide-all')"
         >
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="text-caption upload-queue-destination q-mb-sm">
-      Destination:
+      {{ $t("fileBrowser.queue.destination") }}
       <span class="upload-queue-destination-path">{{ destinationLabel }}</span>
     </div>
     <div v-if="limitsCaption" class="text-caption upload-queue-limits q-mb-sm">
@@ -116,6 +116,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 import { useQuasar } from "quasar";
 
@@ -140,6 +141,7 @@ import {
   uploadStatusLabel,
 } from "@/utils/filebrowser";
 
+const { t } = useI18n();
 const $q = useQuasar();
 
 const props = defineProps<{
@@ -161,13 +163,13 @@ const emit = defineEmits<{
 
 function resumeCaption(item: UploadQueueItem): string | null {
   if (item.ownedByOtherTab) {
-    return "Open in another tab";
+    return t("fileBrowser.queue.openInAnotherTab");
   }
   if (item.recoveryHint === "needs_file" && !item.file) {
     const window = formatResumeWindowCaption(item.expiresAt);
     return window
-      ? `Select original file to resume · ${window}`
-      : "Select the original file to resume";
+      ? t("fileBrowser.queue.selectOriginalFileWindow", { window })
+      : t("fileBrowser.queue.selectOriginalFile");
   }
   const parts: string[] = [];
   if (item.errorMessage) parts.push(item.errorMessage);

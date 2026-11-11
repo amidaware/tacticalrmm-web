@@ -1,5 +1,6 @@
 import { copyToClipboard } from "quasar";
 import { notifyError, notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 export interface CopyOutputOptions {
   successMessage?: string;
@@ -15,8 +16,8 @@ export function copyOutput(
   const opts: CopyOutputOptions =
     typeof options === "string" ? { successMessage: options } : options;
 
-  const successMessage = opts.successMessage ?? "Copied to clipboard";
-  const errorMessage = opts.errorMessage ?? "Unable to copy to clipboard.";
+  const successMessage = opts.successMessage ?? t("common.copiedToClipboard");
+  const errorMessage = opts.errorMessage ?? t("common.unableToCopyToClipboard");
   const notifyOnSuccess = opts.notifyOnSuccess !== false;
 
   return copyToClipboard(val)

@@ -5,7 +5,9 @@
         {{ evtLogData.readable_desc }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div v-if="evtLogData.check_result.extra_details !== null">
@@ -25,14 +27,14 @@
           binary-state-sort
           virtual-scroll
           :rows-per-page-options="[0]"
-          no-data-label="No event logs"
+          :no-data-label="$t('checks.eventLogOutput.noData')"
         >
           <template v-slot:top>
             <q-space />
             <q-input
               v-model="filter"
               outlined
-              label="Search"
+              :label="$t('common.search')"
               dense
               clearable
               class="q-pr-sm"
@@ -48,7 +50,7 @@
           </template>
         </q-table>
       </div>
-      <div v-else>Check has not run yet</div>
+      <div v-else>{{ $t("checks.eventLogOutput.notRunYet") }}</div>
     </q-card>
   </q-dialog>
 </template>
@@ -57,6 +59,7 @@
 // composition imports
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { t } from "@/i18n";
 
 //ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
@@ -65,29 +68,35 @@ import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 const columns = [
   {
     name: "eventType",
-    label: "Type",
+    label: t("common.type"),
     field: "eventType",
     align: "left",
     sortable: true,
   },
   {
     name: "source",
-    label: "Source",
+    label: t("checks.eventLogOutput.columns.source"),
     field: "source",
     align: "left",
     sortable: true,
   },
   {
     name: "eventID",
-    label: "Event ID",
+    label: t("checks.eventLogOutput.columns.eventId"),
     field: "eventID",
     align: "left",
     sortable: true,
   },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
+  {
+    name: "time",
+    label: t("checks.eventLogOutput.columns.time"),
+    field: "time",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "message",
-    label: "Message",
+    label: t("checks.eventLogOutput.columns.message"),
     field: "message",
     align: "left",
     sortable: true,

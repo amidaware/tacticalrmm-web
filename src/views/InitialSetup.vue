@@ -6,7 +6,7 @@
         <q-card>
           <q-card-actions align="center">
             <q-btn
-              label="Getting Started"
+              :label="$t('dashboard.initialSetup.gettingStarted')"
               color="info"
               class="full-width"
               href="https://docs.tacticalrmm.com/guide_gettingstarted/"
@@ -14,16 +14,20 @@
             />
           </q-card-actions>
           <q-card-section class="row items-center">
-            <div class="text-h5 text-weight-bold">Initial Setup</div>
+            <div class="text-h5 text-weight-bold">
+              {{ $t("dashboard.initialSetup.title") }}
+            </div>
           </q-card-section>
           <q-form @submit.prevent="finish">
             <q-card-section>
-              <div>Add Client:</div>
+              <div>{{ $t("dashboard.initialSetup.addClient") }}</div>
               <q-input
                 dense
                 outlined
                 v-model="client.name"
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[
+                  (val) => !!val || $t('dashboard.initialSetup.required'),
+                ]"
               >
                 <template v-slot:prepend>
                   <q-icon name="business" />
@@ -31,12 +35,14 @@
               </q-input>
             </q-card-section>
             <q-card-section>
-              <div>Add Site:</div>
+              <div>{{ $t("dashboard.initialSetup.addSite") }}</div>
               <q-input
                 dense
                 outlined
                 v-model="site.name"
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[
+                  (val) => !!val || $t('dashboard.initialSetup.required'),
+                ]"
               >
                 <template v-slot:prepend>
                   <q-icon name="apartment" />
@@ -44,7 +50,7 @@
               </q-input>
             </q-card-section>
             <q-card-section>
-              <div>Default timezone for agents:</div>
+              <div>{{ $t("dashboard.initialSetup.defaultTimezone") }}</div>
               <tactical-dropdown
                 filterable
                 dense
@@ -57,16 +63,14 @@
 
             <q-card-section>
               <div>
-                Company name:
+                {{ $t("dashboard.initialSetup.companyName") }}
                 <q-icon
                   name="ion-information-circle-outline"
                   size="sm"
                   class="q-ml-sm cursor-pointer"
                 >
                   <q-tooltip class="text-caption">
-                    Adding your company name here will append it to the user's
-                    full name that appears when doing a remote control session,
-                    for example: 'John Doe - Amidaware Inc.'
+                    {{ $t("dashboard.initialSetup.companyNameHelp") }}
                   </q-tooltip>
                 </q-icon>
               </div>
@@ -76,7 +80,7 @@
 
             <q-card-actions align="center">
               <q-btn
-                label="Finish"
+                :label="$t('dashboard.initialSetup.finish')"
                 color="primary"
                 class="full-width"
                 type="submit"

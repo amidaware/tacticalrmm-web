@@ -14,11 +14,21 @@
 
       <q-card-actions align="right">
         <template v-if="type === 'confirm'">
-          <q-btn flat label="Yes" color="primary" @click="confirmAction" />
-          <q-btn flat label="No" color="primary" v-close-popup />
+          <q-btn
+            flat
+            :label="$t('common.yes')"
+            color="primary"
+            @click="confirmAction"
+          />
+          <q-btn flat :label="$t('common.no')" color="primary" v-close-popup />
         </template>
         <template v-else>
-          <q-btn flat label="OK" color="primary" @click="closeDialog" />
+          <q-btn
+            flat
+            :label="$t('common.ok')"
+            color="primary"
+            @click="closeDialog"
+          />
         </template>
       </q-card-actions>
     </q-card>

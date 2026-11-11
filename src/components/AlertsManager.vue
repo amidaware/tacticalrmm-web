@@ -11,17 +11,19 @@
             flat
             push
             icon="refresh"
-          />Alerts Manager
+          />{{ $t("alerts.manager.title") }}
           <q-space />
           <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+            <q-tooltip class="bg-white text-primary">{{
+              $t("common.close")
+            }}</q-tooltip>
           </q-btn>
         </q-bar>
         <div class="q-pa-sm" style="min-height: 65vh; max-height: 65vh">
           <div class="q-gutter-sm">
             <q-btn
               ref="new"
-              label="New"
+              :label="$t('alerts.manager.new')"
               dense
               flat
               push
@@ -41,34 +43,42 @@
             hide-pagination
             virtual-scroll
             :rows-per-page-options="[0]"
-            no-data-label="No Alert Templates"
+            :no-data-label="$t('alerts.manager.noTemplates')"
           >
             <!-- header slots -->
             <template v-slot:header-cell-is_active="props">
               <q-th :props="props" auto-width>
                 <q-icon name="power_settings_new" size="1.5em">
-                  <q-tooltip>Enable Template</q-tooltip>
+                  <q-tooltip>{{
+                    $t("alerts.manager.enableTemplate")
+                  }}</q-tooltip>
                 </q-icon>
               </q-th>
             </template>
             <template v-slot:header-cell-agent_settings="props">
               <q-th :props="props" auto-width>
                 <q-icon name="devices" size="1.5em">
-                  <q-tooltip>Has agent alert settings</q-tooltip>
+                  <q-tooltip>{{
+                    $t("alerts.manager.hasAgentSettings")
+                  }}</q-tooltip>
                 </q-icon>
               </q-th>
             </template>
             <template v-slot:header-cell-check_settings="props">
               <q-th :props="props" auto-width>
                 <q-icon name="fas fa-check-double" size="1.5em">
-                  <q-tooltip>Has check alert settings</q-tooltip>
+                  <q-tooltip>{{
+                    $t("alerts.manager.hasCheckSettings")
+                  }}</q-tooltip>
                 </q-icon>
               </q-th>
             </template>
             <template v-slot:header-cell-task_settings="props">
               <q-th :props="props" auto-width>
                 <q-icon name="fas fa-tasks" size="1.5em">
-                  <q-tooltip>Has task alert settings</q-tooltip>
+                  <q-tooltip>{{
+                    $t("alerts.manager.hasTaskSettings")
+                  }}</q-tooltip>
                 </q-icon>
               </q-th>
             </template>
@@ -93,7 +103,7 @@
                       <q-item-section side>
                         <q-icon name="edit" />
                       </q-item-section>
-                      <q-item-section>Edit</q-item-section>
+                      <q-item-section>{{ $t("common.edit") }}</q-item-section>
                     </q-item>
                     <q-item
                       clickable
@@ -103,7 +113,7 @@
                       <q-item-section side>
                         <q-icon name="delete" />
                       </q-item-section>
-                      <q-item-section>Delete</q-item-section>
+                      <q-item-section>{{ $t("common.delete") }}</q-item-section>
                     </q-item>
 
                     <q-separator></q-separator>
@@ -116,13 +126,15 @@
                       <q-item-section side>
                         <q-icon name="rule" />
                       </q-item-section>
-                      <q-item-section>Alert Exclusions</q-item-section>
+                      <q-item-section>{{
+                        $t("alerts.manager.alertExclusions")
+                      }}</q-item-section>
                     </q-item>
 
                     <q-separator></q-separator>
 
                     <q-item clickable v-close-popup>
-                      <q-item-section>Close</q-item-section>
+                      <q-item-section>{{ $t("common.close") }}</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -142,9 +154,9 @@
                     name="done"
                     size="sm"
                   >
-                    <q-tooltip
-                      >Alert template has agent alert settings</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $t("alerts.manager.templateHasAgentSettings")
+                    }}</q-tooltip>
                   </q-icon>
                 </q-td>
                 <!-- text settings -->
@@ -155,9 +167,9 @@
                     name="done"
                     size="sm"
                   >
-                    <q-tooltip
-                      >Alert template has check alert settings</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $t("alerts.manager.templateHasCheckSettings")
+                    }}</q-tooltip>
                   </q-icon>
                 </q-td>
                 <!-- dashboard settings -->
@@ -168,9 +180,9 @@
                     name="done"
                     size="sm"
                   >
-                    <q-tooltip
-                      >Alert template has task alert settings</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $t("alerts.manager.templateHasTaskSettings")
+                    }}</q-tooltip>
                   </q-icon>
                 </q-td>
                 <!-- name -->
@@ -181,7 +193,7 @@
                     color="primary"
                     text-color="white"
                     size="sm"
-                    >Default</q-chip
+                    >{{ $t("alerts.manager.default") }}</q-chip
                   >
                 </q-td>
                 <!-- applied to -->
@@ -190,9 +202,11 @@
                     style="cursor: pointer; text-decoration: underline"
                     class="text-primary"
                     @click="showTemplateApplied(props.row)"
-                    >Show where template is applied ({{
-                      props.row.applied_count
-                    }})</span
+                    >{{
+                      $t("alerts.manager.showApplied", {
+                        count: props.row.applied_count,
+                      })
+                    }}</span
                   ></q-td
                 >
                 <!-- alert exclusions -->
@@ -201,11 +215,14 @@
                     style="cursor: pointer; text-decoration: underline"
                     class="text-primary"
                     @click="showAlertExclusions(props.row)"
-                    >Alert Exclusions ({{
-                      props.row.excluded_agents.length +
-                      props.row.excluded_clients.length +
-                      props.row.excluded_sites.length
-                    }})</span
+                    >{{
+                      $t("alerts.manager.alertExclusionsCount", {
+                        count:
+                          props.row.excluded_agents.length +
+                          props.row.excluded_clients.length +
+                          props.row.excluded_sites.length,
+                      })
+                    }}</span
                   ></q-td
                 >
                 <!-- failure action -->
@@ -238,47 +255,52 @@ export default {
       columns: [
         {
           name: "is_active",
-          label: "Active",
+          label: this.$t("alerts.manager.columns.active"),
           field: "is_active",
           align: "left",
         },
         {
           name: "agent_settings",
-          label: "Agent Settings",
+          label: this.$t("alerts.manager.columns.agentSettings"),
           field: "agent_settings",
         },
         {
           name: "check_settings",
-          label: "Check Settings",
+          label: this.$t("alerts.manager.columns.checkSettings"),
           field: "check_settings",
         },
         {
           name: "task_settings",
-          label: "Task Settings",
+          label: this.$t("alerts.manager.columns.taskSettings"),
           field: "task_settings",
         },
-        { name: "name", label: "Name", field: "name", align: "left" },
+        {
+          name: "name",
+          label: this.$t("common.name"),
+          field: "name",
+          align: "left",
+        },
         {
           name: "applied_to",
-          label: "Applied To",
+          label: this.$t("alerts.manager.columns.appliedTo"),
           field: "applied_to",
           align: "left",
         },
         {
           name: "alert_exclusions",
-          label: "Alert Exclusions",
+          label: this.$t("alerts.manager.alertExclusions"),
           field: "alert_exclusions",
           align: "left",
         },
         {
           name: "action_name",
-          label: "Failure Action",
+          label: this.$t("alerts.manager.columns.failureAction"),
           field: "action_name",
           align: "left",
         },
         {
           name: "resolved_action_name",
-          label: "Resolved Action",
+          label: this.$t("alerts.manager.columns.resolvedAction"),
           field: "resolved_action_name",
           align: "left",
         },
@@ -314,9 +336,11 @@ export default {
     deleteTemplate(template) {
       this.$q
         .dialog({
-          title: `Delete alert template ${template.name}?`,
+          title: this.$t("alerts.manager.deleteConfirm", {
+            name: template.name,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -326,7 +350,7 @@ export default {
               this.refresh();
               this.$q.loading.hide();
               this.notifySuccess(
-                `Alert template ${template.name} was deleted!`,
+                this.$t("alerts.manager.deleted", { name: template.name }),
               );
             })
             .catch(() => {
@@ -378,8 +402,8 @@ export default {
     },
     toggleEnabled(template) {
       let text = !template.is_active
-        ? "Template enabled successfully"
-        : "Template disabled successfully";
+        ? this.$t("alerts.manager.enabled")
+        : this.$t("alerts.manager.disabled");
 
       const data = {
         id: template.id,

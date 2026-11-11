@@ -1,0 +1,167 @@
+{
+  "noAgentSelected": "Nenhum agente selecionado",
+  "windowsOnly": "Disponível apenas para agentes Windows no momento",
+  "copyToClipboard": "Copiar para a área de transferência",
+  "assets": {
+    "tabs": {
+      "os": "Sistema Operacional",
+      "memory": "Memória",
+      "disks": "Discos",
+      "computerSystem": "Sistema do Computador",
+      "motherboard": "Placa-mãe",
+      "computerSystemProduct": "Produto do Sistema",
+      "networkConfig": "Configuração de Rede",
+      "graphics": "Vídeo",
+      "monitors": "Monitores",
+      "networkAdapters": "Adaptadores de Rede"
+    }
+  },
+  "commandStream": {
+    "liveOutput": "Saída em Tempo Real"
+  },
+  "shared": {
+    "overriddenByTemplate": "Configuração substituída pelo modelo de alerta: {name}",
+    "smsAlert": "Alerta por SMS",
+    "emailAlert": "Alerta por E-mail",
+    "dashboardAlert": "Alerta no Painel",
+    "informational": "Informativo",
+    "warning": "Aviso",
+    "moreInfo": "Mais Informações"
+  },
+  "tasks": {
+    "noTasks": "Nenhuma tarefa",
+    "addTask": "Adicionar Tarefa",
+    "collectorTask": "Tarefa Coletora",
+    "runNow": "Executar tarefa agora",
+    "managedByPolicy": "Esta tarefa é gerenciada por uma política",
+    "updatesCustomField": "A tarefa atualiza um campo personalizado no agente",
+    "sync": {
+      "notSynced": "Será sincronizada no próximo check-in do agente",
+      "synced": "Sincronizada com o agente",
+      "pendingDeletion": "Exclusão pendente no agente",
+      "waiting": "Aguardando criação da tarefa no agente"
+    },
+    "output": "saída",
+    "awaitingOutput": "Aguardando saída",
+    "notRunYet": "Ainda não executada",
+    "columns": {
+      "collector": "Coletora",
+      "syncStatus": "Status de Sincronização",
+      "lastRunTime": "Última Execução",
+      "schedule": "Agendamento",
+      "assignedCheck": "Verificação Atribuída"
+    },
+    "deleteConfirm": "Excluir a tarefa {name}",
+    "runConfirm": "Executar a tarefa {name}",
+    "cannotRunDisabled": "A tarefa não pode ser executada enquanto estiver desativada. Ative-a primeiro."
+  },
+  "checks": {
+    "noChecks": "Nenhuma verificação",
+    "new": "Nova",
+    "types": {
+      "diskspace": "Verificação de Espaço em Disco",
+      "ping": "Verificação de Ping",
+      "cpuload": "Verificação de Carga de CPU",
+      "memory": "Verificação de Memória",
+      "winsvc": "Verificação de Serviço do Windows",
+      "script": "Verificação de Script",
+      "eventlog": "Verificação de Log de Eventos"
+    },
+    "runNow": "Executar Verificações Agora",
+    "resetAll": "Redefinir Status de Todas as Verificações",
+    "resetStatus": "Redefinir Status da Verificação",
+    "managedByPolicy": "Esta verificação é gerenciada por uma política",
+    "overriddenByPolicy": "Esta verificação é substituída por uma política",
+    "showRunHistory": "Ver Histórico de Execução",
+    "lastOutput": "Última Saída",
+    "never": "Nunca",
+    "tasksCount": "{count} Tarefas",
+    "columns": {
+      "lastRun": "Última Execução",
+      "assignedTasks": "Tarefas Atribuídas"
+    },
+    "deleteConfirm": "Excluir {name}",
+    "notRunYet": "A verificação ainda não foi executada",
+    "alreadyPassing": "A verificação já está OK",
+    "resetAllConfirm": "Redefinir o status de todas as verificações"
+  },
+  "history": {
+    "output": "Saída",
+    "columns": {
+      "time": "Horário",
+      "action": "Ação",
+      "command": "Script/Comando",
+      "initiatedBy": "Iniciado por"
+    },
+    "noOutput": "Nenhuma saída disponível ainda"
+  },
+  "notes": {
+    "noNotes": "Nenhuma nota",
+    "addNote": "Adicionar Nota",
+    "editNote": "Editar Nota",
+    "note": "Nota",
+    "deleteConfirm": "Excluir nota?"
+  },
+  "software": {
+    "install": "Instalar Software",
+    "uninstall": "Desinstalar",
+    "columns": {
+      "publisher": "Fornecedor",
+      "installedOn": "Instalado em",
+      "size": "Tamanho",
+      "version": "Versão"
+    }
+  },
+  "summary": {
+    "agentOverdue": "Agente atrasado",
+    "maintenanceMode": "Modo de Manutenção",
+    "agentVersion": "Agente v{version}",
+    "popout": "Abrir em janela",
+    "takeControl": "Assumir Controle",
+    "hardwareDetails": "Detalhes de Hardware",
+    "publicIp": "IP público: {ip}",
+    "lanIp": "IP local: {ip}",
+    "checksStatus": "Status das Verificações",
+    "checksPassing": "{count} verificações OK",
+    "checksFailing": "{count} verificações com falha",
+    "checksWarning": "{count} verificações com aviso",
+    "checksInfo": "{count} verificações informativas",
+    "checksAwaitingSync": "{count} verificações aguardando a primeira sincronização",
+    "customFields": "Campos Personalizados",
+    "diskFree": "{free} livres de {total}",
+    "remoteBackground": "Segundo Plano Remoto"
+  },
+  "winUpdates": {
+    "noUpdates": "Nenhuma atualização do Windows",
+    "runScan": "Verificar Atualizações",
+    "installApproved": "Instalar Atualizações Aprovadas",
+    "actions": {
+      "inherit": "Herdar",
+      "approve": "Aprovar",
+      "ignore": "Ignorar",
+      "nothing": "Não fazer nada"
+    },
+    "status": {
+      "installed": "Instalada",
+      "pending": "Pendente",
+      "ignored": "Ignorada",
+      "missing": "Ausente"
+    },
+    "otherSeverity": "Outra",
+    "columns": {
+      "severity": "Severidade"
+    }
+  },
+  "tabs": {
+    "summary": "Resumo",
+    "checks": "Verificações",
+    "tasks": "Tarefas",
+    "patches": "Patches",
+    "software": "Software",
+    "history": "Histórico",
+    "notes": "Notas",
+    "assets": "Ativos",
+    "debug": "Depuração",
+    "audit": "Auditoria"
+  }
+}

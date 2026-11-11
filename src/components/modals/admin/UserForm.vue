@@ -9,26 +9,26 @@
         </q-card-section>
 
         <q-card-section class="row">
-          <div class="col-2">Username:</div>
+          <div class="col-2">{{ $t("admin.userForm.username") }}</div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="localUser.username"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('admin.required')]"
               class="q-pa-none"
             />
           </div>
         </q-card-section>
         <q-card-section class="row" v-if="!user">
-          <div class="col-2">Password:</div>
+          <div class="col-2">{{ $t("admin.userForm.password") }}</div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="localUser.password"
               :type="isPwd ? 'password' : 'text'"
-              :rules="[(val) => !!val || '*Required']"
+              :rules="[(val) => !!val || $t('admin.required')]"
               class="q-pa-none"
             >
               <template v-slot:append>
@@ -42,31 +42,33 @@
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Email:</div>
+          <div class="col-2">{{ $t("admin.userForm.email") }}</div>
           <div class="col-10">
             <q-input
               outlined
               dense
               v-model="localUser.email"
-              :rules="[(val) => isValidEmail(val) || 'Invalid email']"
+              :rules="[
+                (val) => isValidEmail(val) || $t('admin.userForm.invalidEmail'),
+              ]"
               class="q-pa-none"
             />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">First Name:</div>
+          <div class="col-2">{{ $t("admin.userForm.firstName") }}</div>
           <div class="col-10">
             <q-input outlined dense v-model="localUser.first_name" />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Last Name:</div>
+          <div class="col-2">{{ $t("admin.userForm.lastName") }}</div>
           <div class="col-10">
             <q-input outlined dense v-model="localUser.last_name" />
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Active:</div>
+          <div class="col-2">{{ $t("admin.userForm.active") }}</div>
           <div class="col-10">
             <q-checkbox
               v-model="localUser.is_active"
@@ -75,12 +77,9 @@
           </div>
         </q-card-section>
         <q-card-section class="row">
-          <div class="col-2">Role:</div>
+          <div class="col-2">{{ $t("admin.userForm.role") }}</div>
           <template v-if="roles.length === 0"
-            ><span
-              >No roles have been created. Create some from Settings >
-              Permissions Manager</span
-            ></template
+            ><span>{{ $t("admin.userForm.noRoles") }}</span></template
           >
           <template v-else
             ><q-select
@@ -96,7 +95,7 @@
         </q-card-section>
         <q-card-section>
           <q-checkbox
-            label="Deny Dashboard Logins"
+            :label="$t('admin.userForm.denyDashboardLogins')"
             left-label
             v-model="localUser.block_dashboard_login"
             :disable="localUser.username === logged_in_user"
@@ -105,7 +104,7 @@
         <q-card-section class="row items-center">
           <q-btn
             :disable="!disableSave"
-            label="Save"
+            :label="$t('common.save')"
             color="primary"
             type="submit"
           />
@@ -144,7 +143,9 @@ export default {
       }
     },
     title() {
-      return this.user ? "Edit User" : "Add User";
+      return this.user
+        ? this.$t("admin.userForm.editTitle")
+        : this.$t("admin.userForm.addTitle");
     },
     ...piniaMapState(useAuthStore, {
       logged_in_user: (state) => state.username,
@@ -175,7 +176,7 @@ export default {
           .then(() => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess("User edited!");
+            this.notifySuccess(this.$t("admin.userForm.edited"));
           })
           .catch(() => {
             this.$q.loading.hide();
@@ -186,7 +187,9 @@ export default {
           .then((r) => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess(`User ${r.data} was added!`);
+            this.notifySuccess(
+              this.$t("admin.userForm.added", { name: r.data }),
+            );
           })
           .catch(() => {
             this.$q.loading.hide();

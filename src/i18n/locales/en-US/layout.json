@@ -1,0 +1,23 @@
+{
+  "outdated": "You are viewing an outdated version of this page.",
+  "license": {
+    "inactive": "Your license is currently inactive, usually due to a payment issue.",
+    "updatePayment": "To restore access, please update your payment method.",
+    "cancelled": "If you’ve intentionally cancelled your sponsorship, you can remove your license key to stop seeing this message.",
+    "help": "If you need help, please contact our support team at"
+  },
+  "backToDashboard": "Back to Dashboard",
+  "updateAvailable": "v{version} available",
+  "certExpires": "SSL certificate expires in {days} days",
+  "agentCount": "Agent Count",
+  "servers": "Servers",
+  "workstations": "Workstations",
+  "total": "Total: {count}",
+  "offline": "Offline: {count}",
+  "preferences": "Preferences",
+  "account": "Account",
+  "resetPassword": "Reset Password",
+  "reset2fa": "Reset 2FA",
+  "reset2faConfirm": "Are you sure you would like to reset your 2FA token?",
+  "logout": "Logout"
+}

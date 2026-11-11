@@ -16,6 +16,7 @@ import {
   FILE_TRANSFER_TRANSIENT_RETRY_MAX_MS,
   TRANSFER_SLOT_WAIT_TIMEOUT_MESSAGE,
 } from "@/constants/fileTransfer";
+import { t } from "@/i18n";
 import { getAxiosErrorDetail } from "@/utils/apiError";
 
 const TRANSFER_SESSION_LIMIT_MESSAGE = /too many concurrent file transfers/i;
@@ -129,7 +130,7 @@ export class RetryableTransferError extends Error {
 }
 
 export class TransferStalledError extends RetryableTransferError {
-  constructor(message = "The agent stopped responding to this transfer") {
+  constructor(message = t("fileBrowser.transfer.agentStoppedResponding")) {
     super(message);
     this.name = "TransferStalledError";
   }

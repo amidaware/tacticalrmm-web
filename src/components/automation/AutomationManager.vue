@@ -11,16 +11,18 @@
             flat
             push
             icon="refresh"
-          />Automation Manager
+          />{{ $t("automation.manager.title") }}
           <q-space />
           <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+            <q-tooltip class="bg-white text-primary">{{
+              $t("common.close")
+            }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section>
           <div class="q-gutter-sm">
             <q-btn
-              label="New"
+              :label="$t('automation.manager.new')"
               dense
               flat
               push
@@ -30,7 +32,7 @@
               @click="showAddPolicyForm"
             />
             <q-btn
-              label="Policy Overview"
+              :label="$t('automation.manager.policyOverview')"
               dense
               flat
               push
@@ -56,13 +58,15 @@
               binary-state-sort
               hide-pagination
               virtual-scroll
-              no-data-label="No Policies"
+              :no-data-label="$t('automation.manager.noPolicies')"
             >
               <!-- header slots -->
               <template v-slot:header-cell-active="props">
                 <q-th :props="props" auto-width>
                   <q-icon name="power_settings_new" size="1.5em">
-                    <q-tooltip>Enable Policy</q-tooltip>
+                    <q-tooltip>{{
+                      $t("automation.manager.enablePolicy")
+                    }}</q-tooltip>
                   </q-icon>
                 </q-th>
               </template>
@@ -70,10 +74,9 @@
               <template v-slot:header-cell-enforced="props">
                 <q-th :props="props" auto-width>
                   <q-icon name="security" size="1.5em">
-                    <q-tooltip
-                      >Enforce Policy (Will override Agent
-                      tasks/checks)</q-tooltip
-                    >
+                    <q-tooltip>{{
+                      $t("automation.manager.enforcePolicyTooltip")
+                    }}</q-tooltip>
                   </q-icon>
                 </q-th>
               </template>
@@ -99,7 +102,7 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{ $t("common.edit") }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -110,7 +113,7 @@
                         <q-item-section side>
                           <q-icon name="content_copy" />
                         </q-item-section>
-                        <q-item-section>Copy</q-item-section>
+                        <q-item-section>{{ $t("common.copy") }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -121,7 +124,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $t("common.delete")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-separator></q-separator>
@@ -134,7 +139,9 @@
                         <q-item-section side>
                           <q-icon name="account_tree" />
                         </q-item-section>
-                        <q-item-section>Show Relations</q-item-section>
+                        <q-item-section>{{
+                          $t("automation.manager.showRelations")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -145,7 +152,9 @@
                         <q-item-section side>
                           <q-icon name="rule" />
                         </q-item-section>
-                        <q-item-section>Policy Exclusions</q-item-section>
+                        <q-item-section>{{
+                          $t("automation.manager.policyExclusions")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -177,7 +186,9 @@
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
-                        <q-item-section>Close</q-item-section>
+                        <q-item-section>{{
+                          $t("common.close")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -206,14 +217,14 @@
                       color="primary"
                       text-color="white"
                       size="sm"
-                      >Default Server</q-chip
+                      >{{ $t("automation.manager.defaultServer") }}</q-chip
                     >
                     <q-chip
                       v-if="props.row.default_workstation_policy"
                       color="primary"
                       text-color="white"
                       size="sm"
-                      >Default Workstation</q-chip
+                      >{{ $t("automation.manager.defaultWorkstation") }}</q-chip
                     >
                   </q-td>
                   <q-td>{{ props.row.desc }}</q-td>
@@ -222,7 +233,11 @@
                       style="cursor: pointer; text-decoration: underline"
                       class="text-primary"
                       @click="showRelations(props.row)"
-                      >{{ `Show Relations (${props.row.agents_count})` }}</span
+                      >{{
+                        $t("automation.manager.showRelationsCount", {
+                          count: props.row.agents_count,
+                        })
+                      }}</span
                     >
                   </q-td>
                   <q-td>
@@ -231,11 +246,12 @@
                       class="text-primary"
                       @click="showPolicyExclusions(props.row)"
                       >{{
-                        `Show Policy Exclusions (${
-                          props.row.excluded_agents.length +
-                          props.row.excluded_clients.length +
-                          props.row.excluded_sites.length
-                        })`
+                        $t("automation.manager.showExclusionsCount", {
+                          count:
+                            props.row.excluded_agents.length +
+                            props.row.excluded_clients.length +
+                            props.row.excluded_sites.length,
+                        })
                       }}</span
                     >
                   </q-td>
@@ -261,7 +277,9 @@
                       size="1.5em"
                       @click="showCopyPolicyForm(props.row)"
                     >
-                      <q-tooltip>Create a copy of this policy</q-tooltip>
+                      <q-tooltip>{{
+                        $t("automation.manager.copyTooltip")
+                      }}</q-tooltip>
                     </q-icon>
                   </q-td>
                 </q-tr>
@@ -282,8 +300,16 @@
             narrow-indicator
             no-caps
           >
-            <q-tab name="checks" icon="fas fa-check-double" label="Checks" />
-            <q-tab name="tasks" icon="fas fa-tasks" label="Tasks" />
+            <q-tab
+              name="checks"
+              icon="fas fa-check-double"
+              :label="$t('automation.tabs.checks')"
+            />
+            <q-tab
+              name="tasks"
+              icon="fas fa-tasks"
+              :label="$t('automation.tabs.tasks')"
+            />
           </q-tabs>
           <q-separator />
           <q-tab-panels v-model="subtab" :animated="false">
@@ -333,52 +359,57 @@ export default {
       policies: [],
       selectedPolicy: null,
       columns: [
-        { name: "active", label: "Active", field: "active", align: "left" },
+        {
+          name: "active",
+          label: this.$t("automation.manager.columns.active"),
+          field: "active",
+          align: "left",
+        },
         {
           name: "enforced",
-          label: "Enforced",
+          label: this.$t("automation.manager.columns.enforced"),
           field: "enforced",
           align: "left",
         },
         {
           name: "name",
-          label: "Name",
+          label: this.$t("common.name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "desc",
-          label: "Description",
+          label: this.$t("common.description"),
           field: "desc",
           align: "left",
         },
         {
           name: "relations",
-          label: "Relations",
+          label: this.$t("automation.manager.columns.relations"),
           field: "relations",
           align: "left",
         },
         {
           name: "exclusions",
-          label: "Exclusions",
+          label: this.$t("automation.manager.columns.exclusions"),
           align: "left",
         },
         {
           name: "winupdatepolicy",
-          label: "Patch Policy",
+          label: this.$t("automation.manager.columns.patchPolicy"),
           field: "winupdatepolicy",
           align: "left",
         },
         {
           name: "alert_template",
-          label: "Alert Template",
+          label: this.$t("automation.manager.columns.alertTemplate"),
           field: "alert_template",
           align: "left",
         },
         {
           name: "actions",
-          label: "Actions",
+          label: this.$t("common.actions"),
           field: "actions",
           align: "left",
         },
@@ -413,9 +444,9 @@ export default {
     deletePolicy(policy) {
       this.$q
         .dialog({
-          title: "Delete policy?",
+          title: this.$t("automation.manager.deleteTitle"),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -424,7 +455,7 @@ export default {
             .then(() => {
               this.refresh();
               this.$q.loading.hide();
-              this.notifySuccess("Policy was deleted!");
+              this.notifySuccess(this.$t("automation.manager.notify.deleted"));
               this.$store.dispatch("loadTree");
             })
             .catch(() => {
@@ -498,8 +529,8 @@ export default {
           componentProps: {
             title:
               policy.winupdatepolicy.length > 0
-                ? "Edit Patch Policy"
-                : "Add Patch Policy",
+                ? this.$t("automation.manager.editPatchPolicy")
+                : this.$t("automation.manager.addPatchPolicy"),
             vuecomponent: PatchPolicyForm,
             componentProps: {
               policy: policy,
@@ -534,13 +565,13 @@ export default {
 
       if (type === "Active") {
         text = !policy.active
-          ? "Policy enabled successfully"
-          : "Policy disabled successfully";
+          ? this.$t("automation.manager.notify.enabled")
+          : this.$t("automation.manager.notify.disabled");
         data["active"] = !policy.active;
       } else if (type === "Enforced") {
         text = !policy.enforced
-          ? "Policy enforced successfully"
-          : "Policy enforcement disabled";
+          ? this.$t("automation.manager.notify.enforced")
+          : this.$t("automation.manager.notify.enforcementDisabled");
         data["enforced"] = !policy.enforced;
       }
 
@@ -557,13 +588,13 @@ export default {
     },
     patchPolicyText(policy) {
       return policy.winupdatepolicy.length > 0
-        ? "Modify Patch Policy"
-        : "Create Patch Policy";
+        ? this.$t("automation.manager.modifyPatchPolicy")
+        : this.$t("automation.manager.createPatchPolicy");
     },
     alertTemplateText(policy) {
       return policy.alert_template
-        ? "Modify Alert Template"
-        : "Assign Alert Template";
+        ? this.$t("automation.manager.modifyAlertTemplate")
+        : this.$t("automation.manager.assignAlertTemplate");
     },
     rowSelectedClass(id, selectedPolicy) {
       if (selectedPolicy && selectedPolicy.id === id)

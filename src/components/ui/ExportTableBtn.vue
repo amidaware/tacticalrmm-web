@@ -1,6 +1,6 @@
 <template>
   <q-btn dense color="primary" icon-right="archive" @click="exportTable">
-    <q-tooltip>Export table as CSV</q-tooltip>
+    <q-tooltip>{{ $t("ui.exportTableBtn.tooltip") }}</q-tooltip>
   </q-btn>
 </template>
 

@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "file": "File",
+    "view": "View",
+    "agents": "Agents",
+    "settings": "Settings",
+    "tools": "Tools",
+    "reporting": "Reporting",
+    "help": "Help"
+  },
+  "file": {
+    "auditLog": "Audit Log",
+    "debugLog": "Debug Log"
+  },
+  "view": {
+    "pendingActions": "Pending Actions"
+  },
+  "agents": {
+    "installAgent": "Install Agent",
+    "manageDeployments": "Manage Deployments",
+    "updateAgents": "Update Agents"
+  },
+  "settings": {
+    "clientsManager": "Clients Manager",
+    "scriptManager": "Script Manager",
+    "automationManager": "Automation Manager",
+    "alertsManager": "Alerts Manager",
+    "permissionsManager": "Permissions Manager",
+    "userAdministration": "User Administration",
+    "globalSettings": "Global Settings",
+    "codeSigning": "Code Signing"
+  },
+  "tools": {
+    "bulkCommand": "Bulk Command",
+    "bulkScript": "Bulk Script",
+    "bulkPatchManagement": "Bulk Patch Management",
+    "serverMaintenance": "Server Maintenance",
+    "clearCache": "Clear Cache",
+    "recoverAllAgents": "Recover All Agents",
+    "bulkRecoverTitle": "Bulk Recover All Agents?",
+    "bulkRecoverMessage": "This will attempt to reinstall/repair the Tactical and Mesh Agents on all endpoints."
+  },
+  "reporting": {
+    "reportingManager": "Reporting Manager",
+    "sponsorshipRequired": "Reporting feature requires a Tier 2 or higher sponsorship. Please check the docs for more info."
+  },
+  "help": {
+    "documentation": "Documentation",
+    "githubRepo": "GitHub Repo",
+    "bugReport": "Bug Report",
+    "featureRequest": "Feature Request",
+    "joinDiscord": "Join Discord"
+  }
+}

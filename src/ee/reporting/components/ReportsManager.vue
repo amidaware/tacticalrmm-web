@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportTemplates()"
-        />Reports Manager
+        />{{ $t("reporting.reportsManager.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -43,7 +45,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn-dropdown
             class="q-ml-sm"
             icon="add"
-            label="Template"
+            :label="$t('reporting.reportHistoryTable.template')"
             no-caps
             dense
             flat
@@ -55,7 +57,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 @click="openNewReportTemplateForm('markdown')"
               >
                 <q-item-section>
-                  <q-item-label>Markdown Template</q-item-label>
+                  <q-item-label>{{
+                    $t("reporting.reportsManager.markdownTemplate")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -65,7 +69,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 @click="openNewReportTemplateForm('html')"
               >
                 <q-item-section>
-                  <q-item-label>HTML Template</q-item-label>
+                  <q-item-label>{{
+                    $t("reporting.reportsManager.htmlTemplate")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -75,7 +81,9 @@ For details, see: https://license.tacticalrmm.com/ee
                 @click="openNewReportTemplateForm('plaintext')"
               >
                 <q-item-section>
-                  <q-item-label>Plain Text Template</q-item-label>
+                  <q-item-label>{{
+                    $t("reporting.reportsManager.plainTextTemplate")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -83,14 +91,16 @@ For details, see: https://license.tacticalrmm.com/ee
 
               <q-item clickable v-close-popup @click="importReportTemplate">
                 <q-item-section>
-                  <q-item-label>Import Report Template</q-item-label>
+                  <q-item-label>{{
+                    $t("reporting.reportsManager.importReportTemplate")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
           <q-btn
             class="q-ml-sm"
-            label="Base Templates"
+            :label="$t('reporting.reportHtmlTemplateTable.title')"
             no-caps
             dense
             flat
@@ -98,7 +108,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
           <q-btn
             class="q-ml-sm"
-            label="Report Assets"
+            :label="$t('reporting.reportAssets.title')"
             no-caps
             dense
             flat
@@ -106,7 +116,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
           <q-btn
             class="q-ml-sm"
-            label="Data Queries"
+            :label="$t('reporting.dataQuerySelect.dataQueries')"
             no-caps
             dense
             flat
@@ -115,7 +125,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             @click="openReportSchedules"
             class="q-ml-sm"
-            label="Report Schedules"
+            :label="$t('reporting.reportScheduleTable.title')"
             no-caps
             dense
             flat
@@ -123,14 +133,14 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             @click="openReportHistory"
             class="q-ml-sm"
-            label="Report Run History"
+            :label="$t('reporting.reportsManager.reportRunHistory')"
             no-caps
             dense
             flat
           />
           <q-btn
             class="q-ml-sm"
-            label="Shared Templates"
+            :label="$t('reporting.reportsManager.sharedTemplates')"
             no-caps
             dense
             flat
@@ -140,7 +150,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$t('common.search')"
             dense
             outlined
             clearable
@@ -166,7 +176,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="openEditReportTemplateForm(props.row)"
                 >
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -174,7 +184,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="cloneTemplate(props.row)"
                 >
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{ $t("reporting.clone") }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -186,7 +196,9 @@ For details, see: https://license.tacticalrmm.com/ee
                     openReport(props.row.id, 'pdf', props.row.depends_on, {})
                   "
                 >
-                  <q-item-section>Open PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.actions.openPdfReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -201,11 +213,11 @@ For details, see: https://license.tacticalrmm.com/ee
                     )
                   "
                 >
-                  <q-item-section
-                    >Open
-                    {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    props.row.type !== "plaintext"
+                      ? $t("reporting.actions.openHtmlReport")
+                      : $t("reporting.actions.openTextReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -215,7 +227,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="downloadReport(props.row, 'pdf', {})"
                 >
-                  <q-item-section>Download PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.actions.downloadPdfReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -229,11 +243,11 @@ For details, see: https://license.tacticalrmm.com/ee
                     )
                   "
                 >
-                  <q-item-section
-                    >Download
-                    {{ props.row.type !== "plaintext" ? "HTML" : "Text" }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    props.row.type !== "plaintext"
+                      ? $t("reporting.actions.downloadHtmlReport")
+                      : $t("reporting.actions.downloadTextReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -243,11 +257,15 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="scheduleReport(props.row)"
                 >
-                  <q-item-section>Schedule Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.reportsManager.scheduleReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item v-close-popup clickable @click="emailReport(props.row)">
-                  <q-item-section>Email Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.reportScheduleForm.emailReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -257,7 +275,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="exportReport(props.row.id)"
                 >
-                  <q-item-section>Export</q-item-section>
+                  <q-item-section>{{ $t("common.export") }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -267,13 +285,13 @@ For details, see: https://license.tacticalrmm.com/ee
                   clickable
                   @click="deleteTemplate(props.row)"
                 >
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator />
 
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -299,6 +317,7 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useSharedReportTemplates } from "../api/reporting";
 import { capitalize } from "@/utils/format";
 
@@ -316,24 +335,26 @@ import ReportScheduleForm from "./ReportScheduleForm.vue";
 // type imports
 import type { ReportTemplate } from "../types/reporting";
 
+const { t } = useI18n();
+
 const columns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "type",
-    label: "Template Type",
+    label: t("reporting.reportHistoryTable.templateType"),
     field: "type",
     align: "left",
     sortable: true,
   },
   {
     name: "depends_on",
-    label: "Template Dependencies",
+    label: t("reporting.reportsManager.templateDependencies"),
     field: "depends_on",
     align: "left",
     sortable: true,
@@ -430,9 +451,9 @@ function emailReport(template: ReportTemplate) {
 
 function deleteTemplate(template: ReportTemplate) {
   $q.dialog({
-    title: `Delete template: ${template.name}?`,
+    title: t("reporting.reportsManager.deleteTitle", { name: template.name }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("common.delete"), color: "negative" },
   }).onOk(() => {
     deleteReportTemplate(template.id);
   });

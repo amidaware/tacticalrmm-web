@@ -8,7 +8,7 @@
   >
     <q-card class="dialog-plugin" style="min-width: 60vw">
       <q-bar>
-        Run a script on {{ agent.hostname }}
+        {{ $t("agentModals.runScript.title", { hostname: agent.hostname }) }}
         <q-space />
         <q-btn
           dense
@@ -17,9 +17,9 @@
           @click="maximized = false"
           :disable="!maximized"
         >
-          <q-tooltip v-if="maximized" class="bg-white text-primary"
-            >Minimize</q-tooltip
-          >
+          <q-tooltip v-if="maximized" class="bg-white text-primary">{{
+            $t("agentModals.shared.minimize")
+          }}</q-tooltip>
         </q-btn>
         <q-btn
           dense
@@ -28,21 +28,25 @@
           @click="maximized = true"
           :disable="maximized"
         >
-          <q-tooltip v-if="!maximized" class="bg-white text-primary"
-            >Maximize</q-tooltip
-          >
+          <q-tooltip v-if="!maximized" class="bg-white text-primary">{{
+            $t("agentModals.shared.maximize")
+          }}</q-tooltip>
         </q-btn>
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit.prevent="sendScript">
         <q-card-section>
           <tactical-dropdown
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[
+              (val: number) => !!val || $t('agentModals.shared.required'),
+            ]"
             v-model="state.script"
             :options="filterByPlatformOptions"
-            label="Select script"
+            :label="$t('agentModals.shared.selectScript')"
             outlined
             mapOptions
             filterable
@@ -68,7 +72,7 @@
         <q-card-section>
           <tactical-dropdown
             v-model="state.args"
-            label="Script Arguments (press Enter after typing each argument)"
+            :label="$t('agentModals.shared.scriptArgs')"
             filled
             use-input
             multiple
@@ -104,13 +108,13 @@
               dense
               v-model="state.emailMode"
               val="default"
-              label="Use email addresses from global settings"
+              :label="$t('agentModals.runScript.useGlobalEmails')"
             />
             <q-radio
               dense
               v-model="state.emailMode"
               val="custom"
-              label="Custom emails"
+              :label="$t('agentModals.runScript.customEmails')"
             />
           </div>
         </q-card-section>
@@ -119,7 +123,7 @@
         >
           <tactical-dropdown
             v-model="state.emails"
-            label="Email recipients (press Enter after typing each email)"
+            :label="$t('agentModals.runScript.emailRecipients')"
             filled
             use-input
             multiple
@@ -130,21 +134,26 @@
         </q-card-section>
         <q-card-section v-if="state.output === 'collector'">
           <tactical-dropdown
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[
+              (val: number) => !!val || $t('agentModals.shared.required'),
+            ]"
             outlined
             v-model="state.custom_field"
             :options="customFieldOptions"
-            label="Select custom field"
+            :label="$t('agentModals.shared.selectCustomField')"
             mapOptions
             filterable
           />
-          <q-checkbox v-model="state.save_all_output" label="Save all output" />
+          <q-checkbox
+            v-model="state.save_all_output"
+            :label="$t('agentModals.shared.saveAllOutput')"
+          />
         </q-card-section>
         <q-card-section>
           <q-checkbox
             v-if="agent.plat === 'windows' && !state.run_on_server"
             v-model="state.run_as_user"
-            label="Run As User"
+            :label="$t('agentModals.shared.runAsUser')"
           >
             <q-tooltip>{{ runAsUserToolTip }}</q-tooltip>
           </q-checkbox>
@@ -152,17 +161,15 @@
             v-if="!hosted"
             :disable="!server_scripts_enabled"
             v-model="state.run_on_server"
-            label="Run On Server"
+            :label="$t('agentModals.runScript.runOnServer')"
             @update:model-value="ret = null"
           >
-            <q-tooltip v-if="!server_scripts_enabled"
-              >Enable server side scripts globally to activate this
-              feature.</q-tooltip
-            >
-            <q-tooltip v-else
-              >Run the script on the Tactical RMM server in the context of this
-              agent.</q-tooltip
-            >
+            <q-tooltip v-if="!server_scripts_enabled">{{
+              $t("agentModals.runScript.serverScriptsDisabled")
+            }}</q-tooltip>
+            <q-tooltip v-else>{{
+              $t("agentModals.runScript.runOnServerTooltip")
+            }}</q-tooltip>
           </q-checkbox>
         </q-card-section>
         <q-card-section>
@@ -172,20 +179,20 @@
             outlined
             type="number"
             style="max-width: 150px"
-            label="Timeout (seconds)"
+            :label="$t('agentModals.shared.timeoutSeconds')"
             stack-label
             :rules="[
-              (val) => !!val || '*Required',
-              (val) => val >= 5 || 'Minimum is 5 seconds',
+              (val) => !!val || $t('agentModals.shared.required'),
+              (val) => val >= 5 || $t('agentModals.shared.minTimeout'),
             ]"
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn label="Cancel" v-close-popup />
+          <q-btn :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             :disabled="loading"
-            label="Run"
+            :label="$t('common.run')"
             color="primary"
             type="submit"
           />
@@ -196,7 +203,7 @@
         >
           <script-output-copy-clip
             v-if="!state.run_on_server"
-            label="Output"
+            :label="$t('agentModals.shared.output')"
             :data="ret"
           />
           <q-separator v-if="!state.run_on_server" />
@@ -208,16 +215,20 @@
           >
           <q-card-section v-if="state.run_on_server" class="q-pa-none">
             <div>
-              Run Time:
-              <code>{{ ret.execution_time }} seconds</code>
-              <br />Return Code:
+              {{ $t("agentModals.runScript.runTime") }}
+              <code>{{
+                $t("agentModals.runScript.seconds", {
+                  n: ret.execution_time,
+                })
+              }}</code>
+              <br />{{ $t("agentModals.runScript.returnCode") }}
               <code>{{ ret.retcode }}</code>
               <br />
             </div>
             <br />
             <div v-if="ret.stdout">
               <script-output-copy-clip
-                label="Standard Output"
+                :label="$t('agentModals.runScript.stdout')"
                 :data="ret.stdout"
               />
               <q-separator />
@@ -227,7 +238,7 @@
             </div>
             <div v-if="ret.stderr">
               <script-output-copy-clip
-                label="Standard Error"
+                :label="$t('agentModals.runScript.stderr')"
                 :data="ret.stderr"
               />
               <q-separator />
@@ -252,6 +263,7 @@ import { useCustomFieldDropdown } from "@/composables/core";
 import { runScript } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
 import { envVarsLabel, runAsUserToolTip } from "@/constants/constants";
+import { useI18n } from "vue-i18n";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -259,6 +271,9 @@ import ScriptOutputCopyClip from "@/components/scripts/ScriptOutputCopyClip.vue"
 
 // types
 import type { Agent } from "@/types/agents";
+
+// i18n
+const { t } = useI18n();
 
 // store
 const store = useStore();
@@ -269,11 +284,11 @@ const server_scripts_enabled = computed(
 
 // static data
 const outputOptions = [
-  { label: "Wait for Output", value: "wait" },
-  { label: "Fire and Forget", value: "forget" },
-  { label: "Email results", value: "email" },
-  { label: "Save results to Custom Field", value: "collector" },
-  { label: "Save results to Agent Notes", value: "note" },
+  { label: t("agentModals.runScript.waitForOutput"), value: "wait" },
+  { label: t("agentModals.runScript.fireAndForget"), value: "forget" },
+  { label: t("agentModals.runScript.emailResults"), value: "email" },
+  { label: t("agentModals.shared.saveToCustomField"), value: "collector" },
+  { label: t("agentModals.runScript.saveToAgentNotes"), value: "note" },
 ];
 
 // emits

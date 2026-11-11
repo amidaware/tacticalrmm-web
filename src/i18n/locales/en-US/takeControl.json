@@ -1,0 +1,9 @@
+{
+  "title": "Take Control",
+  "agentStatus": "TRMM Agent Status:",
+  "restartConnection": "Restart Connection",
+  "recoverConnection": "Recover Connection",
+  "repairing": "Attempting to repair Mesh Agent",
+  "restarting": "Restarting Mesh Agent",
+  "restarted": "Mesh agent service was restarted"
+}

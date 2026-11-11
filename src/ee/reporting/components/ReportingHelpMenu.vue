@@ -6,48 +6,45 @@ For details, see: https://license.tacticalrmm.com/ee
 
 <template>
   <div class="q-px-sm">
-    <div class="text-h5">Report Template</div>
+    <div class="text-h5">{{ $t("reporting.helpMenu.reportTemplate") }}</div>
 
     <div class="q-px-sm">
-      <div class="text-body1">Report Templates</div>
+      <div class="text-body1">
+        {{ $t("reporting.helpMenu.reportTemplates") }}
+      </div>
     </div>
 
-    <div class="text-h5">Base Template</div>
+    <div class="text-h5">{{ $t("reporting.helpMenu.baseTemplate") }}</div>
 
     <div class="q-px-sm">
       <div class="text-body1">Test</div>
     </div>
 
-    <div class="text-h5">Data Query</div>
+    <div class="text-h5">{{ $t("reporting.helpMenu.dataQuery") }}</div>
 
     <div class="q-px-sm">
       <div class="text-body1">
-        Data Queries are used to save common database queries to use them in
-        templates. Behind the scenes, we are just creating a Django queryset.
-        The only difference is these querysets are restricted to only retrieve
-        data versus modifying data.
+        {{ $t("reporting.helpMenu.dataQueryDescription") }}
       </div>
-      <div class="text-h6">Syntax</div>
+      <div class="text-h6">{{ $t("reporting.helpMenu.syntax") }}</div>
       <div class="q-px-sm">
         <div class="text-body1">
-          When you create Data Queries in the Data Query Editor you use JSON.
-          You can also create Data Queries directly in the template variables
-          which uses yaml syntax.
+          {{ $t("reporting.helpMenu.syntaxDescription") }}
         </div>
       </div>
 
       <div class="text-body1"></div>
 
-      <div class="text-h6">Structure</div>
+      <div class="text-h6">{{ $t("reporting.helpMenu.structure") }}</div>
       <div class="q-px-sm">
         <div class="text-body1">
-          Ctrl+Space in the query editor to auto-complete values
+          {{ $t("reporting.helpMenu.autocomplete") }}
         </div>
 
         <dl>
           <dt>* model (*string)</dt>
           <dd>
-            This is the only required field. This specifies the table to query.
+            {{ $t("reporting.helpMenu.modelDescription") }}
           </dd>
           <dt>* filter (object)</dt>
           <dd></dd>

@@ -8,7 +8,7 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
-        Customize Email Options
+        {{ $t("reporting.reportEmailSettingsForm.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -16,10 +16,10 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-card-section class="q-pa-md">
         <q-input
           v-model="localEmailSettings.subject"
-          label="Subject"
+          :label="$t('reporting.reportEmailSettingsForm.subject')"
           dense
           filled
-          hint="Default if left blank: 'Scheduled Report: <report name>'"
+          :hint="$t('reporting.reportEmailSettingsForm.subjectHint')"
         />
       </q-card-section>
 
@@ -27,20 +27,20 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-input
           v-model="localEmailSettings.body"
           type="textarea"
-          label="Body"
+          :label="$t('reporting.reportEmailSettingsForm.body')"
           dense
           filled
-          hint="Default if blank: 'Your report is attached.'"
+          :hint="$t('reporting.reportEmailSettingsForm.bodyHint')"
         />
       </q-card-section>
 
       <q-card-section class="q-pa-md">
         <q-input
           v-model="localEmailSettings.attachment_name"
-          label="Attachment Name"
+          :label="$t('reporting.reportEmailSettingsForm.attachmentName')"
           dense
           filled
-          hint="Do not include the extension."
+          :hint="$t('reporting.reportEmailSettingsForm.attachmentNameHint')"
         />
       </q-card-section>
 
@@ -51,30 +51,34 @@ For details, see: https://license.tacticalrmm.com/ee
       >
         <q-input
           v-model="localEmailSettings.attachment_extension"
-          label="Attachment Extension"
+          :label="$t('reporting.reportEmailSettingsForm.attachmentExtension')"
           dense
           filled
           prefix="."
-          hint="Enter the desired extension without a dot (e.g., csv, json, txt). Defaults to 'txt' if blank."
+          :hint="
+            $t('reporting.reportEmailSettingsForm.attachmentExtensionHint')
+          "
         />
       </q-card-section>
 
       <q-card-section v-if="props.format === 'html'" class="q-pa-md">
         <q-checkbox
           v-model="localEmailSettings.include_report_link"
-          label="Include a direct link to view the report online (requires TRMM account authentication)."
+          :label="$t('reporting.reportEmailSettingsForm.includeReportLink')"
         >
           <q-tooltip class="text-caption">
-            The link will be automatically added at the end of the email body.
+            {{
+              $t("reporting.reportEmailSettingsForm.includeReportLinkTooltip")
+            }}
           </q-tooltip>
         </q-checkbox>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup dense />
+        <q-btn flat :label="$t('common.cancel')" v-close-popup dense />
         <q-btn
           flat
-          label="Save"
+          :label="$t('common.save')"
           color="primary"
           class="q-ml-sm"
           @click="submit"

@@ -5,30 +5,32 @@
         {{ title }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form @submit="submit">
         <!-- name -->
         <q-card-section>
           <q-input
-            label="Name"
+            :label="$t('common.name')"
             outlined
             dense
             v-model="localKey.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('settings.required')]"
           />
         </q-card-section>
 
         <!-- value -->
         <q-card-section>
           <q-input
-            label="Value"
+            :label="$t('settings.keyStore.value')"
             outlined
             dense
             v-model="localKey.value"
             :type="isPwd ? 'password' : 'text'"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('settings.required')]"
             ><template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -40,8 +42,13 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Submit" color="primary" type="submit" />
+          <q-btn flat :label="$t('common.cancel')" v-close-popup />
+          <q-btn
+            flat
+            :label="$t('common.submit')"
+            color="primary"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -67,7 +74,9 @@ export default {
   },
   computed: {
     title() {
-      return this.editing ? "Edit Global Key" : "Add Global Key";
+      return this.editing
+        ? this.$t("settings.keyStore.editTitle")
+        : this.$t("settings.keyStore.addTitle");
     },
     editing() {
       return !!this.globalKey;
@@ -87,7 +96,7 @@ export default {
           .then(() => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess("Key was edited!");
+            this.notifySuccess(this.$t("settings.keyStore.edited"));
           })
           .catch(() => {
             this.$q.loading.hide();
@@ -98,7 +107,7 @@ export default {
           .then(() => {
             this.$q.loading.hide();
             this.onOk();
-            this.notifySuccess("Key was added!");
+            this.notifySuccess(this.$t("settings.keyStore.added"));
           })
           .catch(() => {
             this.$q.loading.hide();

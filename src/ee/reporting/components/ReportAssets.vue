@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" maximized @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Report Assets
+        {{ $t("reporting.reportAssets.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <FileBrowser
@@ -25,7 +27,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-btn
             class="q-ml-sm"
             icon="add"
-            label="Upload"
+            :label="$t('reporting.assetFileUpload.upload')"
             no-caps
             dense
             flat
@@ -33,7 +35,7 @@ For details, see: https://license.tacticalrmm.com/ee
           />
           <q-btn
             class="q-ml-sm"
-            label="New Folder"
+            :label="$t('reporting.reportAssets.newFolder')"
             no-caps
             dense
             flat
@@ -46,7 +48,7 @@ For details, see: https://license.tacticalrmm.com/ee
             outline
             dense
             no-caps
-            label="Bulk Actions"
+            :label="$t('reporting.reportAssets.bulkActions')"
           >
             <q-list>
               <q-item
@@ -59,7 +61,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-icon name="delete" />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label>Delete</q-item-label>
+                  <q-item-label>{{ $t("common.delete") }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -73,13 +75,15 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Rename</q-item-section>
+                <q-item-section>{{
+                  $t("reporting.reportAssets.rename")
+                }}</q-item-section>
               </q-item>
               <q-item v-close-popup clickable @click="downloadFile(item)">
                 <q-item-section side>
                   <q-icon name="cloud_download" />
                 </q-item-section>
-                <q-item-section>Download</q-item-section>
+                <q-item-section>{{ $t("common.download") }}</q-item-section>
               </q-item>
 
               <q-item
@@ -90,13 +94,13 @@ For details, see: https://license.tacticalrmm.com/ee
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $t("common.delete") }}</q-item-section>
               </q-item>
 
               <q-separator></q-separator>
 
               <q-item v-close-popup clickable>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $t("common.close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -118,6 +122,7 @@ import {
   downloadAsset,
 } from "../api/reporting";
 import { useQuasar, useDialogPluginComponent, exportFile } from "quasar";
+import { useI18n } from "vue-i18n";
 
 // ui imports
 import FileBrowser from "@/components/FileBrowser.vue";
@@ -136,6 +141,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 // setup quasar
 const $q = useQuasar();
+const { t } = useI18n();
 
 // quasar dialog setup
 const { dialogRef, onDialogHide /* onDialogOK */ } = useDialogPluginComponent();
@@ -145,7 +151,12 @@ const { createFileNode, createFolderNode, getFile } = useFileBrowser();
 
 // data
 const nodes = ref([
-  createFolderNode("Assets", "/", "storage", "primary"),
+  createFolderNode(
+    t("reporting.reportAssets.rootFolder"),
+    "/",
+    "storage",
+    "primary",
+  ),
 ] as QTreeFileNode[]);
 const fileBrowser = ref<InstanceType<typeof FileBrowser> | null>(null);
 const isLoading = ref(false);
@@ -183,19 +194,19 @@ function uploadFiles(node: QTreeFileNode) {
           name,
           path,
           file.size.toString(),
-          asset_id
+          asset_id,
         );
         node.children?.push(fileNode);
       });
 
       fileBrowser.value?.reloadTable();
-    }
+    },
   );
 }
 
 function newFolder(node: QTreeFileNode) {
   $q.dialog({
-    title: "Enter a folder name",
+    title: t("reporting.reportAssets.enterFolderName"),
     prompt: {
       model: "",
       isValid: (val) => val.length > 0,
@@ -223,7 +234,10 @@ function newFolder(node: QTreeFileNode) {
 
 function sendRename(node: FileSystemNodeTable) {
   $q.dialog({
-    title: `Enter a new ${node.type} name`,
+    title:
+      node.type === "folder"
+        ? t("reporting.reportAssets.enterNewFolderName")
+        : t("reporting.reportAssets.enterNewFileName"),
     prompt: {
       model: node.name,
       isValid: (val) => val.length > 0,
@@ -275,13 +289,11 @@ async function downloadFile(node: FileSystemNodeTable) {
 
 function deleteFiles(
   nodes: FileSystemNodeTable[],
-  selectedTreeNode: QTreeFileNode
+  selectedTreeNode: QTreeFileNode,
 ) {
   $q.dialog({
-    title: "Are you sure?",
-    message: `You are about to delete ${
-      nodes.length > 1 ? nodes.length + " assets" : "an asset"
-    }. This action isn't reversible`,
+    title: t("common.areYouSure"),
+    message: t("reporting.reportAssets.deleteConfirm", nodes.length),
     cancel: true,
     persistent: true,
   }).onOk(async () => {
@@ -290,7 +302,7 @@ function deleteFiles(
       await deleteAssets(paths);
 
       selectedTreeNode.children = selectedTreeNode.children?.filter(
-        (node) => !paths.includes(node.path)
+        (node) => !paths.includes(node.path),
       );
 
       fileBrowser.value?.reloadTable();
@@ -306,7 +318,7 @@ function deleteFiles(
 function updatePathOnChildNodes(
   nodes: QTreeFileNode[],
   oldPath: string,
-  newPath: string
+  newPath: string,
 ) {
   nodes.forEach((node) => {
     node.path = node.path.replace(oldPath, newPath);

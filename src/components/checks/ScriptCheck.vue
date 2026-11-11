@@ -2,25 +2,29 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 60vw">
       <q-bar>
-        {{ check ? `Edit Script Check` : "Add Script Check" }}
+        {{
+          check ? $t("checks.script.editTitle") : $t("checks.script.addTitle")
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section v-if="filterByPlatformOptions.length === 0">
-        <p>You need to upload a script first</p>
-        <p>Settings -> Script Manager</p>
+        <p>{{ $t("checks.script.uploadFirst") }}</p>
+        <p>{{ $t("checks.script.scriptManagerPath") }}</p>
       </q-card-section>
 
       <q-form v-else @submit.prevent="submit(onDialogOK)">
         <q-card-section>
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('checks.form.required')]"
             outlined
             v-model="state.script"
             :options="filterByPlatformOptions"
-            label="Select script"
+            :label="$t('checks.script.selectScript')"
             mapOptions
             :disable="!!check"
             filterable
@@ -29,7 +33,7 @@
         <q-card-section>
           <q-select
             dense
-            label="Script Arguments (press Enter after typing each argument)"
+            :label="$t('checks.script.scriptArgs')"
             filled
             v-model="state.script_args"
             use-input
@@ -54,7 +58,7 @@
         </q-card-section>
         <q-card-section>
           <tactical-dropdown
-            label="Informational return codes (press Enter after typing each code)"
+            :label="$t('checks.script.infoReturnCodes')"
             filled
             v-model="state.info_return_codes"
             multiple
@@ -67,7 +71,7 @@
         </q-card-section>
         <q-card-section>
           <tactical-dropdown
-            label="Warning return codes (press Enter after typing each code)"
+            :label="$t('checks.script.warningReturnCodes')"
             filled
             v-model="state.warning_return_codes"
             use-input
@@ -80,7 +84,7 @@
         </q-card-section>
         <q-card-section>
           <tactical-dropdown
-            label="Success return codes (press Enter after typing each code)"
+            :label="$t('checks.script.successReturnCodes')"
             filled
             v-model="state.success_return_codes"
             use-input
@@ -96,7 +100,7 @@
             outlined
             dense
             v-model.number="state.timeout"
-            label="Script Timeout (seconds)"
+            :label="$t('checks.script.timeout')"
           />
         </q-card-section>
         <q-card-section>
@@ -106,7 +110,7 @@
             options-dense
             v-model="state.fails_b4_alert"
             :options="failOptions"
-            label="Number of consecutive failures before alert"
+            :label="$t('checks.form.failsBeforeAlert')"
           />
         </q-card-section>
         <q-card-section>
@@ -115,17 +119,17 @@
             dense
             type="number"
             v-model.number="state.run_interval"
-            label="Run this check every (seconds)"
-            hint="Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent"
+            :label="$t('checks.form.runInterval')"
+            :hint="$t('checks.form.runIntervalHint')"
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$t('common.save')"
             color="primary"
             type="submit"
           />

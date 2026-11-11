@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else>
     <q-table
       dense
@@ -17,7 +19,7 @@
       v-model:pagination="pagination"
       :loading="loading"
       :rows-per-page-options="[0]"
-      no-data-label="No tasks"
+      :no-data-label="$t('agentTabs.tasks.noTasks')"
     >
       <template v-slot:top>
         <q-btn
@@ -30,7 +32,7 @@
         />
         <q-btn
           icon="add"
-          label="Add Task"
+          :label="$t('agentTabs.tasks.addTask')"
           no-caps
           dense
           flat
@@ -47,7 +49,7 @@
       <template v-slot:header-cell-enabled="props">
         <q-th auto-width :props="props">
           <q-icon name="power_settings_new" size="1.5em">
-            <q-tooltip>Enabled</q-tooltip>
+            <q-tooltip>{{ $t("common.enabled") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -55,7 +57,7 @@
       <template v-slot:header-cell-smsalert="props">
         <q-th auto-width :props="props">
           <q-icon name="phone_android" size="1.5em">
-            <q-tooltip>SMS Alert</q-tooltip>
+            <q-tooltip>{{ $t("agentTabs.shared.smsAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -63,7 +65,7 @@
       <template v-slot:header-cell-emailalert="props">
         <q-th auto-width :props="props">
           <q-icon name="email" size="1.5em">
-            <q-tooltip>Email Alert</q-tooltip>
+            <q-tooltip>{{ $t("agentTabs.shared.emailAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -71,7 +73,7 @@
       <template v-slot:header-cell-dashboardalert="props">
         <q-th auto-width :props="props">
           <q-icon name="notifications" size="1.5em">
-            <q-tooltip>Dashboard Alert</q-tooltip>
+            <q-tooltip>{{ $t("agentTabs.shared.dashboardAlert") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -83,7 +85,7 @@
       <template v-slot:header-cell-collector="props">
         <q-th auto-width :props="props">
           <q-icon name="mdi-database-arrow-up" size="1.5em">
-            <q-tooltip>Collector Task</q-tooltip>
+            <q-tooltip>{{ $t("agentTabs.tasks.collectorTask") }}</q-tooltip>
           </q-icon>
         </q-th>
       </template>
@@ -106,7 +108,9 @@
                 <q-item-section side>
                   <q-icon name="play_arrow" />
                 </q-item-section>
-                <q-item-section>Run task now</q-item-section>
+                <q-item-section>{{
+                  $t("agentTabs.tasks.runNow")
+                }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -117,7 +121,7 @@
                 <q-item-section side>
                   <q-icon name="edit" />
                 </q-item-section>
-                <q-item-section>Edit</q-item-section>
+                <q-item-section>{{ $t("common.edit") }}</q-item-section>
               </q-item>
               <q-item
                 clickable
@@ -128,11 +132,11 @@
                 <q-item-section side>
                   <q-icon name="delete" />
                 </q-item-section>
-                <q-item-section>Delete</q-item-section>
+                <q-item-section>{{ $t("common.delete") }}</q-item-section>
               </q-item>
               <q-separator></q-separator>
               <q-item clickable v-close-popup>
-                <q-item-section>Close</q-item-section>
+                <q-item-section>{{ $t("common.close") }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -159,8 +163,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTabs.shared.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -186,8 +193,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTabs.shared.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -213,8 +223,11 @@
               dense
             >
               <q-tooltip>
-                Setting is overridden by alert template:
-                {{ props.row.alert_template.name }}
+                {{
+                  $t("agentTabs.shared.overriddenByTemplate", {
+                    name: props.row.alert_template.name,
+                  })
+                }}
               </q-tooltip>
             </q-checkbox>
 
@@ -237,7 +250,7 @@
               style="font-size: 1.3rem"
               name="policy"
             >
-              <q-tooltip>This task is managed by a policy</q-tooltip>
+              <q-tooltip>{{ $t("agentTabs.tasks.managedByPolicy") }}</q-tooltip>
             </q-icon>
           </q-td>
 
@@ -248,9 +261,9 @@
               style="font-size: 1.3rem"
               name="check"
             >
-              <q-tooltip
-                >The task updates a custom field on the agent</q-tooltip
-              >
+              <q-tooltip>{{
+                $t("agentTabs.tasks.updatesCustomField")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <!-- status icon -->
@@ -261,7 +274,7 @@
               :color="dash_positive_color"
               name="check_circle"
             >
-              <q-tooltip>Passing</q-tooltip>
+              <q-tooltip>{{ $t("common.passing") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else-if="props.row.task_result.status === 'failing'">
@@ -271,7 +284,7 @@
               :color="dash_info_color"
               name="info"
             >
-              <q-tooltip>Informational</q-tooltip>
+              <q-tooltip>{{ $t("agentTabs.shared.informational") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.alert_severity === 'warning'"
@@ -279,7 +292,7 @@
               :color="dash_warning_color"
               name="warning"
             >
-              <q-tooltip>Warning</q-tooltip>
+              <q-tooltip>{{ $t("agentTabs.shared.warning") }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
@@ -287,7 +300,7 @@
               :color="dash_negative_color"
               name="error"
             >
-              <q-tooltip>Error</q-tooltip>
+              <q-tooltip>{{ $t("common.error") }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td v-else></q-td>
@@ -299,17 +312,17 @@
             }}</q-tooltip></q-td
           >
           <!-- sync status -->
-          <q-td v-if="props.row.task_result.sync_status === 'notsynced'"
-            >Will sync on next agent checkin</q-td
-          >
-          <q-td v-else-if="props.row.task_result.sync_status === 'synced'"
-            >Synced with agent</q-td
-          >
+          <q-td v-if="props.row.task_result.sync_status === 'notsynced'">{{
+            $t("agentTabs.tasks.sync.notSynced")
+          }}</q-td>
+          <q-td v-else-if="props.row.task_result.sync_status === 'synced'">{{
+            $t("agentTabs.tasks.sync.synced")
+          }}</q-td>
           <q-td
             v-else-if="props.row.task_result.sync_status === 'pendingdeletion'"
-            >Pending deletion on agent</q-td
+            >{{ $t("agentTabs.tasks.sync.pendingDeletion") }}</q-td
           >
-          <q-td v-else>Waiting for task creation on agent</q-td>
+          <q-td v-else>{{ $t("agentTabs.tasks.sync.waiting") }}</q-td>
           <q-td
             v-if="
               props.row.task_result.retcode !== null ||
@@ -321,14 +334,14 @@
               style="cursor: pointer; text-decoration: underline"
               class="text-primary"
               @click="showScriptOutput(props.row)"
-              >output</span
+              >{{ $t("agentTabs.tasks.output") }}</span
             >
           </q-td>
-          <q-td v-else>Awaiting output</q-td>
+          <q-td v-else>{{ $t("agentTabs.tasks.awaitingOutput") }}</q-td>
           <q-td v-if="props.row.task_result.last_run">{{
             formatDate(props.row.task_result.last_run)
           }}</q-td>
-          <q-td v-else>Has not run yet</q-td>
+          <q-td v-else>{{ $t("agentTabs.tasks.notRunYet") }}</q-td>
           <q-td
             >{{ truncateText(props.row.schedule, 70) }}
             <q-tooltip v-if="props.row.schedule.length > 70">{{
@@ -358,6 +371,7 @@ import { updateTask, removeTask, runTask } from "@/api/tasks";
 import { fetchAgentTasks } from "@/api/agents";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import { truncateText } from "@/utils/format";
+import { t } from "@/i18n";
 
 // ui imports
 import AutomatedTaskForm from "@/components/tasks/AutomatedTaskForm.vue";
@@ -372,44 +386,50 @@ const columns = [
   { name: "policystatus", align: "left" },
   {
     name: "collector",
-    label: "Collector",
+    label: t("agentTabs.tasks.columns.collector"),
     field: "custom_field",
     align: "left",
     sortable: true,
   },
   { name: "status", align: "left" },
-  { name: "name", label: "Name", field: "name", align: "left", sortable: true },
+  {
+    name: "name",
+    label: t("common.name"),
+    field: "name",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "sync_status",
-    label: "Sync Status",
+    label: t("agentTabs.tasks.columns.syncStatus"),
     field: "sync_status",
     align: "left",
     sortable: true,
   },
   {
     name: "moreinfo",
-    label: "More Info",
+    label: t("agentTabs.shared.moreInfo"),
     field: "more_info",
     align: "left",
     sortable: true,
   },
   {
     name: "datetime",
-    label: "Last Run Time",
+    label: t("agentTabs.tasks.columns.lastRunTime"),
     field: "last_run",
     align: "left",
     sortable: true,
   },
   {
     name: "schedule",
-    label: "Schedule",
+    label: t("agentTabs.tasks.columns.schedule"),
     field: "schedule",
     align: "left",
     sortable: true,
   },
   {
     name: "assignedcheck",
-    label: "Assigned Check",
+    label: t("agentTabs.tasks.columns.assignedCheck"),
     field: "assigned_check",
     align: "left",
     sortable: true,
@@ -475,8 +495,8 @@ export default {
       if (task.policy) return;
 
       $q.dialog({
-        title: "Are you sure?",
-        message: `Delete ${task.name} task`,
+        title: t("common.areYouSure"),
+        message: t("agentTabs.tasks.deleteConfirm", { name: task.name }),
         cancel: true,
         persistent: true,
       }).onOk(async () => {
@@ -494,13 +514,13 @@ export default {
 
     async function runWinTask(task) {
       if (!task.enabled) {
-        notifyError("Task cannot be run when it's disabled. Enable it first.");
+        notifyError(t("agentTabs.tasks.cannotRunDisabled"));
         return;
       }
 
       $q.dialog({
-        title: "Are you sure?",
-        message: `Run ${task.name} task`,
+        title: t("common.areYouSure"),
+        message: t("agentTabs.tasks.runConfirm", { name: task.name }),
         cancel: true,
         persistent: true,
       }).onOk(async () => {

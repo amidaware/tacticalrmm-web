@@ -2,15 +2,17 @@
   <q-card>
     <q-bar v-if="modal">
       <q-btn @click="search" class="q-mr-sm" dense flat push icon="refresh" />
-      <q-space />Audit Manager
+      <q-space />{{ $t("logs.auditManager.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $t("common.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-table
       @request="onRequest"
-      :title="modal ? 'Audit Logs' : ''"
+      :title="modal ? $t('logs.auditManager.tableTitle') : ''"
       :rows="auditLogs"
       :columns="columns"
       class="tabs-tbl-sticky"
@@ -54,7 +56,7 @@
           style="width: 200px"
           v-model="agentFilter"
           :options="agentOptions"
-          label="Agent"
+          :label="$t('common.agent')"
           clearable
           mapOptions
           multiple
@@ -67,7 +69,7 @@
           style="width: 200px"
           v-model="clientFilter"
           :options="clientOptions"
-          label="Clients"
+          :label="$t('common.clients')"
           clearable
           multiple
           filled
@@ -79,7 +81,7 @@
           style="width: 200px"
           v-model="userFilter"
           :options="userOptions"
-          label="Users"
+          :label="$t('common.users')"
           clearable
           filled
           multiple
@@ -89,7 +91,7 @@
           style="width: 200px"
           v-model="actionFilter"
           :options="actionOptions"
-          label="Action"
+          :label="$t('logs.auditManager.action')"
           clearable
           filled
           multiple
@@ -101,7 +103,7 @@
           v-if="!agent"
           v-model="objectFilter"
           :options="objectOptions"
-          label="Object"
+          :label="$t('logs.auditManager.object')"
           clearable
           filled
           multiple
@@ -112,11 +114,16 @@
           style="width: 200px"
           v-model="timeFilter"
           :options="timeOptions"
-          label="Time"
+          :label="$t('logs.shared.time')"
           filled
           mapOptions
         />
-        <q-btn v-if="!agent" color="primary" label="Search" @click="search" />
+        <q-btn
+          v-if="!agent"
+          color="primary"
+          :label="$t('common.search')"
+          @click="search"
+        />
 
         <q-space />
         <export-table-btn :data="auditLogs" :columns="columns" />
@@ -161,6 +168,7 @@ import { useUserDropdown } from "@/composables/accounts";
 import { useQuasar } from "quasar";
 import { fetchAuditLog } from "@/api/logs";
 import { formatTableColumnText } from "@/utils/format";
+import { t } from "@/i18n";
 
 // ui imported
 import AuditLogDetailModal from "@/components/logs/AuditLogDetailModal.vue";
@@ -171,36 +179,42 @@ import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 const columns = [
   {
     name: "entry_time",
-    label: "Time",
+    label: t("logs.shared.time"),
     field: "entry_time",
     align: "left",
     sortable: true,
   },
   {
     name: "username",
-    label: "Username",
+    label: t("common.username"),
     field: "username",
     align: "left",
     sortable: true,
   },
   {
     name: "agent",
-    label: "Agent",
+    label: t("common.agent"),
     field: "agent",
     align: "left",
     sortable: true,
   },
   {
     name: "client",
-    label: "Client",
+    label: t("common.client"),
     field: "site",
     align: "left",
     sortable: true,
   },
-  { name: "site", label: "Site", field: "site", align: "left", sortable: true },
+  {
+    name: "site",
+    label: t("common.site"),
+    field: "site",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "action",
-    label: "Action",
+    label: t("logs.auditManager.action"),
     field: "action",
     align: "left",
     sortable: true,
@@ -208,7 +222,7 @@ const columns = [
   },
   {
     name: "object_type",
-    label: "Object",
+    label: t("logs.auditManager.object"),
     field: "object_type",
     align: "left",
     sortable: true,
@@ -216,14 +230,14 @@ const columns = [
   },
   {
     name: "message",
-    label: "Message",
+    label: t("logs.shared.message"),
     field: "message",
     align: "left",
     sortable: true,
   },
   {
     name: "client_ip",
-    label: "Client IP",
+    label: t("logs.auditManager.columns.clientIp"),
     field: "ip_address",
     align: "left",
     sortable: true,
@@ -231,63 +245,90 @@ const columns = [
 ];
 
 const agentActionOptions = [
-  { value: "add", label: "Add Object" },
-  { value: "modify", label: "Modify Object" },
-  { value: "execute_command", label: "Execute Command" },
-  { value: "execute_script", label: "Execute Script" },
-  { value: "remote_session", label: "Remote Session" },
-  { value: "file_transfer", label: "File Transfer" },
-  { value: "url_action", label: "URL Action" },
+  { value: "add", label: t("logs.auditManager.actions.addObject") },
+  { value: "modify", label: t("logs.auditManager.actions.modifyObject") },
+  {
+    value: "execute_command",
+    label: t("logs.auditManager.actions.executeCommand"),
+  },
+  {
+    value: "execute_script",
+    label: t("logs.auditManager.actions.executeScript"),
+  },
+  {
+    value: "remote_session",
+    label: t("logs.auditManager.actions.remoteSession"),
+  },
+  {
+    value: "file_transfer",
+    label: t("logs.auditManager.actions.fileTransfer"),
+  },
+  { value: "url_action", label: t("logs.auditManager.actions.urlAction") },
 ];
 
 const actionOptions = [
-  { value: "agent_install", label: "Agent Installs" },
-  { value: "bulk_action", label: "Bulk Actions" },
-  { value: "delete", label: "Delete Object" },
-  { value: "failed_login", label: "Failed User login" },
-  { value: "login", label: "User Login" },
-  { value: "modify", label: "Modify Object" },
-  { value: "task_run", label: "Task Run Results" },
+  {
+    value: "agent_install",
+    label: t("logs.auditManager.actions.agentInstalls"),
+  },
+  { value: "bulk_action", label: t("logs.auditManager.actions.bulkActions") },
+  { value: "delete", label: t("logs.auditManager.actions.deleteObject") },
+  { value: "failed_login", label: t("logs.auditManager.actions.failedLogin") },
+  { value: "login", label: t("logs.auditManager.actions.userLogin") },
+  { value: "modify", label: t("logs.auditManager.actions.modifyObject") },
+  { value: "task_run", label: t("logs.auditManager.actions.taskRunResults") },
 ];
 
 const objectOptions = [
-  { value: "agent", label: "Agent" },
-  { value: "automatedtask", label: "Automated Task" },
-  { value: "bulk", label: "Bulk Actions" },
-  { value: "coresettings", label: "Core Settings" },
-  { value: "check", label: "Check" },
-  { value: "client", label: "Client" },
-  { value: "policy", label: "Policy" },
-  { value: "site", label: "Site" },
-  { value: "script", label: "Script" },
-  { value: "user", label: "User" },
-  { value: "winupdatepolicy", label: "Patch Policy" },
-  { value: "alerttemplate", label: "Alert Template" },
-  { value: "role", label: "Role" },
-  { value: "urlaction", label: "URL Action" },
-  { value: "keystore", label: "Global Key Store" },
-  { value: "customfield", label: "Custom Field" },
-  { value: "schedule", label: "Schedule" },
-  { value: "reportschedule", label: "Report Schedule" },
+  { value: "agent", label: t("common.agent") },
+  {
+    value: "automatedtask",
+    label: t("logs.auditManager.objects.automatedTask"),
+  },
+  { value: "bulk", label: t("logs.auditManager.objects.bulkActions") },
+  { value: "coresettings", label: t("logs.auditManager.objects.coreSettings") },
+  { value: "check", label: t("logs.auditManager.objects.check") },
+  { value: "client", label: t("common.client") },
+  { value: "policy", label: t("logs.auditManager.objects.policy") },
+  { value: "site", label: t("common.site") },
+  { value: "script", label: t("logs.auditManager.objects.script") },
+  { value: "user", label: t("common.user") },
+  {
+    value: "winupdatepolicy",
+    label: t("logs.auditManager.objects.patchPolicy"),
+  },
+  {
+    value: "alerttemplate",
+    label: t("logs.auditManager.objects.alertTemplate"),
+  },
+  { value: "role", label: t("logs.auditManager.objects.role") },
+  { value: "urlaction", label: t("logs.auditManager.objects.urlAction") },
+  { value: "keystore", label: t("logs.auditManager.objects.globalKeyStore") },
+  { value: "customfield", label: t("logs.auditManager.objects.customField") },
+  { value: "schedule", label: t("logs.auditManager.objects.schedule") },
+  {
+    value: "reportschedule",
+    label: t("logs.auditManager.objects.reportSchedule"),
+  },
 ];
 
 const timeOptions = [
-  { value: 1, label: "1 Day Ago" },
-  { value: 7, label: "1 Week Ago" },
-  { value: 30, label: "30 Days Ago" },
-  { value: 90, label: "3 Months Ago" },
-  { value: 180, label: "6 Months Ago" },
-  { value: 365, label: "1 Year Ago" },
-  { value: 0, label: "Everything" },
+  { value: 1, label: t("logs.auditManager.times.oneDay") },
+  { value: 7, label: t("logs.auditManager.times.oneWeek") },
+  { value: 30, label: t("logs.auditManager.times.thirtyDays") },
+  { value: 90, label: t("logs.auditManager.times.threeMonths") },
+  { value: 180, label: t("logs.auditManager.times.sixMonths") },
+  { value: 365, label: t("logs.auditManager.times.oneYear") },
+  { value: 0, label: t("logs.auditManager.times.everything") },
 ];
 
 const filterTypeOptions = [
   {
-    label: "Clients",
+    label: t("common.clients"),
     value: "clients",
   },
   {
-    label: "Agents",
+    label: t("common.agents"),
     value: "agents",
   },
 ];
@@ -463,8 +504,8 @@ export default {
       //computed
       tableNoDataText: computed(() =>
         searched.value
-          ? "No data found. Try to refine you search"
-          : "Click search to find audit logs",
+          ? t("logs.auditManager.noDataFound")
+          : t("logs.auditManager.clickSearch"),
       ),
 
       // methods

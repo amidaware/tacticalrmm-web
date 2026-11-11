@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 40vw; max-width: 50vw">
       <q-bar>
-        Install Software
+        {{ $t("software.install.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
@@ -27,7 +29,13 @@
           row-key="name"
         >
           <template v-slot:top-left>
-            <q-input v-model="filter" outlined label="Search" dense clearable>
+            <q-input
+              v-model="filter"
+              outlined
+              :label="$t('common.search')"
+              dense
+              clearable
+            >
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -62,14 +70,20 @@ import { ref, onMounted } from "vue";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { fetchChocosSoftware, installAgentSoftware } from "@/api/software";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // static data
 const columns = [
-  { name: "install", align: "left", label: "Install", sortable: false },
+  {
+    name: "install",
+    align: "left",
+    label: t("software.install.install"),
+    sortable: false,
+  },
   {
     name: "name",
     align: "left",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     sortable: true,
   },
@@ -105,9 +119,9 @@ export default {
     function installSoftware(name) {
       const data = { name: name };
       $q.dialog({
-        title: `Install ${name}?`,
+        title: t("software.install.confirm", { name }),
         persistent: true,
-        ok: { label: "Install" },
+        ok: { label: t("software.install.install") },
         cancel: true,
       }).onOk(async () => {
         $q.loading.show();

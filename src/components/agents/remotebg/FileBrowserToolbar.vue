@@ -10,7 +10,7 @@
         no-caps
         color="primary"
         icon="upload"
-        label="Upload"
+        :label="$t('fileBrowser.toolbar.upload')"
         class="toolbar-btn toolbar-primary-btn"
         :disable="!hasUploadPath"
         @click="emit('upload')"
@@ -20,7 +20,7 @@
         dense
         unelevated
         icon="create_new_folder"
-        label="New Folder"
+        :label="$t('fileBrowser.toolbar.newFolder')"
         class="toolbar-btn"
         :disable="!hasUploadPath"
         @click="emit('new-folder')"
@@ -29,7 +29,7 @@
         dense
         unelevated
         icon="download"
-        label="Download"
+        :label="$t('common.download')"
         class="toolbar-btn"
         :disable="selectedCount === 0"
         @click="emit('download')"
@@ -38,7 +38,7 @@
         dense
         unelevated
         icon="delete"
-        label="Delete"
+        :label="$t('common.delete')"
         class="toolbar-btn"
         :disable="selectedCount === 0"
         @click="emit('delete')"
@@ -47,7 +47,7 @@
         dense
         unelevated
         icon="edit"
-        label="Rename"
+        :label="$t('fileBrowser.toolbar.rename')"
         class="toolbar-btn"
         :disable="selectedCount !== 1"
         @click="emit('rename')"
@@ -56,7 +56,7 @@
       <q-btn
         dense
         unelevated
-        label="More"
+        :label="$t('fileBrowser.toolbar.more')"
         icon-right="expand_more"
         class="toolbar-btn"
       >
@@ -71,7 +71,9 @@
               <q-item-section avatar>
                 <q-icon name="info" size="18px" />
               </q-item-section>
-              <q-item-section>Properties</q-item-section>
+              <q-item-section>{{
+                $t("fileBrowser.toolbar.properties")
+              }}</q-item-section>
             </q-item>
 
             <q-item
@@ -83,7 +85,9 @@
               <q-item-section avatar>
                 <q-icon name="unarchive" size="18px" />
               </q-item-section>
-              <q-item-section>Extract to…</q-item-section>
+              <q-item-section>{{
+                $t("fileBrowser.toolbar.extractTo")
+              }}</q-item-section>
             </q-item>
 
             <q-item
@@ -95,7 +99,9 @@
               <q-item-section avatar>
                 <q-icon name="content_copy" size="18px" />
               </q-item-section>
-              <q-item-section>Copy Path</q-item-section>
+              <q-item-section>{{
+                $t("fileBrowser.toolbar.copyPath")
+              }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -124,7 +130,9 @@
           {{ pausedCount }}
         </q-badge>
         <q-tooltip v-if="pausedCount > 0">
-          {{ pausedTooltip }} — resume anytime, or cancel to discard
+          {{
+            $t("fileBrowser.toolbar.pausedTooltip", { paused: pausedTooltip })
+          }}
         </q-tooltip>
       </q-btn>
 
@@ -149,8 +157,8 @@
           hide-bottom-space
           class="toolbar-search"
           :class="{ 'toolbar-search--active': filterActive }"
-          placeholder="Filter by name in this folder"
-          aria-label="Filter by name in this folder"
+          :placeholder="$t('fileBrowser.toolbar.filterPlaceholder')"
+          :aria-label="$t('fileBrowser.toolbar.filterPlaceholder')"
           :dark="$q.dark.isActive"
           @update:model-value="onSearchUpdate"
           @keydown="onSearchKeydown"
@@ -172,7 +180,7 @@
         unelevated
         icon="refresh"
         class="toolbar-btn toolbar-icon-btn"
-        aria-label="Refresh folder"
+        :aria-label="$t('fileBrowser.toolbar.refreshFolder')"
         @click="emit('refresh')"
       />
     </div>
@@ -180,6 +188,7 @@
 </template>
 
 <script setup lang="ts">
+import { t } from "@/i18n";
 import { computed, ref } from "vue";
 import { useQuasar } from "quasar";
 
@@ -202,7 +211,7 @@ const props = withDefaults(
   {
     showTransfers: false,
     canExtract: false,
-    transfersLabel: "Transfers",
+    transfersLabel: t("fileBrowser.toolbar.transfers"),
     pausedCount: 0,
     filterMatchCount: 0,
     filterTotalCount: 0,
@@ -239,22 +248,29 @@ const showFilterCount = computed(() => filterActive.value);
 
 const filterCountLabel = computed(() => {
   if (props.filterSearching) {
-    return "Searching this folder…";
+    return t("fileBrowser.toolbar.searching");
   }
   const match = props.filterMatchCount ?? 0;
   const total = props.filterTotalCount ?? 0;
   if (total > 0 && match !== total) {
-    return `${match.toLocaleString()} of ${total.toLocaleString()} matches`;
+    return t("fileBrowser.toolbar.matchesOf", {
+      match: match.toLocaleString(),
+      total: total.toLocaleString(),
+    });
   }
-  if (total === 1) return "1 match";
-  if (total > 1) return `${total.toLocaleString()} matches`;
-  return "0 matches";
+  return t(
+    "fileBrowser.toolbar.matches",
+    { count: total.toLocaleString() },
+    total > 0 ? total : 0,
+  );
 });
 
 const pausedTooltip = computed(() =>
-  (props.pausedCount ?? 0) === 1
-    ? "1 paused"
-    : `${props.pausedCount ?? 0} paused`,
+  t(
+    "fileBrowser.toolbar.paused",
+    { count: props.pausedCount ?? 0 },
+    props.pausedCount ?? 0,
+  ),
 );
 
 function onSearchUpdate(val: string | number | null) {

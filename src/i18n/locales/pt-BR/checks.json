@@ -1,0 +1,137 @@
+{
+  "types": {
+    "diskspace": "Verificação de espaço em disco",
+    "ping": "Verificação de ping",
+    "cpuload": "Verificação de carga da CPU",
+    "memory": "Verificação de memória",
+    "winsvc": "Verificação de serviço do Windows",
+    "script": "Verificação por script",
+    "eventlog": "Verificação de Log de Eventos"
+  },
+  "severity": {
+    "info": "Informativo",
+    "warning": "Aviso",
+    "error": "Erro"
+  },
+  "form": {
+    "required": "*Obrigatório",
+    "minThreshold": "O limite mínimo é 0",
+    "maxThreshold": "O limite máximo é 99",
+    "warningThreshold": "Limite de aviso (%)",
+    "errorThreshold": "Limite de erro (%)",
+    "failsBeforeAlert": "Número de falhas consecutivas antes do alerta",
+    "runInterval": "Executar esta verificação a cada (segundos)",
+    "runIntervalHint": "Definir este valor como algo diferente de 0 substituirá a configuração 'Executar verificações a cada' do agente",
+    "alertSeverity": "Severidade do alerta",
+    "descriptiveName": "Nome descritivo"
+  },
+  "cpuLoad": {
+    "addTitle": "Adicionar verificação de CPU",
+    "editTitle": "Editar verificação de CPU"
+  },
+  "memory": {
+    "addTitle": "Adicionar verificação de memória",
+    "editTitle": "Editar verificação de memória"
+  },
+  "diskSpace": {
+    "addTitle": "Adicionar verificação de disco",
+    "editTitle": "Editar verificação de disco",
+    "disk": "Disco",
+    "warningThreshold": "Limite de aviso de espaço restante (%)",
+    "errorThreshold": "Limite de erro de espaço restante (%)"
+  },
+  "ping": {
+    "addTitle": "Adicionar verificação de ping",
+    "editTitle": "Editar verificação de ping",
+    "hostnameOrIp": "Hostname ou IP"
+  },
+  "eventLog": {
+    "addTitle": "Adicionar verificação de Log de Eventos",
+    "editTitle": "Editar verificação de Log de Eventos",
+    "logToQuery": "Log de eventos a consultar",
+    "failWhen": "Falhar quando",
+    "logContains": "O log contém",
+    "logNotContains": "O log não contém",
+    "eventId": "ID do evento (use * para corresponder a qualquer ID)",
+    "invalidEventId": "ID do evento inválido",
+    "eventSource": "Origem do evento",
+    "messageContains": "A mensagem contém o texto",
+    "searchLastDays": "Quantos dias anteriores pesquisar (informe 0 para o log inteiro)",
+    "min0": "Mín. 0",
+    "max9999": "Máx. 9999",
+    "eventType": "Tipo de evento:",
+    "types": {
+      "info": "Informação",
+      "warning": "Aviso",
+      "error": "Erro",
+      "auditSuccess": "Auditoria de sucesso",
+      "auditFailure": "Auditoria de falha"
+    },
+    "eventsBeforeAlert": "Número de eventos encontrados antes do alerta"
+  },
+  "eventLogOutput": {
+    "noData": "Nenhum log de eventos",
+    "notRunYet": "A verificação ainda não foi executada",
+    "columns": {
+      "source": "Origem",
+      "eventId": "ID do evento",
+      "time": "Hora",
+      "message": "Mensagem"
+    }
+  },
+  "winSvc": {
+    "addTitle": "Adicionar verificação de serviço",
+    "editTitle": "Editar verificação de serviço",
+    "chooseDefaults": "Escolher entre os padrões",
+    "enterManually": "Informar manualmente",
+    "service": "Serviço",
+    "serviceName": "Nome do serviço",
+    "displayName": "Nome de exibição",
+    "passIfStartPending": "OK se o serviço estiver no modo 'Start Pending' (início pendente)",
+    "passIfNotExist": "OK se o serviço não existir",
+    "restartIfStopped": "Reiniciar o serviço se estiver parado"
+  },
+  "script": {
+    "addTitle": "Adicionar verificação por script",
+    "editTitle": "Editar verificação por script",
+    "uploadFirst": "Você precisa enviar um script primeiro",
+    "scriptManagerPath": "Configurações -> Gerenciador de Scripts",
+    "selectScript": "Selecionar script",
+    "scriptArgs": "Argumentos do script (pressione Enter após digitar cada argumento)",
+    "infoReturnCodes": "Códigos de retorno informativos (pressione Enter após digitar cada código)",
+    "warningReturnCodes": "Códigos de retorno de aviso (pressione Enter após digitar cada código)",
+    "successReturnCodes": "Códigos de retorno de sucesso (pressione Enter após digitar cada código)",
+    "timeout": "Tempo limite do script (segundos)"
+  },
+  "scriptOutput": {
+    "title": "Saída do script",
+    "lastRun": "Última execução:",
+    "runTime": "Tempo de execução:",
+    "seconds": "{seconds} segundos",
+    "returnCode": "Código de retorno:",
+    "stdout": "Saída padrão",
+    "stderr": "Erro padrão"
+  },
+  "graph": {
+    "title": "Histórico de {name}",
+    "noData": "Sem dados",
+    "last24Hours": "Últimas 24 horas",
+    "last7Days": "Últimos 7 dias",
+    "last30Days": "Últimos 30 dias",
+    "everything": "Tudo",
+    "series": {
+      "cpuLoad": "Carga da CPU",
+      "memory": "Uso de memória",
+      "diskSpace": "Espaço em disco restante",
+      "script": "Resultados do script"
+    },
+    "errorThreshold": "Limite de erro",
+    "warningThreshold": "Limite de aviso",
+    "tooltip": {
+      "returnCode": "Código de retorno: {value}",
+      "stdout": "Saída padrão: {value}",
+      "stderr": "Saída de erro: {value}",
+      "executionTime": "Tempo de execução: {value}"
+    }
+  }
+}

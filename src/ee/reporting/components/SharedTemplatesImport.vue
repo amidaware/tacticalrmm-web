@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" maximized @hide="onDialogHide">
     <q-card>
       <q-bar>
-        Shared Templates
+        {{ $t("reporting.reportsManager.sharedTemplates") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -37,7 +39,7 @@ For details, see: https://license.tacticalrmm.com/ee
         <template #top>
           <q-btn
             class="q-ml-sm"
-            label="Import"
+            :label="$t('common.import')"
             icon="fa-solid fa-file-import"
             no-caps
             dense
@@ -48,14 +50,14 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-checkbox
             class="q-ml-sm"
             dense
-            label="Overwrite if name conflicts"
+            :label="$t('reporting.sharedTemplatesImport.overwrite')"
             v-model="overwrite"
           />
           <q-space />
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$t('common.search')"
             dense
             outlined
             clearable
@@ -76,20 +78,23 @@ For details, see: https://license.tacticalrmm.com/ee
 import { ref, onMounted } from "vue";
 import { until } from "@vueuse/shared";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useSharedReportTemplates } from "../api/reporting";
 import { truncateText } from "@/utils/format";
+
+const { t } = useI18n();
 
 const columns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "url",
-    label: "Download Url",
+    label: t("reporting.sharedTemplatesImport.downloadUrl"),
     field: "url",
     align: "left",
     sortable: true,

@@ -1,0 +1,8 @@
+{
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "sso": "Log in with SSO",
+  "twoFactor": "Two-Factor Token",
+  "required": "This field is required"
+}

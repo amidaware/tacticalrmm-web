@@ -1,0 +1,9 @@
+{
+  "title": "Assumir Controle",
+  "agentStatus": "Status do Agente TRMM:",
+  "restartConnection": "Reiniciar Conexão",
+  "recoverConnection": "Recuperar Conexão",
+  "repairing": "Tentando reparar o Mesh Agent",
+  "restarting": "Reiniciando o Mesh Agent",
+  "restarted": "O serviço do Mesh Agent foi reiniciado"
+}

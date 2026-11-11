@@ -14,7 +14,7 @@ For details, see: https://license.tacticalrmm.com/ee
   >
     <q-card>
       <q-bar>
-        New Report Template
+        {{ $t("reporting.reportTemplateForm.title") }}
         <!-- <q-btn
           icon="help"
           round
@@ -24,13 +24,15 @@ For details, see: https://license.tacticalrmm.com/ee
         /> -->
         <q-space />
         <q-btn dense flat icon="close" @click="openClosePrompt">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-toolbar>
         <q-input
           v-model="state.name"
-          label="Report Name"
+          :label="$t('reporting.reportTemplateForm.reportName')"
           class="q-pr-sm"
           filled
           dense
@@ -43,7 +45,7 @@ For details, see: https://license.tacticalrmm.com/ee
           style="width: 250px"
           class="q-pr-sm"
           :options="HTMLTemplateOptions"
-          label="Base Templates"
+          :label="$t('reporting.reportHtmlTemplateTable.title')"
           map-options
           emit-value
           dense
@@ -56,7 +58,7 @@ For details, see: https://license.tacticalrmm.com/ee
           style="width: 250px"
           class="q-pr-sm"
           :options="dependsOnFilterOptions"
-          label="Template Dependencies"
+          :label="$t('reporting.reportsManager.templateDependencies')"
           multiple
           dense
           filled
@@ -66,9 +68,11 @@ For details, see: https://license.tacticalrmm.com/ee
           @filter="filterFn"
         >
           <template v-slot:selected>
-            <span v-if="state.depends_on && state.depends_on?.length > 0"
-              >{{ state.depends_on?.length }} Selected</span
-            >
+            <span v-if="state.depends_on && state.depends_on?.length > 0">{{
+              $t("reporting.reportTemplateForm.selectedCount", {
+                count: state.depends_on?.length,
+              })
+            }}</span>
           </template>
         </q-select>
 
@@ -79,7 +83,12 @@ For details, see: https://license.tacticalrmm.com/ee
           color="primary"
           :disable="debug"
         />
-        <q-toggle v-model="debug" dense label="Debug" class="q-pl-sm" />
+        <q-toggle
+          v-model="debug"
+          dense
+          :label="$t('reporting.reportTemplateForm.debug')"
+          class="q-pl-sm"
+        />
         <q-space />
 
         <q-tabs v-model="tab" dense shrink>
@@ -95,14 +104,23 @@ For details, see: https://license.tacticalrmm.com/ee
             label="Html"
             :ripple="false"
           />
-          <q-tab v-else name="plaintext" label="Plain Text" :ripple="false" />
+          <q-tab
+            v-else
+            name="plaintext"
+            :label="$t('reporting.reportTemplateForm.plainText')"
+            :ripple="false"
+          />
           <q-tab
             v-if="templateType !== 'plaintext'"
             name="css"
             label="CSS"
             :ripple="false"
           />
-          <q-tab name="preview" label="Preview" :ripple="false" />
+          <q-tab
+            name="preview"
+            :label="$t('reporting.reportTemplateForm.preview')"
+            :ripple="false"
+          />
         </q-tabs>
       </q-toolbar>
 
@@ -190,7 +208,9 @@ For details, see: https://license.tacticalrmm.com/ee
                       @click="splitter > 3 ? (splitter = 3) : (splitter = 35)"
                     >
                       <q-tooltip :delay="500">{{
-                        splitter >= 3 ? "Hide variables" : "Show variables"
+                        splitter >= 3
+                          ? $t("reporting.reportTemplateForm.hideVariables")
+                          : $t("reporting.reportTemplateForm.showVariables")
                       }}</q-tooltip>
                     </q-btn>
                     <q-btn
@@ -201,7 +221,9 @@ For details, see: https://license.tacticalrmm.com/ee
                       no-caps
                       @click="openBaseTemplateForm"
                     >
-                      <q-tooltip :delay="500">Add Base Template</q-tooltip>
+                      <q-tooltip :delay="500">{{
+                        $t("reporting.reportTemplateForm.addBaseTemplate")
+                      }}</q-tooltip>
                     </q-btn>
                   </template>
                 </EditorToolbar>
@@ -230,7 +252,7 @@ For details, see: https://license.tacticalrmm.com/ee
                   ></q-btn>
 
                   <div v-if="splitter > 8" class="q-pl-xs text-subtitle">
-                    Variables
+                    {{ $t("reporting.reportTemplateForm.variables") }}
                   </div>
                 </q-bar>
                 <div
@@ -255,7 +277,7 @@ For details, see: https://license.tacticalrmm.com/ee
       <q-inner-loading
         v-if="tab == 'preview'"
         :showing="isLoading"
-        label="Generating Report..."
+        :label="$t('reporting.reportTemplateForm.generatingReport')"
         label-class="text-teal"
         label-style="font-size: 1.1em"
       />
@@ -264,18 +286,25 @@ For details, see: https://license.tacticalrmm.com/ee
         <q-toggle
           v-if="reportTemplate"
           v-model="autoSave"
-          label="Auto-save"
+          :label="$t('reporting.reportTemplateForm.autoSave')"
           dense
         />
-        <span class="q-pl-sm" v-if="showSaved">Template Saved!</span>
+        <span class="q-pl-sm" v-if="showSaved">{{
+          $t("reporting.reportTemplateForm.templateSaved")
+        }}</span>
         <q-space />
-        <q-btn dense flat label="Cancel" @click="openClosePrompt" />
+        <q-btn
+          dense
+          flat
+          :label="$t('common.cancel')"
+          @click="openClosePrompt"
+        />
         <q-btn
           v-if="reportTemplate"
           :loading="isLoading"
           dense
           flat
-          label="Apply"
+          :label="$t('common.apply')"
           color="primary"
           @click="applyChanges"
         />
@@ -283,7 +312,7 @@ For details, see: https://license.tacticalrmm.com/ee
           :loading="isLoading"
           dense
           flat
-          label="Save"
+          :label="$t('common.save')"
           color="primary"
           @click="submit"
         />
@@ -307,6 +336,7 @@ import {
   useSharedReportHTMLTemplates,
 } from "../api/reporting";
 import { notifyError } from "@/utils/notify";
+import { useI18n } from "vue-i18n";
 import * as monaco from "monaco-editor";
 import { parseDocument } from "yaml";
 
@@ -341,13 +371,16 @@ const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
 
 // quasar setup
 const $q = useQuasar();
+const { t } = useI18n();
 
 // new report logic
 const state: ReportTemplate = props.reportTemplate
   ? reactive(extend({}, props.reportTemplate))
   : reactive({
       id: 0,
-      name: props.cloneTemplate ? `Copy of ${props.cloneTemplate.name}` : "",
+      name: props.cloneTemplate
+        ? t("reporting.copyOf", { name: props.cloneTemplate.name })
+        : "",
       template_md: props.cloneTemplate ? props.cloneTemplate.template_md : "",
       template_css: props.cloneTemplate ? props.cloneTemplate.template_css : "",
       template_html: props.cloneTemplate
@@ -375,8 +408,8 @@ watch(
 function openClosePrompt() {
   if (edited.value) {
     $q.dialog({
-      title: "You have unsaved changes",
-      message: "Would you like to close?",
+      title: t("reporting.reportTemplateForm.unsavedChanges"),
+      message: t("reporting.reportTemplateForm.closeConfirm"),
       cancel: true,
       persistent: true,
     }).onOk(() => {
@@ -408,7 +441,7 @@ const formatOptions = [
     label:
       props.templateType === "html" || props.templateType === "markdown"
         ? "HTML"
-        : "Text",
+        : t("reporting.reportTemplateForm.textFormat"),
     value:
       props.templateType === "html" || props.templateType === "markdown"
         ? "html"
@@ -485,8 +518,8 @@ const tab = ref(
   props.templateType === "markdown"
     ? "markdown"
     : props.templateType === "html"
-    ? "html"
-    : "plaintext",
+      ? "html"
+      : "plaintext",
 );
 
 onBeforeMount(() => {
@@ -679,12 +712,14 @@ function validate(dontNotify = false): boolean {
   let isValid = true;
 
   if (!state.template_md) {
-    dontNotify || notifyError("Template Text is required");
+    dontNotify ||
+      notifyError(t("reporting.reportTemplateForm.templateTextRequired"));
     isValid = false;
   }
 
   if (!state.name) {
-    dontNotify || notifyError("Template Name is required");
+    dontNotify ||
+      notifyError(t("reporting.reportTemplateForm.templateNameRequired"));
     isNameValid.value = false;
     isValid = false;
   }
@@ -693,7 +728,12 @@ function validate(dontNotify = false): boolean {
   const doc = parseDocument(state.template_variables, { prettyErrors: true });
   if (doc.errors.length > 0) {
     dontNotify ||
-      notifyError("Error in variables: " + doc.errors[0].message, 5000);
+      notifyError(
+        t("reporting.reportTemplateForm.variablesError", {
+          error: doc.errors[0].message,
+        }),
+        5000,
+      );
     isValid = false;
   }
 

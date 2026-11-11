@@ -6,7 +6,7 @@
   >
     <q-card style="min-width: 420px; max-width: 560px">
       <q-card-section>
-        <div class="text-h6">Extract ZIP</div>
+        <div class="text-h6">{{ $t("fileBrowser.extractDialog.title") }}</div>
         <div class="text-caption text-grey ellipsis">
           {{ item?.name }}<span v-if="item?.size"> · {{ item.size }}</span>
         </div>
@@ -21,12 +21,14 @@
           dense
           outlined
           autofocus
-          label="Extract to"
-          hint="The folder is created if it doesn't exist"
+          :label="$t('fileBrowser.extractDialog.extractTo')"
+          :hint="$t('fileBrowser.extractDialog.hint')"
           :rules="destinationRules"
           @keyup.enter="onSubmit"
         />
-        <div class="text-body2 q-pt-sm">If a file already exists:</div>
+        <div class="text-body2 q-pt-sm">
+          {{ $t("fileBrowser.extractDialog.ifExists") }}
+        </div>
         <q-option-group
           v-model="conflictPolicy"
           dense
@@ -36,10 +38,15 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('common.cancel')"
+          color="primary"
+          v-close-popup
+        />
         <q-btn
           unelevated
-          label="Extract"
+          :label="$t('fileBrowser.extractDialog.extract')"
           color="primary"
           :loading="saving"
           :disable="saving || !destination.trim()"
@@ -51,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed, nextTick, ref, watch } from "vue";
 import { QInput } from "quasar";
 
@@ -77,10 +85,11 @@ const emit = defineEmits<{
   (e: "hide"): void;
 }>();
 
-const conflictOptions = [
-  { label: "Skip existing files", value: "skip" },
-  { label: "Replace existing files", value: "replace" },
-];
+const { t } = useI18n();
+const conflictOptions = computed(() => [
+  { label: t("fileBrowser.extractDialog.skipExisting"), value: "skip" },
+  { label: t("fileBrowser.extractDialog.replaceExisting"), value: "replace" },
+]);
 
 const destInputRef = ref<InstanceType<typeof QInput> | null>(null);
 const destination = ref("");

@@ -61,7 +61,7 @@
                 dense
                 size="sm"
                 color="primary"
-                label="Load More"
+                :label="$t('remoteBg.registry.loadMore')"
                 class="q-px-xs q-py-xs fontt-weight-medium"
                 :loading="
                   loadingMoreNodes[getParentIdFromLoadNode(prop.node.id)]
@@ -77,7 +77,9 @@
             >
               <q-list dense style="min-width: 180px">
                 <q-item clickable style="padding-right: 4px !important">
-                  <q-item-section>New</q-item-section>
+                  <q-item-section>{{
+                    $t("remoteBg.registry.new")
+                  }}</q-item-section>
                   <q-item-section side>
                     <q-icon name="chevron_right" />
                   </q-item-section>
@@ -99,7 +101,9 @@
                             : createValue(prop.node, item.type, true)
                         "
                       >
-                        <q-item-section>{{ item.label }}</q-item-section>
+                        <q-item-section>{{
+                          $t(`remoteBg.registry.newTypes.${item.type}`)
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -109,13 +113,15 @@
                   v-close-popup
                   @click="refreshNode(prop.node.id)"
                 >
-                  <q-item-section>Refresh</q-item-section>
+                  <q-item-section>{{ $t("common.refresh") }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="renameKey(prop.node)">
-                  <q-item-section>Rename</q-item-section>
+                  <q-item-section>{{
+                    $t("remoteBg.registry.rename")
+                  }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="deleteKey(prop.node)">
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -137,7 +143,9 @@
                   clickable
                   style="padding-right: 3px; padding-left: 12px"
                 >
-                  <q-item-section>New</q-item-section>
+                  <q-item-section>{{
+                    $t("remoteBg.registry.new")
+                  }}</q-item-section>
                   <q-item-section side>
                     <q-icon name="chevron_right" />
                   </q-item-section>
@@ -159,7 +167,9 @@
                             : createValue(undefined, item.type, true)
                         "
                       >
-                        <q-item-section>{{ item.label }}</q-item-section>
+                        <q-item-section>{{
+                          $t(`remoteBg.registry.newTypes.${item.type}`)
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -174,7 +184,7 @@
               flat
               dense
               hide-pagination
-              no-data-label="No values found"
+              :no-data-label="$t('remoteBg.registry.noValues')"
               :loading="loading"
               :pagination="{ rowsPerPage: 0 }"
             >
@@ -219,21 +229,27 @@
                         v-close-popup
                         @click="openModifyDialog(props.row)"
                       >
-                        <q-item-section>Modify</q-item-section>
+                        <q-item-section>{{
+                          $t("remoteBg.registry.modify")
+                        }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
                         v-close-popup
                         @click="renameValue(props.row)"
                       >
-                        <q-item-section>Rename</q-item-section>
+                        <q-item-section>{{
+                          $t("remoteBg.registry.rename")
+                        }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
                         v-close-popup
                         @click="deleteValue(props.row)"
                       >
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $t("common.delete")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -284,8 +300,8 @@
     <!-- Confirm Delete Key/Value Dialog -->
     <ConfirmDialog
       v-model="confirmDeleteKeyDialog"
-      title="Confirm Key Delete"
-      message="Are you sure you want to permanently delete this key and all of its subkeys?"
+      :title="$t('remoteBg.registry.confirmKeyDeleteTitle')"
+      :message="$t('remoteBg.registry.confirmKeyDeleteMessage')"
       @confirm="confirmDeleteKey"
       type="confirm"
       icon="warning"
@@ -293,8 +309,8 @@
     />
     <ConfirmDialog
       v-model="confirmDeleteValueDialog"
-      title="Confirm Value Delete"
-      message="Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?"
+      :title="$t('remoteBg.registry.confirmValueDeleteTitle')"
+      :message="$t('remoteBg.registry.confirmValueDeleteMessage')"
       @confirm="confirmDeleteValue"
       type="confirm"
       icon="warning"
@@ -302,8 +318,8 @@
     />
     <ConfirmDialog
       v-model="warningDialog"
-      title="Selection Required"
-      message="Please select a hive or key before creating a new key."
+      :title="$t('remoteBg.registry.selectionRequiredTitle')"
+      :message="$t('remoteBg.registry.selectionRequiredMessage')"
       :showConfirm="false"
       icon="warning"
       iconColor="orange"
@@ -319,6 +335,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from "vue";
 import { QInput, useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { watch } from "vue";
 import { AxiosError } from "axios";
 import {
@@ -345,12 +362,17 @@ const props = defineProps<{
   agent_id: string;
 }>();
 
+const { t } = useI18n();
+
 const splitter = ref(25);
 const loading = ref(false);
 const selectedKey = ref<string | null>(null);
 const currentPath = ref<string>();
 const registryNodes = ref<RegistryNode[]>([]);
-const columns = registryTableColumns;
+const columns = registryTableColumns.map((col) => ({
+  ...col,
+  label: t(`remoteBg.registry.columns.${col.name}`),
+}));
 const tableRows = ref<RegistryValue[]>([]);
 const editingNodeId = ref<string | null>(null);
 const pendingNodes = ref<Record<string, RegistryNode[]>>({});
@@ -856,7 +878,7 @@ function openModifyDialog(row: RegistryValue) {
   if (row.type === "REG_BINARY") {
     $q.notify({
       type: "warning",
-      message: "Modifying REG_BINARY values access denied.",
+      message: t("remoteBg.registry.binaryDenied"),
       position: "top",
     });
     return;

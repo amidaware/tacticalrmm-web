@@ -12,8 +12,8 @@
         />
         {{
           agent
-            ? `Pending Actions for ${agent.hostname}`
-            : "All Pending Actions"
+            ? $t("logs.pendingActions.titleAgent", { hostname: agent.hostname })
+            : $t("logs.pendingActions.titleAll")
         }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
@@ -33,7 +33,7 @@
         row-key="id"
         virtual-scroll
         :rows-per-page-options="[0]"
-        no-data-label="No Pending Actions"
+        :no-data-label="$t('logs.pendingActions.noPendingActions')"
         :loading="loading"
       >
         <template v-slot:top>
@@ -41,8 +41,12 @@
           <q-btn
             :label="
               showCompleted
-                ? `Hide ${completedCount} Completed`
-                : `Show ${completedCount} Completed`
+                ? $t('logs.pendingActions.hideCompleted', {
+                    count: completedCount,
+                  })
+                : $t('logs.pendingActions.showCompleted', {
+                    count: completedCount,
+                  })
             "
             :icon="showCompleted ? 'visibility_off' : 'visibility'"
             @click="showCompleted = !showCompleted"
@@ -66,11 +70,13 @@
                   <q-item-section side>
                     <q-icon name="fas fa-trash-alt" size="xs" />
                   </q-item-section>
-                  <q-item-section>Cancel Action</q-item-section>
+                  <q-item-section>{{
+                    $t("logs.pendingActions.cancelAction")
+                  }}</q-item-section>
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -93,7 +99,7 @@
                   : props.row.due
               }}</span>
             </q-td>
-            <q-td v-else>Completed</q-td>
+            <q-td v-else>{{ $t("logs.pendingActions.completed") }}</q-td>
             <q-td>{{ props.row.description }}</q-td>
             <q-td v-if="!agent">{{ props.row.hostname }}</q-td>
             <q-td v-if="!agent">{{ props.row.client }}</q-td>
@@ -108,7 +114,7 @@
                 color="primary"
                 icon="preview"
                 size="sm"
-                label="View output"
+                :label="$t('logs.pendingActions.viewOutput')"
                 @click="showOutput(props.row.details.output)"
               />
             </q-td>
@@ -132,6 +138,7 @@ import {
 } from "@/api/logs";
 import { getNextAgentUpdateTime } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 import PreDialog from "@/components/ui/PreDialog.vue";
 
 // static data
@@ -140,34 +147,46 @@ const columns = [
   { name: "status", field: "status" },
   {
     name: "type",
-    label: "Type",
+    label: t("common.type"),
     field: "action_type",
     align: "left",
     sortable: true,
   },
-  { name: "due", label: "Due", field: "due", align: "left", sortable: true },
+  {
+    name: "due",
+    label: t("logs.pendingActions.due"),
+    field: "due",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "desc",
-    label: "Description",
+    label: t("common.description"),
     field: "description",
     align: "left",
     sortable: true,
   },
   {
     name: "agent",
-    label: "Agent",
+    label: t("common.agent"),
     field: "hostname",
     align: "left",
     sortable: true,
   },
   {
     name: "client",
-    label: "Client",
+    label: t("common.client"),
     field: "client",
     align: "left",
     sortable: true,
   },
-  { name: "site", label: "Site", field: "site", align: "left", sortable: true },
+  {
+    name: "site",
+    label: t("common.site"),
+    field: "site",
+    align: "left",
+    sortable: true,
+  },
   { name: "details", field: "details", align: "left", sortable: false },
 ];
 
@@ -215,7 +234,7 @@ export default {
       $q.dialog({
         component: PreDialog,
         componentProps: {
-          title: "Pending Action Output Details",
+          title: t("logs.pendingActions.outputDetails"),
           dialogStyle: "width: 75vw; max-width: 85vw; max-height: 65vh;",
           message: details,
         },
@@ -236,9 +255,9 @@ export default {
 
     function cancelPendingAction(action) {
       $q.dialog({
-        title: "Delete this pending action?",
+        title: t("logs.pendingActions.deleteConfirm"),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

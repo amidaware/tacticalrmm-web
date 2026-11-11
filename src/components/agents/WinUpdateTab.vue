@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("agentTabs.windowsOnly") }}
   </div>
   <div v-else>
     <q-table
@@ -21,7 +23,7 @@
       virtual-scroll
       :loading="loading"
       :rows-per-page-options="[0]"
-      no-data-label="No Windows Updates"
+      :no-data-label="$t('agentTabs.winUpdates.noUpdates')"
     >
       <template v-slot:top>
         <q-btn
@@ -33,7 +35,7 @@
           class="q-mr-sm"
         />
         <q-btn
-          label="Run Update Scan"
+          :label="$t('agentTabs.winUpdates.runScan')"
           dense
           flat
           push
@@ -42,7 +44,7 @@
           class="q-mr-sm"
         />
         <q-btn
-          label="Install Approved Updates"
+          :label="$t('agentTabs.winUpdates.installApproved')"
           dense
           flat
           push
@@ -55,7 +57,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -81,7 +83,9 @@
                 v-close-popup
                 @click="editWinUpdate(props.row.id, 'inherit')"
               >
-                <q-item-section>Inherit</q-item-section>
+                <q-item-section>{{
+                  $t("agentTabs.winUpdates.actions.inherit")
+                }}</q-item-section>
               </q-item>
               <q-item
                 v-if="!props.row.installed"
@@ -89,7 +93,9 @@
                 v-close-popup
                 @click="editWinUpdate(props.row.id, 'approve')"
               >
-                <q-item-section>Approve</q-item-section>
+                <q-item-section>{{
+                  $t("agentTabs.winUpdates.actions.approve")
+                }}</q-item-section>
               </q-item>
               <q-item
                 v-if="!props.row.installed"
@@ -97,7 +103,9 @@
                 v-close-popup
                 @click="editWinUpdate(props.row.id, 'ignore')"
               >
-                <q-item-section>Ignore</q-item-section>
+                <q-item-section>{{
+                  $t("agentTabs.winUpdates.actions.ignore")
+                }}</q-item-section>
               </q-item>
               <q-item
                 v-if="!props.row.installed"
@@ -105,7 +113,9 @@
                 v-close-popup
                 @click="editWinUpdate(props.row.id, 'nothing')"
               >
-                <q-item-section>Do Nothing</q-item-section>
+                <q-item-section>{{
+                  $t("agentTabs.winUpdates.actions.nothing")
+                }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -116,28 +126,36 @@
               name="fiber_manual_record"
               color="grey"
             >
-              <q-tooltip>Do Nothing</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.actions.nothing")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.action === 'approve'"
               name="fas fa-check"
               color="primary"
             >
-              <q-tooltip>Approve</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.actions.approve")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.action === 'ignore'"
               name="fas fa-check"
               :color="dash_negative_color"
             >
-              <q-tooltip>Ignore</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.actions.ignore")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.action === 'inherit'"
               name="fiber_manual_record"
               color="accent"
             >
-              <q-tooltip>Inherit</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.actions.inherit")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
           <q-td>
@@ -146,31 +164,43 @@
               name="fas fa-check"
               :color="dash_positive_color"
             >
-              <q-tooltip>Installed</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.status.installed")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.action == 'approve'"
               name="fas fa-tasks"
               color="primary"
             >
-              <q-tooltip>Pending</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.status.pending")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else-if="props.row.action == 'ignore'"
               name="fas fa-ban"
               :color="dash_negative_color"
             >
-              <q-tooltip>Ignored</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.status.ignored")
+              }}</q-tooltip>
             </q-icon>
             <q-icon
               v-else
               name="fas fa-exclamation"
               :color="dash_warning_color"
             >
-              <q-tooltip>Missing</q-tooltip>
+              <q-tooltip>{{
+                $t("agentTabs.winUpdates.status.missing")
+              }}</q-tooltip>
             </q-icon>
           </q-td>
-          <q-td>{{ !props.row.severity ? "Other" : props.row.severity }}</q-td>
+          <q-td>{{
+            !props.row.severity
+              ? $t("agentTabs.winUpdates.otherSeverity")
+              : props.row.severity
+          }}</q-td>
           <q-td>{{ truncateText(props.row.title, 50) }}</q-td>
           <q-td @click="showUpdateDetails(props.row)">
             <span
@@ -199,6 +229,7 @@ import {
 } from "@/api/winupdates";
 import { notifySuccess } from "@/utils/notify";
 import { truncateText } from "@/utils/format";
+import { t } from "@/i18n";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
@@ -218,28 +249,28 @@ const columns = [
   },
   {
     name: "severity",
-    label: "Severity",
+    label: t("agentTabs.winUpdates.columns.severity"),
     field: "severity",
     align: "left",
     sortable: true,
   },
   {
     name: "title",
-    label: "Name",
+    label: t("common.name"),
     field: "title",
     align: "left",
     sortable: true,
   },
   {
     name: "description",
-    label: "More Info",
+    label: t("agentTabs.shared.moreInfo"),
     field: "description",
     align: "left",
     sortable: true,
   },
   {
     name: "date_installed",
-    label: "Installed On",
+    label: t("agentTabs.software.columns.installedOn"),
     field: "date_installed",
     align: "left",
     sortable: true,

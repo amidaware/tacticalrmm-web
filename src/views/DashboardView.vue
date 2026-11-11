@@ -28,13 +28,13 @@
               <q-item-section avatar>
                 <q-icon name="fas fa-home" />
               </q-item-section>
-              <q-item-section>All Clients</q-item-section>
+              <q-item-section>{{ $t("dashboard.allClients") }}</q-item-section>
             </q-item>
             <q-tree
               ref="tree"
               :nodes="clientsTree"
               node-key="raw"
-              no-nodes-label="No Clients"
+              :no-nodes-label="$t('dashboard.noClients')"
               selected-color="primary"
               v-model:selected="selectedTree"
               @update:selected="$store.dispatch('refreshDashboard')"
@@ -49,12 +49,13 @@
                   <div>
                     {{ props.node.label }}
                     <q-tooltip :delay="600">
-                      ID: {{ props.node.id }}<br />
-                      Agent Count:
+                      {{ $t("dashboard.tree.id", { id: props.node.id }) }}<br />
                       {{
-                        props.node.children
-                          ? props.node.client.agent_count
-                          : props.node.site.agent_count
+                        $t("dashboard.tree.agentCount", {
+                          count: props.node.children
+                            ? props.node.client.agent_count
+                            : props.node.site.agent_count,
+                        })
                       }}
                     </q-tooltip>
                   </div>
@@ -69,7 +70,7 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{ $t("common.edit") }}</q-item-section>
                       </q-item>
                       <q-item
                         clickable
@@ -79,7 +80,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $t("common.delete")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-separator></q-separator>
@@ -93,7 +96,9 @@
                         <q-item-section side>
                           <q-icon name="add" />
                         </q-item-section>
-                        <q-item-section>Add Site</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.addSite")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -106,8 +111,8 @@
                         </q-item-section>
                         <q-item-section>{{
                           props.node.color === "green"
-                            ? "Disable Maintenance Mode"
-                            : "Enable Maintenance Mode"
+                            ? $t("dashboard.tree.disableMaintenance")
+                            : $t("dashboard.tree.enableMaintenance")
                         }}</q-item-section>
                       </q-item>
 
@@ -120,7 +125,9 @@
                         <q-item-section side>
                           <q-icon name="cloud_download" />
                         </q-item-section>
-                        <q-item-section>Install Agent</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.installAgent")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -131,9 +138,9 @@
                         <q-item-section side>
                           <q-icon name="policy" />
                         </q-item-section>
-                        <q-item-section
-                          >Assign Automation Policy</q-item-section
-                        >
+                        <q-item-section>{{
+                          $t("dashboard.tree.assignPolicy")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -144,14 +151,18 @@
                         <q-item-section side>
                           <q-icon name="error" />
                         </q-item-section>
-                        <q-item-section>Assign Alert Template</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.assignAlertTemplate")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item clickable v-ripple @click="getURLActions">
                         <q-item-section side>
                           <q-icon name="open_in_new" />
                         </q-item-section>
-                        <q-item-section>Run URL Action</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.runUrlAction")
+                        }}</q-item-section>
                         <q-item-section side>
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
@@ -186,7 +197,9 @@
                         <q-item-section side>
                           <q-icon name="fas fa-check-double" />
                         </q-item-section>
-                        <q-item-section>Run Checks</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.runChecks")
+                        }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -202,7 +215,9 @@
                         <q-item-section side>
                           <q-icon name="analytics" />
                         </q-item-section>
-                        <q-item-section>Reporting</q-item-section>
+                        <q-item-section>{{
+                          $t("dashboard.tree.reporting")
+                        }}</q-item-section>
                         <q-item-section side>
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
@@ -215,7 +230,9 @@
                       <q-separator></q-separator>
 
                       <q-item clickable v-close-popup>
-                        <q-item-section>Close</q-item-section>
+                        <q-item-section>{{
+                          $t("common.close")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -250,19 +267,23 @@
                 align="left"
                 narrow-indicator
               >
-                <q-tab name="server" icon="fas fa-server" label="Servers" />
+                <q-tab
+                  name="server"
+                  icon="fas fa-server"
+                  :label="$t('dashboard.tabs.servers')"
+                />
                 <q-tab
                   name="workstation"
                   icon="computer"
-                  label="Workstations"
+                  :label="$t('dashboard.tabs.workstations')"
                 />
-                <q-tab name="mixed" label="Mixed" />
+                <q-tab name="mixed" :label="$t('dashboard.tabs.mixed')" />
               </q-tabs>
               <q-space />
               <q-input
                 v-model="search"
                 style="width: 450px"
-                label="Search"
+                :label="$t('common.search')"
                 dense
                 outlined
                 clearable
@@ -282,7 +303,9 @@
                   >
                     <q-menu>
                       <q-list dense>
-                        <q-item-label header>Filter Agent Table</q-item-label>
+                        <q-item-label header>{{
+                          $t("dashboard.filter.title")
+                        }}</q-item-label>
 
                         <q-item>
                           <q-item-section side>
@@ -290,7 +313,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Checks Failing</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.checksFailing")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -300,7 +325,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Patches Pending</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.patchesPending")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -310,7 +337,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Actions Pending</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.actionsPending")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -320,11 +349,15 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Reboot Needed</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.rebootNeeded")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
-                        <q-item-label header>Availability</q-item-label>
+                        <q-item-label header>{{
+                          $t("dashboard.filter.availability")
+                        }}</q-item-label>
 
                         <q-item>
                           <q-item-section side>
@@ -332,7 +365,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show All Agents</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.showAll")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -345,7 +380,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Online Only</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.showOnline")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -358,7 +395,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Offline Only</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.showOffline")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -371,7 +410,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label>Show Overdue Only</q-item-label>
+                            <q-item-label>{{
+                              $t("dashboard.filter.showOverdue")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
 
@@ -384,9 +425,9 @@
                           </q-item-section>
 
                           <q-item-section>
-                            <q-item-label
-                              >Show Offline for over 30 days</q-item-label
-                            >
+                            <q-item-label>{{
+                              $t("dashboard.filter.showOffline30Days")
+                            }}</q-item-label>
                           </q-item-section>
                         </q-item>
                       </q-list>
@@ -395,14 +436,17 @@
                         <div class="column">
                           <q-btn
                             v-close-popup
-                            label="Apply"
+                            :label="$t('common.apply')"
                             color="primary"
                             @click="applyFilter"
                           />
                         </div>
                         <q-space />
                         <div class="column">
-                          <q-btn label="Clear" @click="clearFilter" />
+                          <q-btn
+                            :label="$t('dashboard.filter.clear')"
+                            @click="clearFilter"
+                          />
                         </div>
                       </div>
                     </q-menu>
@@ -528,35 +572,35 @@ export default {
         },
         {
           name: "client_name",
-          label: "Client",
+          label: this.$t("common.client"),
           field: "client_name",
           sortable: true,
           align: "left",
         },
         {
           name: "site_name",
-          label: "Site",
+          label: this.$t("common.site"),
           field: "site_name",
           sortable: true,
           align: "left",
         },
         {
           name: "hostname",
-          label: "Hostname",
+          label: this.$t("common.hostname"),
           field: "hostname",
           sortable: true,
           align: "left",
         },
         {
           name: "description",
-          label: "Description",
+          label: this.$t("common.description"),
           field: "description",
           sortable: true,
           align: "left",
         },
         {
           name: "user",
-          label: "User",
+          label: this.$t("common.user"),
           field: "logged_username",
           sortable: true,
           align: "left",
@@ -599,14 +643,14 @@ export default {
         },
         {
           name: "last_seen",
-          label: "Last Response",
+          label: this.$t("dashboard.columns.lastResponse"),
           field: "last_seen",
           sortable: true,
           align: "left",
         },
         {
           name: "boot_time",
-          label: "Boot Time",
+          label: this.$t("dashboard.columns.bootTime"),
           field: "boot_time",
           sortable: true,
           align: "left",
@@ -708,10 +752,12 @@ export default {
       } else {
         this.$q
           .dialog({
-            title: "Are you sure?",
-            message: `Delete ${node.children ? "client" : "site"}: ${node.label}.`,
+            title: this.$t("common.areYouSure"),
+            message: node.children
+              ? this.$t("dashboard.notify.deleteClient", { name: node.label })
+              : this.$t("dashboard.notify.deleteSite", { name: node.label }),
             cancel: true,
-            ok: { label: "Delete", color: "negative" },
+            ok: { label: this.$t("common.delete"), color: "negative" },
           })
           .onOk(async () => {
             this.$q.loading.show();
@@ -838,9 +884,7 @@ export default {
           .filter((action) => action.action_type === "web")
           .sort((a, b) => a.name.localeCompare(b.name));
         if (this.urlActions.length === 0) {
-          this.notifyWarning(
-            "No URL Actions configured. Go to Settings > Global Settings > URL Actions",
-          );
+          this.notifyWarning(this.$t("dashboard.notify.noUrlActions"));
         }
       });
     },

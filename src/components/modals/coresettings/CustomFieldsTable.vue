@@ -9,7 +9,7 @@
     hide-pagination
     virtual-scroll
     :rows-per-page-options="[0]"
-    no-data-label="No Custom Fields"
+    :no-data-label="$t('settings.customFields.noData')"
   >
     <!-- body slots -->
     <template v-slot:body="props">
@@ -25,7 +25,7 @@
               <q-item-section side>
                 <q-icon name="edit" />
               </q-item-section>
-              <q-item-section>Edit</q-item-section>
+              <q-item-section>{{ $t("common.edit") }}</q-item-section>
             </q-item>
             <q-item
               clickable
@@ -35,13 +35,13 @@
               <q-item-section side>
                 <q-icon name="delete" />
               </q-item-section>
-              <q-item-section>Delete</q-item-section>
+              <q-item-section>{{ $t("common.delete") }}</q-item-section>
             </q-item>
 
             <q-separator></q-separator>
 
             <q-item clickable v-close-popup>
-              <q-item-section>Close</q-item-section>
+              <q-item-section>{{ $t("common.close") }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -109,42 +109,42 @@ export default {
       columns: [
         {
           name: "name",
-          label: "Name",
+          label: this.$t("common.name"),
           field: "name",
           align: "left",
           sortable: true,
         },
         {
           name: "type",
-          label: "Field Type",
+          label: this.$t("settings.customFields.columns.type"),
           field: "type",
           align: "left",
           sortable: true,
         },
         {
           name: "hide_in_ui",
-          label: "Hide in UI",
+          label: this.$t("settings.customFields.columns.hideInUi"),
           field: "hide_in_ui",
           align: "left",
           sortable: true,
         },
         {
           name: "hide_in_summary",
-          label: "Hide in Summary Tab",
+          label: this.$t("settings.customFields.columns.hideInSummary"),
           field: "hide_in_summary",
           align: "left",
           sortable: true,
         },
         {
           name: "default_value",
-          label: "Default Value",
+          label: this.$t("settings.customFields.columns.defaultValue"),
           field: "default_value",
           align: "left",
           sortable: true,
         },
         {
           name: "required",
-          label: "Required",
+          label: this.$t("settings.customFields.columns.required"),
           field: "required",
           align: "left",
           sortable: true,
@@ -168,9 +168,11 @@ export default {
     deleteCustomField(field) {
       this.$q
         .dialog({
-          title: `Delete custom field ${field.name}?`,
+          title: this.$t("settings.customFields.deleteConfirm", {
+            name: field.name,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -179,7 +181,9 @@ export default {
             .then(() => {
               this.refresh();
               this.$q.loading.hide();
-              this.notifySuccess(`Custom Field ${field.name} was deleted!`);
+              this.notifySuccess(
+                this.$t("settings.customFields.deleted", { name: field.name }),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

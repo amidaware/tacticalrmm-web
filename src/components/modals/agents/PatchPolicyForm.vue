@@ -1,15 +1,17 @@
 <template>
   <div class="q-pa-md">
     <!-- Auto Approval -->
-    <div class="text-subtitle2">Auto Approval</div>
+    <div class="text-subtitle2">
+      {{ $t("agentModals.patchPolicy.autoApproval") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
-      <div class="col-3">Severity</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.severity") }}</div>
       <div class="col-4"></div>
-      <div class="col-5">Action</div>
+      <div class="col-5">{{ $t("agentModals.patchPolicy.action") }}</div>
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Critical:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.criticalColon") }}</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -22,7 +24,9 @@
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Important:</div>
+      <div class="col-3">
+        {{ $t("agentModals.patchPolicy.importantColon") }}
+      </div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -35,7 +39,7 @@
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Moderate:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.moderateColon") }}</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -48,7 +52,7 @@
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Low:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.lowColon") }}</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -61,7 +65,7 @@
       />
     </q-card-section>
     <q-card-section class="row">
-      <div class="col-3">Other:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.otherColon") }}</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -74,10 +78,14 @@
       />
     </q-card-section>
     <!-- Installation Schedule -->
-    <div class="text-subtitle2">Installation Schedule</div>
+    <div class="text-subtitle2">
+      {{ $t("agentModals.patchPolicy.installSchedule") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
-      <div class="col-3">Schedule Frequency:</div>
+      <div class="col-3">
+        {{ $t("agentModals.patchPolicy.scheduleFrequency") }}
+      </div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -93,7 +101,7 @@
       class="row"
       v-if="winupdatepolicy.run_time_frequency === 'monthly'"
     >
-      <div class="col-3">Day of month to run:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.dayOfMonth") }}</div>
       <div class="col-4"></div>
       <q-select
         v-show="winupdatepolicy.run_time_frequency !== 'inherit'"
@@ -110,7 +118,7 @@
       class="row"
       v-show="winupdatepolicy.run_time_frequency !== 'inherit'"
     >
-      <div class="col-3">Scheduled Time:</div>
+      <div class="col-3">{{ $t("agentModals.patchPolicy.scheduledTime") }}</div>
       <div class="col-4"></div>
       <q-select
         dense
@@ -130,42 +138,44 @@
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="0"
-          label="Monday"
+          :label="$t('agentModals.patchPolicy.days.monday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="1"
-          label="Tuesday"
+          :label="$t('agentModals.patchPolicy.days.tuesday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="2"
-          label="Wednesday"
+          :label="$t('agentModals.patchPolicy.days.wednesday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="3"
-          label="Thursday"
+          :label="$t('agentModals.patchPolicy.days.thursday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="4"
-          label="Friday"
+          :label="$t('agentModals.patchPolicy.days.friday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="5"
-          label="Saturday"
+          :label="$t('agentModals.patchPolicy.days.saturday')"
         />
         <q-checkbox
           v-model="winupdatepolicy.run_time_days"
           :val="6"
-          label="Sunday"
+          :label="$t('agentModals.patchPolicy.days.sunday')"
         />
       </div>
     </q-card-section>
     <!-- Reboot After Installation -->
-    <div class="text-subtitle2">Reboot After Installation</div>
+    <div class="text-subtitle2">
+      {{ $t("agentModals.patchPolicy.rebootAfterInstall") }}
+    </div>
     <q-separator />
     <q-card-section class="row">
       <div class="col-3"></div>
@@ -181,13 +191,15 @@
       />
     </q-card-section>
     <!-- Failed Patches -->
-    <div class="text-subtitle2">Failed Patches</div>
+    <div class="text-subtitle2">
+      {{ $t("agentModals.patchPolicy.failedPatches") }}
+    </div>
     <q-separator />
     <q-card-section class="row" v-if="!policy">
       <div class="col-5">
         <q-checkbox
           v-model="winupdatepolicy.reprocess_failed_inherit"
-          label="Inherit failed patch settings"
+          :label="$t('agentModals.patchPolicy.inheritFailed')"
         />
       </div>
     </q-card-section>
@@ -198,7 +210,7 @@
       <div class="col-5">
         <q-checkbox
           v-model="winupdatepolicy.reprocess_failed"
-          label="Reprocess failed patches"
+          :label="$t('agentModals.patchPolicy.reprocessFailed')"
         />
       </div>
 
@@ -208,23 +220,25 @@
           v-model.number="winupdatepolicy.reprocess_failed_times"
           type="number"
           filled
-          label="Times"
-          :rules="[(val) => val > 0 || 'Must be greater than 0']"
+          :label="$t('agentModals.patchPolicy.times')"
+          :rules="[
+            (val) => val > 0 || $t('agentModals.patchPolicy.greaterThanZero'),
+          ]"
         />
       </div>
       <div class="col-3"></div>
       <q-checkbox
         v-model="winupdatepolicy.email_if_fail"
-        label="Send an email when patch installation fails"
+        :label="$t('agentModals.patchPolicy.emailOnFail')"
       />
     </q-card-section>
     <q-card-actions align="left" v-if="policy">
-      <q-btn label="Submit" color="primary" @click="submit" />
-      <q-btn label="Cancel" @click="$emit('hide')" />
+      <q-btn :label="$t('common.submit')" color="primary" @click="submit" />
+      <q-btn :label="$t('common.cancel')" @click="$emit('hide')" />
       <q-space />
       <q-btn
         v-if="editing"
-        label="Remove Policy"
+        :label="$t('agentModals.patchPolicy.removePolicy')"
         color="negative"
         @click="deletePolicy(winupdatepolicy)"
       />
@@ -265,18 +279,24 @@ export default {
         email_if_fail: false,
       },
       severityOptions: [
-        { label: "Manual", value: "manual" },
-        { label: "Approve", value: "approve" },
-        { label: "Ignore", value: "ignore" },
+        { label: this.$t("agentModals.patchPolicy.manual"), value: "manual" },
+        { label: this.$t("agentModals.patchPolicy.approve"), value: "approve" },
+        { label: this.$t("agentModals.patchPolicy.ignore"), value: "ignore" },
       ],
       frequencyOptions: [
-        { label: "Daily/Weekly", value: "daily" },
-        { label: "Monthly", value: "monthly" },
+        {
+          label: this.$t("agentModals.patchPolicy.dailyWeekly"),
+          value: "daily",
+        },
+        { label: this.$t("agentModals.patchPolicy.monthly"), value: "monthly" },
       ],
       rebootOptions: [
-        { label: "Never", value: "never" },
-        { label: "When Required", value: "required" },
-        { label: "Always", value: "always" },
+        { label: this.$t("agentModals.patchPolicy.never"), value: "never" },
+        {
+          label: this.$t("agentModals.patchPolicy.whenRequired"),
+          value: "required",
+        },
+        { label: this.$t("agentModals.patchPolicy.always"), value: "always" },
       ],
       timeOptions: scheduledTimes,
       monthDays,
@@ -293,12 +313,12 @@ export default {
           this.$axios
             .put(
               `/automation/patchpolicy/${this.winupdatepolicy.id}/`,
-              this.winupdatepolicy
+              this.winupdatepolicy,
             )
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was edited successfully!");
+              this.notifySuccess(this.$t("agentModals.patchPolicy.edited"));
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -310,7 +330,7 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was created successfully!");
+              this.notifySuccess(this.$t("agentModals.patchPolicy.created"));
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -321,9 +341,9 @@ export default {
     deletePolicy(policy) {
       this.$q
         .dialog({
-          title: "Delete patch policy?",
+          title: this.$t("agentModals.patchPolicy.deleteConfirm"),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: this.$t("common.delete"), color: "negative" },
         })
         .onOk(() => {
           this.$q.loading.show();
@@ -332,7 +352,7 @@ export default {
             .then(() => {
               this.$q.loading.hide();
               this.$emit("close");
-              this.notifySuccess("Patch policy was deleted successfully!");
+              this.notifySuccess(this.$t("agentModals.patchPolicy.deleted"));
             })
             .catch(() => {
               this.$q.loading.hide();
@@ -352,9 +372,18 @@ export default {
       this.winupdatepolicy = this.agent.winupdatepolicy[0];
 
       // add agent inherit options
-      this.severityOptions.push({ label: "Inherit", value: "inherit" });
-      this.frequencyOptions.push({ label: "Inherit", value: "inherit" });
-      this.rebootOptions.push({ label: "Inherit", value: "inherit" });
+      this.severityOptions.push({
+        label: this.$t("agentModals.patchPolicy.inherit"),
+        value: "inherit",
+      });
+      this.frequencyOptions.push({
+        label: this.$t("agentModals.patchPolicy.inherit"),
+        value: "inherit",
+      });
+      this.rebootOptions.push({
+        label: this.$t("agentModals.patchPolicy.inherit"),
+        value: "inherit",
+      });
     }
   },
 };
