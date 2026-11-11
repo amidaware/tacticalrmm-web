@@ -108,3 +108,28 @@ export async function removeAPIKey(id) {
   const { data } = await axios.delete(`${baseUrl}/apikeys/${id}/`);
   return data;
 }
+
+// ssh key api functions
+export async function fetchSSHKeys(params = {}) {
+  try {
+    const { data } = await axios.get(`${baseUrl}/sshkeys/`, { params: params });
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function saveSSHKey(sshKey) {
+  const { data } = await axios.post(`${baseUrl}/sshkeys/`, sshKey);
+  return data;
+}
+
+export async function editSSHKey(id, sshKey) {
+  const { data } = await axios.put(`${baseUrl}/sshkeys/${id}/`, sshKey);
+  return data;
+}
+
+export async function removeSSHKey(id) {
+  const { data } = await axios.delete(`${baseUrl}/sshkeys/${id}/`);
+  return data;
+}

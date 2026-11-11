@@ -417,13 +417,13 @@
             </q-card-section>
             <q-card-section>
               <q-input
-                label="Alert again if not resolved after (days)"
+                label="Alert again if not resolved after (minutes)"
                 outlined
                 type="number"
-                v-model.number="template.agent_periodic_alert_days"
+                v-model.number="template.agent_periodic_alert_minutes"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) => val >= 0 || 'Periodic minutes must be 0 or greater',
                 ]"
               />
             </q-card-section>
@@ -543,13 +543,13 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved after (days)"
+                label="Alert again if not resolved after (minutes)"
                 outlined
                 type="number"
-                v-model.number="template.check_periodic_alert_days"
+                v-model.number="template.check_periodic_alert_minutes"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) => val >= 0 || 'Periodic minutes must be 0 or greater',
                 ]"
               />
             </q-card-section>
@@ -669,13 +669,13 @@
 
             <q-card-section>
               <q-input
-                label="Alert again if not resolved (days)"
+                label="Alert again if not resolved (minutes)"
                 outlined
                 type="number"
-                v-model.number="template.task_periodic_alert_days"
+                v-model.number="template.task_periodic_alert_minutes"
                 dense
                 :rules="[
-                  (val) => val >= 0 || 'Periodic days must be 0 or greater',
+                  (val) => val >= 0 || 'Periodic minutes must be 0 or greater',
                 ]"
               />
             </q-card-section>
@@ -822,7 +822,7 @@ const template: AlertTemplate = props.alertTemplate
       agent_always_email: null,
       agent_always_text: null,
       agent_always_alert: null,
-      agent_periodic_alert_days: 0,
+      agent_periodic_alert_minutes: 0,
       agent_script_actions: true,
       check_email_alert_severity: [] as AlertSeverity[],
       check_text_alert_severity: [] as AlertSeverity[],
@@ -832,7 +832,7 @@ const template: AlertTemplate = props.alertTemplate
       check_always_email: null,
       check_always_text: null,
       check_always_alert: null,
-      check_periodic_alert_days: 0,
+      check_periodic_alert_minutes: 0,
       check_script_actions: true,
       task_email_alert_severity: [] as AlertSeverity[],
       task_text_alert_severity: [] as AlertSeverity[],
@@ -842,7 +842,7 @@ const template: AlertTemplate = props.alertTemplate
       task_always_email: null,
       task_always_text: null,
       task_always_alert: null,
-      task_periodic_alert_days: 0,
+      task_periodic_alert_minutes: 0,
       task_script_actions: true,
     });
 
