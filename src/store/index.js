@@ -23,6 +23,10 @@ export default function () {
         agentDblClickAction: "",
         agentUrlAction: null,
         defaultAgentTblTab: null,
+        agentMenuLayout: {},
+        agentMenuAllowUser: true,
+        agentMenuUserLayout: {},
+        agentMenuCompanyLayout: {},
         clientTreeSort: "alphafail",
         clientTreeSplitter: 20,
         noCodeSign: false,
@@ -115,6 +119,12 @@ export default function () {
       },
       SET_HOSTED(state, val) {
         state.hosted = val;
+      },
+      setAgentMenu(state, { layout, allowUser, userLayout, companyLayout }) {
+        state.agentMenuLayout = layout || {};
+        state.agentMenuAllowUser = allowUser !== false;
+        state.agentMenuUserLayout = userLayout || {};
+        state.agentMenuCompanyLayout = companyLayout || {};
       },
       setClearSearchWhenSwitching(state, val) {
         state.clearSearchWhenSwitching = val;
@@ -246,6 +256,12 @@ export default function () {
         commit("setLatestTRMMVersion", data.latest_trmm_ver);
         commit("SET_AGENT_DBLCLICK_ACTION", data.dbl_click_action);
         commit("SET_URL_ACTION", data.url_action);
+        commit("setAgentMenu", {
+          layout: data.agent_menu_layout,
+          allowUser: data.agent_menu_allow_user,
+          userLayout: data.agent_menu_user_layout,
+          companyLayout: data.agent_menu_company_layout,
+        });
         commit("setShowCommunityScripts", data.show_community_scripts);
         commit("SET_HOSTED", data.hosted);
         commit("SET_TOKEN_EXPIRED", data.token_is_expired);
