@@ -1,0 +1,23 @@
+{
+  "outdated": "Você está vendo uma versão desatualizada desta página.",
+  "license": {
+    "inactive": "Sua licença está inativa no momento, geralmente devido a um problema de pagamento.",
+    "updatePayment": "Para restaurar o acesso, atualize sua forma de pagamento.",
+    "cancelled": "Se você cancelou seu patrocínio intencionalmente, pode remover sua chave de licença para não ver mais esta mensagem.",
+    "help": "Se precisar de ajuda, entre em contato com nossa equipe de suporte em"
+  },
+  "backToDashboard": "Voltar ao Painel",
+  "updateAvailable": "v{version} disponível",
+  "certExpires": "O certificado SSL expira em {days} dias",
+  "agentCount": "Quantidade de Agentes",
+  "servers": "Servidores",
+  "workstations": "Estações de trabalho",
+  "total": "Total: {count}",
+  "offline": "Offline: {count}",
+  "preferences": "Preferências",
+  "account": "Conta",
+  "resetPassword": "Redefinir Senha",
+  "reset2fa": "Redefinir 2FA",
+  "reset2faConfirm": "Tem certeza de que deseja redefinir seu token 2FA?",
+  "logout": "Sair"
+}

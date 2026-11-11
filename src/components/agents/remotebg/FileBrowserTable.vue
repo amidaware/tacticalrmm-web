@@ -77,7 +77,7 @@
               aria-atomic="true"
             >
               <q-spinner color="primary" size="16px" aria-hidden="true" />
-              <span>Loading more…</span>
+              <span>{{ $t("fileBrowser.table.loadingMore") }}</span>
             </div>
           </q-td>
         </q-tr>
@@ -130,8 +130,8 @@
           <q-td key="type" :props="props">
             {{
               props.row.type === "folder"
-                ? "Folder"
-                : props.row.extension || "File"
+                ? $t("fileBrowser.table.folder")
+                : props.row.extension || $t("fileBrowser.table.file")
             }}
           </q-td>
 
@@ -168,14 +168,14 @@
             <q-item-section avatar>
               <q-icon name="folder_open" size="18px" />
             </q-item-section>
-            <q-item-section>Open</q-item-section>
+            <q-item-section>{{ $t("fileBrowser.table.open") }}</q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="emit('download', menuRow!)">
             <q-item-section avatar>
               <q-icon name="download" size="18px" />
             </q-item-section>
-            <q-item-section>Download</q-item-section>
+            <q-item-section>{{ $t("common.download") }}</q-item-section>
           </q-item>
 
           <q-item
@@ -187,21 +187,27 @@
             <q-item-section avatar>
               <q-icon name="unarchive" size="18px" />
             </q-item-section>
-            <q-item-section>Extract to…</q-item-section>
+            <q-item-section>{{
+              $t("fileBrowser.toolbar.extractTo")
+            }}</q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="emit('rename', menuRow!)">
             <q-item-section avatar>
               <q-icon name="edit" size="18px" />
             </q-item-section>
-            <q-item-section>Rename</q-item-section>
+            <q-item-section>{{
+              $t("fileBrowser.toolbar.rename")
+            }}</q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="emit('delete', menuRow!)">
             <q-item-section avatar>
               <q-icon name="delete" size="18px" color="negative" />
             </q-item-section>
-            <q-item-section class="text-negative">Delete</q-item-section>
+            <q-item-section class="text-negative">{{
+              $t("common.delete")
+            }}</q-item-section>
           </q-item>
 
           <q-separator />
@@ -210,14 +216,18 @@
             <q-item-section avatar>
               <q-icon name="info" size="18px" />
             </q-item-section>
-            <q-item-section>Properties</q-item-section>
+            <q-item-section>{{
+              $t("fileBrowser.toolbar.properties")
+            }}</q-item-section>
           </q-item>
 
           <q-item clickable v-close-popup @click="emit('copy-path', menuRow!)">
             <q-item-section avatar>
               <q-icon name="content_copy" size="18px" />
             </q-item-section>
-            <q-item-section>Copy Path</q-item-section>
+            <q-item-section>{{
+              $t("fileBrowser.toolbar.copyPath")
+            }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
@@ -242,7 +252,7 @@
         dense
         no-caps
         color="primary"
-        label="Clear filter"
+        :label="$t('fileBrowser.table.clearFilter')"
         class="file-browser-empty-state__clear"
         @click="emit('clear-filter')"
       />
@@ -267,7 +277,7 @@
         <div class="drop-target__title">{{ dropTitle }}</div>
         <template v-if="!dropRejected">
           <div class="drop-target__dest">
-            Uploading to
+            {{ $t("fileBrowser.table.uploadingTo") }}
             <span class="drop-target__leaf">{{ destinationLeaf }}</span>
           </div>
           <div
@@ -291,6 +301,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import {
   computed,
   nextTick,
@@ -323,13 +334,16 @@ import {
 } from "@/constants/filebrowser";
 import type { FileBrowserItem } from "@/types/filebrowser";
 
-type FileBrowserTableRoot = HTMLElement | {
-  $el?: HTMLElement;
-  scrollTo?: (index: number) => void;
-};
+type FileBrowserTableRoot =
+  | HTMLElement
+  | {
+      $el?: HTMLElement;
+      scrollTo?: (index: number) => void;
+    };
 
 const $q = useQuasar();
 
+const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
     rows: FileBrowserItem[];
@@ -390,27 +404,47 @@ const footerLabel = computed(() => {
   if (props.filterActive) {
     if (props.hasMore || props.loadingMore) {
       if (total != null && total > loaded) {
-        return `${loaded.toLocaleString()} of ${total.toLocaleString()} matches loaded`;
+        return t("fileBrowser.table.matchesLoadedOf", {
+          loaded: loaded.toLocaleString(),
+          total: total.toLocaleString(),
+        });
       }
-      return `${loaded.toLocaleString()} matches loaded`;
+      return t("fileBrowser.table.matchesLoaded", {
+        loaded: loaded.toLocaleString(),
+      });
     }
     if (total != null && total > 0) {
-      return total === 1 ? "1 match" : `${total.toLocaleString()} matches`;
+      return t(
+        "fileBrowser.toolbar.matches",
+        { count: total.toLocaleString() },
+        total,
+      );
     }
-    return loaded === 1 ? "1 match" : `${loaded.toLocaleString()} matches`;
+    return t(
+      "fileBrowser.toolbar.matches",
+      { count: loaded.toLocaleString() },
+      loaded > 0 ? loaded : 0,
+    );
   }
 
   if (loaded <= 0 && props.rows.length === 0) return "";
 
   if (props.hasMore || props.loadingMore) {
     if (total != null && total > loaded) {
-      return `${loaded.toLocaleString()} of ${total.toLocaleString()} loaded`;
+      return t("fileBrowser.table.loadedOf", {
+        loaded: loaded.toLocaleString(),
+        total: total.toLocaleString(),
+      });
     }
-    return `${loaded.toLocaleString()} loaded`;
+    return t("fileBrowser.table.loaded", { loaded: loaded.toLocaleString() });
   }
 
   const count = total != null && total > 0 ? total : loaded;
-  return count === 1 ? "1 item" : `${count.toLocaleString()} items`;
+  return t(
+    "fileBrowser.table.items",
+    { count: count.toLocaleString() },
+    count > 0 ? count : 0,
+  );
 });
 
 const emit = defineEmits<{
@@ -612,9 +646,9 @@ const dropTitle = computed(() =>
 
 const dropRegionLabel = computed(() => {
   if (!props.dropEnabled) {
-    return "File list";
+    return t("fileBrowser.table.fileList");
   }
-  return "File list. Drop files here to upload, or use the Upload button.";
+  return t("fileBrowser.table.fileListDrop");
 });
 
 function nameHighlightParts(name: string) {

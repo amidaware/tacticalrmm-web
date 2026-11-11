@@ -1,0 +1,48 @@
+{
+  "noAgents": "No Agents",
+  "headers": {
+    "checksStatus": "Checks Status",
+    "patchesPending": "Patches Pending",
+    "pendingActions": "Pending Actions",
+    "agentStatus": "Agent Status",
+    "reboot": "Reboot"
+  },
+  "overriddenByTemplate": "Setting is overridden by alert template: {name}",
+  "monType": {
+    "server": "Server",
+    "workstation": "Workstation"
+  },
+  "checks": {
+    "maintenance": "Maintenance Mode Enabled",
+    "failing": "Checks failing",
+    "warning": "Checks warning",
+    "info": "Checks info",
+    "passing": "Checks passing"
+  },
+  "pendingActionCount": "Pending Action Count: {count}",
+  "rebootRequired": "Reboot required",
+  "status": {
+    "overdue": "Agent overdue",
+    "offline": "Agent offline",
+    "online": "Agent online"
+  },
+  "overdueTooltip": {
+    "dashboard": "Show a dashboard alert when agent is overdue",
+    "email": "Send an email alert when agent is overdue",
+    "sms": "Send a SMS alert when agent is overdue"
+  },
+  "overdueNotify": {
+    "email": {
+      "enabled": "Email alerts will now be enabled when {hostname} is overdue.",
+      "disabled": "Email alerts will now be disabled when {hostname} is overdue."
+    },
+    "text": {
+      "enabled": "Text alerts will now be enabled when {hostname} is overdue.",
+      "disabled": "Text alerts will now be disabled when {hostname} is overdue."
+    },
+    "dashboard": {
+      "enabled": "Dashboard alerts will now be enabled when {hostname} is overdue.",
+      "disabled": "Dashboard alerts will now be disabled when {hostname} is overdue."
+    }
+  }
+}

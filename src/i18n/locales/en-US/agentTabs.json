@@ -1,0 +1,167 @@
+{
+  "noAgentSelected": "No agent selected",
+  "windowsOnly": "Only supported for Windows agents at this time",
+  "copyToClipboard": "Copy to Clipboard",
+  "assets": {
+    "tabs": {
+      "os": "Operating System",
+      "memory": "Memory",
+      "disks": "Disks",
+      "computerSystem": "Computer System",
+      "motherboard": "Motherboard",
+      "computerSystemProduct": "Computer System Product",
+      "networkConfig": "Network Config",
+      "graphics": "Graphics",
+      "monitors": "Monitors",
+      "networkAdapters": "Network Adapters"
+    }
+  },
+  "commandStream": {
+    "liveOutput": "Live Output"
+  },
+  "shared": {
+    "overriddenByTemplate": "Setting is overridden by alert template: {name}",
+    "smsAlert": "SMS Alert",
+    "emailAlert": "Email Alert",
+    "dashboardAlert": "Dashboard Alert",
+    "informational": "Informational",
+    "warning": "Warning",
+    "moreInfo": "More Info"
+  },
+  "tasks": {
+    "noTasks": "No tasks",
+    "addTask": "Add Task",
+    "collectorTask": "Collector Task",
+    "runNow": "Run task now",
+    "managedByPolicy": "This task is managed by a policy",
+    "updatesCustomField": "The task updates a custom field on the agent",
+    "sync": {
+      "notSynced": "Will sync on next agent checkin",
+      "synced": "Synced with agent",
+      "pendingDeletion": "Pending deletion on agent",
+      "waiting": "Waiting for task creation on agent"
+    },
+    "output": "output",
+    "awaitingOutput": "Awaiting output",
+    "notRunYet": "Has not run yet",
+    "columns": {
+      "collector": "Collector",
+      "syncStatus": "Sync Status",
+      "lastRunTime": "Last Run Time",
+      "schedule": "Schedule",
+      "assignedCheck": "Assigned Check"
+    },
+    "deleteConfirm": "Delete {name} task",
+    "runConfirm": "Run {name} task",
+    "cannotRunDisabled": "Task cannot be run when it's disabled. Enable it first."
+  },
+  "checks": {
+    "noChecks": "No checks",
+    "new": "New",
+    "types": {
+      "diskspace": "Disk Space Check",
+      "ping": "Ping Check",
+      "cpuload": "CPU Load Check",
+      "memory": "Memory Check",
+      "winsvc": "Windows Service Check",
+      "script": "Script Check",
+      "eventlog": "Event Log Check"
+    },
+    "runNow": "Run Checks Now",
+    "resetAll": "Reset All Checks Status",
+    "resetStatus": "Reset Check Status",
+    "managedByPolicy": "This check is managed by a policy",
+    "overriddenByPolicy": "This check is overriden by a policy",
+    "showRunHistory": "Show Run History",
+    "lastOutput": "Last Output",
+    "never": "Never",
+    "tasksCount": "{count} Tasks",
+    "columns": {
+      "lastRun": "Last Run",
+      "assignedTasks": "Assigned Tasks"
+    },
+    "deleteConfirm": "Delete {name}",
+    "notRunYet": "Check hasn't run yet",
+    "alreadyPassing": "Check is already passing",
+    "resetAllConfirm": "Reset all checks status"
+  },
+  "history": {
+    "output": "Output",
+    "columns": {
+      "time": "Time",
+      "action": "Action",
+      "command": "Script/Command",
+      "initiatedBy": "Initiated By"
+    },
+    "noOutput": "No output is available yet"
+  },
+  "notes": {
+    "noNotes": "No notes",
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "note": "Note",
+    "deleteConfirm": "Delete note?"
+  },
+  "software": {
+    "install": "Install Software",
+    "uninstall": "Uninstall",
+    "columns": {
+      "publisher": "Publisher",
+      "installedOn": "Installed On",
+      "size": "Size",
+      "version": "Version"
+    }
+  },
+  "summary": {
+    "agentOverdue": "Agent overdue",
+    "maintenanceMode": "Maintenance Mode",
+    "agentVersion": "Agent v{version}",
+    "popout": "Popout",
+    "takeControl": "Take Control",
+    "hardwareDetails": "Hardware Details",
+    "publicIp": "Public IP: {ip}",
+    "lanIp": "LAN IP: {ip}",
+    "checksStatus": "Checks Status",
+    "checksPassing": "{count} checks passing",
+    "checksFailing": "{count} checks failing",
+    "checksWarning": "{count} checks warning",
+    "checksInfo": "{count} checks info",
+    "checksAwaitingSync": "{count} checks awaiting first synchronization",
+    "customFields": "Custom Fields",
+    "diskFree": "{free} free of {total}",
+    "remoteBackground": "Remote Background"
+  },
+  "winUpdates": {
+    "noUpdates": "No Windows Updates",
+    "runScan": "Run Update Scan",
+    "installApproved": "Install Approved Updates",
+    "actions": {
+      "inherit": "Inherit",
+      "approve": "Approve",
+      "ignore": "Ignore",
+      "nothing": "Do Nothing"
+    },
+    "status": {
+      "installed": "Installed",
+      "pending": "Pending",
+      "ignored": "Ignored",
+      "missing": "Missing"
+    },
+    "otherSeverity": "Other",
+    "columns": {
+      "severity": "Severity"
+    }
+  },
+  "tabs": {
+    "summary": "Summary",
+    "checks": "Checks",
+    "tasks": "Tasks",
+    "patches": "Patches",
+    "software": "Software",
+    "history": "History",
+    "notes": "Notes",
+    "assets": "Assets",
+    "debug": "Debug",
+    "audit": "Audit"
+  }
+}

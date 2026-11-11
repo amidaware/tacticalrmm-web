@@ -15,6 +15,7 @@ import {
 } from "@/constants/fileTransfer";
 import { AxiosError } from "axios";
 
+import { t } from "@/i18n";
 import { getAxiosErrorDetail } from "@/utils/apiError";
 import type {
   FileTransferProgress,
@@ -84,6 +85,19 @@ const UPLOAD_TERMINAL_STATUSES = new Set([
   "expired",
 ]);
 
+function uploadSessionEndedMessage(status: string): string {
+  switch (status) {
+    case "completed":
+      return t("fileBrowser.transfer.uploadSessionCompleted");
+    case "cancelled":
+      return t("fileBrowser.transfer.uploadSessionCancelled");
+    case "expired":
+      return t("fileBrowser.transfer.uploadSessionExpired");
+    default:
+      return t("fileBrowser.transfer.uploadSessionStatus", { status });
+  }
+}
+
 async function hashFileRange(
   file: File,
   start: number,
@@ -123,8 +137,8 @@ async function waitForUploadPipelineSlot(
       }
       throw new Error(
         ready.status === "failed"
-          ? ready.error || "Upload failed"
-          : `Upload session is ${ready.status}`,
+          ? ready.error || t("fileBrowser.transfer.uploadFailed")
+          : uploadSessionEndedMessage(ready.status),
       );
     }
     if (ready.accepted_offset > offset || ready.can_put) {
@@ -163,7 +177,7 @@ async function waitForUploadCommitted(
       { signal, onRetry },
     );
     if (ready.status === "failed") {
-      throw new Error(ready.error || "Upload failed");
+      throw new Error(ready.error || t("fileBrowser.transfer.uploadFailed"));
     }
     if (
       ready.committed_offset >= totalSize ||
@@ -302,7 +316,7 @@ export async function runFileUploadTransfer(
         putAttempts += 1;
         if (putAttempts > FILE_TRANSFER_TRANSIENT_RETRY_HARD_CAP) {
           throw new RetryableTransferError(
-            "Timed out waiting for agent to commit previous chunk",
+            t("fileBrowser.transfer.agentCommitTimeout"),
           );
         }
         try {
@@ -326,7 +340,7 @@ export async function runFileUploadTransfer(
           if (isRelayOffsetMismatch(err)) {
             // e.g. redis restarted, resuming re-syncs the offset
             throw new TransferStalledError(
-              "The server lost track of this upload",
+              t("fileBrowser.transfer.serverLostUpload"),
             );
           }
           if (!isTransferAckWaitError(err)) {

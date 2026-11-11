@@ -2,10 +2,12 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 60vw; max-width: 90vw; min-height: 40vh">
       <q-bar>
-        User Sessions for {{ user.username }}
+        {{ $t("admin.sessions.title", { username: user.username }) }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -28,7 +30,7 @@
         <template #top>
           <q-space />
           <q-btn
-            label="Remove All Sessions"
+            :label="$t('admin.sessions.removeAll')"
             @click="removeAllSessions"
             size="sm"
             color="negative"
@@ -43,7 +45,7 @@
               <q-btn
                 size="sm"
                 @click="removeSession(props.row)"
-                label="Disconnect"
+                :label="$t('admin.sessions.disconnect')"
                 color="negative"
               ></q-btn>
             </td>
@@ -60,6 +62,7 @@ import { onMounted, ref } from "vue";
 import { useDialogPluginComponent, useQuasar, type QTableColumn } from "quasar";
 import { notifySuccess } from "@/utils/notify";
 import { formatDate } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 import {
   fetchUserSessions,
   deleteAllUserSessions,
@@ -70,17 +73,19 @@ import {
 import type { SSOUser } from "@/ee/sso/types/sso";
 import type { AuthToken } from "@/types/accounts";
 
+const { t } = useI18n();
+
 const columns: QTableColumn[] = [
   {
     name: "created",
-    label: "Created",
+    label: t("admin.sessions.created"),
     field: "created",
     align: "left",
     sortable: true,
   },
   {
     name: "expiry",
-    label: "Expires",
+    label: t("admin.sessions.expires"),
     field: "expiry",
     align: "left",
     sortable: true,
@@ -110,15 +115,15 @@ const loading = ref(false);
 
 function removeSession(token: AuthToken) {
   $q.dialog({
-    title: `Disconnect session for ${token.user}?`,
-    message: "This user will be signed out immediately.",
+    title: t("admin.sessions.disconnectConfirm", { user: token.user }),
+    message: t("admin.sessions.signedOutMessage"),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("common.delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await deleteUserSession(token.digest);
-      notifySuccess("Login session deleted successfully");
+      notifySuccess(t("admin.sessions.deleted"));
     } finally {
       loading.value = false;
       await getSessions();
@@ -128,14 +133,16 @@ function removeSession(token: AuthToken) {
 
 function removeAllSessions() {
   $q.dialog({
-    title: `Disconnect all sessions for ${props.user.username}?`,
+    title: t("admin.sessions.disconnectAllConfirm", {
+      username: props.user.username,
+    }),
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("common.delete"), color: "negative" },
   }).onOk(async () => {
     loading.value = true;
     try {
       await deleteAllUserSessions(props.user.id);
-      notifySuccess("Login sessions deleted successfully");
+      notifySuccess(t("admin.sessions.allDeleted"));
     } finally {
       loading.value = false;
       onDialogHide();

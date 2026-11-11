@@ -16,11 +16,15 @@
         {{ title }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row">
-        <span v-if="!showChart" class="q-pa-md">No Data</span>
+        <span v-if="!showChart" class="q-pa-md">{{
+          $t("checks.graph.noData")
+        }}</span>
         <q-space />
         <q-select
           v-model="timeFilter"
@@ -48,10 +52,34 @@
         style="white-space: pre-wrap; word-break: break-all"
       >
         <template v-if="check.check_type === 'script'">
-          <div>Return Code: {{ hoveredResults.retcode }}</div>
-          <div>Std Out: {{ hoveredResults.stdout }}</div>
-          <div>Err Out: {{ hoveredResults.stderr }}</div>
-          <div>Execution Time: {{ hoveredResults.execution_time }}</div>
+          <div>
+            {{
+              $t("checks.graph.tooltip.returnCode", {
+                value: hoveredResults.retcode,
+              })
+            }}
+          </div>
+          <div>
+            {{
+              $t("checks.graph.tooltip.stdout", {
+                value: hoveredResults.stdout,
+              })
+            }}
+          </div>
+          <div>
+            {{
+              $t("checks.graph.tooltip.stderr", {
+                value: hoveredResults.stderr,
+              })
+            }}
+          </div>
+          <div>
+            {{
+              $t("checks.graph.tooltip.executionTime", {
+                value: hoveredResults.execution_time,
+              })
+            }}
+          </div>
         </template>
         <div v-else>{{ hoveredResults }}</div>
       </div>
@@ -77,10 +105,10 @@ export default {
       hoveredIndex: null,
       timeFilter: 1,
       timeFilterOptions: [
-        { value: 1, label: "Last 24 Hours" },
-        { value: 7, label: "Last 7 Days" },
-        { value: 30, label: "Last 30 Days" },
-        { value: 0, label: "Everything" },
+        { value: 1, label: this.$t("checks.graph.last24Hours") },
+        { value: 7, label: this.$t("checks.graph.last7Days") },
+        { value: 30, label: this.$t("checks.graph.last30Days") },
+        { value: 0, label: this.$t("checks.graph.everything") },
       ],
       chartOptions: {
         tooltip: {
@@ -118,7 +146,7 @@ export default {
           },
         },
         noData: {
-          text: "No Data",
+          text: this.$t("checks.graph.noData"),
         },
         theme: {
           mode: this.$q.dark.isActive ? "dark" : "light",
@@ -128,7 +156,7 @@ export default {
   },
   computed: {
     title() {
-      return this.check.readable_desc + " history";
+      return this.$t("checks.graph.title", { name: this.check.readable_desc });
     },
     showChart() {
       return !this.$q.loading.isActive && this.history.length > 0;
@@ -142,14 +170,20 @@ export default {
       return point && point.results != null ? point.results : null;
     },
     seriesName() {
-      if (this.check.check_type === "cpuload") return "CPU Load";
-      else if (this.check.check_type === "memory") return "Memory Usage";
+      if (this.check.check_type === "cpuload")
+        return this.$t("checks.graph.series.cpuLoad");
+      else if (this.check.check_type === "memory")
+        return this.$t("checks.graph.series.memory");
       else if (this.check.check_type === "diskspace")
-        return "Disk Space Remaining";
-      else if (this.check.check_type === "script") return "Script Results";
-      else if (this.check.check_type === "eventlog") return "Status";
-      else if (this.check.check_type === "winsvc") return "Status";
-      else if (this.check.check_type === "ping") return "Status";
+        return this.$t("checks.graph.series.diskSpace");
+      else if (this.check.check_type === "script")
+        return this.$t("checks.graph.series.script");
+      else if (this.check.check_type === "eventlog")
+        return this.$t("common.status");
+      else if (this.check.check_type === "winsvc")
+        return this.$t("common.status");
+      else if (this.check.check_type === "ping")
+        return this.$t("common.status");
       else return "";
     },
   },
@@ -216,7 +250,7 @@ export default {
               color: "#FFF",
               background: "#C10015",
             },
-            text: "Error Threshold",
+            text: this.$t("checks.graph.errorThreshold"),
           },
         });
       }
@@ -235,7 +269,7 @@ export default {
               color: "#FFF",
               background: "#ff9800",
             },
-            text: "Warning Threshold",
+            text: this.$t("checks.graph.warningThreshold"),
           },
         });
       }
@@ -265,8 +299,8 @@ export default {
         labels: {
           minWidth: 50,
           formatter: (val) => {
-            if (val === 0) return "Passing";
-            else if (val === 1) return "Failing";
+            if (val === 0) return this.$t("common.passing");
+            else if (val === 1) return this.$t("common.failing");
             else return "";
           },
         },
@@ -281,7 +315,9 @@ export default {
         },
         formatter: (value, { dataPointIndex }) => {
           this.hoveredIndex = dataPointIndex;
-          return value === 1 ? "Failing" : "Passing";
+          return value === 1
+            ? this.$t("common.failing")
+            : this.$t("common.passing");
         },
       };
     }

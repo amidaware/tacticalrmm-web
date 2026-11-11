@@ -9,10 +9,12 @@
           flat
           push
           icon="refresh"
-        />Clients Manager
+        />{{ $t("clients.clientsManager.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -30,13 +32,13 @@
         binary-state-sort
         virtual-scroll
         :rows-per-page-options="[0]"
-        no-data-label="No Clients"
+        :no-data-label="$t('clients.clientsManager.noClients')"
         :loading="loading"
       >
         <!-- top slot -->
         <template v-slot:top>
           <q-btn
-            label="New"
+            :label="$t('clients.shared.new')"
             dense
             flat
             push
@@ -69,7 +71,7 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -79,7 +81,7 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -88,13 +90,15 @@
                   <q-item-section side>
                     <q-icon name="add" />
                   </q-item-section>
-                  <q-item-section>Add Site</q-item-section>
+                  <q-item-section>{{
+                    $t("clients.clientsManager.addSite")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -107,7 +111,11 @@
                 style="cursor: pointer; text-decoration: underline"
                 class="text-primary"
                 @click="showSitesTable(props.row)"
-                >Show Sites ({{ props.row.sites.length }})</span
+                >{{
+                  $t("clients.clientsManager.showSites", {
+                    count: props.row.sites.length,
+                  })
+                }}</span
               >
             </q-td>
             <q-td>{{ props.row.agent_count }}</q-td>
@@ -124,6 +132,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { fetchClients, removeClient } from "@/api/clients";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // ui imports
 import ClientsForm from "@/components/clients/ClientsForm.vue";
@@ -133,11 +142,11 @@ import SitesTable from "@/components/clients/SitesTable.vue";
 
 // static data
 const columns = [
-  { name: "name", label: "Name", field: "name", align: "left" },
-  { name: "sites", label: "Sites", field: "sites", align: "left" },
+  { name: "name", label: t("common.name"), field: "name", align: "left" },
+  { name: "sites", label: t("common.sites"), field: "sites", align: "left" },
   {
     name: "agent_count",
-    label: "Total Agents",
+    label: t("clients.shared.totalAgents"),
     field: "agent_count",
     align: "left",
   },
@@ -175,10 +184,12 @@ export default {
         // can delete the client since there are no agents
       } else {
         $q.dialog({
-          title: "Are you sure?",
-          message: `Delete client: ${client.name}.`,
+          title: t("common.areYouSure"),
+          message: t("clients.clientsManager.deleteConfirm", {
+            name: client.name,
+          }),
           cancel: true,
-          ok: { label: "Delete", color: "negative" },
+          ok: { label: t("common.delete"), color: "negative" },
         }).onOk(async () => {
           loading.value = true;
           try {

@@ -199,6 +199,7 @@ import {
   watch,
 } from "vue";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useTimeoutFn } from "@vueuse/core";
 import { isAxiosError } from "axios";
 
@@ -379,6 +380,7 @@ const props = withDefaults(
 const agentPlatform = toRef(props, "agentPlatform");
 
 const $q = useQuasar();
+const { t } = useI18n();
 const { normalizeNavPath, pathKeyForCompare, pathSeparator, pathsEqual } =
   useFileBrowser(agentPlatform);
 
@@ -525,11 +527,12 @@ const showTransfersIndicator = computed(
 
 const transfersIndicatorLabel = computed(() => {
   if (pausedTransferCount.value > 0) {
-    return pausedTransferCount.value === 1
-      ? "Transfers · 1 paused"
-      : `Transfers · ${pausedTransferCount.value} paused`;
+    return t(
+      "fileBrowser.manager.transfers.labelPaused",
+      pausedTransferCount.value,
+    );
   }
-  return "Transfers";
+  return t("fileBrowser.manager.transfers.label");
 });
 
 // Replaced wholesale on every load; shallow so thousands of rows are not
@@ -543,15 +546,20 @@ const uploadDestinationLabel = computed(() => {
   if (!visible.length) return "";
   const first = visible[0].destinationPath;
   const allSame = visible.every((i) => i.destinationPath === first);
-  return allSame ? first : "Multiple folders";
+  return allSame ? first : t("fileBrowser.manager.upload.multipleFolders");
 });
 
 const uploadLimitsCaption = computed(() => {
   const sizeLimit =
     props.maxUploadFileSizeBytes > 0
-      ? `Up to ${bytes2Human(props.maxUploadFileSizeBytes)} per file`
-      : "No file size limit";
-  return `${sizeLimit} · Up to ${MAX_UPLOAD_FILES_PER_SELECTION} files per selection`;
+      ? t("fileBrowser.manager.upload.sizeLimitPerFile", {
+          size: bytes2Human(props.maxUploadFileSizeBytes),
+        })
+      : t("fileBrowser.manager.upload.noSizeLimit");
+  return t("fileBrowser.manager.upload.limitsCaption", {
+    sizeLimit,
+    max: MAX_UPLOAD_FILES_PER_SELECTION,
+  });
 });
 
 const filteredRows = computed(() => rows.value);
@@ -582,9 +590,11 @@ const tableNoDataLabel = computed(() => {
   if (loading.value || filterSearching.value) return "";
   if (listError.value) return listError.value;
   if (committedFilter.value) {
-    return `No files or folders match “${committedFilter.value}”`;
+    return t("fileBrowser.manager.list.noFilterMatch", {
+      filter: committedFilter.value,
+    });
   }
-  return "Folder is empty";
+  return t("fileBrowser.manager.list.folderEmpty");
 });
 
 function clearFolderFilter() {
@@ -711,7 +721,7 @@ async function refresh(opts?: { preserveSelection?: boolean }) {
 
     const resolvedPath = (data.path || path || "").trim();
     if (!resolvedPath) {
-      throw new Error("Agent did not return a browsable path");
+      throw new Error(t("fileBrowser.manager.list.noBrowsablePath"));
     }
 
     currentPath.value = resolvedPath;
@@ -764,8 +774,12 @@ async function loadMoreRows() {
     listHasMore.value = false;
     notifyInfo(
       committedFilter.value
-        ? `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} matches in this folder.`
-        : `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} items in this folder.`,
+        ? t("fileBrowser.manager.list.showingFirstMatches", {
+            max: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+          })
+        : t("fileBrowser.manager.list.showingFirstItems", {
+            max: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+          }),
     );
     return;
   }
@@ -803,16 +817,18 @@ async function loadMoreRows() {
       listHasMore.value = false;
       notifyInfo(
         committedFilter.value
-          ? `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} matches in this folder.`
-          : `Showing the first ${FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString()} items in this folder.`,
+          ? t("fileBrowser.manager.list.showingFirstMatches", {
+              max: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+            })
+          : t("fileBrowser.manager.list.showingFirstItems", {
+              max: FILE_BROWSER_MAX_LOADED_ITEMS.toLocaleString(),
+            }),
       );
     }
   } catch (err: unknown) {
     if (seq !== loadSeq) return;
     const message = getListFilesErrorMessage(err);
-    notifyWarning(
-      message || "Unable to load more items. Scroll again to retry.",
-    );
+    notifyWarning(message || t("fileBrowser.manager.list.loadMoreFailed"));
   } finally {
     if (seq === loadSeq) {
       loadingMore.value = false;
@@ -1012,8 +1028,14 @@ watch(
 const deleteConfirmTitle = computed(() => {
   const pending = deletePendingItems.value;
   if (pending.length === 0) return "";
-  if (pending.length === 1) return `Delete "${pending[0].name}" ?`;
-  return `Delete ${pending.length} items ?`;
+  if (pending.length === 1) {
+    return t("fileBrowser.manager.delete.confirmTitleOne", {
+      name: pending[0].name,
+    });
+  }
+  return t("fileBrowser.manager.delete.confirmTitleMany", {
+    count: pending.length,
+  });
 });
 
 const pendingDeleteLooksProtected = computed(() =>
@@ -1027,16 +1049,16 @@ const deleteConfirmBody = computed(() => {
   if (n === 0) return "";
   if (pendingDeleteLooksProtected.value) {
     return n === 1
-      ? "This looks like a protected system folder. The agent will refuse to delete it."
-      : "One or more items look like protected system folders. The agent will refuse to delete those paths.";
+      ? t("fileBrowser.manager.delete.protectedOne")
+      : t("fileBrowser.manager.delete.protectedMany");
   }
-  if (n === 1) return "This item will be permanently deleted.";
-  return "These items will be permanently deleted.";
+  if (n === 1) return t("fileBrowser.manager.delete.permanentOne");
+  return t("fileBrowser.manager.delete.permanentMany");
 });
 
 function openNewFolderDialog() {
   if (!hasUploadPath.value) {
-    notifyWarning("Select a folder path before creating a folder.");
+    notifyWarning(t("fileBrowser.manager.folder.selectPathFirst"));
     return;
   }
   newFolderDialog.value = true;
@@ -1047,7 +1069,7 @@ async function confirmNewFolder(name: string) {
 
   const parentPath = normalizeNavPath(currentPath.value.trim());
   if (!parentPath) {
-    notifyWarning("Select a folder path before creating a folder.");
+    notifyWarning(t("fileBrowser.manager.folder.selectPathFirst"));
     return;
   }
 
@@ -1060,10 +1082,13 @@ async function confirmNewFolder(name: string) {
       agentPlatform.value,
     );
     newFolderDialog.value = false;
-    notifySuccess("Folder created");
+    notifySuccess(t("fileBrowser.manager.folder.created"));
     await refresh();
   } catch (err: unknown) {
-    const message = getFileBrowserErrorMessage(err, "Unable to create folder.");
+    const message = getFileBrowserErrorMessage(
+      err,
+      t("fileBrowser.manager.folder.createFailed"),
+    );
     notifyError(message);
     if (isDuplicateNameError(err, message)) {
       void refresh();
@@ -1076,7 +1101,7 @@ async function confirmNewFolder(name: string) {
 function openRenameDialog(row?: FileBrowserItem) {
   const item = row ?? selectedRows.value[0];
   if (!item) {
-    notifyWarning("Select a single item to rename.");
+    notifyWarning(t("fileBrowser.manager.rename.selectSingle"));
     return;
   }
   renameTargetItem.value = item;
@@ -1099,10 +1124,13 @@ async function confirmRename(newName: string) {
     );
     renameDialog.value = false;
     renameTargetItem.value = null;
-    notifySuccess("Renamed");
+    notifySuccess(t("fileBrowser.manager.rename.renamed"));
     await refresh();
   } catch (err: unknown) {
-    const message = getFileBrowserErrorMessage(err, "Unable to rename item.");
+    const message = getFileBrowserErrorMessage(
+      err,
+      t("fileBrowser.manager.rename.failed"),
+    );
     notifyError(message);
     if (isDuplicateNameError(err, message)) {
       void refresh();
@@ -1114,12 +1142,14 @@ async function confirmRename(newName: string) {
 
 function openDeleteDialog() {
   if (selectedRows.value.length === 0) {
-    notifyWarning("Select one or more items to delete.");
+    notifyWarning(t("fileBrowser.manager.delete.selectItems"));
     return;
   }
   if (selectedRows.value.length > MAX_DELETE_PATHS_PER_REQUEST) {
     notifyWarning(
-      `Select at most ${MAX_DELETE_PATHS_PER_REQUEST} items to delete at once.`,
+      t("fileBrowser.manager.delete.selectAtMost", {
+        max: MAX_DELETE_PATHS_PER_REQUEST,
+      }),
     );
     return;
   }
@@ -1133,7 +1163,9 @@ function openDeleteDialogFromContext(row: FileBrowserItem) {
   const pending = inSelection && selected.length > 0 ? [...selected] : [row];
   if (pending.length > MAX_DELETE_PATHS_PER_REQUEST) {
     notifyWarning(
-      `Select at most ${MAX_DELETE_PATHS_PER_REQUEST} items to delete at once.`,
+      t("fileBrowser.manager.delete.selectAtMost", {
+        max: MAX_DELETE_PATHS_PER_REQUEST,
+      }),
     );
     return;
   }
@@ -1168,25 +1200,39 @@ function notifyDeleteResults(
   if (failed.length === 0) {
     if (succeeded.length === 1 && alreadyGone.length === 0) {
       notifySuccess(
-        `Deleted "${pendingItemName(pending, succeeded[0].path)}".`,
+        t("fileBrowser.manager.delete.deletedOne", {
+          name: pendingItemName(pending, succeeded[0].path),
+        }),
       );
     } else if (succeeded.length > 1 && alreadyGone.length === 0) {
-      notifySuccess(`Deleted ${succeeded.length} items.`);
+      notifySuccess(
+        t("fileBrowser.manager.delete.deletedMany", {
+          count: succeeded.length,
+        }),
+      );
     } else if (succeeded.length > 0 && alreadyGone.length > 0) {
       notifySuccess(
         succeeded.length === 1
-          ? `Deleted "${pendingItemName(pending, succeeded[0].path)}".`
-          : `Deleted ${succeeded.length} items.`,
+          ? t("fileBrowser.manager.delete.deletedOne", {
+              name: pendingItemName(pending, succeeded[0].path),
+            })
+          : t("fileBrowser.manager.delete.deletedMany", {
+              count: succeeded.length,
+            }),
       );
     }
 
     if (alreadyGone.length === 1) {
       notifyInfo(
-        `"${pendingItemName(pending, alreadyGone[0].path)}" was already gone on the agent. The list has been updated.`,
+        t("fileBrowser.manager.delete.alreadyGoneOne", {
+          name: pendingItemName(pending, alreadyGone[0].path),
+        }),
       );
     } else if (alreadyGone.length > 1) {
       notifyInfo(
-        `${alreadyGone.length} items were already gone on the agent. The list has been updated.`,
+        t("fileBrowser.manager.delete.alreadyGoneMany", {
+          count: alreadyGone.length,
+        }),
       );
     }
     return;
@@ -1201,13 +1247,17 @@ function notifyDeleteResults(
           : name;
       })
       .join("; ");
-    notifyError(detail || "Unable to delete items.");
+    notifyError(detail || t("fileBrowser.manager.delete.failed"));
     return;
   }
 
   const removed = succeeded.length + alreadyGone.length;
   notifyWarning(
-    `Removed ${removed} of ${results.length} items. ${failed.length} failed.`,
+    t("fileBrowser.manager.delete.partial", {
+      removed,
+      total: results.length,
+      failed: failed.length,
+    }),
   );
 }
 
@@ -1229,7 +1279,9 @@ async function confirmDelete() {
     notifyDeleteResults(pending, data.results ?? []);
     await refresh();
   } catch (err: unknown) {
-    notifyError(getFileBrowserErrorMessage(err, "Unable to delete items."));
+    notifyError(
+      getFileBrowserErrorMessage(err, t("fileBrowser.manager.delete.failed")),
+    );
   } finally {
     mutationSaving.value = false;
   }
@@ -1262,11 +1314,11 @@ let extractPollSeq = 0;
 function openExtractDialog(item?: FileBrowserItem) {
   const target = item ?? selectedRows.value[0];
   if (selectedRows.value.length > 1 && !item) {
-    notifyWarning("Select a single .zip file to extract.");
+    notifyWarning(t("fileBrowser.manager.extract.selectZip"));
     return;
   }
   if (!isZipFileItem(target)) {
-    notifyWarning("Select a single .zip file to extract.");
+    notifyWarning(t("fileBrowser.manager.extract.selectZip"));
     return;
   }
   extractItem.value = target;
@@ -1299,7 +1351,10 @@ async function confirmExtract(value: {
     });
   } catch (err: unknown) {
     notifyError(
-      getFileBrowserErrorMessage(err, "Unable to start the extraction."),
+      getFileBrowserErrorMessage(
+        err,
+        t("fileBrowser.manager.extract.startFailed"),
+      ),
     );
   } finally {
     extractStarting.value = false;
@@ -1362,7 +1417,10 @@ async function pollExtract(sessionId: string, seq: number) {
       removeExtractJob(sessionId);
       if (code !== 404) {
         notifyError(
-          getFileBrowserErrorMessage(err, "Unable to check the extraction."),
+          getFileBrowserErrorMessage(
+            err,
+            t("fileBrowser.manager.extract.checkFailed"),
+          ),
         );
       }
       return;
@@ -1403,37 +1461,62 @@ function removeExtractJob(sessionId: string) {
 }
 
 function fileCountLabel(n: number): string {
-  return n === 1 ? "1 file" : `${n.toLocaleString()} files`;
+  return t(
+    "fileBrowser.manager.common.fileCount",
+    { count: n.toLocaleString() },
+    n,
+  );
 }
 
 function finishExtractJob(job: ExtractJob, data: FileExtractStatusResponse) {
   removeExtractJob(job.sessionId);
   const files = fileCountLabel(data.files_done);
   if (data.status === "completed") {
-    let message = `Extracted ${files} from "${job.name}"`;
+    let message = t("fileBrowser.manager.extract.completed", {
+      files,
+      name: job.name,
+    });
     if (data.files_skipped > 0) {
-      message += ` · ${data.files_skipped.toLocaleString()} skipped (already existed)`;
+      message += ` · ${t("fileBrowser.manager.extract.skippedExisting", {
+        count: data.files_skipped.toLocaleString(),
+      })}`;
     }
     const warnings = data.warnings ?? [];
     if (warnings.length > 0) {
       const shown = warnings.slice(0, 5).join("; ");
       const extra =
-        warnings.length > 5 ? ` (+${warnings.length - 5} more)` : "";
+        warnings.length > 5
+          ? ` (${t("fileBrowser.manager.common.moreCount", {
+              count: warnings.length - 5,
+            })})`
+          : "";
       notifyWarning(
-        `${message}. Some items were not extracted: ${shown}${extra}`,
+        t("fileBrowser.manager.extract.someNotExtracted", {
+          message,
+          shown,
+          extra,
+        }),
       );
     } else {
       notifySuccess(message);
     }
   } else if (data.status === "cancelled") {
-    notifyInfo(`Extraction cancelled. ${files} extracted before cancel.`);
+    notifyInfo(t("fileBrowser.manager.extract.cancelled", { files }));
   } else {
     const kept =
       data.files_done > 0
-        ? ` ${files} ${data.files_done === 1 ? "was" : "were"} extracted before it stopped.`
+        ? ` ${t(
+            "fileBrowser.manager.extract.keptBeforeStop",
+            { files },
+            data.files_done,
+          )}`
         : "";
     notifyError(
-      `Extracting "${job.name}" failed: ${data.error || "unknown error"}${kept}`,
+      t("fileBrowser.manager.extract.failed", {
+        name: job.name,
+        error: data.error || t("fileBrowser.manager.extract.unknownError"),
+        kept,
+      }),
     );
   }
   if (extractAffectsListing(job.destination)) {
@@ -1470,7 +1553,10 @@ async function cancelExtractJob(sessionId: string) {
   } catch (err: unknown) {
     job.cancelling = false;
     notifyError(
-      getFileBrowserErrorMessage(err, "Unable to cancel the extraction."),
+      getFileBrowserErrorMessage(
+        err,
+        t("fileBrowser.manager.extract.cancelFailed"),
+      ),
     );
   }
 }
@@ -1921,32 +2007,42 @@ function offerZipDownloadDialog(selection: {
   const parts: string[] = [];
   if (selection.folderCount > 0) {
     parts.push(
-      selection.folderCount === 1
-        ? "1 folder"
-        : `${selection.folderCount} folders`,
+      t("fileBrowser.manager.common.folderCount", selection.folderCount),
     );
   }
   if (selection.fileCount > 0) {
-    parts.push(
-      selection.fileCount === 1 ? "1 file" : `${selection.fileCount} files`,
-    );
+    parts.push(t("fileBrowser.manager.common.fileCount", selection.fileCount));
   }
-  const summary = parts.join(" and ");
+  const summary =
+    parts.length === 2
+      ? t("fileBrowser.manager.common.andJoin", {
+          first: parts[0],
+          second: parts[1],
+        })
+      : parts.join("");
   const reason =
     selection.folderCount > 0 &&
     selection.fileCount > MAX_SEQUENTIAL_DOWNLOAD_FILES
-      ? "Folders and large multi-file selections are downloaded as a single ZIP archive."
+      ? t("fileBrowser.manager.download.zipReasonMixed")
       : selection.folderCount > 0
-        ? "Folders are downloaded as a single ZIP archive."
-        : `More than ${MAX_SEQUENTIAL_DOWNLOAD_FILES} files are downloaded as a single ZIP archive.`;
+        ? t("fileBrowser.manager.download.zipReasonFolders")
+        : t("fileBrowser.manager.download.zipReasonManyFiles", {
+            max: MAX_SEQUENTIAL_DOWNLOAD_FILES,
+          });
 
   return new Promise((resolve) => {
     $q.dialog({
-      title: "Download as ZIP?",
-      message: `${summary} selected. ${reason}`,
+      title: t("fileBrowser.manager.download.zipDialogTitle"),
+      message: t("fileBrowser.manager.download.zipDialogMessage", {
+        summary,
+        reason,
+      }),
       persistent: true,
-      ok: { label: "Download ZIP", color: "primary" },
-      cancel: { label: "Cancel", flat: true, color: "primary" },
+      ok: {
+        label: t("fileBrowser.manager.download.zipDialogOk"),
+        color: "primary",
+      },
+      cancel: { label: t("common.cancel"), flat: true, color: "primary" },
     })
       .onOk(() => resolve(true))
       .onCancel(() => resolve(false));
@@ -1959,19 +2055,21 @@ function startZipDownload(items: FileBrowserItem[]) {
 
 async function enqueueZipDownload(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(t("fileBrowser.manager.download.selectItems"));
     return;
   }
 
   if (items.length > MAX_ARCHIVE_PATHS) {
     notifyWarning(
-      `Select at most ${MAX_ARCHIVE_PATHS} items for archive download.`,
+      t("fileBrowser.manager.download.selectAtMostArchive", {
+        max: MAX_ARCHIVE_PATHS,
+      }),
     );
     return;
   }
 
   if (isDownloadProcessorBusy()) {
-    notifyWarning("Downloads are already in progress.");
+    notifyWarning(t("fileBrowser.manager.download.alreadyInProgress"));
     return;
   }
 
@@ -1984,7 +2082,7 @@ async function enqueueZipDownload(items: FileBrowserItem[]) {
       saveHandle = await pickDownloadSaveHandle(archiveName);
     } catch (err) {
       if (isAbortError(err)) return;
-      notifyError("Could not choose a save location.");
+      notifyError(t("fileBrowser.manager.download.saveLocationFailed"));
       return;
     }
   }
@@ -2026,16 +2124,29 @@ async function confirmContinueAfterDownloadFailure(
   if (remaining === 0) return false;
 
   const detail = item.errorMessage
-    ? `"${item.name}": ${item.errorMessage}`
-    : `"${item.name}" failed.`;
+    ? t("fileBrowser.manager.common.itemError", {
+        name: item.name,
+        error: item.errorMessage,
+      })
+    : t("fileBrowser.manager.download.itemFailed", { name: item.name });
 
   return new Promise((resolve) => {
     $q.dialog({
-      title: "Download failed",
-      message: `${detail}\n\nContinue with the remaining ${remaining} file(s)?`,
+      title: t("fileBrowser.manager.download.failedDialogTitle"),
+      message: t("fileBrowser.manager.download.failedDialogMessage", {
+        detail,
+        count: remaining,
+      }),
       persistent: true,
-      ok: { label: "Continue", color: "primary" },
-      cancel: { label: "Pause remaining", flat: true, color: "negative" },
+      ok: {
+        label: t("fileBrowser.manager.download.continue"),
+        color: "primary",
+      },
+      cancel: {
+        label: t("fileBrowser.manager.download.pauseRemaining"),
+        flat: true,
+        color: "negative",
+      },
     })
       .onOk(() => resolve(true))
       .onCancel(() => resolve(false));
@@ -2063,32 +2174,52 @@ function notifyDownloadBatchSummary(
 
   if (failed === 0 && paused === 0 && cancelled === 0) {
     if (succeeded === 1) {
-      notifySuccess("Download complete.");
-      downloadQueueSummary.value = "All downloads finished successfully.";
+      notifySuccess(t("fileBrowser.manager.download.complete"));
+      downloadQueueSummary.value = t(
+        "fileBrowser.manager.download.allSucceededOne",
+      );
       return;
     }
-    notifySuccess(`Downloaded ${succeeded} files.`);
-    downloadQueueSummary.value = `All ${succeeded} downloads finished successfully.`;
+    notifySuccess(
+      t("fileBrowser.manager.download.downloadedFiles", { count: succeeded }),
+    );
+    downloadQueueSummary.value = t(
+      "fileBrowser.manager.download.allSucceededMany",
+      { count: succeeded },
+    );
     return;
   }
 
   if (succeeded === 0 && failed > 0 && paused === 0 && cancelled === 0) {
-    notifyError(
-      failed === 1 ? "Download failed." : `All ${failed} downloads failed.`,
-    );
-    downloadQueueSummary.value =
-      failed === 1 ? "Download failed." : `All ${failed} downloads failed.`;
+    const failedMessage =
+      failed === 1
+        ? t("fileBrowser.manager.download.failedOne")
+        : t("fileBrowser.manager.download.allFailed", { count: failed });
+    notifyError(failedMessage);
+    downloadQueueSummary.value = failedMessage;
     return;
   }
 
   const parts: string[] = [];
-  if (succeeded > 0) parts.push(`${succeeded} succeeded`);
-  if (failed > 0) parts.push(`${failed} failed`);
-  if (paused > 0) parts.push(`${paused} paused`);
-  if (cancelled > 0) parts.push(`${cancelled} cancelled`);
+  if (succeeded > 0) {
+    parts.push(t("fileBrowser.manager.batch.succeeded", { count: succeeded }));
+  }
+  if (failed > 0) {
+    parts.push(t("fileBrowser.manager.batch.failed", { count: failed }));
+  }
+  if (paused > 0) {
+    parts.push(t("fileBrowser.manager.batch.paused", { count: paused }));
+  }
+  if (cancelled > 0) {
+    parts.push(t("fileBrowser.manager.batch.cancelled", { count: cancelled }));
+  }
 
   downloadQueueSummary.value = parts.join(" · ");
-  notifyWarning(`Downloads: ${parts.join(" · ")}`);
+  notifyWarning(
+    t("fileBrowser.manager.download.batchSummary", {
+      parts: parts.join(" · "),
+    }),
+  );
 }
 
 function isUploadMultiBatchNotify(): boolean {
@@ -2105,30 +2236,44 @@ function notifyUploadBatchSummary(
   if (total === 0) return;
 
   if (failed === 0 && paused === 0 && cancelled === 0) {
-    notifySuccess(`${succeeded} files uploaded successfully`);
+    notifySuccess(
+      t("fileBrowser.manager.upload.uploadedFiles", { count: succeeded }),
+    );
     return;
   }
 
   if (succeeded === 0 && failed > 0 && paused === 0 && cancelled === 0) {
     notifyError(
-      failed === 1 ? "Upload failed." : `All ${failed} uploads failed.`,
+      failed === 1
+        ? t("fileBrowser.manager.upload.failedOne")
+        : t("fileBrowser.manager.upload.allFailed", { count: failed }),
     );
     return;
   }
 
   const parts: string[] = [];
-  if (succeeded > 0) parts.push(`${succeeded} uploaded`);
-  if (failed > 0) parts.push(`${failed} failed`);
-  if (paused > 0) parts.push(`${paused} paused`);
-  if (cancelled > 0) parts.push(`${cancelled} cancelled`);
-  notifyWarning(`Uploads finished: ${parts.join(", ")}.`);
+  if (succeeded > 0) {
+    parts.push(t("fileBrowser.manager.batch.uploaded", { count: succeeded }));
+  }
+  if (failed > 0) {
+    parts.push(t("fileBrowser.manager.batch.failed", { count: failed }));
+  }
+  if (paused > 0) {
+    parts.push(t("fileBrowser.manager.batch.paused", { count: paused }));
+  }
+  if (cancelled > 0) {
+    parts.push(t("fileBrowser.manager.batch.cancelled", { count: cancelled }));
+  }
+  notifyWarning(
+    t("fileBrowser.manager.upload.batchSummary", { parts: parts.join(", ") }),
+  );
 }
 
 async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   if (!files.length) return;
 
   if (isDownloadProcessorBusy()) {
-    notifyWarning("Downloads are already in progress.");
+    notifyWarning(t("fileBrowser.manager.download.alreadyInProgress"));
     return;
   }
 
@@ -2137,7 +2282,9 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   const room = MAX_DOWNLOAD_QUEUE_ITEMS - downloadQueue.value.length;
   if (room <= 0) {
     notifyWarning(
-      `The download queue is full (max ${MAX_DOWNLOAD_QUEUE_ITEMS} items). Clear finished items first.`,
+      t("fileBrowser.manager.download.queueFull", {
+        max: MAX_DOWNLOAD_QUEUE_ITEMS,
+      }),
     );
     return;
   }
@@ -2145,7 +2292,10 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
   let batch = files;
   if (batch.length > room) {
     notifyWarning(
-      `Only the first ${room} of ${batch.length} files were queued (queue limit).`,
+      t("fileBrowser.manager.download.onlyFirstQueued", {
+        room,
+        total: batch.length,
+      }),
     );
     batch = batch.slice(0, room);
   }
@@ -2160,7 +2310,7 @@ async function enqueueDownloads(files: FileBrowserItem[], singleFile = false) {
       }
     } catch (err) {
       if (isAbortError(err)) return;
-      notifyError("Could not choose a save location.");
+      notifyError(t("fileBrowser.manager.download.saveLocationFailed"));
       return;
     }
   }
@@ -2348,15 +2498,26 @@ async function runSingleDownload(itemId: string): Promise<void> {
       const shown = result.warnings.slice(0, 5).join("; ");
       const extra =
         result.warnings.length > 5
-          ? ` (+${result.warnings.length - 5} more)`
+          ? ` (${t("fileBrowser.manager.common.moreCount", {
+              count: result.warnings.length - 5,
+            })})`
           : "";
       notifyWarning(
-        `"${result.fileName}" archived with ${result.warnings.length} warning(s): ${shown}${extra}`,
+        t("fileBrowser.manager.download.archivedWithWarnings", {
+          name: result.fileName,
+          count: result.warnings.length,
+          shown,
+          extra,
+        }),
       );
     }
 
     if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
-      notifySuccess(`Downloaded "${result.fileName}"`);
+      notifySuccess(
+        t("fileBrowser.manager.download.downloadedOne", {
+          name: result.fileName,
+        }),
+      );
       scheduleSingleDownloadAutoDismiss(itemId);
     }
   } catch (err: unknown) {
@@ -2395,10 +2556,10 @@ async function runSingleDownload(itemId: string): Promise<void> {
       if (downloadBatchIsSingle.value && downloadQueue.value.length === 1) {
         notifyInfo(
           mode === "cancel"
-            ? "Download cancelled."
+            ? t("fileBrowser.manager.download.cancelled")
             : current.ownedByOtherTab
-              ? "This download is open in another tab."
-              : "Download paused.",
+              ? t("fileBrowser.manager.download.openInOtherTab")
+              : t("fileBrowser.manager.download.paused"),
         );
       }
       return;
@@ -2604,7 +2765,7 @@ async function discardPausedDownload(item: DownloadQueueItem): Promise<void> {
     handleKey,
     localQueueId: item.id,
   });
-  notifyInfo("Download cancelled.");
+  notifyInfo(t("fileBrowser.manager.download.cancelled"));
 }
 
 async function resumeDownloadItem(id: string) {
@@ -2615,13 +2776,11 @@ async function resumeDownloadItem(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForDownload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This download is open in another tab.");
+    notifyWarning(t("fileBrowser.manager.download.openInOtherTab"));
     return;
   }
   if (item.recoveryHint === "non_resumable") {
-    notifyWarning(
-      "This download cannot be resumed here. Cancel it to free the server session.",
-    );
+    notifyWarning(t("fileBrowser.manager.download.cannotResumeHere"));
     return;
   }
   let handle = await downloadFileHandleFor(item);
@@ -2653,7 +2812,7 @@ async function resumeDownloadItem(id: string) {
         notifyWarning(
           err instanceof Error
             ? err.message
-            : "Could not reopen the saved download file.",
+            : t("fileBrowser.manager.download.reopenFailed"),
         );
         return;
       }
@@ -2735,14 +2894,14 @@ function pauseAllUploads() {
 
 async function startDownloads(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(t("fileBrowser.manager.download.selectItems"));
     return;
   }
 
   const selection = classifyDownloadSelection(items);
 
   if (selection.mode === "none") {
-    notifyWarning("Select one or more items to download.");
+    notifyWarning(t("fileBrowser.manager.download.selectItems"));
     return;
   }
 
@@ -2775,7 +2934,7 @@ function downloadFromContext(row: FileBrowserItem) {
 function setPath(path: string) {
   const normalized = normalizeNavPath(path);
   if (!normalized) {
-    notifyWarning("Enter a valid path.");
+    notifyWarning(t("fileBrowser.manager.nav.enterValidPath"));
     return;
   }
 
@@ -2850,7 +3009,7 @@ async function showProperties(row: FileBrowserItem) {
 function showPropertiesFromToolbar() {
   const sel = selectedRows.value;
   if (sel.length !== 1) {
-    notifyWarning("Select exactly one item to view properties.");
+    notifyWarning(t("fileBrowser.manager.properties.selectOne"));
     return;
   }
   showProperties(sel[0]);
@@ -2858,15 +3017,17 @@ function showPropertiesFromToolbar() {
 
 function copyPathsToClipboard(items: FileBrowserItem[]) {
   if (!items.length) {
-    notifyWarning("Select one or more items to copy their paths.");
+    notifyWarning(t("fileBrowser.manager.copyPath.selectItems"));
     return;
   }
   const text = items.map((r) => r.path).join("\n");
   void copyOutput(text, {
     successMessage:
       items.length === 1
-        ? "Path copied to clipboard."
-        : `${items.length} paths copied to clipboard.`,
+        ? t("fileBrowser.manager.copyPath.copiedOne")
+        : t("fileBrowser.manager.copyPath.copiedMany", {
+            count: items.length,
+          }),
   });
 }
 
@@ -2884,7 +3045,7 @@ function copyPathFromContext(row: FileBrowserItem) {
 
 function assertUploadPath(): boolean {
   if (!hasUploadPath.value) {
-    notifyWarning("Select a folder path before uploading.");
+    notifyWarning(t("fileBrowser.manager.upload.selectPathFirst"));
     return false;
   }
   return true;
@@ -2935,9 +3096,7 @@ async function queueFilesForUpload(
   if (!assertUploadPath()) return;
   if (!files.length) {
     if ((options?.folderCount ?? 0) > 0) {
-      notifyWarning(
-        "Folders cannot be uploaded. Drop files into this folder instead.",
-      );
+      notifyWarning(t("fileBrowser.manager.upload.foldersNotSupported"));
     }
     return;
   }
@@ -2947,13 +3106,18 @@ async function queueFilesForUpload(
 
   if ((options?.folderCount ?? 0) > 0) {
     notes.push(
-      `${options!.folderCount} folder(s) skipped — folder upload is not supported.`,
+      t("fileBrowser.manager.upload.foldersSkipped", {
+        count: options!.folderCount,
+      }),
     );
   }
 
   if (batch.length > MAX_UPLOAD_FILES_PER_SELECTION) {
     notes.push(
-      `Only the first ${MAX_UPLOAD_FILES_PER_SELECTION} of ${batch.length} files were considered (per-selection limit).`,
+      t("fileBrowser.manager.upload.onlyFirstConsidered", {
+        max: MAX_UPLOAD_FILES_PER_SELECTION,
+        total: batch.length,
+      }),
     );
     batch = batch.slice(0, MAX_UPLOAD_FILES_PER_SELECTION);
   }
@@ -2961,7 +3125,9 @@ async function queueFilesForUpload(
   const room = MAX_UPLOAD_QUEUE_ITEMS - uploadQueue.value.length;
   if (room <= 0) {
     notifyWarning(
-      `Upload queue is full (max ${MAX_UPLOAD_QUEUE_ITEMS} items). Clear finished items or cancel transfers, then try again.`,
+      t("fileBrowser.manager.upload.queueFull", {
+        max: MAX_UPLOAD_QUEUE_ITEMS,
+      }),
     );
     return;
   }
@@ -2988,22 +3154,30 @@ async function queueFilesForUpload(
       agentPlatform.value,
     );
     notes.push(
-      `${skippedInvalidName} file(s) skipped — ${
-        typeof reason === "string" ? reason : "invalid filename"
-      }`,
+      t("fileBrowser.manager.upload.invalidNameSkipped", {
+        count: skippedInvalidName,
+        reason:
+          typeof reason === "string"
+            ? reason
+            : t("fileBrowser.manager.upload.invalidFilename"),
+      }),
     );
   }
 
   if (skippedOversized > 0) {
     notes.push(
-      `${skippedOversized} file(s) skipped — larger than ${bytes2Human(
-        maxFileBytes,
-      )} each.`,
+      t("fileBrowser.manager.upload.oversizedSkipped", {
+        count: skippedOversized,
+        size: bytes2Human(maxFileBytes),
+      }),
     );
   }
   if (skippedDueToQueue > 0) {
     notes.push(
-      `${skippedDueToQueue} file(s) not queued — would exceed the queue limit (${MAX_UPLOAD_QUEUE_ITEMS}).`,
+      t("fileBrowser.manager.upload.notQueuedLimit", {
+        count: skippedDueToQueue,
+        max: MAX_UPLOAD_QUEUE_ITEMS,
+      }),
     );
   }
 
@@ -3013,7 +3187,7 @@ async function queueFilesForUpload(
 
   if (!toEnqueue.length) {
     if (!notes.length) {
-      notifyWarning("No files could be added to the upload queue.");
+      notifyWarning(t("fileBrowser.manager.upload.noneAdded"));
     }
     return;
   }
@@ -3036,9 +3210,7 @@ async function queueFilesForUpload(
       agentPlatform.value,
     );
   } catch {
-    notifyWarning(
-      "Could not check the folder for existing files. Only names currently shown in the list were compared.",
-    );
+    notifyWarning(t("fileBrowser.manager.upload.existingCheckFailed"));
     conflicts = listUploadNameConflicts(
       toEnqueue,
       rows.value,
@@ -3050,7 +3222,7 @@ async function queueFilesForUpload(
   if (conflicts.length > 0) {
     const action = await confirmUploadOverwrite(conflicts);
     if (action === "cancel") {
-      notifyInfo("Upload cancelled.");
+      notifyInfo(t("fileBrowser.manager.upload.cancelled"));
       return;
     }
     if (action === "skip") {
@@ -3058,12 +3230,10 @@ async function queueFilesForUpload(
       const conflictSet = new Set(conflicts);
       toEnqueue = toEnqueue.filter((f) => !conflictSet.has(f));
       if (!toEnqueue.length) {
-        notifyInfo("Upload skipped — existing files were not replaced.");
+        notifyInfo(t("fileBrowser.manager.upload.skippedAll"));
         return;
       }
-      notifyInfo(
-        "Skipped files that already exist. Uploading the remaining items.",
-      );
+      notifyInfo(t("fileBrowser.manager.upload.skippedExisting"));
     } else {
       conflictPolicy = "replace";
     }
@@ -3114,7 +3284,7 @@ async function runSingleUpload(itemId: string): Promise<void> {
   if (!item.file) {
     item.status = "paused";
     item.recoveryHint = "needs_file";
-    item.errorMessage = "Select the original file to resume this upload.";
+    item.errorMessage = t("fileBrowser.manager.upload.selectOriginalFile");
     return;
   }
 
@@ -3226,7 +3396,9 @@ async function runSingleUpload(itemId: string): Promise<void> {
     }
     deleteLocalPausedEntry(props.agent_id, current.id);
     if (!multiBatch) {
-      notifySuccess(`Uploaded "${item.name}"`);
+      notifySuccess(
+        t("fileBrowser.manager.upload.uploadedOne", { name: item.name }),
+      );
     }
     if (pathsEqual(item.destinationPath, currentPath.value)) {
       uploadListingNeedsRefresh = true;
@@ -3259,10 +3431,10 @@ async function runSingleUpload(itemId: string): Promise<void> {
       if (!multiBatch) {
         notifyInfo(
           mode === "cancel"
-            ? "Upload cancelled."
+            ? t("fileBrowser.manager.upload.cancelled")
             : current.ownedByOtherTab
-              ? "This upload is open in another tab."
-              : "Upload paused.",
+              ? t("fileBrowser.manager.upload.openInOtherTab")
+              : t("fileBrowser.manager.upload.paused"),
         );
       }
       return;
@@ -3280,7 +3452,12 @@ async function runSingleUpload(itemId: string): Promise<void> {
       current.errorMessage = TRANSFER_CONNECTION_LOST_MESSAGE;
       void persistUploadQueueMeta(props.agent_id, current);
       if (!multiBatch) {
-        notifyWarning(`"${item.name}": ${TRANSFER_CONNECTION_LOST_MESSAGE}`);
+        notifyWarning(
+          t("fileBrowser.manager.common.itemError", {
+            name: item.name,
+            error: TRANSFER_CONNECTION_LOST_MESSAGE,
+          }),
+        );
       }
       return;
     }
@@ -3291,7 +3468,12 @@ async function runSingleUpload(itemId: string): Promise<void> {
     releaseUploadClaim(itemId, "fail");
     current.errorMessage = transferFailureErrorMessage(err, "upload");
     if (!multiBatch) {
-      notifyError(`"${item.name}": ${current.errorMessage}`);
+      notifyError(
+        t("fileBrowser.manager.common.itemError", {
+          name: item.name,
+          error: current.errorMessage,
+        }),
+      );
     }
   } finally {
     uploadAbortControllers.delete(itemId);
@@ -3413,7 +3595,7 @@ async function discardPausedUpload(item: UploadQueueItem): Promise<void> {
   await clearTransferPersistence(props.agent_id, sessionId, {
     localQueueId: item.id,
   });
-  notifyInfo("Upload cancelled.");
+  notifyInfo(t("fileBrowser.manager.upload.cancelled"));
 }
 
 function selectFileToResumeUpload(id: string) {
@@ -3424,7 +3606,7 @@ function selectFileToResumeUpload(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(t("fileBrowser.manager.upload.openInOtherTab"));
     return;
   }
   resumeUploadTargetId = id;
@@ -3446,24 +3628,20 @@ function onResumeUploadFileSelected(event: Event) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(t("fileBrowser.manager.upload.openInOtherTab"));
     return;
   }
 
   if (item.uploadFileIdentity) {
     if (!matchesUploadFileIdentity(file, item.uploadFileIdentity)) {
-      notifyError(
-        "Selected file does not match the paused upload (name, size, or modified time).",
-      );
+      notifyError(t("fileBrowser.manager.upload.mismatchIdentity"));
       return;
     }
   } else if (
     file.name !== item.name ||
     (item.sizeBytes > 0 && file.size !== item.sizeBytes)
   ) {
-    notifyError(
-      "Selected file does not match the paused upload (name or size).",
-    );
+    notifyError(t("fileBrowser.manager.upload.mismatchNameSize"));
     return;
   }
 
@@ -3491,7 +3669,7 @@ function resumeUploadItem(id: string) {
     getTabSync().isRemotelyOwned(claimKeyForUpload(item))
   ) {
     item.ownedByOtherTab = true;
-    notifyWarning("This upload is open in another tab.");
+    notifyWarning(t("fileBrowser.manager.upload.openInOtherTab"));
     return;
   }
   if (!item.file) {

@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="row">
-      <div class="text-subtitle2">Schedules</div>
+      <div class="text-subtitle2">{{ $t("settings.schedules.title") }}</div>
       <q-space />
       <q-btn
         size="sm"
         color="grey-5"
         icon="fas fa-plus"
         text-color="black"
-        label="Add Schedule"
+        :label="$t('settings.schedules.add')"
         @click="openAddScheduleForm"
       />
     </div>
@@ -36,13 +36,13 @@
                 @click="openEditScheduleForm(row)"
               >
                 <q-item-section>
-                  <q-item-label>Edit</q-item-label>
+                  <q-item-label>{{ $t("common.edit") }}</q-item-label>
                 </q-item-section>
               </q-item>
 
               <q-item clickable v-close-popup @click="removeSchedule(row)">
                 <q-item-section>
-                  <q-item-label>Delete</q-item-label>
+                  <q-item-label>{{ $t("common.delete") }}</q-item-label>
                 </q-item-section>
               </q-item>
 
@@ -50,7 +50,7 @@
 
               <q-item clickable v-close-popup>
                 <q-item-section>
-                  <q-item-label>Close</q-item-label>
+                  <q-item-label>{{ $t("common.close") }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -76,23 +76,40 @@ import ScheduleForm from "./ScheduleForm.vue";
 import TacticalTable from "src/core/dashboard/ui/TacticalTable.vue";
 import { until } from "@vueuse/shared";
 import { capitalize } from "@/utils/format";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  t("settings.schedules.monthsShort.jan"),
+  t("settings.schedules.monthsShort.feb"),
+  t("settings.schedules.monthsShort.mar"),
+  t("settings.schedules.monthsShort.apr"),
+  t("settings.schedules.monthsShort.may"),
+  t("settings.schedules.monthsShort.jun"),
+  t("settings.schedules.monthsShort.jul"),
+  t("settings.schedules.monthsShort.aug"),
+  t("settings.schedules.monthsShort.sep"),
+  t("settings.schedules.monthsShort.oct"),
+  t("settings.schedules.monthsShort.nov"),
+  t("settings.schedules.monthsShort.dec"),
 ];
 
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const weekDays = [
+  t("settings.schedules.weekdaysShort.sun"),
+  t("settings.schedules.weekdaysShort.mon"),
+  t("settings.schedules.weekdaysShort.tue"),
+  t("settings.schedules.weekdaysShort.wed"),
+  t("settings.schedules.weekdaysShort.thu"),
+  t("settings.schedules.weekdaysShort.fri"),
+  t("settings.schedules.weekdaysShort.sat"),
+];
+
+const scheduleTypeLabels: Record<string, string> = {
+  daily: t("settings.schedules.types.daily"),
+  weekly: t("settings.schedules.types.weekly"),
+  monthly: t("settings.schedules.types.monthly"),
+};
 
 function getAbbrevMonth(n: number) {
   return months[n - 1];
@@ -105,7 +122,7 @@ function getAbbrevWeekday(n: number) {
 const columns: QTableColumn[] = [
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     align: "left",
     field: "name",
     sortable: true,
@@ -113,15 +130,15 @@ const columns: QTableColumn[] = [
   },
   {
     name: "schedule_type",
-    label: "Schedule Type",
+    label: t("settings.schedules.columns.scheduleType"),
     align: "left",
     field: "schedule_type",
     sortable: true,
-    format: (val: string) => capitalize(val),
+    format: (val: string) => scheduleTypeLabels[val] ?? capitalize(val),
   },
   {
     name: "run_time",
-    label: "Run Time",
+    label: t("settings.schedules.columns.runTime"),
     align: "left",
     field: "run_time",
     sortable: true,
@@ -132,21 +149,21 @@ const columns: QTableColumn[] = [
   },
   {
     name: "run_time_weekdays",
-    label: "Weekdays",
+    label: t("settings.schedules.columns.weekdays"),
     align: "left",
     field: "run_time_weekdays",
     format: (val: number[]) => {
-      if (val.length === 7) return "Every Weekday";
+      if (val.length === 7) return t("settings.schedules.everyWeekday");
       else return val.map((weekday) => getAbbrevWeekday(weekday)).join(", ");
     },
   },
   {
     name: "monthly_months_of_year",
-    label: "Months",
+    label: t("settings.schedules.columns.months"),
     align: "left",
     field: "monthly_months_of_year",
     format: (val: number[]) => {
-      if (val.length === 12) return "Every Month";
+      if (val.length === 12) return t("settings.schedules.everyMonth");
       else {
         return val.map((month) => getAbbrevMonth(month)).join(", ");
       }
@@ -154,33 +171,38 @@ const columns: QTableColumn[] = [
   },
   {
     name: "monthly_days_of_month",
-    label: "Days of Month",
+    label: t("settings.schedules.columns.daysOfMonth"),
     align: "left",
     field: "monthly_days_of_month",
     format: (val: number[]) => {
-      if (val.length >= 31) return "Every Day";
-      else return val.map((day) => (day !== 32 ? day : "Last")).join(", ");
+      if (val.length >= 31) return t("settings.schedules.everyDay");
+      else
+        return val
+          .map((day) =>
+            day !== 32 ? day : t("settings.schedules.lastDayShort"),
+          )
+          .join(", ");
     },
   },
   {
     name: "monthly_weeks_of_month",
-    label: "Weeks of Month",
+    label: t("settings.schedules.columns.weeksOfMonth"),
     align: "left",
     field: "monthly_weeks_of_month",
     format: (val: number[]) => {
-      if (val.length === 5) return "Every week";
+      if (val.length === 5) return t("settings.schedules.everyWeek");
       return val
         .map((week) => {
           if (week === 1) {
-            return "1st";
+            return t("settings.schedules.weekOrdinals.first");
           } else if (week === 2) {
-            return "2nd";
+            return t("settings.schedules.weekOrdinals.second");
           } else if (week === 3) {
-            return "3rd";
+            return t("settings.schedules.weekOrdinals.third");
           } else if (week === 4) {
-            return "4th";
+            return t("settings.schedules.weekOrdinals.fourth");
           } else if (week === 5) {
-            return "Last";
+            return t("settings.schedules.weekOrdinals.last");
           }
         })
         .join(", ");
@@ -211,7 +233,7 @@ function openAddScheduleForm() {
 function removeSchedule(schedule: Schedule) {
   $q.dialog({
     color: "primary",
-    message: `Are you sure you want to delete schedule: ${schedule.name}?`,
+    message: t("settings.schedules.deleteConfirm", { name: schedule.name }),
     ok: {
       color: "negative",
     },

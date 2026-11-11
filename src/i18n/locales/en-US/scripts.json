@@ -1,0 +1,104 @@
+{
+  "validation": {
+    "required": "*Required",
+    "minTimeout": "Minimum is 5"
+  },
+  "shared": {
+    "generateScript": "Generate Script",
+    "shellType": "Shell Type",
+    "category": "Category",
+    "supportedPlatforms": "Supported Platforms (All supported if blank)",
+    "askChatGPT": "Ask ChatGPT what you need!",
+    "codeThat": "{lang} code that "
+  },
+  "scriptForm": {
+    "shebangWarning": "Shell/Python scripts on Linux/Mac need a shebang at the top of the script e.g. {bash} or {python}",
+    "shebangWarningHint": "Add one to get rid of this warning. Ignore if windows.",
+    "scriptArgs": "Script Arguments (press Enter after typing each argument)",
+    "timeoutSeconds": "Timeout (seconds)",
+    "syntax": "Syntax",
+    "runAsUser": "Run As User (Windows only)",
+    "runAsUserTooltip": "Setting this value on the script model will always override any 'Run As User' checkboxes in the UI and force this script to always be run in the context of the logged in user. If no user is logged in, the script will run as SYSTEM.",
+    "agentToTest": "Agent to run test script on",
+    "testScript": "Test Script",
+    "testOnServer": "Test on Tactical's Server",
+    "testOnServerTitle": "Runs on Tactical RMM local Linux Server.",
+    "testOnServerDesc": "Only available interpreters or frameworks will be used.",
+    "example": "Example:",
+    "testOnServerExample": "PowerShell scripts require PowerShell to be installed on the system.",
+    "viewing": "Viewing {name}",
+    "copying": "Copying {name}",
+    "editing": "Editing {name}",
+    "adding": "Adding new script",
+    "copyName": "(Copy) {name}",
+    "shebangRequired": "A shebang is required at the top of the script to specify the interpreter's path. Please ensure your script begins with a shebang line.",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to close?"
+  },
+  "scriptManager": {
+    "title": "Script Manager",
+    "new": "New",
+    "newScript": "New Script",
+    "uploadScript": "Upload Script",
+    "scriptSnippets": "Script Snippets",
+    "folderView": "Folder View",
+    "tableView": "Table View",
+    "hideCommunityScripts": "Hide Community Scripts",
+    "showCommunityScripts": "Show Community Scripts",
+    "hideHiddenScripts": "Hide Hidden Scripts",
+    "showHiddenScripts": "Show Hidden Scripts",
+    "noScriptsFound": "No Scripts Found",
+    "viewCode": "View Code",
+    "clone": "Clone",
+    "removeFavorite": "Remove as Favorite",
+    "addFavorite": "Add as Favorite",
+    "downloadScript": "Download Script",
+    "showScript": "Show Script",
+    "hideScript": "Hide Script",
+    "unassigned": "Unassigned",
+    "columns": {
+      "favorites": "Favorites",
+      "shell": "Shell",
+      "platforms": "Platforms",
+      "defaultArgs": "Default Args",
+      "category": "Category",
+      "defaultTimeout": "Default Timeout (seconds)"
+    },
+    "notify": {
+      "favorited": "Script was favorited!",
+      "unfavorited": "Script was removed as a favorite!",
+      "hidden": "Script was hidden!",
+      "unhidden": "Script was unhidden!"
+    },
+    "deleteConfirm": "Delete script: {name}?"
+  },
+  "copyClip": {
+    "copyToClipboard": "Copy to Clipboard"
+  },
+  "snippetForm": {
+    "editing": "Editing {name}",
+    "adding": "Adding New Script Snippet"
+  },
+  "snippets": {
+    "title": "Script Snippets",
+    "new": "New",
+    "deleteConfirm": "Delete script snippet: {name}?"
+  },
+  "upload": {
+    "title": "Add Script",
+    "categoryHint": "Press Enter or Tab when adding a new value",
+    "scriptUpload": "Script Upload",
+    "scriptArgs": "Script Arguments",
+    "scriptArgsPlaceholder": "(press Enter after typing each argument)",
+    "envVars": "Environment Variables",
+    "envVarsPlaceholder": "(press Enter after typing each key=value pair)",
+    "defaultTimeout": "Default Timeout"
+  },
+  "testScript": {
+    "title": "Script Test",
+    "runTime": "Run Time:",
+    "seconds": "{n} seconds",
+    "returnCode": "Return Code:",
+    "stdout": "Standard Output",
+    "stderr": "Standard Error"
+  }
+}

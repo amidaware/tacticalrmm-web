@@ -1,0 +1,56 @@
+{
+  "settings": {
+    "title": "Configurações de SSO",
+    "enable": "Ativar SSO",
+    "blockLocal": "Bloquear login de usuários locais",
+    "blockLocalHint": "Quando ativado, apenas usuários com contas SSO podem fazer login, exceto as contas locais de superusuário.",
+    "updated": "Configurações atualizadas com sucesso"
+  },
+  "callback": {
+    "error": "Ocorreu um erro ao fazer login no seu provedor.",
+    "backToLogin": "Voltar para o login"
+  },
+  "accounts": {
+    "title": "Contas sociais conectadas de {username}",
+    "disconnect": "Desconectar",
+    "columns": {
+      "displayName": "Nome de exibição",
+      "provider": "Provedor",
+      "lastLogin": "Último login",
+      "dateJoined": "Data de vínculo"
+    },
+    "disconnectConfirm": "Desconectar a conta social: {name}?",
+    "disconnected": "Conta social desconectada com sucesso"
+  },
+  "required": "*Obrigatório",
+  "providerForm": {
+    "editTitle": "Editar Provedor OIDC",
+    "addTitle": "Adicionar Provedor OIDC",
+    "name": "Nome do provedor",
+    "nameInvalid": "Somente letras, números, hífens e sublinhados são permitidos",
+    "nameHint": "Um identificador único para o provedor SSO. Evite espaços e caracteres especiais, pois ele fará parte da URL de retorno (callback).",
+    "issuerUrl": "URL do emissor (Issuer)",
+    "issuerUrlHint": "A URL do emissor OpenID Connect fornecida pelo provedor SSO. Normalmente é a URL base onde o provedor hospeda sua configuração OIDC.",
+    "clientId": "Client ID",
+    "secret": "Segredo",
+    "defaultRole": "Função padrão do usuário",
+    "defaultRoleHint": "A função atribuída aos usuários no primeiro login por meio deste provedor.",
+    "edited": "Provedor SSO editado!"
+  },
+  "providers": {
+    "title": "Provedores SSO",
+    "enableToAdd": "Ative o SSO nas configurações para poder adicionar um provedor.",
+    "noData": "Nenhum provedor OIDC adicionado ainda",
+    "copyCallbackUrl": "Copiar URL de callback",
+    "copyJsOrigin": "Copiar origem JavaScript autorizada",
+    "copyCallbackUrlTooltip": "Copiar a URL de callback para a área de transferência",
+    "columns": {
+      "serverUrl": "URL do servidor",
+      "callbackUrl": "URL de callback",
+      "jsOriginUrl": "URL de origem JavaScript"
+    },
+    "deleteConfirm": "Excluir o provedor SSO: {name}?",
+    "deleted": "Provedor SSO {name} excluído!",
+    "urlCopied": "URL copiada!"
+  }
+}

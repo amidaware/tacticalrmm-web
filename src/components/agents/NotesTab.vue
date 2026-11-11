@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else>
     <q-table
       grid
@@ -13,7 +15,7 @@
       :loading="loading"
       hide-bottom
       virtual-scroll
-      no-data-label="No notes"
+      :no-data-label="$t('agentTabs.notes.noNotes')"
     >
       <template v-slot:top>
         <q-btn
@@ -26,7 +28,7 @@
         />
         <q-btn
           icon="add"
-          label="Add Note"
+          :label="$t('agentTabs.notes.addNote')"
           no-caps
           dense
           flat
@@ -63,7 +65,7 @@
                         <q-item-section side>
                           <q-icon name="edit" />
                         </q-item-section>
-                        <q-item-section>Edit</q-item-section>
+                        <q-item-section>{{ $t("common.edit") }}</q-item-section>
                       </q-item>
 
                       <q-item
@@ -74,7 +76,9 @@
                         <q-item-section side>
                           <q-icon name="delete" />
                         </q-item-section>
-                        <q-item-section>Delete</q-item-section>
+                        <q-item-section>{{
+                          $t("common.delete")
+                        }}</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -103,6 +107,7 @@ import {
   removeAgentNote,
 } from "@/api/agents";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
@@ -111,17 +116,17 @@ import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 const columns = [
   {
     name: "entry_time",
-    label: "Date",
+    label: t("common.date"),
     field: "entry_time",
   },
   {
     name: "username",
-    label: "User",
+    label: t("common.user"),
     field: "username",
   },
   {
     name: "note",
-    label: "Note",
+    label: t("agentTabs.notes.note"),
     field: "note",
   },
 ];
@@ -160,14 +165,14 @@ export default {
     function addNote() {
       noteText.value = "";
       $q.dialog({
-        title: "Add Note",
+        title: t("agentTabs.notes.addNote"),
         prompt: {
           model: noteText,
           type: "textarea",
           isValid: (val) => !!val,
         },
         style: "width: 90vw; max-width: 90vw",
-        ok: { label: "Add" },
+        ok: { label: t("common.add") },
         cancel: true,
       }).onOk(async () => {
         loading.value = true;
@@ -187,14 +192,14 @@ export default {
 
     function editNote(note) {
       $q.dialog({
-        title: "Edit Note",
+        title: t("agentTabs.notes.editNote"),
         prompt: {
           model: note.note,
           type: "textarea",
           isValid: (val) => !!val,
         },
         style: "width: 90vw; max-width: 90vw",
-        ok: { label: "Save" },
+        ok: { label: t("common.save") },
         cancel: true,
       }).onOk(async (data) => {
         loading.value = true;
@@ -211,9 +216,9 @@ export default {
 
     function deleteNote(note) {
       $q.dialog({
-        title: "Delete note?",
+        title: t("agentTabs.notes.deleteConfirm"),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

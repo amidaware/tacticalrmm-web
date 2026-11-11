@@ -1,0 +1,49 @@
+{
+  "timeAgo": {
+    "seconds": "{n} seconds ago",
+    "minutes": "{n} minutes ago",
+    "hours": "{n} hours ago",
+    "days": "{n} days ago",
+    "months": "{n} months ago",
+    "years": "{n} years ago"
+  },
+  "dateAtTime": "{date} at {time}",
+  "unassigned": "Unassigned",
+  "validation": {
+    "thresholdRequired": "Warning Threshold or Error Threshold need to be set",
+    "warningLessThanError": "Warning Threshold must be less than Error Threshold",
+    "warningMoreThanError": "Warning Threshold must be more than Error Threshold"
+  },
+  "csv": {
+    "downloadDenied": "Browser denied file download..."
+  },
+  "websocket": {
+    "invalidPayload": "Invalid websocket payload"
+  },
+  "hours": {
+    "h0": "12 AM",
+    "h1": "1 AM",
+    "h2": "2 AM",
+    "h3": "3 AM",
+    "h4": "4 AM",
+    "h5": "5 AM",
+    "h6": "6 AM",
+    "h7": "7 AM",
+    "h8": "8 AM",
+    "h9": "9 AM",
+    "h10": "10 AM",
+    "h11": "11 AM",
+    "h12": "12 PM",
+    "h13": "1 PM",
+    "h14": "2 PM",
+    "h15": "3 PM",
+    "h16": "4 PM",
+    "h17": "5 PM",
+    "h18": "6 PM",
+    "h19": "7 PM",
+    "h20": "8 PM",
+    "h21": "9 PM",
+    "h22": "10 PM",
+    "h23": "11 PM"
+  }
+}

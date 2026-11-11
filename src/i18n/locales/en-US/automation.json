@@ -1,0 +1,165 @@
+{
+  "tabs": {
+    "checks": "Checks",
+    "tasks": "Tasks"
+  },
+  "seeStatus": "See Status",
+  "alerts": {
+    "smsAlert": "SMS Alert",
+    "emailAlert": "Email Alert",
+    "dashboardAlert": "Dashboard Alert",
+    "alertsEnabled": "{type} alerts enabled",
+    "alertsDisabled": "{type} alerts disabled",
+    "types": {
+      "text": "Text",
+      "email": "Email",
+      "dashboard": "Dashboard"
+    }
+  },
+  "manager": {
+    "title": "Automation Manager",
+    "new": "New",
+    "policyOverview": "Policy Overview",
+    "noPolicies": "No Policies",
+    "enablePolicy": "Enable Policy",
+    "enforcePolicyTooltip": "Enforce Policy (Will override Agent tasks/checks)",
+    "showRelations": "Show Relations",
+    "policyExclusions": "Policy Exclusions",
+    "defaultServer": "Default Server",
+    "defaultWorkstation": "Default Workstation",
+    "showRelationsCount": "Show Relations ({count})",
+    "showExclusionsCount": "Show Policy Exclusions ({count})",
+    "copyTooltip": "Create a copy of this policy",
+    "columns": {
+      "active": "Active",
+      "enforced": "Enforced",
+      "relations": "Relations",
+      "exclusions": "Exclusions",
+      "patchPolicy": "Patch Policy",
+      "alertTemplate": "Alert Template"
+    },
+    "deleteTitle": "Delete policy?",
+    "notify": {
+      "deleted": "Policy was deleted!",
+      "enabled": "Policy enabled successfully",
+      "disabled": "Policy disabled successfully",
+      "enforced": "Policy enforced successfully",
+      "enforcementDisabled": "Policy enforcement disabled"
+    },
+    "editPatchPolicy": "Edit Patch Policy",
+    "addPatchPolicy": "Add Patch Policy",
+    "modifyPatchPolicy": "Modify Patch Policy",
+    "createPatchPolicy": "Create Patch Policy",
+    "modifyAlertTemplate": "Modify Alert Template",
+    "assignAlertTemplate": "Assign Alert Template"
+  },
+  "overview": {
+    "title": "Policy Overview",
+    "serversPolicy": "{name} (Servers)",
+    "serversPolicyDisabled": "{name} (Servers) (disabled)",
+    "workstationsPolicy": "{name} (Workstations)",
+    "workstationsPolicyDisabled": "{name} (Workstations) (disabled)"
+  },
+  "checksTab": {
+    "selectPolicy": "Click on a policy to see the checks",
+    "noChecks": "There are no checks added to this policy",
+    "tasksCount": "{count} Tasks",
+    "columns": {
+      "assignedTasks": "Assigned Tasks"
+    },
+    "deleteTitle": "Delete {type} check?",
+    "notify": {
+      "deleted": "Check Deleted!"
+    }
+  },
+  "tasksTab": {
+    "addTask": "Add Task",
+    "selectPolicy": "Click on a policy to see the tasks",
+    "noTasks": "There are no tasks added to this policy",
+    "collectorTask": "Collector Task",
+    "collectorTooltip": "The task updates a custom field on the agent",
+    "runTaskNow": "Run task now",
+    "columns": {
+      "collector": "Collector",
+      "schedule": "Schedule",
+      "moreInfo": "More Info",
+      "assignedCheck": "Assigned Check"
+    },
+    "notify": {
+      "runDisabled": "Task cannot be run when it's disabled. Enable it first.",
+      "initiated": "The task was initiated on all affected agents",
+      "deleted": "Task was deleted successfully"
+    },
+    "runConfirm": "Run {name} task",
+    "deleteConfirm": "Delete {name} task"
+  },
+  "policyStatus": {
+    "menuItem": "Policy Status",
+    "title": "{name} Status",
+    "noAgents": "There are no agents in this policy",
+    "sync": {
+      "awaitingFirst": "Awaiting First Synchronization",
+      "notSynced": "Will sync on next agent checkin",
+      "synced": "Synced with agent",
+      "pendingDeletion": "Pending deletion on agent",
+      "initial": "Waiting for task creation on agent"
+    },
+    "output": "output",
+    "awaitingOutput": "Awaiting Output",
+    "never": "Never",
+    "columns": {
+      "dateTime": "Date / Time"
+    }
+  },
+  "policyAdd": {
+    "title": "Edit policies assigned to {type}",
+    "types": {
+      "agent": "agent",
+      "site": "site",
+      "client": "client"
+    },
+    "serverPolicy": "Server Policy",
+    "workstationPolicy": "Workstation Policy",
+    "policy": "Policy",
+    "blockInheritance": "Block policy inheritance",
+    "blockInheritanceTooltip": {
+      "agent": "This agent will not inherit from higher policies",
+      "site": "This site will not inherit from higher policies",
+      "client": "This client will not inherit from higher policies"
+    },
+    "noPolicies": "No Automation Policies have been setup. Go to Settings > Automation Manager",
+    "notify": {
+      "updated": "Policies Updated Successfully!"
+    }
+  },
+  "exclusions": {
+    "title": "Policy Exclusions for {name}",
+    "excludedClients": "Excluded Clients",
+    "excludedSites": "Excluded Sites",
+    "excludedAgents": "Excluded Agents",
+    "notify": {
+      "added": "Policy exclusions added"
+    }
+  },
+  "policyForm": {
+    "copyNotice": "You are copying checks and tasks from Policy: {name} into a new policy.",
+    "name": "Name:",
+    "description": "Description:",
+    "active": "Active:",
+    "enforced": "Enforced:",
+    "required": "*Required",
+    "editTitle": "Edit Policy",
+    "addTitle": "Add Policy",
+    "notify": {
+      "edited": "Policy edited!",
+      "added": "Policy added. Now you can add Tasks and Checks!"
+    }
+  },
+  "relations": {
+    "title": "{name} Relations",
+    "defaultServer": "This policy is set as the Default Server Policy.",
+    "defaultWorkstation": "This policy is set as the Default Workstation Policy.",
+    "appliedToServers": "Applied to Servers",
+    "appliedToWorkstations": "Applied to Workstations"
+  }
+}

@@ -5,7 +5,7 @@
   >
     <q-card class="fb-props-card">
       <q-card-section class="fb-props-header">
-        <div class="text-h6">Properties</div>
+        <div class="text-h6">{{ $t("fileBrowser.properties.title") }}</div>
         <div v-if="item?.name" class="fb-props-title-row">
           <div class="fb-props-title-leading" aria-hidden="true">
             <q-icon
@@ -26,10 +26,12 @@
               size="sm"
               icon="content_copy"
               color="grey-7"
-              aria-label="Copy name"
-              @click="copyText(item.name, 'Name copied to clipboard.')"
+              :aria-label="$t('fileBrowser.properties.copyName')"
+              @click="
+                copyText(item.name, $t('fileBrowser.properties.nameCopied'))
+              "
             >
-              <q-tooltip>Copy name</q-tooltip>
+              <q-tooltip>{{ $t("fileBrowser.properties.copyName") }}</q-tooltip>
             </q-btn>
           </div>
         </div>
@@ -43,7 +45,7 @@
       >
         <q-spinner color="primary" size="32px" />
         <div v-if="item?.type === 'folder'" class="text-caption text-grey-7">
-          Calculating folder size…
+          {{ $t("fileBrowser.properties.calculating") }}
         </div>
       </q-card-section>
 
@@ -54,10 +56,16 @@
       <q-card-section v-else-if="item" class="q-pa-md fb-props-body">
         <div class="fb-props-grid">
           <template v-if="item.type === 'folder'">
-            <div class="fb-props-label">Type:</div>
-            <div class="fb-props-value">File folder</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.type") }}
+            </div>
+            <div class="fb-props-value">
+              {{ $t("fileBrowser.properties.fileFolder") }}
+            </div>
 
-            <div class="fb-props-label">Location:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.location") }}
+            </div>
             <div class="fb-props-value fb-props-path-row">
               <div class="fb-props-path fb-props-wrap" :title="locationText">
                 {{ locationText }}
@@ -70,45 +78,68 @@
                 size="sm"
                 icon="content_copy"
                 color="grey-7"
-                aria-label="Copy location"
-                @click="copyText(locationText, 'Path copied to clipboard.')"
+                :aria-label="$t('fileBrowser.properties.copyLocation')"
+                @click="
+                  copyText(
+                    locationText,
+                    $t('fileBrowser.properties.pathCopied'),
+                  )
+                "
               >
-                <q-tooltip>Copy location</q-tooltip>
+                <q-tooltip>{{
+                  $t("fileBrowser.properties.copyLocation")
+                }}</q-tooltip>
               </q-btn>
             </div>
 
-            <div class="fb-props-label">Size:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.size") }}
+            </div>
             <div class="fb-props-value fb-props-wrap">
               {{ formatSize(item) }}
             </div>
 
-            <div class="fb-props-label">Contains:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.contains") }}
+            </div>
             <div class="fb-props-value fb-props-wrap">
               {{ formatContains(item) }}
             </div>
 
             <div class="fb-props-sep" />
 
-            <div class="fb-props-label">Created:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.created") }}
+            </div>
             <div class="fb-props-value">{{ item.created || "—" }}</div>
 
-            <div class="fb-props-label">Modified:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.modified") }}
+            </div>
             <div class="fb-props-value">{{ item.modified || "—" }}</div>
 
             <div class="fb-props-sep" />
 
-            <div class="fb-props-label">Hidden:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.hidden") }}
+            </div>
             <div class="fb-props-value">{{ formatBool(item.hidden) }}</div>
 
-            <div class="fb-props-label">Read-only:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.readOnly") }}
+            </div>
             <div class="fb-props-value">{{ formatBool(item.readonly) }}</div>
           </template>
 
           <template v-else>
-            <div class="fb-props-label">Type:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.type") }}
+            </div>
             <div class="fb-props-value">{{ fileTypeLabel(item) }}</div>
 
-            <div class="fb-props-label">Location:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.location") }}
+            </div>
             <div class="fb-props-value fb-props-path-row">
               <div class="fb-props-path fb-props-wrap" :title="locationText">
                 {{ locationText }}
@@ -121,38 +152,59 @@
                 size="sm"
                 icon="content_copy"
                 color="grey-7"
-                aria-label="Copy location"
-                @click="copyText(locationText, 'Path copied to clipboard.')"
+                :aria-label="$t('fileBrowser.properties.copyLocation')"
+                @click="
+                  copyText(
+                    locationText,
+                    $t('fileBrowser.properties.pathCopied'),
+                  )
+                "
               >
-                <q-tooltip>Copy location</q-tooltip>
+                <q-tooltip>{{
+                  $t("fileBrowser.properties.copyLocation")
+                }}</q-tooltip>
               </q-btn>
             </div>
 
-            <div class="fb-props-label">Size:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.size") }}
+            </div>
             <div class="fb-props-value fb-props-wrap">
               {{ formatSize(item) }}
             </div>
 
             <div class="fb-props-sep" />
 
-            <div class="fb-props-label">Created:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.created") }}
+            </div>
             <div class="fb-props-value">{{ item.created || "—" }}</div>
 
-            <div class="fb-props-label">Modified:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.modified") }}
+            </div>
             <div class="fb-props-value">{{ item.modified || "—" }}</div>
 
-            <div class="fb-props-label">Accessed:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.accessed") }}
+            </div>
             <div class="fb-props-value">{{ item.accessed || "—" }}</div>
 
             <div class="fb-props-sep" />
 
-            <div class="fb-props-label">Hidden:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.hidden") }}
+            </div>
             <div class="fb-props-value">{{ formatBool(item.hidden) }}</div>
 
-            <div class="fb-props-label">Read-only:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.readOnly") }}
+            </div>
             <div class="fb-props-value">{{ formatBool(item.readonly) }}</div>
 
-            <div class="fb-props-label">System:</div>
+            <div class="fb-props-label">
+              {{ $t("fileBrowser.properties.system") }}
+            </div>
             <div class="fb-props-value">{{ formatBool(item.system) }}</div>
           </template>
         </div>
@@ -161,19 +213,19 @@
           v-if="item.type === 'folder' && item.summaryTruncated"
           class="text-caption text-warning q-mt-md fb-props-wrap"
         >
-          Summary is partial — this folder is very large or deep. Size and
-          Contains may undercount.
+          {{ $t("fileBrowser.properties.summaryPartial") }}
         </div>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Close" color="primary" v-close-popup />
+        <q-btn flat :label="$t('common.close')" color="primary" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 
 import type { FileBrowserItem } from "@/types/filebrowser";
@@ -191,6 +243,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
+const { t } = useI18n();
 const locationText = computed(() => {
   const item = props.item;
   if (!item) return "—";
@@ -205,7 +258,7 @@ function copyText(value: string, successMessage: string) {
 
 function formatBool(value: boolean | undefined): string {
   if (value === undefined) return "—";
-  return value ? "Yes" : "No";
+  return value ? t("common.yes") : t("common.no");
 }
 
 function parentPath(path: string): string {
@@ -226,20 +279,34 @@ function formatSize(item: FileBrowserItem): string {
     return item.size || "—";
   }
   const human = bytes2Human(bytes);
-  return `${human} (${bytes.toLocaleString()} bytes)`;
+  return t("fileBrowser.properties.sizeBytes", {
+    size: human,
+    bytes: bytes.toLocaleString(),
+  });
 }
 
 function formatContains(item: FileBrowserItem): string {
   const files = item.fileCount ?? 0;
   const folders = item.folderCount ?? 0;
-  const fileLabel = files === 1 ? "File" : "Files";
-  const folderLabel = folders === 1 ? "Folder" : "Folders";
-  return `${files.toLocaleString()} ${fileLabel}, ${folders.toLocaleString()} ${folderLabel}`;
+  return t("fileBrowser.properties.containsValue", {
+    files: t(
+      "fileBrowser.properties.fileCount",
+      { count: files.toLocaleString() },
+      files,
+    ),
+    folders: t(
+      "fileBrowser.properties.folderCount",
+      { count: folders.toLocaleString() },
+      folders,
+    ),
+  });
 }
 
 function fileTypeLabel(item: FileBrowserItem): string {
-  if (item.extension) return `${item.extension} File`;
-  return "File";
+  if (item.extension) {
+    return t("fileBrowser.properties.extFile", { ext: item.extension });
+  }
+  return t("fileBrowser.properties.file");
 }
 </script>
 

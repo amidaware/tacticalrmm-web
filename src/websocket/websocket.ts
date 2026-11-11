@@ -2,6 +2,7 @@ import { computed, effectScope, ref, watch } from "vue";
 import { UseWebSocketReturn, useWebSocket } from "@vueuse/core";
 import { getBaseUrl } from "@/boot/axios";
 import { useAuthStore } from "@/stores/auth";
+import { t } from "@/i18n";
 
 export function getWSUrl(
   path: string,
@@ -112,7 +113,7 @@ export function useTerminalWSConnection(agentId: string, sessionId: string) {
       parsedData.value = {
         action: "",
         data: {},
-        error: "Invalid websocket payload",
+        error: t("utils.websocket.invalidPayload"),
       };
     }
   });

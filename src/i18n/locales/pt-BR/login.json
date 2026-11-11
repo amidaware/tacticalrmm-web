@@ -1,0 +1,8 @@
+{
+  "username": "Usuário",
+  "password": "Senha",
+  "login": "Entrar",
+  "sso": "Entrar com SSO",
+  "twoFactor": "Token de Dois Fatores",
+  "required": "Este campo é obrigatório"
+}

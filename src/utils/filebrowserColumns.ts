@@ -1,6 +1,7 @@
 import type { QTableColumn } from "quasar";
 
 import type { FileBrowserItem } from "@/types/filebrowser";
+import { t } from "@/i18n";
 
 const FIXED_COL =
   "white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
@@ -8,7 +9,9 @@ const FIXED_COL =
 export const fileBrowserTableColumns: QTableColumn<FileBrowserItem>[] = [
   {
     name: "name",
-    label: "Name",
+    get label() {
+      return t("fileBrowser.columns.name");
+    },
     field: "name",
     align: "left",
     sortable: true,
@@ -20,7 +23,9 @@ export const fileBrowserTableColumns: QTableColumn<FileBrowserItem>[] = [
   },
   {
     name: "modified",
-    label: "Date modified",
+    get label() {
+      return t("fileBrowser.columns.modified");
+    },
     field: "modified",
     align: "left",
     sortable: true,
@@ -32,7 +37,9 @@ export const fileBrowserTableColumns: QTableColumn<FileBrowserItem>[] = [
   },
   {
     name: "type",
-    label: "Type",
+    get label() {
+      return t("fileBrowser.columns.type");
+    },
     field: "type",
     align: "left",
     sortable: true,
@@ -44,7 +51,9 @@ export const fileBrowserTableColumns: QTableColumn<FileBrowserItem>[] = [
   },
   {
     name: "size",
-    label: "Size",
+    get label() {
+      return t("fileBrowser.columns.size");
+    },
     field: "size",
     align: "left",
     sortable: true,

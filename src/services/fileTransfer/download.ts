@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import {
   ackAgentFileDownloadChunk,
   assertDownloadChunkRange,
@@ -179,7 +180,7 @@ async function waitForArchiveReady(
         status.status === "expired"
       ) {
         throw new Error(
-          status.error || `Archive preparation ${status.status}.`,
+          status.error || archivePreparationEndedMessage(status.status),
         );
       }
     } catch (err) {
@@ -197,12 +198,20 @@ async function waitForArchiveReady(
       });
     }
     if (Date.now() >= deadline) {
-      throw new Error(
-        "Timed out waiting for the archive to build on the agent.",
-      );
+      throw new Error(t("fileBrowser.transfer.archiveTimeout"));
     }
     await sleepAbortable(ARCHIVE_STATUS_POLL_INTERVAL_MS, signal);
   }
+}
+
+function archivePreparationEndedMessage(status: string): string {
+  if (status === "cancelled") {
+    return t("fileBrowser.transfer.archivePreparationCancelled");
+  }
+  if (status === "expired") {
+    return t("fileBrowser.transfer.archivePreparationExpired");
+  }
+  return t("fileBrowser.transfer.archivePreparationFailed");
 }
 
 function assertMemoryDownloadAllowed(
@@ -212,15 +221,13 @@ function assertMemoryDownloadAllowed(
   if (usesMemoryBuffer && totalSize > MAX_IN_MEMORY_DOWNLOAD_BYTES) {
     const limitMiB = Math.floor(MAX_IN_MEMORY_DOWNLOAD_BYTES / (1024 * 1024));
     throw new Error(
-      `This download (${Math.ceil(totalSize / (1024 * 1024))} MiB) is too large ` +
-        `for this browser, which must buffer it in memory (limit ${limitMiB} MiB). ` +
-        "Use Chrome or Edge to stream large downloads directly to disk.",
+      t("fileBrowser.transfer.downloadTooLargeForMemory", {
+        size: Math.ceil(totalSize / (1024 * 1024)),
+        limit: limitMiB,
+      }),
     );
   }
 }
-
-const SAVE_PICKER_UNAVAILABLE_MESSAGE =
-  "Could not open the save dialog. Click download again and choose where to save the file.";
 
 function rethrowSavePickerError(
   err: unknown,
@@ -233,7 +240,7 @@ function rethrowSavePickerError(
     }
     throw err;
   }
-  throw new Error(SAVE_PICKER_UNAVAILABLE_MESSAGE);
+  throw new Error(t("fileBrowser.transfer.savePickerUnavailable"));
 }
 
 const DOWNLOAD_CHUNKS_IN_FLIGHT = 2;
@@ -296,7 +303,10 @@ async function streamDownloadChunks(
         const expectedLen = range.end - range.start + 1;
         if (data.byteLength !== expectedLen) {
           throw new RetryableTransferError(
-            `Chunk size mismatch: received ${data.byteLength}, expected ${expectedLen}`,
+            t("fileBrowser.transfer.chunkSizeMismatch", {
+              received: data.byteLength,
+              expected: expectedLen,
+            }),
           );
         }
         return { data, newCommitted: range.end + 1 };
@@ -336,7 +346,9 @@ async function streamDownloadChunks(
         fetched = await fetchChunk(pending.offset, true);
       }
       if (!fetched) {
-        throw new RetryableTransferError("Download chunk was not received");
+        throw new RetryableTransferError(
+          t("fileBrowser.transfer.chunkNotReceived"),
+        );
       }
       const { data: chunkBuf, newCommitted } = fetched;
       if (queue.length && queue[0].offset !== newCommitted) {
@@ -434,9 +446,7 @@ async function createDownloadSink(
     } catch (err) {
       if (isAbortError(err)) throw err;
       console.warn("file browser: could not reopen the download file", err);
-      throw new Error(
-        "Could not reopen the saved download file. Click Resume and allow file access.",
-      );
+      throw new Error(t("fileBrowser.transfer.reopenDownloadFileFailed"));
     }
   } else if (canFS) {
     try {

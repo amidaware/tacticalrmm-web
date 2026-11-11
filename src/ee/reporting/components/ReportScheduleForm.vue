@@ -9,9 +9,15 @@ For details, see: https://license.tacticalrmm.com/ee
     <q-card class="q-dialog-plugin" style="width: 90vw; max-width: 600px">
       <q-bar>
         <template v-if="!emailOnly">
-          {{ schedule && !clone ? "Edit" : "Add" }} Report Schedule
+          {{
+            schedule && !clone
+              ? $t("reporting.reportScheduleForm.editTitle")
+              : $t("reporting.reportScheduleForm.addTitle")
+          }}
         </template>
-        <template v-else> Email Report </template>
+        <template v-else>
+          {{ $t("reporting.reportScheduleForm.emailReport") }}
+        </template>
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
@@ -21,16 +27,16 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-if="!emailOnly"
             v-model="localSchedule.name"
-            label="Name"
+            :label="$t('common.name')"
             dense
             filled
-            :rules="[(val: string) => !!val || '*Required']"
+            :rules="[(val: string) => !!val || $t('reporting.required')]"
           />
 
           <q-toggle
             v-if="!emailOnly"
             v-model="localSchedule.enabled"
-            label="Enabled"
+            :label="$t('common.enabled')"
             dense
             dense-toggle
             class="q-mb-sm"
@@ -39,14 +45,14 @@ For details, see: https://license.tacticalrmm.com/ee
           <tactical-dropdown
             v-model="localSchedule.report_template"
             :options="reportTemplateOptions"
-            label="Report Template"
+            :label="$t('reporting.reportScheduleForm.reportTemplate')"
             dense
             filled
             map-options
             emit-value
             options-dense
             filterable
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || $t('reporting.required')]"
           >
             <template #after v-if="hasDependencies">
               <q-btn
@@ -55,7 +61,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 no-caps
                 :icon="!areDependenciesMet ? 'warning' : undefined"
                 :color="!areDependenciesMet ? 'warning' : 'primary'"
-                label="Dependencies"
+                :label="$t('reporting.reportScheduleForm.dependencies')"
                 @click="openDependenciesForm"
               />
             </template>
@@ -64,25 +70,25 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-option-group
             v-model="localSchedule.format"
             :options="formatOptions"
-            label="Format"
+            :label="$t('reporting.reportScheduleForm.format')"
             inline
             dense
             class="q-mb-sm"
-            :rules="[(val: number) => !!val || '*Required']"
+            :rules="[(val: number) => !!val || $t('reporting.required')]"
           />
 
           <tactical-dropdown
             v-if="!emailOnly"
             v-model="localSchedule.schedule"
             :options="scheduleOptions"
-            label="Schedule"
+            :label="$t('reporting.reportScheduleForm.schedule')"
             map-options
             emit-value
             options-dense
             dense
             filled
             filterable
-            :rules="[(val: string) => !!val || '*Required']"
+            :rules="[(val: string) => !!val || $t('reporting.required')]"
           >
             <template #after>
               <q-btn
@@ -92,7 +98,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 flat
                 no-caps
                 dense
-                label="Create New Schedule"
+                :label="$t('reporting.reportScheduleForm.createNewSchedule')"
               />
             </template>
           </tactical-dropdown>
@@ -101,24 +107,30 @@ For details, see: https://license.tacticalrmm.com/ee
             v-if="!emailOnly"
             v-model="localSchedule.timezone"
             :options="settings?.all_timezones || []"
-            label="Timezone"
+            :label="$t('reporting.reportScheduleForm.timezone')"
             options-dense
             dense
             filled
             filterable
             clearable
-            :hint="`Default timezone ${settings?.default_time_zone} will be used if blank`"
+            :hint="
+              $t('reporting.reportScheduleForm.timezoneHint', {
+                timezone: settings?.default_time_zone,
+              })
+            "
           />
 
           <div class="row q-pt-sm">
             <div class="col-9 text-weight-medium">
-              Email recipients
+              {{ $t("reporting.reportScheduleForm.emailRecipients") }}
               <q-icon name="info" size="xs" class="cursor-pointer">
                 <q-tooltip max-width="300px">{{
                   settings?.email_alert_recipients &&
                   settings.email_alert_recipients.length > 0
-                    ? `Default email recipients: ${settings.email_alert_recipients.join(", ")}`
-                    : "No email recipients configured"
+                    ? $t("reporting.reportScheduleForm.defaultRecipients", {
+                        recipients: settings.email_alert_recipients.join(", "),
+                      })
+                    : $t("reporting.reportScheduleForm.noRecipientsConfigured")
                 }}</q-tooltip>
               </q-icon>
             </div>
@@ -129,7 +141,7 @@ For details, see: https://license.tacticalrmm.com/ee
                 flat
                 icon="fas fa-plus"
                 color="primary"
-                label="Add email"
+                :label="$t('reporting.reportScheduleForm.addEmail')"
                 @click="toggleAddEmail"
               />
             </div>
@@ -155,11 +167,9 @@ For details, see: https://license.tacticalrmm.com/ee
               </q-list>
               <q-list v-else>
                 <q-item-section>
-                  <q-item-label
-                    >No recipients added yet. Emails will be sent to the default
-                    recipients from global settings. Adding recipients here will
-                    override those defaults.</q-item-label
-                  >
+                  <q-item-label>{{
+                    $t("reporting.reportScheduleForm.noRecipientsAdded")
+                  }}</q-item-label>
                 </q-item-section>
               </q-list>
             </div>
@@ -167,7 +177,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-checkbox
             v-if="!emailOnly"
             v-model="localSchedule.send_report_email"
-            label="Send report via Email"
+            :label="$t('reporting.reportScheduleForm.sendReportEmail')"
             class="q-pt-md"
             dense
           />
@@ -178,15 +188,19 @@ For details, see: https://license.tacticalrmm.com/ee
             dense
             flat
             color="primary"
-            label=" Customize Email Content"
+            :label="$t('reporting.reportScheduleForm.customizeEmail')"
             @click="openEmailSettings"
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" v-close-popup dense />
+          <q-btn flat :label="$t('common.cancel')" v-close-popup dense />
           <q-btn
             flat
-            :label="!emailOnly ? 'Save' : 'Send'"
+            :label="
+              !emailOnly
+                ? $t('common.save')
+                : $t('reporting.reportScheduleForm.send')
+            "
             color="primary"
             :loading="isLoading"
             class="q-ml-sm"
@@ -201,6 +215,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script lang="ts" setup>
 import { ref, watch, unref, reactive, computed, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { until } from "@vueuse/shared";
 import {
   useSharedReportSchedules,
@@ -243,6 +258,7 @@ const { addReportSchedule, editReportSchedule, isLoading, isError } =
 const { reportTemplates, emailReport } = useSharedReportTemplates;
 
 const $q = useQuasar();
+const { t } = useI18n();
 
 const { reportTemplateOptions } = useReportTemplateDropdown();
 const { scheduleOptions } = useScheduleDropdown();
@@ -250,7 +266,7 @@ const { scheduleOptions } = useScheduleDropdown();
 const formatOptions: { label: string; value: ReportFormat }[] = [
   { label: "HTML", value: "html" },
   { label: "PDF", value: "pdf" },
-  { label: "Plain Text (or CSV)", value: "plaintext" },
+  { label: t("reporting.reportScheduleForm.plainText"), value: "plaintext" },
 ];
 
 const localSchedule = reactive<ReportSchedule>(
@@ -354,7 +370,7 @@ function openEmailSettings() {
 
 function toggleAddEmail() {
   $q.dialog({
-    title: "Add email",
+    title: t("reporting.reportScheduleForm.addEmail"),
     prompt: {
       model: "",
       isValid: (val) => isValidEmail(val),
@@ -362,7 +378,7 @@ function toggleAddEmail() {
     },
     color: "primary",
     cancel: true,
-    ok: { label: "Add", color: "primary" },
+    ok: { label: t("common.add"), color: "primary" },
     persistent: false,
   }).onOk((data) => {
     localSchedule.email_recipients.push(data);
@@ -378,7 +394,9 @@ async function submit() {
   // make sure dependencies are set
   if (!areDependenciesMet.value) {
     notifyWarning(
-      `All required dependencies must be set before ${!props.emailOnly ? "saving" : "sending"}.`,
+      !props.emailOnly
+        ? t("reporting.reportScheduleForm.dependenciesRequiredSave")
+        : t("reporting.reportScheduleForm.dependenciesRequiredSend"),
     );
     return;
   }

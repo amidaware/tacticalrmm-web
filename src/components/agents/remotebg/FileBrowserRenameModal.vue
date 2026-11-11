@@ -6,7 +6,7 @@
   >
     <q-card style="min-width: 360px">
       <q-card-section>
-        <div class="text-h6">Rename</div>
+        <div class="text-h6">{{ $t("fileBrowser.rename.title") }}</div>
       </q-card-section>
 
       <q-separator />
@@ -18,7 +18,7 @@
           dense
           outlined
           autofocus
-          label="Name"
+          :label="$t('common.name')"
           :rules="nameRules"
           maxlength="255"
           counter
@@ -27,10 +27,15 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('common.cancel')"
+          color="primary"
+          v-close-popup
+        />
         <q-btn
           unelevated
-          label="Rename"
+          :label="$t('fileBrowser.rename.title')"
           color="primary"
           :loading="saving"
           :disable="saving || !canSubmit"

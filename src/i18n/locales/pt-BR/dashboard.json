@@ -1,0 +1,71 @@
+{
+  "allClients": "Todos os Clientes",
+  "noClients": "Nenhum cliente",
+  "tree": {
+    "id": "ID: {id}",
+    "agentCount": "Quantidade de agentes: {count}",
+    "addSite": "Adicionar Site",
+    "enableMaintenance": "Ativar Modo de Manutenção",
+    "disableMaintenance": "Desativar Modo de Manutenção",
+    "installAgent": "Instalar Agente",
+    "assignPolicy": "Atribuir Política de Automação",
+    "assignAlertTemplate": "Atribuir Modelo de Alerta",
+    "runUrlAction": "Executar Ação de URL",
+    "runChecks": "Executar Verificações",
+    "reporting": "Relatórios"
+  },
+  "tabs": {
+    "servers": "Servidores",
+    "workstations": "Estações de trabalho",
+    "mixed": "Misto"
+  },
+  "filter": {
+    "title": "Filtrar tabela de agentes",
+    "checksFailing": "Verificações com falha",
+    "patchesPending": "Patches pendentes",
+    "actionsPending": "Ações pendentes",
+    "rebootNeeded": "Reinicialização necessária",
+    "availability": "Disponibilidade",
+    "showAll": "Mostrar todos os agentes",
+    "showOnline": "Mostrar apenas online",
+    "showOffline": "Mostrar apenas offline",
+    "showOverdue": "Mostrar apenas atrasados",
+    "showOffline30Days": "Mostrar offline há mais de 30 dias",
+    "clear": "Limpar"
+  },
+  "columns": {
+    "lastResponse": "Última resposta",
+    "bootTime": "Tempo de inicialização"
+  },
+  "notify": {
+    "deleteClient": "Excluir cliente: {name}.",
+    "deleteSite": "Excluir site: {name}.",
+    "noUrlActions": "Nenhuma Ação de URL configurada. Acesse Configurações > Configurações Globais > Ações de URL"
+  },
+  "initialSetup": {
+    "gettingStarted": "Primeiros passos",
+    "title": "Configuração inicial",
+    "addClient": "Adicionar Cliente:",
+    "addSite": "Adicionar Site:",
+    "required": "*Obrigatório",
+    "defaultTimezone": "Fuso horário padrão dos agentes:",
+    "companyName": "Nome da empresa:",
+    "companyNameHelp": "Ao informar o nome da sua empresa aqui, ele será adicionado ao nome completo do usuário exibido durante uma sessão de controle remoto, por exemplo: 'João Silva - Amidaware Inc.'",
+    "finish": "Concluir"
+  },
+  "sessionExpired": {
+    "message": "Sua sessão expirou",
+    "login": "Entrar"
+  },
+  "totpSetup": {
+    "title": "Configurar autenticação de 2 fatores",
+    "scanInstructions": "Escaneie o QR Code com seu aplicativo autenticador e clique em Concluir para voltar à página de login. Se você sair desta página, o login com 2FA precisará ser redefinido!",
+    "qrCodeAlt": "QR Code",
+    "manualCode": "Você também pode usar o código abaixo para configurar o autenticador manualmente.",
+    "finish": "Concluir"
+  },
+  "notFound": {
+    "message": "Desculpe, nada por aqui...",
+    "goBack": "Voltar"
+  }
+}

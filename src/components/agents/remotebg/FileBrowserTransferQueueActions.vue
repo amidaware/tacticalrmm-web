@@ -1,6 +1,13 @@
 <template>
   <div v-if="mode === 'active'" class="row q-gutter-xs" :class="wrapClass">
-    <q-btn dense flat no-caps size="sm" label="Pause" @click="emit('pause')">
+    <q-btn
+      dense
+      flat
+      no-caps
+      size="sm"
+      :label="$t('fileBrowser.queue.pause')"
+      @click="emit('pause')"
+    >
       <q-tooltip v-if="pauseTooltip">{{ pauseTooltip }}</q-tooltip>
     </q-btn>
     <q-btn
@@ -9,7 +16,7 @@
       no-caps
       size="sm"
       color="negative"
-      label="Cancel"
+      :label="$t('common.cancel')"
       @click="emit('cancel')"
     >
       <q-tooltip v-if="cancelTooltip">{{ cancelTooltip }}</q-tooltip>
@@ -24,7 +31,7 @@
       no-caps
       size="sm"
       color="primary"
-      label="Select file"
+      :label="$t('fileBrowser.queue.selectFile')"
       :disable="resumeDisabled"
       @click="emit('select-file')"
     >
@@ -39,7 +46,7 @@
       no-caps
       size="sm"
       color="primary"
-      label="Resume"
+      :label="$t('fileBrowser.queue.resume')"
       :disable="resumeDisabled"
       @click="emit('resume')"
     >
@@ -53,12 +60,19 @@
       no-caps
       size="sm"
       color="negative"
-      label="Cancel"
+      :label="$t('common.cancel')"
       @click="emit('cancel')"
     >
       <q-tooltip v-if="cancelTooltip">{{ cancelTooltip }}</q-tooltip>
     </q-btn>
-    <q-btn dense flat no-caps size="sm" label="Hide" @click="emit('hide')">
+    <q-btn
+      dense
+      flat
+      no-caps
+      size="sm"
+      :label="$t('fileBrowser.queue.hide')"
+      @click="emit('hide')"
+    >
       <q-tooltip>{{ TRANSFER_TOOLTIP_HIDE_PAUSED }}</q-tooltip>
     </q-btn>
   </div>
@@ -69,7 +83,7 @@
     flat
     :round="dismissRound"
     :icon="dismissRound ? 'close' : undefined"
-    :label="dismissRound ? undefined : 'Dismiss'"
+    :label="dismissRound ? undefined : $t('fileBrowser.queue.dismiss')"
     size="sm"
     :class="wrapClass"
     @click="emit('dismiss')"

@@ -6,6 +6,21 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
+            <div class="row justify-end">
+              <q-select
+                v-model="language"
+                :options="languageOptions"
+                map-options
+                emit-value
+                dense
+                borderless
+                options-dense
+                style="min-width: 160px"
+                @update:model-value="changeLanguage"
+              >
+                <template #prepend><q-icon name="translate" /></template>
+              </q-select>
+            </div>
             <div class="text-center q-pt-lg">
               <div class="col text-h4 ellipsis">Tactical RMM</div>
             </div>
@@ -15,23 +30,19 @@
               <q-input
                 filled
                 v-model="credentials.username"
-                label="Username"
+                :label="$t('login.username')"
                 autocomplete="username"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
-                ]"
+                :rules="[requiredRule]"
               />
               <q-input
                 v-model="credentials.password"
                 filled
                 :type="showPassword ? 'password' : 'text'"
-                label="Password"
+                :label="$t('login.password')"
                 autocomplete="current-password"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'This field is required',
-                ]"
+                :rules="[requiredRule]"
               >
                 <template v-slot:append>
                   <q-icon
@@ -43,7 +54,7 @@
               </q-input>
               <div>
                 <q-btn
-                  label="Login"
+                  :label="$t('login.login')"
                   type="submit"
                   color="primary"
                   class="full-width"
@@ -53,7 +64,9 @@
           </q-card-section>
 
           <q-card-section v-if="ssoProviders?.length > 0">
-            <div class="text-h6 text-center q-mb-md">Log in with SSO</div>
+            <div class="text-h6 text-center q-mb-md">
+              {{ $t("login.sso") }}
+            </div>
             <q-separator />
 
             <q-list dense bordered class="q-pa-sm">
@@ -83,9 +96,9 @@
         <q-dialog persistent v-model="prompt">
           <q-card style="min-width: 400px">
             <q-form ref="formToken" @submit.prevent="onSubmit">
-              <q-card-section class="text-center text-h6"
-                >Two-Factor Token</q-card-section
-              >
+              <q-card-section class="text-center text-h6">{{
+                $t("login.twoFactor")
+              }}</q-card-section>
 
               <q-card-section>
                 <q-input
@@ -94,16 +107,13 @@
                   autocomplete="one-time-code"
                   v-model="twofactor"
                   inputmode="numeric"
-                  :rules="[
-                    (val) =>
-                      (val && val.length > 0) || 'This field is required',
-                  ]"
+                  :rules="[requiredRule]"
                 />
               </q-card-section>
 
               <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Cancel" v-close-popup />
-                <q-btn flat label="Submit" type="submit" />
+                <q-btn flat :label="$t('common.cancel')" v-close-popup />
+                <q-btn flat :label="$t('common.submit')" type="submit" />
               </q-card-actions>
             </q-form>
           </q-card>
@@ -118,6 +128,9 @@ import { ref, reactive, onMounted } from "vue";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import axios from "axios";
+import { SUPPORTED_LOCALES, getLocale, setLocale } from "@/i18n";
 import {
   openSSOProviderRedirect,
   getSSOConfig,
@@ -133,6 +146,24 @@ const auth = useAuthStore();
 
 // setup router
 const router = useRouter();
+
+// language (saved to the user's profile after login)
+const { t } = useI18n();
+const language = ref(getLocale());
+const languageChanged = ref(false);
+const languageOptions = SUPPORTED_LOCALES.map((l) => ({
+  label: l.label,
+  value: l.value,
+}));
+
+async function changeLanguage(value: string) {
+  languageChanged.value = true;
+  await setLocale(value);
+}
+
+function requiredRule(val: string) {
+  return (val && val.length > 0) || t("login.required");
+}
 
 const form = ref<QForm | null>(null);
 const formToken = ref<QForm | null>(null);
@@ -162,6 +193,13 @@ async function checkCreds() {
 async function onSubmit() {
   try {
     await auth.login({ ...credentials, twofactor: twofactor.value });
+    if (languageChanged.value) {
+      try {
+        await axios.patch("/accounts/users/ui/", { language: language.value });
+      } catch (e) {
+        console.error(e);
+      }
+    }
     if (auth.next) {
       router.push(auth.next);
       auth.next = null;

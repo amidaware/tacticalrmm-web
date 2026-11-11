@@ -1,0 +1,70 @@
+{
+  "validation": {
+    "required": "*Required"
+  },
+  "shared": {
+    "new": "New",
+    "customFields": "Custom Fields",
+    "totalAgents": "Total Agents"
+  },
+  "clientsForm": {
+    "editing": "Editing {name}",
+    "adding": "Adding Client",
+    "defaultFirstSite": "Default first site"
+  },
+  "clientsManager": {
+    "title": "Clients Manager",
+    "noClients": "No Clients",
+    "addSite": "Add Site",
+    "showSites": "Show Sites ({count})",
+    "deleteConfirm": "Delete client: {name}."
+  },
+  "deleteClient": {
+    "title": "Delete {name}",
+    "noValidSites": "There are no valid sites to move agents to. Add another site and try again",
+    "siteToMove": "Site to move agents to",
+    "selectSite": "Select the site that the agents should be moved to",
+    "hint": "The client you are deleting has agents assigned to it. Select a Site below to move the agents to.",
+    "move": "Move",
+    "deletingClient": "Deleting client {name}. {count} agents will be moved to the selected site",
+    "deletingSite": "Deleting site {name}. {count} agents will be moved to the selected site"
+  },
+  "deploymentTable": {
+    "title": "Manage Deployments",
+    "noDeployments": "No Deployments",
+    "viewFlags": "View Flags",
+    "columns": {
+      "arch": "Arch",
+      "expiry": "Expiry",
+      "created": "Created",
+      "flags": "Flags",
+      "downloadLink": "Download Link"
+    },
+    "deleteConfirm": "Delete deployment?",
+    "linkCopied": "Link copied to clipboard"
+  },
+  "newDeployment": {
+    "title": "Add Deployment",
+    "agentType": "Agent Type",
+    "server": "Server",
+    "workstation": "Workstation",
+    "expiry": "Expiry",
+    "enableRdp": "Enable RDP",
+    "enablePing": "Enable Ping",
+    "disableSleep": "Disable sleep/hibernate",
+    "arch": "Arch",
+    "bit64": "64 bit",
+    "bit32": "32 bit"
+  },
+  "sitesForm": {
+    "editing": "Editing {name}",
+    "adding": "Adding Site",
+    "clientRequired": "Client is required",
+    "nameRequired": "Name is required"
+  },
+  "sitesTable": {
+    "title": "Sites for {name}",
+    "noSites": "No Sites",
+    "deleteConfirm": "Delete site: {name}."
+  }
+}

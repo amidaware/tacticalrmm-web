@@ -2,16 +2,16 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="min-width: 40vw">
       <q-bar>
-        Reset Agent Patch Policy
+        {{ $t("settings.resetPatchPolicy.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section class="text-subtitle3">
-        Reset the patch policies for agents in a specific client or site. You
-        can also leave the client and site blank to reset the patch policy for
-        all agents. (This might take a while)
+        {{ $t("settings.resetPatchPolicy.description") }}
       </q-card-section>
 
       <q-card-section>
@@ -27,8 +27,8 @@
       <q-form @submit="submit">
         <q-card-section v-if="target == 'client'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
-            label="Clients"
+            :rules="[(val) => !!val || $t('settings.required')]"
+            :label="$t('common.clients')"
             mapOptions
             filterable
             clearable
@@ -39,8 +39,8 @@
         </q-card-section>
         <q-card-section v-if="target == 'site'">
           <tactical-dropdown
-            :rules="[(val) => !!val || '*Required']"
-            label="Sites"
+            :rules="[(val) => !!val || $t('settings.required')]"
+            :label="$t('common.sites')"
             mapOptions
             filterable
             clearable
@@ -50,7 +50,7 @@
           />
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat push dense label="Cancel" v-close-popup />
+          <q-btn flat push dense :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             flat
@@ -58,8 +58,8 @@
             push
             :label="
               target == 'all'
-                ? 'Clear Policies for ALL Agents'
-                : 'Clear Policies'
+                ? $t('settings.resetPatchPolicy.clearAll')
+                : $t('settings.resetPatchPolicy.clear')
             "
             color="primary"
             type="submit"
@@ -77,15 +77,16 @@ import { useDialogPluginComponent } from "quasar";
 import { useClientDropdown, useSiteDropdown } from "@/composables/clients";
 import { sendPatchPolicyReset } from "@/api/automation";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 //ui imports
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // static data
 const targetOptions = [
-  { label: "All", value: "all" },
-  { label: "Client", value: "client" },
-  { label: "Site", value: "site" },
+  { label: t("common.all"), value: "all" },
+  { label: t("common.client"), value: "client" },
+  { label: t("common.site"), value: "site" },
 ];
 
 export default {

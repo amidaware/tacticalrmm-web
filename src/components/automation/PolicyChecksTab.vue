@@ -13,7 +13,7 @@
       <q-btn-dropdown
         v-if="!!selectedPolicy"
         icon="add"
-        label="New"
+        :label="$t('automation.manager.new')"
         no-caps
         dense
         flat
@@ -23,43 +23,43 @@
             <q-item-section side>
               <q-icon size="xs" name="far fa-hdd" />
             </q-item-section>
-            <q-item-section>Disk Space Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.diskspace") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('ping')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-network-wired" />
             </q-item-section>
-            <q-item-section>Ping Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.ping") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('cpuload')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-microchip" />
             </q-item-section>
-            <q-item-section>CPU Load Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.cpuload") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('memory')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-memory" />
             </q-item-section>
-            <q-item-section>Memory Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.memory") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('winsvc')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-cogs" />
             </q-item-section>
-            <q-item-section>Windows Service Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.winsvc") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('script')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-terminal" />
             </q-item-section>
-            <q-item-section>Script Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.script") }}</q-item-section>
           </q-item>
           <q-item clickable v-close-popup @click="showCheckModal('eventlog')">
             <q-item-section side>
               <q-icon size="xs" name="fas fa-clipboard-list" />
             </q-item-section>
-            <q-item-section>Event Log Check</q-item-section>
+            <q-item-section>{{ $t("checks.types.eventlog") }}</q-item-section>
           </q-item>
         </q-list>
       </q-btn-dropdown>
@@ -83,31 +83,33 @@
         <!-- No data Slot -->
         <template v-slot:no-data>
           <div class="full-width row flex-center q-gutter-sm">
-            <span v-if="!selectedPolicy"
-              >Click on a policy to see the checks</span
-            >
-            <span v-else>There are no checks added to this policy</span>
+            <span v-if="!selectedPolicy">{{
+              $t("automation.checksTab.selectPolicy")
+            }}</span>
+            <span v-else>{{ $t("automation.checksTab.noChecks") }}</span>
           </div>
         </template>
         <!-- header slots -->
         <template v-slot:header-cell-smsalert="props">
           <q-th auto-width :props="props">
             <q-icon name="phone_android" size="1.5em">
-              <q-tooltip>SMS Alert</q-tooltip>
+              <q-tooltip>{{ $t("automation.alerts.smsAlert") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
         <template v-slot:header-cell-emailalert="props">
           <q-th auto-width :props="props">
             <q-icon name="email" size="1.5em">
-              <q-tooltip>Email Alert</q-tooltip>
+              <q-tooltip>{{ $t("automation.alerts.emailAlert") }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
         <template v-slot:header-cell-dashboardalert="props">
           <q-th auto-width :props="props">
             <q-icon name="notifications" size="1.5em">
-              <q-tooltip>Dashboard Alert</q-tooltip>
+              <q-tooltip>{{
+                $t("automation.alerts.dashboardAlert")
+              }}</q-tooltip>
             </q-icon>
           </q-th>
         </template>
@@ -132,13 +134,13 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="deleteCheck(props.row)">
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -151,13 +153,15 @@
                   <q-item-section side>
                     <q-icon name="sync" />
                   </q-item-section>
-                  <q-item-section>Policy Status</q-item-section>
+                  <q-item-section>{{
+                    $t("automation.policyStatus.menuItem")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -187,7 +191,7 @@
                   checkAlert(
                     props.row.id,
                     'Dashboard',
-                    props.row.dashboard_alert
+                    props.row.dashboard_alert,
                   )
                 "
                 v-model="props.row.dashboard_alert"
@@ -199,12 +203,14 @@
                 style="cursor: pointer; text-decoration: underline"
                 @click="showPolicyStatus(props.row)"
                 class="status-cell text-primary"
-                >See Status</span
+                >{{ $t("automation.seeStatus") }}</span
               >
             </q-td>
-            <q-td v-if="props.row.assignedtasks.length > 1"
-              >{{ props.row.assignedtasks.length }} Tasks</q-td
-            >
+            <q-td v-if="props.row.assignedtasks.length > 1">{{
+              $t("automation.checksTab.tasksCount", {
+                count: props.row.assignedtasks.length,
+              })
+            }}</q-td>
             <q-td v-else-if="props.row.assignedtasks.length === 1">{{
               props.row.assignedtasks[0].name
             }}</q-td>
@@ -244,14 +250,19 @@ export default {
         {
           name: "desc",
           field: "readable_desc",
-          label: "Description",
+          label: this.$t("common.description"),
           align: "left",
           sortable: true,
         },
-        { name: "status", label: "Status", field: "status", align: "left" },
+        {
+          name: "status",
+          label: this.$t("common.status"),
+          field: "status",
+          align: "left",
+        },
         {
           name: "assigned_task",
-          label: "Assigned Tasks",
+          label: this.$t("automation.checksTab.columns.assignedTasks"),
           field: "assigned_task",
           align: "left",
           sortable: true,
@@ -298,7 +309,6 @@ export default {
       }
 
       data.check_alert = true;
-      const act = !action ? "enabled" : "disabled";
       const color = !action
         ? this.dash_positive_color
         : this.dash_warning_color;
@@ -309,7 +319,16 @@ export default {
           this.$q.notify({
             color: color,
             icon: "fas fa-check-circle",
-            message: `${alert_type} alerts ${act}`,
+            message: this.$t(
+              !action
+                ? "automation.alerts.alertsEnabled"
+                : "automation.alerts.alertsDisabled",
+              {
+                type: this.$t(
+                  `automation.alerts.types.${alert_type.toLowerCase()}`,
+                ),
+              },
+            ),
           });
         })
         .catch(() => {
@@ -319,8 +338,10 @@ export default {
     deleteCheck(check) {
       this.$q
         .dialog({
-          title: `Delete ${check.check_type} check?`,
-          ok: { label: "Delete", color: "negative" },
+          title: this.$t("automation.checksTab.deleteTitle", {
+            type: check.check_type,
+          }),
+          ok: { label: this.$t("common.delete"), color: "negative" },
           cancel: true,
         })
         .onOk(() => {
@@ -330,7 +351,9 @@ export default {
             .then(() => {
               this.getChecks();
               this.$q.loading.hide();
-              this.notifySuccess("Check Deleted!");
+              this.notifySuccess(
+                this.$t("automation.checksTab.notify.deleted"),
+              );
             })
             .catch(() => {
               this.$q.loading.hide();

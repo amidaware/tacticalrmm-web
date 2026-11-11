@@ -2,26 +2,41 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 50vw; max-width: 50vw">
       <q-card-section>
-        <div class="text-h6">Uninstalling {{ softwareName }}</div>
+        <div class="text-h6">
+          {{ $t("software.uninstall.title", { name: softwareName }) }}
+        </div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <p>Confirm or edit the uninstall command:</p>
+        <p>{{ $t("software.uninstall.confirmCommand") }}</p>
         <q-input class="q-mb-md" dense v-model="uninstallString" />
         <q-input
           style="max-width: 100px"
-          label="Timeout (seconds)"
+          :label="$t('software.uninstall.timeoutSeconds')"
           type="number"
           v-model.number="timeout"
           dense
-          :rules="[(val) => !!val || 'Timeout is required']"
+          :rules="[(val) => !!val || $t('software.uninstall.timeoutRequired')]"
         />
-        <q-checkbox v-model="run_as_user" label="Run as user" class="q-mt-sm" />
+        <q-checkbox
+          v-model="run_as_user"
+          :label="$t('software.uninstall.runAsUser')"
+          class="q-mt-sm"
+        />
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn color="primary" flat label="Cancel" @click="onDialogCancel" />
-        <q-btn color="primary" label="Uninstall" @click="onOKClick" />
+        <q-btn
+          color="primary"
+          flat
+          :label="$t('common.cancel')"
+          @click="onDialogCancel"
+        />
+        <q-btn
+          color="primary"
+          :label="$t('software.uninstall.uninstall')"
+          @click="onOKClick"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

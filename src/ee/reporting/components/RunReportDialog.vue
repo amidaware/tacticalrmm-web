@@ -8,24 +8,37 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        {{ download ? "Download" : "Run" }} {{ capitalize(type) }} Report
+        {{
+          download
+            ? $t("reporting.runReportDialog.downloadTitle", {
+                type: $t(`common.${type}`),
+              })
+            : $t("reporting.runReportDialog.runTitle", {
+                type: $t(`common.${type}`),
+              })
+        }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section v-if="reportTemplates.length === 0">
-        There are no report templates that depend on {{ capitalize(type) }}. You
-        must select a dependency in the Report Template of type {{ type }} using
-        the dependencies dropdown.
+        {{
+          $t("reporting.runReportDialog.noTemplates", {
+            type: $t(`common.${type}`),
+            dependency: type,
+          })
+        }}
       </q-card-section>
       <div v-else>
         <q-card-section>
           <tactical-dropdown
             v-model="reportTemplate"
             :options="reportTemplateOptions"
-            label="Report Template"
+            :label="$t('reporting.reportScheduleForm.reportTemplate')"
             outlined
             mapOptions
             filterable
@@ -41,13 +54,13 @@ For details, see: https://license.tacticalrmm.com/ee
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn v-close-popup dense flat label="Cancel" />
+          <q-btn v-close-popup dense flat :label="$t('common.cancel')" />
           <q-btn
             :loading="isLoading"
             :disable="!reportTemplate"
             dense
             flat
-            label="Run Report"
+            :label="$t('reporting.runReportDialog.runReport')"
             color="primary"
             @click="submit"
           />
@@ -61,7 +74,7 @@ For details, see: https://license.tacticalrmm.com/ee
 // composition imports
 import { ref, computed, onBeforeMount } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import { capitalize } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 import { useSharedReportTemplates } from "../api/reporting";
 import { notifyError } from "@/utils/notify";
 
@@ -80,6 +93,8 @@ const props = defineProps<{
   type: "client" | "site" | "agent";
   download: boolean;
 }>();
+
+const { t } = useI18n();
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -119,14 +134,17 @@ const reportFormatOptions = computed(() => {
     else
       return [
         { label: "PDF", value: "pdf" },
-        { label: "Text", value: "plaintext" },
+        {
+          label: t("reporting.reportTemplateForm.textFormat"),
+          value: "plaintext",
+        },
       ];
   } else return [];
 });
 
 async function submit() {
   if (reportTemplate.value === null) {
-    notifyError("Report Template is required.");
+    notifyError(t("reporting.runReportDialog.templateRequired"));
     return;
   }
 

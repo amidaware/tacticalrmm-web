@@ -8,7 +8,9 @@
       class="row items-center q-px-lg q-py-xs bg-grey-9 text-white"
     >
       <div class="row items-center">
-        <div class="text-subtitle1 text-body2 q-mr-md">Shell:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md">
+          {{ $t("remoteBg.terminal.shell") }}
+        </div>
         <q-option-group
           dense
           v-model="selectedShell"
@@ -21,7 +23,7 @@
         />
 
         <q-btn
-          label="Edit Path"
+          :label="$t('remoteBg.terminal.editPath')"
           color="primary"
           @click="handleCustomEdit"
           class="q-px-sm q-ml-lg q-pb-0 text-caption text-capitalize"
@@ -31,17 +33,19 @@
           flat
           dense
           icon="content_copy"
-          label="Copy"
+          :label="$t('common.copy')"
           color="white"
           @click="copyTerminalOutput"
           class="q-ml-sm text-caption text-capitalize"
         >
-          <q-tooltip>Copy terminal output</q-tooltip>
+          <q-tooltip>{{ $t("remoteBg.terminal.copyOutput") }}</q-tooltip>
         </q-btn>
       </div>
 
       <div v-if="isWindows" class="row items-center q-ml-lg">
-        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">Run as:</div>
+        <div class="text-subtitle1 text-body2 q-mr-md q-ml-md">
+          {{ $t("remoteBg.terminal.runAs") }}
+        </div>
 
         <q-option-group
           dense
@@ -63,17 +67,19 @@
           max-width="320px"
           content-class="terminal-shortcuts-tooltip"
         >
-          <div class="text-weight-medium q-mb-xs">Terminal shortcuts</div>
+          <div class="text-weight-medium q-mb-xs">
+            {{ $t("remoteBg.terminal.shortcuts.title") }}
+          </div>
 
           <div class="shortcut-row">
-            <span>Copy selected text</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.copySelected") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>Insert</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Paste</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.paste") }}</span>
             <span class="shortcut-keys">
               <kbd>Shift</kbd><span>+</span><kbd>Insert</kbd>
             </span>
@@ -82,28 +88,28 @@
           <q-separator dark class="q-my-xs" />
 
           <div class="shortcut-row">
-            <span>Interrupt command</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.interrupt") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>C</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Previous command</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.previousCommand") }}</span>
             <span class="shortcut-keys">
               <kbd>↑</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Next command</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.nextCommand") }}</span>
             <span class="shortcut-keys">
               <kbd>↓</kbd>
             </span>
           </div>
 
           <div class="shortcut-row">
-            <span>Move by word</span>
+            <span>{{ $t("remoteBg.terminal.shortcuts.moveByWord") }}</span>
             <span class="shortcut-keys">
               <kbd>Ctrl</kbd><span>+</span><kbd>←</kbd>
               <span>/</span>
@@ -123,21 +129,25 @@
     <q-card style="min-width: 400px">
       <q-form @submit.prevent="startCustomShell">
         <q-card-section class="text-h6">
-          Enter Custom Shell Path
+          {{ $t("remoteBg.terminal.customShellTitle") }}
         </q-card-section>
 
         <q-card-section>
           <q-input
             v-model="customShellInput"
-            label="Shell Path"
+            :label="$t('remoteBg.terminal.shellPath')"
             dense
             autofocus
           />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" @click="cancelCustomShell" />
-          <q-btn color="primary" label="Start" type="submit" />
+          <q-btn flat :label="$t('common.cancel')" @click="cancelCustomShell" />
+          <q-btn
+            color="primary"
+            :label="$t('remoteBg.terminal.start')"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -157,6 +167,7 @@ import {
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { uid, useQuasar, copyToClipboard } from "quasar";
+import { useI18n } from "vue-i18n";
 import { useResizeObserver, useDebounceFn } from "@vueuse/core";
 import { useTerminalWSConnection } from "@/websocket/websocket";
 import "@xterm/xterm/css/xterm.css";
@@ -190,6 +201,7 @@ interface TerminalDefaults {
 }
 
 const $q = useQuasar();
+const { t } = useI18n();
 const props = defineProps<{
   agent_id: string;
   agentPlatform: string;
@@ -213,8 +225,8 @@ const pendingCustomShell = ref<string | null>(null);
 const runAsUser = ref(false);
 const isWindows = computed(() => props.agentPlatform === "windows");
 const runAsOptions = [
-  { label: "System", value: false },
-  { label: "User", value: true },
+  { label: t("remoteBg.terminal.runAsSystem"), value: false },
+  { label: t("common.user"), value: true },
 ];
 
 const shellOptions = computed<ShellOption[]>(() => {
@@ -226,13 +238,15 @@ const shellOptions = computed<ShellOption[]>(() => {
       ]
     : [{ label: "Bash", value: "bash" }];
 
-  let customLabel = "Custom Shell";
+  let customLabel = t("remoteBg.terminal.customShell");
   if (loading.value && pendingCustomShell.value) {
-    customLabel = "Custom (Shell loading...)";
+    customLabel = t("remoteBg.terminal.customLoading");
   } else if (invalidCustomShell.value) {
-    customLabel = "Custom (Shell path doesn't exist)";
+    customLabel = t("remoteBg.terminal.customInvalid");
   } else if (customShellPath.value) {
-    customLabel = `Custom (${customShellPath.value})`;
+    customLabel = t("remoteBg.terminal.customPath", {
+      path: customShellPath.value,
+    });
   }
 
   base.push({
@@ -366,7 +380,8 @@ function initWS(shell: string) {
 
       $q.notify({
         type: "negative",
-        message: msg.error || msg.data?.error || "Failed to start terminal",
+        message:
+          msg.error || msg.data?.error || t("remoteBg.terminal.startFailed"),
       });
 
       if (isCustomAttempt) {
@@ -381,7 +396,7 @@ function initWS(shell: string) {
       runAsUser.value = false;
       $q.notify({
         type: "warning",
-        message: msg.message || "Run as user was not available..",
+        message: msg.message || t("remoteBg.terminal.runAsUnavailable"),
       });
 
       return;
@@ -399,7 +414,7 @@ function initWS(shell: string) {
       started = false;
       startRequested = false;
       loading.value = false;
-      term.write("\r\n[Session Ended]\r\n");
+      term.write(`\r\n[${t("remoteBg.terminal.sessionEnded")}]\r\n`);
     }
   });
 
@@ -750,12 +765,12 @@ async function copyTerminalOutput() {
 
     $q.notify({
       type: "positive",
-      message: "Terminal output copied to clipboard.",
+      message: t("remoteBg.terminal.outputCopied"),
     });
   } catch {
     $q.notify({
       type: "negative",
-      message: "Failed to copy terminal output.",
+      message: t("remoteBg.terminal.copyFailed"),
     });
   }
 }

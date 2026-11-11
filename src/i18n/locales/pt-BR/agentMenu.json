@@ -1,0 +1,67 @@
+{
+  "actionMenu": {
+    "editAgent": "Editar {hostname}",
+    "pendingActions": "Ações Pendentes do Agente",
+    "takeControl": "Assumir Controle",
+    "runUrlAction": "Executar Ação de URL",
+    "sendCommand": "Enviar Comando",
+    "runScript": "Executar Script",
+    "runFavoritedScript": "Executar Script Favorito",
+    "remoteBackground": "Segundo Plano Remoto",
+    "disableMaintenance": "Desativar Modo de Manutenção",
+    "enableMaintenance": "Ativar Modo de Manutenção",
+    "patchManagement": "Gerenciamento de Patches",
+    "runPatchScan": "Verificar Status dos Patches",
+    "installPatchesNow": "Instalar Patches Agora",
+    "runChecks": "Executar Verificações",
+    "wakeUp": "Ligar via Rede (WoL)",
+    "reboot": "Reiniciar",
+    "now": "Agora",
+    "later": "Mais tarde",
+    "shutdown": "Desligar",
+    "assignPolicy": "Atribuir Política de Automação",
+    "reporting": "Relatórios",
+    "agentRecovery": "Recuperação do Agente",
+    "removeAgent": "Remover Agente",
+    "rebootConfirm": "Reiniciar {hostname} agora",
+    "vnc": {
+      "title": "Porta do Servidor VNC",
+      "message": "Informe a porta do servidor VNC:",
+      "launch": "Iniciar"
+    },
+    "offline": {
+      "title": "Agente offline",
+      "message": "Não foi possível contatar {hostname}. Deseja continuar com a desinstalação? Se sim, o agente precisará ser desinstalado manualmente do computador."
+    },
+    "confirm": {
+      "shutdownVerb": "o desligamento",
+      "shutdownTitle": "Confirmar Desligamento",
+      "deletionVerb": "a exclusão",
+      "deletionTitle": "Confirmar Exclusão",
+      "uninstall": "Desinstalar"
+    },
+    "notify": {
+      "maintenanceDisabled": "Modo de manutenção desativado em {hostname}",
+      "maintenanceEnabled": "Modo de manutenção ativado em {hostname}",
+      "scanSoon": "A verificação será executada em breve em {hostname}",
+      "restarting": "{hostname} será reiniciado agora",
+      "shuttingDown": "{hostname} será desligado agora",
+      "somethingWentWrong": "Algo deu errado"
+    }
+  },
+  "confirmYes": {
+    "message": "Digite {yes} na caixa abaixo para confirmar {action} de {hostname}.",
+    "defaultTitle": "Confirmar ação",
+    "inputLabel": "Digite yes para confirmar"
+  },
+  "alertsIcon": {
+    "noNewAlerts": "Nenhum alerta novo",
+    "snooze": "Adiar alerta",
+    "resolve": "Resolver alerta",
+    "viewAll": "Ver Todos os Alertas ({count})",
+    "snoozeTitle": "Adiar Alerta",
+    "snoozeMessage": "Adiar o alerta por quantos dias?",
+    "snoozed": "O alerta foi adiado por {days} dias",
+    "resolved": "O alerta foi resolvido"
+  }
+}

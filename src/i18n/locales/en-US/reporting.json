@@ -1,0 +1,261 @@
+{
+  "actions": {
+    "downloadHtmlReport": "Download HTML Report",
+    "downloadPdfReport": "Download PDF Report",
+    "downloadTextReport": "Download Text Report",
+    "openHtmlReport": "Open HTML Report",
+    "openPdfReport": "Open PDF Report",
+    "openTextReport": "Open Text Report"
+  },
+  "assetFileUpload": {
+    "selectFiles": "Select files",
+    "title": "File Upload",
+    "upload": "Upload",
+    "uploaded": "Files uploaded successfully"
+  },
+  "cannotBeUndone": "This action cannot be undone.",
+  "clone": "Clone",
+  "confirmFileName": "Confirm File Name",
+  "copyOf": "Copy of {name}",
+  "dataQuerySelect": {
+    "dataQueries": "Data Queries",
+    "selectQuery": "Select a query from the dropdown",
+    "title": "Data Query Select"
+  },
+  "editorToolbar": {
+    "addDataQuery": "Add Data Query",
+    "article": "Article",
+    "blockQuote": "Block Quote",
+    "bold": "Bold",
+    "bulletList": "Bullet List",
+    "chapter": "Chapter",
+    "codeBlock": "Code Block",
+    "createLink": "Create Link",
+    "dataQuerySaved": "{name} was saved successfully in template",
+    "editDataQuery": "Edit Data Query",
+    "footer": "Footer",
+    "formatting": "Formatting",
+    "header": "Header",
+    "heading": "Heading {level}",
+    "horizontalRule": "Horizontal Rule",
+    "image": "Image",
+    "insertLink": "Insert Link",
+    "insertSavedDataQuery": "Insert Saved Data Query",
+    "italic": "Italic",
+    "jinjaBlock": "Jinja {'{% %}'} block",
+    "jinjaData": "Jinja template data",
+    "jinjaFor": "Jinja for loop",
+    "jinjaIf": "Jinja if condition",
+    "link": "Link",
+    "noDataSources": "No data sources exist in template variables",
+    "numberedList": "Numbered List",
+    "redo": "Redo",
+    "section": "Section",
+    "table": "Table",
+    "text": "Text",
+    "undo": "Undo",
+    "url": "Url"
+  },
+  "helpMenu": {
+    "autocomplete": "Ctrl+Space in the query editor to auto-complete values",
+    "baseTemplate": "Base Template",
+    "dataQuery": "Data Query",
+    "dataQueryDescription": "Data Queries are used to save common database queries to use them in templates. Behind the scenes, we are just creating a Django queryset. The only difference is these querysets are restricted to only retrieve data versus modifying data.",
+    "modelDescription": "This is the only required field. This specifies the table to query.",
+    "reportTemplate": "Report Template",
+    "reportTemplates": "Report Templates",
+    "structure": "Structure",
+    "syntax": "Syntax",
+    "syntaxDescription": "When you create Data Queries in the Data Query Editor you use JSON. You can also create Data Queries directly in the template variables which uses yaml syntax."
+  },
+  "new": "New",
+  "notify": {
+    "dataQueryAdded": "Data Query was added successfully",
+    "dataQueryEdited": "Data Query was edited successfully",
+    "dataQueryRemoved": "The Data Query was successfully removed",
+    "emailQueued": "Report was generated and the email is queued for delivery",
+    "historyDeleted": "Report History entry was deleted successfully",
+    "htmlTemplateAdded": "HTML Template was added successfully",
+    "htmlTemplateEdited": "HTML Template was edited successfully",
+    "htmlTemplateRemoved": "The HTML template was successfully removed",
+    "scheduleAdded": "Report Schedule was added successfully",
+    "scheduleDeleted": "Report Schedule was deleted successfully",
+    "scheduleRun": "Report Schedule was run. Check the Report History for the status.",
+    "scheduleUpdated": "Report Schedule was updated successfully",
+    "sharedTemplatesImported": "Shared templates imported successfully",
+    "templateAdded": "The report template was added successfully",
+    "templateEdited": "The report template was edited successfully",
+    "templateImported": "Report Template was successfully imported.",
+    "templateRemoved": "The report template was successfully removed"
+  },
+  "pleaseWait": "Please wait...",
+  "reportAssetSelect": {
+    "noAssets": "No Report Assets found. Go to Reporting Manager and use the Report Assets button to upload",
+    "output": "Output",
+    "reportAsset": "Report Asset",
+    "selected": "Selected",
+    "title": "Report Asset Select"
+  },
+  "reportAssets": {
+    "bulkActions": "Bulk Actions",
+    "deleteConfirm": "You are about to delete an asset. This action isn't reversible | You are about to delete an asset. This action isn't reversible | You are about to delete {count} assets. This action isn't reversible",
+    "enterFolderName": "Enter a folder name",
+    "enterNewFileName": "Enter a new file name",
+    "enterNewFolderName": "Enter a new folder name",
+    "newFolder": "New Folder",
+    "rename": "Rename",
+    "rootFolder": "Assets",
+    "title": "Report Assets"
+  },
+  "reportChartSelect": {
+    "bar": "Bar",
+    "chartName": "Chart Name",
+    "chartType": "Chart Type",
+    "line": "Line",
+    "pie": "Pie",
+    "title": "Add Chart"
+  },
+  "reportDataQueryForm": {
+    "name": "Data Query Name",
+    "newDataQuery": "New Data Query",
+    "parseError": "There was an error parsing the json: {error}"
+  },
+  "reportDataQueryTable": {
+    "deleteMessage": "If this query is in use you will need to change it in every report template",
+    "deleteTitle": "Delete Data Query: {name}?"
+  },
+  "reportDependencyPrompt": {
+    "allFieldsRequired": "All fields must have a value",
+    "title": "Select Report Dependencies"
+  },
+  "reportEmailSettingsForm": {
+    "attachmentExtension": "Attachment Extension",
+    "attachmentExtensionHint": "Enter the desired extension without a dot (e.g., csv, json, txt). Defaults to 'txt' if blank.",
+    "attachmentName": "Attachment Name",
+    "attachmentNameHint": "Do not include the extension.",
+    "body": "Body",
+    "bodyHint": "Default if blank: 'Your report is attached.'",
+    "includeReportLink": "Include a direct link to view the report online (requires TRMM account authentication).",
+    "includeReportLinkTooltip": "The link will be automatically added at the end of the email body.",
+    "subject": "Subject",
+    "subjectHint": "Default if left blank: 'Scheduled Report: <report name>'",
+    "title": "Customize Email Options"
+  },
+  "reportHistoryTable": {
+    "dateCreated": "Date Created",
+    "deleteMessage": "This will remove the history entry permanently.",
+    "deleteTitle": "Delete History for {name}?",
+    "template": "Template",
+    "templateType": "Template Type",
+    "title": "Report History"
+  },
+  "reportHtmlTemplateForm": {
+    "name": "HTML Template Name",
+    "title": "New Base Template"
+  },
+  "reportHtmlTemplateTable": {
+    "deleteMessage": "If this template is in use you will need to change it in every report template",
+    "deleteTitle": "Delete HTML Template: {name}?",
+    "title": "Base Templates"
+  },
+  "reportScheduleForm": {
+    "addEmail": "Add email",
+    "addTitle": "Add Report Schedule",
+    "createNewSchedule": "Create New Schedule",
+    "customizeEmail": "Customize Email Content",
+    "defaultRecipients": "Default email recipients: {recipients}",
+    "dependencies": "Dependencies",
+    "dependenciesRequiredSave": "All required dependencies must be set before saving.",
+    "dependenciesRequiredSend": "All required dependencies must be set before sending.",
+    "editTitle": "Edit Report Schedule",
+    "emailRecipients": "Email recipients",
+    "emailReport": "Email Report",
+    "format": "Format",
+    "noRecipientsAdded": "No recipients added yet. Emails will be sent to the default recipients from global settings. Adding recipients here will override those defaults.",
+    "noRecipientsConfigured": "No email recipients configured",
+    "plainText": "Plain Text (or CSV)",
+    "reportTemplate": "Report Template",
+    "schedule": "Schedule",
+    "send": "Send",
+    "sendReportEmail": "Send report via Email",
+    "timezone": "Timezone",
+    "timezoneHint": "Default timezone {timezone} will be used if blank"
+  },
+  "reportScheduleTable": {
+    "copyName": "{name} Copy",
+    "deleteTitle": "Delete Schedule {name}?",
+    "lastRun": "Last Run",
+    "never": "Never",
+    "recipients": "Recipients",
+    "runScheduledReport": "Run Scheduled Report",
+    "sendEmail": "Send Email",
+    "title": "Report Schedules"
+  },
+  "reportTableMaker": {
+    "blank": "Blank",
+    "dataSource": "Data Source",
+    "fromVariables": "From Variables",
+    "insert": "Insert",
+    "title": "Insert Table"
+  },
+  "reportTemplateForm": {
+    "addBaseTemplate": "Add Base Template",
+    "autoSave": "Auto-save",
+    "closeConfirm": "Would you like to close?",
+    "debug": "Debug",
+    "generatingReport": "Generating Report...",
+    "hideVariables": "Hide variables",
+    "plainText": "Plain Text",
+    "preview": "Preview",
+    "reportName": "Report Name",
+    "selectedCount": "{count} Selected",
+    "showVariables": "Show variables",
+    "templateNameRequired": "Template Name is required",
+    "templateSaved": "Template Saved!",
+    "templateTextRequired": "Template Text is required",
+    "textFormat": "Text",
+    "title": "New Report Template",
+    "unsavedChanges": "You have unsaved changes",
+    "variables": "Variables",
+    "variablesError": "Error in variables: {error}"
+  },
+  "reportTemplateImport": {
+    "fileRequired": "File is required",
+    "importFile": "Import File",
+    "importFileHint": "Only accepts exported report template json files",
+    "overwrite": "Overwrite if name exists"
+  },
+  "reportsManager": {
+    "deleteTitle": "Delete template: {name}?",
+    "htmlTemplate": "HTML Template",
+    "importReportTemplate": "Import Report Template",
+    "markdownTemplate": "Markdown Template",
+    "plainTextTemplate": "Plain Text Template",
+    "reportRunHistory": "Report Run History",
+    "scheduleReport": "Schedule Report",
+    "sharedTemplates": "Shared Templates",
+    "templateDependencies": "Template Dependencies",
+    "title": "Reports Manager"
+  },
+  "required": "*Required",
+  "runReportDialog": {
+    "downloadTitle": "Download {type} Report",
+    "noTemplates": "There are no report templates that depend on {type}. You must select a dependency in the Report Template of type {dependency} using the dependencies dropdown.",
+    "runReport": "Run Report",
+    "runTitle": "Run {type} Report",
+    "templateRequired": "Report Template is required."
+  },
+  "select": "Select",
+  "sharedTemplatesImport": {
+    "downloadUrl": "Download Url",
+    "overwrite": "Overwrite if name conflicts"
+  },
+  "variablesSelector": {
+    "baseTemplateBlocks": "Base Template Blocks",
+    "blockNotFound": "Block not found in template. Click on the block to copy and paste into template",
+    "copied": "Copied!",
+    "forLoop": "for loop",
+    "missingDependency": "Missing value for dependency: {dep} . Open Preview to set values",
+    "noResults": "Data Query: {key} returned no results"
+  }
+}

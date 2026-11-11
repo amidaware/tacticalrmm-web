@@ -1,0 +1,144 @@
+{
+  "pageTitle": "Remote Background",
+  "windowsOnly": "Only supported for Windows agents at this time",
+  "tabs": {
+    "terminal": "Terminal",
+    "fileBrowser": "File Browser",
+    "services": "Services",
+    "processes": "Processes",
+    "eventLog": "Event Log",
+    "registry": "Registry"
+  },
+  "eventLog": {
+    "totalRecords": "{logType} log total records: {count}",
+    "application": "Application",
+    "system": "System",
+    "security": "Security",
+    "showLastDays": "Show last {days} days",
+    "columns": {
+      "source": "Source",
+      "eventId": "Event ID",
+      "time": "Time",
+      "message": "Message (click to view full)"
+    }
+  },
+  "processes": {
+    "stopLiveRefresh": "Stop Live Refresh",
+    "resumeLiveRefresh": "Resume Live Refresh",
+    "cpuUsage": "CPU Usage:",
+    "ramUsage": "RAM Usage:",
+    "refreshInterval": "Refresh interval (seconds)",
+    "endProcess": "End Process",
+    "columns": {
+      "memory": "Memory"
+    }
+  },
+  "services": {
+    "detailsTitle": "Service Details - {name}",
+    "serviceName": "Service name:",
+    "displayName": "Display name:",
+    "descriptionLabel": "Description:",
+    "path": "Path:",
+    "startupType": "Startup type:",
+    "serviceStatus": "Service status:",
+    "start": "Start",
+    "stop": "Stop",
+    "restart": "Restart",
+    "serviceDetails": "Service Details",
+    "delayed": "{startType} (Delayed)",
+    "startup": {
+      "autodelay": "Automatic (Delayed Start)",
+      "automatic": "Automatic",
+      "manual": "Manual"
+    },
+    "columns": {
+      "displayName": "Display Name",
+      "startup": "Startup",
+      "logOnAs": "Log On As"
+    }
+  },
+  "registry": {
+    "loadMore": "Load More",
+    "new": "New",
+    "rename": "Rename",
+    "modify": "Modify",
+    "noValues": "No values found",
+    "confirmKeyDeleteTitle": "Confirm Key Delete",
+    "confirmKeyDeleteMessage": "Are you sure you want to permanently delete this key and all of its subkeys?",
+    "confirmValueDeleteTitle": "Confirm Value Delete",
+    "confirmValueDeleteMessage": "Deleting certain registry values could cause system instability. Are you sure you want to permanently delete this value?",
+    "selectionRequiredTitle": "Selection Required",
+    "selectionRequiredMessage": "Please select a hive or key before creating a new key.",
+    "binaryDenied": "Modifying REG_BINARY values access denied.",
+    "columns": {
+      "name": "Name",
+      "type": "Type",
+      "data": "Data"
+    },
+    "newTypes": {
+      "KEY": "Key",
+      "REG_SZ": "String Value",
+      "REG_DWORD": "DWORD (32-bit) Value",
+      "REG_QWORD": "QWORD (64-bit) Value",
+      "REG_MULTI_SZ": "Multi-String Value",
+      "REG_EXPAND_SZ": "Expandable String Value"
+    },
+    "valueModal": {
+      "editTitle": "Edit {type}",
+      "createTitle": "Create {type}",
+      "types": {
+        "dword": "DWORD (32-bit) Value",
+        "qword": "QWORD (64-bit) Value",
+        "multiString": "Multi-String",
+        "string": "String"
+      },
+      "valueName": "Value name:",
+      "nameRequired": "Name is required",
+      "valueData": "Value data:",
+      "base": "Base",
+      "hexadecimal": "Hexadecimal",
+      "decimal": "Decimal",
+      "negative": "Value cannot be negative.",
+      "dwordMax": "DWORD (32-bit) value cannot exceed 4,294,967,295.",
+      "qwordMax": "QWORD (64-bit) value cannot exceed 9,007,199,254,740,991."
+    }
+  },
+  "terminal": {
+    "newModeUnsupported": "New terminal mode requires agent version 2.11.0 or higher. Reverting to legacy terminal mode. Please update the agent to use the new terminal.",
+    "loadSettingsFailed": "Failed to load terminal settings",
+    "shell": "Shell:",
+    "editPath": "Edit Path",
+    "copyOutput": "Copy terminal output",
+    "runAs": "Run as:",
+    "runAsSystem": "System",
+    "shortcuts": {
+      "title": "Terminal shortcuts",
+      "copySelected": "Copy selected text",
+      "paste": "Paste",
+      "interrupt": "Interrupt command",
+      "previousCommand": "Previous command",
+      "nextCommand": "Next command",
+      "moveByWord": "Move by word"
+    },
+    "customShellTitle": "Enter Custom Shell Path",
+    "shellPath": "Shell Path",
+    "start": "Start",
+    "customShell": "Custom Shell",
+    "customLoading": "Custom (Shell loading...)",
+    "customInvalid": "Custom (Shell path doesn't exist)",
+    "customPath": "Custom ({path})",
+    "startFailed": "Failed to start terminal",
+    "runAsUnavailable": "Run as user was not available..",
+    "sessionEnded": "Session Ended",
+    "outputCopied": "Terminal output copied to clipboard.",
+    "copyFailed": "Failed to copy terminal output."
+  },
+  "fileBrowser": {
+    "folderEmpty": "Folder is Empty",
+    "size": "Size",
+    "retry": "Retry",
+    "newModeUnsupported": "New file browser mode requires agent version 2.12.0 or higher. Reverting to legacy file browser mode. Please update the agent to use the new file browser.",
+    "noPermission": "You do not have permission to use the file browser.",
+    "loadSettingsFailed": "Failed to load file browser settings"
+  }
+}

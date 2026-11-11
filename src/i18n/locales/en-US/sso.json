@@ -1,0 +1,56 @@
+{
+  "settings": {
+    "title": "SSO Settings",
+    "enable": "Enable SSO",
+    "blockLocal": "Block Local User Login",
+    "blockLocalHint": "When enabled, only users with SSO accounts can log in, with the exception of local superuser accounts.",
+    "updated": "Settings updated successfully"
+  },
+  "callback": {
+    "error": "There was an error logging into your provider.",
+    "backToLogin": "Go back to Login"
+  },
+  "accounts": {
+    "title": "Connected Social Accounts for {username}",
+    "disconnect": "Disconnect",
+    "columns": {
+      "displayName": "Display Name",
+      "provider": "Provider",
+      "lastLogin": "Last Login",
+      "dateJoined": "Date Joined"
+    },
+    "disconnectConfirm": "Disconnect social account: {name}?",
+    "disconnected": "Social account disconnected successfully"
+  },
+  "required": "*Required",
+  "providerForm": {
+    "editTitle": "Edit OIDC Provider",
+    "addTitle": "Add OIDC Provider",
+    "name": "Provider Name",
+    "nameInvalid": "Only letters, numbers, hyphens, and underscores are allowed",
+    "nameHint": "A unique identifier for the SSO provider. Avoid spaces and special characters, as this will be part of the callback URL.",
+    "issuerUrl": "Issuer URL",
+    "issuerUrlHint": "The OpenID Connect Issuer URL provided by the SSO provider. This is typically the base URL where the provider hosts their OIDC configuration.",
+    "clientId": "Client ID",
+    "secret": "Secret",
+    "defaultRole": "Default User Role",
+    "defaultRoleHint": "The role assigned to users upon first sign-in through this provider.",
+    "edited": "SSO Provider was edited!"
+  },
+  "providers": {
+    "title": "SSO Providers",
+    "enableToAdd": "Enable SSO in the settings to allow adding a provider.",
+    "noData": "No OIDC Providers added yet",
+    "copyCallbackUrl": "Copy Callback URL",
+    "copyJsOrigin": "Copy Authorized JavaScript origin",
+    "copyCallbackUrlTooltip": "Copy Callback URL to Clipboard",
+    "columns": {
+      "serverUrl": "Server Url",
+      "callbackUrl": "Callback URL",
+      "jsOriginUrl": "Javascript Origin URL"
+    },
+    "deleteConfirm": "Delete SSO Provider: {name}?",
+    "deleted": "SSO Provider: {name} was deleted!",
+    "urlCopied": "URL copied!"
+  }
+}

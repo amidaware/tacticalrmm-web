@@ -1,5 +1,7 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else>
     <AuditManager :agent="selectedAgent" :tabHeight="tabHeight" />
   </div>

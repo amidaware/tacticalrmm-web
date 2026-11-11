@@ -26,6 +26,7 @@ import {
 import { bytes2Human, formatDate } from "@/utils/format";
 import { getAxiosErrorDetail } from "@/utils/apiError";
 import { AxiosError } from "axios";
+import { t } from "@/i18n";
 
 export function isFolderRow(row: FileBrowserItem): boolean {
   return row.type === "folder";
@@ -157,18 +158,20 @@ export function extractDestinationRule(
   platform?: string,
 ): true | string {
   const path = String(value ?? "").trim();
-  if (!path) return "Enter a destination folder";
+  if (!path) return t("fileBrowser.utils.extract.destinationRequired");
   const windows = (platform || "").toLowerCase() === "windows";
   const absolute = windows
     ? /^(?:[A-Za-z]:[\\/]|[\\/]{2}[^\\/]+[\\/][^\\/]+)/.test(path)
     : path.startsWith("/");
   if (!absolute) {
     return windows
-      ? "Enter a full path, for example C:\\Folder"
-      : "Enter a full path starting with /";
+      ? t("fileBrowser.utils.extract.fullPathWindows", {
+          example: "C:\\Folder",
+        })
+      : t("fileBrowser.utils.extract.fullPathUnix");
   }
   if (path.split(windows ? /[\\/]+/ : "/").includes("..")) {
-    return "The path cannot contain ..";
+    return t("fileBrowser.utils.extract.noParentRefs");
   }
   return true;
 }
@@ -263,17 +266,17 @@ export function mapApiItemsToFileBrowserItems(
 export function getListFilesErrorMessage(err: unknown): string {
   if (err instanceof AxiosError) {
     if (err.code === "ERR_NETWORK") {
-      return "Unable to reach the server. Check your connection.";
+      return t("fileBrowser.utils.errors.serverUnreachable");
     }
     if (err.code === "ERR_CANCELED") {
-      return "Request was cancelled.";
+      return t("fileBrowser.utils.errors.requestCancelled");
     }
     if (err.response?.status === 403) {
       const detail = getAxiosErrorDetail(err);
       if (detail) {
         return formatFileBrowserApiErrorMessage(detail);
       }
-      return "You do not have permission to use the file browser.";
+      return t("fileBrowser.utils.errors.noPermission");
     }
     const detail = getAxiosErrorDetail(err);
     if (detail) {
@@ -282,7 +285,7 @@ export function getListFilesErrorMessage(err: unknown): string {
   } else if (err instanceof Error && err.message.trim()) {
     return formatFileBrowserApiErrorMessage(err.message);
   }
-  return "Unable to load directory contents.";
+  return t("fileBrowser.utils.errors.loadDirectoryFailed");
 }
 
 export function formatFileBrowserApiErrorMessage(raw: string): string {
@@ -292,7 +295,7 @@ export function formatFileBrowserApiErrorMessage(raw: string): string {
   if (
     /destination already exists \(conflict_policy=skip\)/i.test(afterFailed)
   ) {
-    return "Skipped — file already exists.";
+    return t("fileBrowser.utils.errors.skippedExists");
   }
   if (
     /this destination already contains a (file|folder) named/i.test(afterFailed)
@@ -308,10 +311,10 @@ export function formatFileBrowserApiErrorMessage(raw: string): string {
       afterFailed,
     );
   if (namedDup?.[1]) {
-    return `A file or folder named "${namedDup[1]}" already exists.`;
+    return t("fileBrowser.utils.errors.namedExists", { name: namedDup[1] });
   }
   if (/already exists/i.test(afterFailed)) {
-    return "A file or folder with this name already exists.";
+    return t("fileBrowser.utils.errors.nameExists");
   }
 
   return ensureSentence(afterFailed);
@@ -348,10 +351,15 @@ function ensureSentence(message: string): string {
   return /[.!?]$/.test(capped) ? capped : `${capped}.`;
 }
 
+const DUPLICATE_NAME_RE = /already exists|already contains/i;
+
 export function isDuplicateNameError(err: unknown, message?: string): boolean {
   const text =
     (message && message.trim()) || getFileBrowserErrorMessage(err, "");
-  return /already exists|already contains/i.test(text);
+  if (DUPLICATE_NAME_RE.test(text)) return true;
+  // The formatted message may be translated; check the untranslated
+  // server/error text too.
+  return DUPLICATE_NAME_RE.test(getAxiosErrorDetail(err) ?? "");
 }
 
 function deletePathIdentityKey(
@@ -429,20 +437,20 @@ export function isLikelyProtectedDeletePath(
 export function fileBrowserDeleteErrorMessage(error?: string): string {
   const text = (error ?? "").trim();
   if (/^protected path$/i.test(text)) {
-    return "protected system or agent path";
+    return t("fileBrowser.utils.errors.protectedPath");
   }
   return text;
 }
 
 export function getFileBrowserErrorMessage(
   err: unknown,
-  fallback = "Unable to complete the operation.",
+  fallback = t("fileBrowser.utils.errors.operationFailed"),
 ): string {
   if (err instanceof TransferSlotWaitTimeoutError) {
     return err.message;
   }
   if (isTransferSessionLimitError(err)) {
-    return "Too many concurrent file transfers. All slots are in use, possibly by other users; cancel one of your paused transfers or try again later.";
+    return t("fileBrowser.utils.errors.tooManyTransfers");
   }
   if (err instanceof AxiosError && err.response?.status === 429) {
     const detail = getAxiosErrorDetail(err);
@@ -452,7 +460,7 @@ export function getFileBrowserErrorMessage(
     return TRANSFER_RATE_LIMIT_MESSAGE;
   }
   const message = getListFilesErrorMessage(err);
-  if (message === "Unable to load directory contents.") {
+  if (message === t("fileBrowser.utils.errors.loadDirectoryFailed")) {
     return fallback;
   }
   return message;
@@ -691,24 +699,29 @@ export function formatDropOverlayTitle(
 ): string {
   switch (reason) {
     case "folders":
-      return "Folders cannot be uploaded";
+      return t("fileBrowser.utils.drop.titleFolders");
     case "unsupported":
-      return "This item cannot be uploaded";
+      return t("fileBrowser.utils.drop.titleUnsupported");
     case "too-many":
-      return "Too many files selected";
+      return t("fileBrowser.utils.drop.titleTooMany");
     case "queue-full":
-      return "Upload queue is full";
+      return t("fileBrowser.utils.drop.titleQueueFull");
     case "size-limit":
-      return "File exceeds the upload limit";
+      return t("fileBrowser.utils.drop.titleSizeLimit");
     default:
       break;
   }
 
-  if (fileCount === 1) return "Drop file to upload";
+  if (fileCount === 1)
+    return t("fileBrowser.utils.drop.titleDrop", { count: 1 }, 1);
   if (fileCount != null && fileCount > 1) {
-    return `Drop ${fileCount} files to upload`;
+    return t(
+      "fileBrowser.utils.drop.titleDrop",
+      { count: fileCount },
+      fileCount,
+    );
   }
-  return "Drop files to upload";
+  return t("fileBrowser.utils.drop.titleDropFiles");
 }
 
 export function dropRejectToastMessage(
@@ -716,15 +729,15 @@ export function dropRejectToastMessage(
 ): string {
   switch (reason) {
     case "folders":
-      return "Folders cannot be uploaded. Drop files into this folder instead.";
+      return t("fileBrowser.utils.drop.toastFolders");
     case "unsupported":
-      return "This item cannot be uploaded.";
+      return t("fileBrowser.utils.drop.toastUnsupported");
     case "too-many":
-      return "Too many files selected for one upload.";
+      return t("fileBrowser.utils.drop.toastTooMany");
     case "queue-full":
-      return "Upload queue is full. Clear finished items or cancel transfers, then try again.";
+      return t("fileBrowser.utils.drop.toastQueueFull");
     case "size-limit":
-      return "File exceeds the upload limit.";
+      return t("fileBrowser.utils.drop.toastSizeLimit");
   }
 }
 
@@ -762,7 +775,8 @@ export function fileBrowserPathLeaf(
   path: string,
   options?: { emptyFallback?: string; platform?: string },
 ): string {
-  const emptyFallback = options?.emptyFallback ?? "this folder";
+  const emptyFallback =
+    options?.emptyFallback ?? t("fileBrowser.utils.thisFolder");
   const trimmed = path.trim();
   if (!trimmed) return emptyFallback;
 
@@ -852,7 +866,11 @@ export function formatUploadConflictNamePreview(
   return {
     visibleNames,
     remainingCount,
-    summaryLine: `${visibleNames.join(", ")}, and ${remainingCount} more`,
+    summaryLine: t(
+      "fileBrowser.utils.andMore",
+      { names: visibleNames.join(", "), count: remainingCount },
+      remainingCount,
+    ),
   };
 }
 
@@ -861,17 +879,17 @@ export type UploadConflictAction = "cancel" | "skip" | "replace";
 export function uploadStatusLabel(status: UploadQueueStatus): string {
   switch (status) {
     case "queued":
-      return "Queued";
+      return t("fileBrowser.utils.status.queued");
     case "uploading":
-      return "Uploading";
+      return t("fileBrowser.utils.status.uploading");
     case "completed":
-      return "Uploaded";
+      return t("fileBrowser.utils.status.uploaded");
     case "failed":
-      return "Failed";
+      return t("fileBrowser.utils.status.failed");
     case "paused":
-      return "Paused";
+      return t("fileBrowser.utils.status.paused");
     case "cancelled":
-      return "Cancelled";
+      return t("fileBrowser.utils.status.cancelled");
     default:
       return status;
   }
@@ -912,21 +930,21 @@ export function classifyDownloadSelection(items: FileBrowserItem[]): {
 export function downloadStatusLabel(status: DownloadQueueStatus): string {
   switch (status) {
     case "queued":
-      return "Queued";
+      return t("fileBrowser.utils.status.queued");
     case "initializing":
-      return "Initializing…";
+      return t("fileBrowser.utils.status.initializing");
     case "downloading":
-      return "Downloading…";
+      return t("fileBrowser.utils.status.downloading");
     case "completing":
-      return "Verifying…";
+      return t("fileBrowser.utils.status.verifying");
     case "completed":
-      return "Downloaded";
+      return t("fileBrowser.utils.status.downloaded");
     case "failed":
-      return "Failed";
+      return t("fileBrowser.utils.status.failed");
     case "paused":
-      return "Paused";
+      return t("fileBrowser.utils.status.paused");
     case "cancelled":
-      return "Cancelled";
+      return t("fileBrowser.utils.status.cancelled");
     default:
       return status;
   }
@@ -1037,19 +1055,24 @@ export function nameSegmentBaseRule(
   platform?: string,
 ): true | string {
   const raw = String(v ?? "");
-  if (!raw.trim()) return "Name is required";
+  if (!raw.trim()) return t("fileBrowser.utils.name.required");
   const windows = !platform || platform === "windows";
   if (windows && (raw.endsWith(".") || raw.endsWith(" "))) {
-    return "Name cannot end with a space or a period";
+    return t("fileBrowser.utils.name.trailingSpaceOrPeriod");
   }
 
   const name = raw.trim();
-  if (name === "." || name === "..") return "The name cannot be . or ..";
+  if (name === "." || name === "..")
+    return t("fileBrowser.utils.name.dotNames");
   if (FILE_BROWSER_INVALID_NAME_CHARS.test(name)) {
-    return 'Name cannot contain \\ / : * ? " < > | or control characters';
+    return t("fileBrowser.utils.name.invalidChars", {
+      chars: '\\ / : * ? " < > |',
+    });
   }
   if (name.length > FILE_BROWSER_MAX_NAME_LENGTH) {
-    return `Name must be at most ${FILE_BROWSER_MAX_NAME_LENGTH} characters`;
+    return t("fileBrowser.utils.name.tooLong", {
+      max: FILE_BROWSER_MAX_NAME_LENGTH,
+    });
   }
   return true;
 }
@@ -1066,5 +1089,5 @@ export function duplicateNameRule(
   const dup = existingNames.some(
     (n) => n.toLowerCase() === lower && n.toLowerCase() !== excludeLower,
   );
-  return !dup || "A file or folder with this name already exists";
+  return !dup || t("fileBrowser.utils.name.duplicate");
 }

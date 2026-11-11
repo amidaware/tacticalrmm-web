@@ -1,6 +1,6 @@
 <template>
   <div v-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("remoteBg.windowsOnly") }}
   </div>
   <div v-else>
     <div class="row q-pt-sm q-pl-sm">
@@ -16,9 +16,12 @@
       </div>
       <div class="col-7"></div>
       <div class="col-3">
-        <code v-if="events"
-          >{{ logType }} log total records: {{ events.length }}</code
-        >
+        <code v-if="events">{{
+          $t("remoteBg.eventLog.totalRecords", {
+            logType: logType,
+            count: events.length,
+          })
+        }}</code>
       </div>
     </div>
     <q-table
@@ -46,22 +49,27 @@
           v-model="logType"
           color="cyan"
           val="Application"
-          label="Application"
+          :label="$t('remoteBg.eventLog.application')"
           @update:model-value="getEventLog"
         />
-        <q-radio v-model="logType" color="cyan" val="System" label="System" />
+        <q-radio
+          v-model="logType"
+          color="cyan"
+          val="System"
+          :label="$t('remoteBg.eventLog.system')"
+        />
         <q-radio
           v-model="logType"
           color="cyan"
           val="Security"
-          label="Security"
+          :label="$t('remoteBg.eventLog.security')"
         />
         <q-space />
         <q-input
           v-model="filter"
           style="width: 300px"
           outlined
-          label="Search"
+          :label="$t('common.search')"
           dense
           clearable
         >
@@ -102,6 +110,7 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { fetchAgentEventLog } from "@/api/agents";
 import { truncateText } from "@/utils/format";
+import { t } from "@/i18n";
 
 // ui imports
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
@@ -111,29 +120,35 @@ import PreDialog from "@/components/ui/PreDialog.vue";
 const columns = [
   {
     name: "eventType",
-    label: "Type",
+    label: t("common.type"),
     field: "eventType",
     align: "left",
     sortable: true,
   },
   {
     name: "source",
-    label: "Source",
+    label: t("remoteBg.eventLog.columns.source"),
     field: "source",
     align: "left",
     sortable: true,
   },
   {
     name: "eventID",
-    label: "Event ID",
+    label: t("remoteBg.eventLog.columns.eventId"),
     field: "eventID",
     align: "left",
     sortable: true,
   },
-  { name: "time", label: "Time", field: "time", align: "left", sortable: true },
+  {
+    name: "time",
+    label: t("remoteBg.eventLog.columns.time"),
+    field: "time",
+    align: "left",
+    sortable: true,
+  },
   {
     name: "message",
-    label: "Message (click to view full)",
+    label: t("remoteBg.eventLog.columns.message"),
     field: "message",
     align: "left",
     sortable: true,
@@ -162,7 +177,9 @@ export default {
     const filter = ref("");
     const loading = ref(false);
 
-    const showDays = computed(() => `Show last ${days.value} days`);
+    const showDays = computed(() =>
+      t("remoteBg.eventLog.showLastDays", { days: days.value }),
+    );
 
     watch([logType, days], getEventLog);
 

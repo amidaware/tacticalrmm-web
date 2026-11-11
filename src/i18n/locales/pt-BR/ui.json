@@ -1,0 +1,16 @@
+{
+  "customField": {
+    "defaultValue": "Valor padrão: {value}",
+    "required": "{name} é obrigatório"
+  },
+  "exportTableBtn": {
+    "tooltip": "Exportar tabela como CSV"
+  },
+  "preDialog": {
+    "copyToClipboard": "Copiar para a área de transferência"
+  },
+  "winUpdateDialog": {
+    "categories": "Categorias:",
+    "supportUrls": "URLs de suporte"
+  }
+}

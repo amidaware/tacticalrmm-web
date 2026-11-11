@@ -6,11 +6,11 @@
         inline-actions
         class="bg-red text-white text-center"
       >
-        You are viewing an outdated version of this page.
+        {{ $t("layout.outdated") }}
         <q-btn
           color="dark"
           icon="refresh"
-          label="Refresh"
+          :label="$t('common.refresh')"
           @click="$store.dispatch('reload')"
         />
       </q-banner>
@@ -21,12 +21,11 @@
       >
         <q-icon size="xl" name="warning" />
         <span
-          ><br />Your license is currently inactive, usually due to a payment
-          issue.<br /><br />To restore access, please update your payment
-          method.<br /><br />
-          If you’ve intentionally cancelled your sponsorship, you can remove
-          your license key to stop seeing this message.<br /><br />
-          If you need help, please contact our support team at
+          ><br />{{ $t("layout.license.inactive") }}<br /><br />{{
+            $t("layout.license.updatePayment")
+          }}<br /><br />
+          {{ $t("layout.license.cancelled") }}<br /><br />
+          {{ $t("layout.license.help") }}
           <a
             href="https://support.amidaware.com"
             target="_blank"
@@ -38,7 +37,7 @@
         <q-btn
           color="dark"
           icon="refresh"
-          label="Refresh"
+          :label="$t('common.refresh')"
           @click="$store.dispatch('reload')"
         />
       </q-banner>
@@ -57,7 +56,7 @@
           @click="$router.push({ name: 'Dashboard' })"
           icon="dashboard"
         >
-          <q-tooltip>Back to Dashboard</q-tooltip>
+          <q-tooltip>{{ $t("layout.backToDashboard") }}</q-tooltip>
         </q-btn>
         <q-toolbar-title>
           Tactical RMM<span class="text-overline q-ml-sm"
@@ -70,9 +69,9 @@
             :color="dash_warning_color"
             icon="update"
             dense
-            ><a :href="latestReleaseURL" target="_blank"
-              >v{{ latestTRMMVersion }} available</a
-            ></q-chip
+            ><a :href="latestReleaseURL" target="_blank">{{
+              $t("layout.updateAvailable", { version: latestTRMMVersion })
+            }}</a></q-chip
           >
           <!-- cert expiring soon check -->
           <q-chip
@@ -81,7 +80,9 @@
             :color="dash_negative_color"
             text-color="black"
             icon="warning"
-            >SSL certificate expires in {{ daysUntilCertExpires }} days</q-chip
+            >{{
+              $t("layout.certExpires", { days: daysUntilCertExpires })
+            }}</q-chip
           >
         </q-toolbar-title>
         <!-- temp dark mode toggle -->
@@ -104,20 +105,22 @@
         <!-- Devices Chip -->
         <q-chip class="cursor-pointer">
           <q-avatar size="md" icon="devices" color="primary" />
-          <q-tooltip :delay="600" anchor="top middle" self="top middle"
-            >Agent Count</q-tooltip
-          >
+          <q-tooltip :delay="600" anchor="top middle" self="top middle">{{
+            $t("layout.agentCount")
+          }}</q-tooltip>
           {{ serverCount + workstationCount }}
           <q-menu>
             <q-list dense>
-              <q-item-label header>Servers</q-item-label>
+              <q-item-label header>{{ $t("layout.servers") }}</q-item-label>
               <q-item>
                 <q-item-section avatar>
                   <q-icon name="dns" size="sm" color="primary" />
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Total: {{ serverCount }}</q-item-label>
+                  <q-item-label>{{
+                    $t("layout.total", { count: serverCount })
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>
@@ -130,17 +133,23 @@
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Offline: {{ serverOfflineCount }}</q-item-label>
+                  <q-item-label>{{
+                    $t("layout.offline", { count: serverOfflineCount })
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item-label header>Workstations</q-item-label>
+              <q-item-label header>{{
+                $t("layout.workstations")
+              }}</q-item-label>
               <q-item>
                 <q-item-section avatar>
                   <q-icon name="computer" size="sm" color="primary" />
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label>Total: {{ workstationCount }}</q-item-label>
+                  <q-item-label>{{
+                    $t("layout.total", { count: workstationCount })
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-item>
@@ -153,9 +162,9 @@
                 </q-item-section>
 
                 <q-item-section no-wrap>
-                  <q-item-label
-                    >Offline: {{ workstationOfflineCount }}</q-item-label
-                  >
+                  <q-item-label>{{
+                    $t("layout.offline", { count: workstationOfflineCount })
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -173,11 +182,11 @@
               v-close-popup
             >
               <q-item-section>
-                <q-item-label>Preferences</q-item-label>
+                <q-item-label>{{ $t("layout.preferences") }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-item clickable>
-              <q-item-section>Account</q-item-section>
+              <q-item-section>{{ $t("layout.account") }}</q-item-section>
               <q-item-section side>
                 <q-icon name="keyboard_arrow_right" />
               </q-item-section>
@@ -191,12 +200,14 @@
                     v-close-popup
                   >
                     <q-item-section>
-                      <q-item-label>Reset Password</q-item-label>
+                      <q-item-label>{{
+                        $t("layout.resetPassword")
+                      }}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-ripple @click="reset2FA" v-close-popup>
                     <q-item-section>
-                      <q-item-label>Reset 2FA</q-item-label>
+                      <q-item-label>{{ $t("layout.reset2fa") }}</q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -204,7 +215,7 @@
             </q-item>
             <q-item to="/expired" exact>
               <q-item-section>
-                <q-item-label>Logout</q-item-label>
+                <q-item-label>{{ $t("layout.logout") }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -235,9 +246,11 @@ import { checkWebTermPerms, openWebTerminal } from "@/api/core";
 import AlertsIcon from "@/components/AlertsIcon.vue";
 import UserPreferences from "@/components/modals/coresettings/UserPreferences.vue";
 import ResetPass from "@/components/accounts/ResetPass.vue";
+import { useI18n } from "vue-i18n";
 
 const store = useStore();
 const $q = useQuasar();
+const { t } = useI18n();
 
 const {
   serverCount,
@@ -287,8 +300,8 @@ function resetPassword() {
 
 function reset2FA() {
   $q.dialog({
-    title: "Reset 2FA",
-    message: "Are you sure you would like to reset your 2FA token?",
+    title: t("layout.reset2fa"),
+    message: t("layout.reset2faConfirm"),
     cancel: true,
     persistent: true,
   }).onOk(async () => {

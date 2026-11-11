@@ -8,10 +8,12 @@
         flat
         push
         icon="refresh"
-      />Debug Log
+      />{{ $t("logs.debugLog.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip content-class="bg-white text-primary">{{
+          $t("common.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
     <q-table
@@ -25,7 +27,7 @@
       }"
       :rows="debugLog"
       :columns="columns"
-      :title="modal ? 'Debug Logs' : ''"
+      :title="modal ? $t('logs.debugLog.tableTitle') : ''"
       :pagination="{ sortBy: 'entry_time', descending: true, rowsPerPage: 0 }"
       :loading="loading"
       :filter="filter"
@@ -49,7 +51,7 @@
           class="q-pr-sm"
           style="width: 250px"
           v-model="agentFilter"
-          label="Agents Filter"
+          :label="$t('logs.debugLog.agentsFilter')"
           :options="agentOptions"
           mapOptions
           outlined
@@ -60,7 +62,7 @@
           class="q-pr-sm"
           style="width: 250px"
           v-model="logTypeFilter"
-          label="Log Type Filter"
+          :label="$t('logs.debugLog.logTypeFilter')"
           :options="logTypeOptions"
           mapOptions
           outlined
@@ -70,31 +72,31 @@
           v-model="logLevelFilter"
           :color="dash_info_color"
           val="info"
-          label="Info"
+          :label="$t('logs.debugLog.info')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_negative_color"
           val="critical"
-          label="Critical"
+          :label="$t('logs.debugLog.critical')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_negative_color"
           val="error"
-          label="Error"
+          :label="$t('common.error')"
         />
         <q-radio
           v-model="logLevelFilter"
           :color="dash_warning_color"
           val="warning"
-          label="Warning"
+          :label="$t('logs.debugLog.warning')"
         />
         <q-space />
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -110,7 +112,7 @@
         <q-tr v-if="Array.isArray(debugLog) && debugLog.length === 1000">
           <q-td colspan="100%">
             <q-icon name="warning" :color="dash_warning_color" />
-            Results are limited to 1000 rows.
+            {{ $t("logs.debugLog.resultsLimited") }}
           </q-td>
         </q-tr>
       </template>
@@ -131,6 +133,7 @@ import { useStore } from "vuex";
 import { useAgentDropdown } from "@/composables/agents";
 import { fetchDebugLog } from "@/api/logs";
 import { formatTableColumnText } from "@/utils/format";
+import { t } from "@/i18n";
 
 // ui components
 import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
@@ -138,38 +141,44 @@ import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 
 // static data
 const logTypeOptions = [
-  { label: "Agent Update", value: "agent_update" },
-  { label: "Agent Issues", value: "agent_issues" },
-  { label: "Windows Updates", value: "windows_updates" },
-  { label: "System Issues", value: "system_issues" },
-  { label: "Scripting", value: "scripting" },
+  { label: t("logs.debugLog.logTypes.agentUpdate"), value: "agent_update" },
+  { label: t("logs.debugLog.logTypes.agentIssues"), value: "agent_issues" },
+  {
+    label: t("logs.debugLog.logTypes.windowsUpdates"),
+    value: "windows_updates",
+  },
+  {
+    label: t("logs.debugLog.logTypes.systemIssues"),
+    value: "system_issues",
+  },
+  { label: t("logs.debugLog.logTypes.scripting"), value: "scripting" },
 ];
 
 const columns = [
   {
     name: "entry_time",
-    label: "Time",
+    label: t("logs.shared.time"),
     field: "entry_time",
     align: "left",
     sortable: true,
   },
   {
     name: "log_level",
-    label: "Log Level",
+    label: t("logs.debugLog.columns.logLevel"),
     field: "log_level",
     align: "left",
     sortable: true,
   },
   {
     name: "agent",
-    label: "Agent",
+    label: t("common.agent"),
     field: "agent",
     align: "left",
     sortable: true,
   },
   {
     name: "log_type",
-    label: "Log Type",
+    label: t("logs.debugLog.columns.logType"),
     field: "log_type",
     align: "left",
     sortable: true,
@@ -177,7 +186,7 @@ const columns = [
   },
   {
     name: "message",
-    label: "Message",
+    label: t("logs.shared.message"),
     field: "message",
     align: "left",
     sortable: true,
@@ -243,7 +252,7 @@ export default {
             agentFilter.value = props.agent;
             getDebugLog();
           }
-        }
+        },
       );
     }
 

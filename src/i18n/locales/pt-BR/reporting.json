@@ -1,0 +1,261 @@
+{
+  "actions": {
+    "downloadHtmlReport": "Baixar relatório HTML",
+    "downloadPdfReport": "Baixar relatório PDF",
+    "downloadTextReport": "Baixar relatório de texto",
+    "openHtmlReport": "Abrir relatório HTML",
+    "openPdfReport": "Abrir relatório PDF",
+    "openTextReport": "Abrir relatório de texto"
+  },
+  "assetFileUpload": {
+    "selectFiles": "Selecionar arquivos",
+    "title": "Envio de arquivos",
+    "upload": "Enviar",
+    "uploaded": "Arquivos enviados com sucesso"
+  },
+  "cannotBeUndone": "Esta ação não pode ser desfeita.",
+  "clone": "Clonar",
+  "confirmFileName": "Confirmar nome do arquivo",
+  "copyOf": "Cópia de {name}",
+  "dataQuerySelect": {
+    "dataQueries": "Consultas de dados",
+    "selectQuery": "Selecione uma consulta na lista",
+    "title": "Selecionar consulta de dados"
+  },
+  "editorToolbar": {
+    "addDataQuery": "Adicionar consulta de dados",
+    "article": "Artigo",
+    "blockQuote": "Citação",
+    "bold": "Negrito",
+    "bulletList": "Lista com marcadores",
+    "chapter": "Capítulo",
+    "codeBlock": "Bloco de código",
+    "createLink": "Criar link",
+    "dataQuerySaved": "{name} foi salvo com sucesso no modelo",
+    "editDataQuery": "Editar consulta de dados",
+    "footer": "Rodapé",
+    "formatting": "Formatação",
+    "header": "Cabeçalho",
+    "heading": "Título {level}",
+    "horizontalRule": "Linha horizontal",
+    "image": "Imagem",
+    "insertLink": "Inserir link",
+    "insertSavedDataQuery": "Inserir consulta de dados salva",
+    "italic": "Itálico",
+    "jinjaBlock": "Bloco Jinja {'{% %}'}",
+    "jinjaData": "Dados do modelo Jinja",
+    "jinjaFor": "Laço for do Jinja",
+    "jinjaIf": "Condição if do Jinja",
+    "link": "Link",
+    "noDataSources": "Não há fontes de dados nas variáveis do modelo",
+    "numberedList": "Lista numerada",
+    "redo": "Refazer",
+    "section": "Seção",
+    "table": "Tabela",
+    "text": "Texto",
+    "undo": "Desfazer",
+    "url": "URL"
+  },
+  "helpMenu": {
+    "autocomplete": "Use Ctrl+Espaço no editor de consultas para autocompletar valores",
+    "baseTemplate": "Modelo base",
+    "dataQuery": "Consulta de dados",
+    "dataQueryDescription": "As consultas de dados são usadas para salvar consultas comuns ao banco de dados e usá-las nos modelos. Internamente, apenas criamos um queryset do Django. A única diferença é que esses querysets são restritos a apenas ler dados, sem modificá-los.",
+    "modelDescription": "Este é o único campo obrigatório. Ele especifica a tabela a ser consultada.",
+    "reportTemplate": "Modelo de Relatório",
+    "reportTemplates": "Modelos de Relatório",
+    "structure": "Estrutura",
+    "syntax": "Sintaxe",
+    "syntaxDescription": "Ao criar consultas de dados no editor de consultas, você usa JSON. Também é possível criar consultas de dados diretamente nas variáveis do modelo, que usam sintaxe YAML."
+  },
+  "new": "Novo",
+  "notify": {
+    "dataQueryAdded": "Consulta de dados adicionada com sucesso",
+    "dataQueryEdited": "Consulta de dados editada com sucesso",
+    "dataQueryRemoved": "Consulta de dados removida com sucesso",
+    "emailQueued": "O relatório foi gerado e o e-mail está na fila para envio",
+    "historyDeleted": "Entrada do histórico de relatórios excluída com sucesso",
+    "htmlTemplateAdded": "Modelo HTML adicionado com sucesso",
+    "htmlTemplateEdited": "Modelo HTML editado com sucesso",
+    "htmlTemplateRemoved": "Modelo HTML removido com sucesso",
+    "scheduleAdded": "Agendamento de relatório adicionado com sucesso",
+    "scheduleDeleted": "Agendamento de relatório excluído com sucesso",
+    "scheduleRun": "O agendamento de relatório foi executado. Verifique o histórico de relatórios para ver o status.",
+    "scheduleUpdated": "Agendamento de relatório atualizado com sucesso",
+    "sharedTemplatesImported": "Modelos compartilhados importados com sucesso",
+    "templateAdded": "Modelo de relatório adicionado com sucesso",
+    "templateEdited": "Modelo de relatório editado com sucesso",
+    "templateImported": "Modelo de relatório importado com sucesso.",
+    "templateRemoved": "Modelo de relatório removido com sucesso"
+  },
+  "pleaseWait": "Aguarde...",
+  "reportAssetSelect": {
+    "noAssets": "Nenhum ativo de relatório encontrado. Acesse o Gerenciador de Relatórios e use o botão Ativos de Relatório para enviar arquivos",
+    "output": "Saída",
+    "reportAsset": "Ativo de relatório",
+    "selected": "Selecionado",
+    "title": "Selecionar ativo de relatório"
+  },
+  "reportAssets": {
+    "bulkActions": "Ações em massa",
+    "deleteConfirm": "Você está prestes a excluir um ativo. Esta ação não pode ser desfeita | Você está prestes a excluir um ativo. Esta ação não pode ser desfeita | Você está prestes a excluir {count} ativos. Esta ação não pode ser desfeita",
+    "enterFolderName": "Informe o nome da pasta",
+    "enterNewFileName": "Informe o novo nome do arquivo",
+    "enterNewFolderName": "Informe o novo nome da pasta",
+    "newFolder": "Nova pasta",
+    "rename": "Renomear",
+    "rootFolder": "Ativos",
+    "title": "Ativos de Relatório"
+  },
+  "reportChartSelect": {
+    "bar": "Barras",
+    "chartName": "Nome do gráfico",
+    "chartType": "Tipo de gráfico",
+    "line": "Linhas",
+    "pie": "Pizza",
+    "title": "Adicionar gráfico"
+  },
+  "reportDataQueryForm": {
+    "name": "Nome da consulta de dados",
+    "newDataQuery": "Nova consulta de dados",
+    "parseError": "Ocorreu um erro ao analisar o JSON: {error}"
+  },
+  "reportDataQueryTable": {
+    "deleteMessage": "Se esta consulta estiver em uso, você precisará alterá-la em todos os modelos de relatório",
+    "deleteTitle": "Excluir consulta de dados: {name}?"
+  },
+  "reportDependencyPrompt": {
+    "allFieldsRequired": "Todos os campos devem ser preenchidos",
+    "title": "Selecionar dependências do relatório"
+  },
+  "reportEmailSettingsForm": {
+    "attachmentExtension": "Extensão do anexo",
+    "attachmentExtensionHint": "Informe a extensão desejada sem o ponto (ex.: csv, json, txt). Se ficar em branco, será usado 'txt'.",
+    "attachmentName": "Nome do anexo",
+    "attachmentNameHint": "Não inclua a extensão.",
+    "body": "Corpo",
+    "bodyHint": "Padrão se ficar em branco: 'Your report is attached.'",
+    "includeReportLink": "Incluir um link direto para visualizar o relatório online (requer autenticação com conta do TRMM).",
+    "includeReportLinkTooltip": "O link será adicionado automaticamente ao final do corpo do e-mail.",
+    "subject": "Assunto",
+    "subjectHint": "Padrão se ficar em branco: 'Scheduled Report: <nome do relatório>'",
+    "title": "Personalizar opções de e-mail"
+  },
+  "reportHistoryTable": {
+    "dateCreated": "Data de criação",
+    "deleteMessage": "Isso removerá a entrada do histórico permanentemente.",
+    "deleteTitle": "Excluir histórico de {name}?",
+    "template": "Modelo",
+    "templateType": "Tipo de modelo",
+    "title": "Histórico de Relatórios"
+  },
+  "reportHtmlTemplateForm": {
+    "name": "Nome do modelo HTML",
+    "title": "Novo modelo base"
+  },
+  "reportHtmlTemplateTable": {
+    "deleteMessage": "Se este modelo estiver em uso, você precisará alterá-lo em todos os modelos de relatório",
+    "deleteTitle": "Excluir modelo HTML: {name}?",
+    "title": "Modelos base"
+  },
+  "reportScheduleForm": {
+    "addEmail": "Adicionar e-mail",
+    "addTitle": "Adicionar agendamento de relatório",
+    "createNewSchedule": "Criar novo agendamento",
+    "customizeEmail": "Personalizar conteúdo do e-mail",
+    "defaultRecipients": "Destinatários de e-mail padrão: {recipients}",
+    "dependencies": "Dependências",
+    "dependenciesRequiredSave": "Todas as dependências obrigatórias devem ser definidas antes de salvar.",
+    "dependenciesRequiredSend": "Todas as dependências obrigatórias devem ser definidas antes de enviar.",
+    "editTitle": "Editar agendamento de relatório",
+    "emailRecipients": "Destinatários de e-mail",
+    "emailReport": "Enviar relatório por e-mail",
+    "format": "Formato",
+    "noRecipientsAdded": "Nenhum destinatário adicionado ainda. Os e-mails serão enviados aos destinatários padrão das Configurações Globais. Adicionar destinatários aqui substituirá esses padrões.",
+    "noRecipientsConfigured": "Nenhum destinatário de e-mail configurado",
+    "plainText": "Texto simples (ou CSV)",
+    "reportTemplate": "Modelo de Relatório",
+    "schedule": "Agendamento",
+    "send": "Enviar",
+    "sendReportEmail": "Enviar relatório por e-mail",
+    "timezone": "Fuso horário",
+    "timezoneHint": "O fuso horário padrão {timezone} será usado se ficar em branco"
+  },
+  "reportScheduleTable": {
+    "copyName": "{name} Cópia",
+    "deleteTitle": "Excluir agendamento {name}?",
+    "lastRun": "Última execução",
+    "never": "Nunca",
+    "recipients": "Destinatários",
+    "runScheduledReport": "Executar relatório agendado",
+    "sendEmail": "Enviar e-mail",
+    "title": "Agendamentos de Relatórios"
+  },
+  "reportTableMaker": {
+    "blank": "Em branco",
+    "dataSource": "Fonte de dados",
+    "fromVariables": "A partir das variáveis",
+    "insert": "Inserir",
+    "title": "Inserir tabela"
+  },
+  "reportTemplateForm": {
+    "addBaseTemplate": "Adicionar modelo base",
+    "autoSave": "Salvar automaticamente",
+    "closeConfirm": "Deseja fechar?",
+    "debug": "Depuração",
+    "generatingReport": "Gerando relatório...",
+    "hideVariables": "Ocultar variáveis",
+    "plainText": "Texto simples",
+    "preview": "Visualizar",
+    "reportName": "Nome do relatório",
+    "selectedCount": "{count} selecionado(s)",
+    "showVariables": "Mostrar variáveis",
+    "templateNameRequired": "O nome do modelo é obrigatório",
+    "templateSaved": "Modelo salvo!",
+    "templateTextRequired": "O texto do modelo é obrigatório",
+    "textFormat": "Texto",
+    "title": "Novo Modelo de Relatório",
+    "unsavedChanges": "Você tem alterações não salvas",
+    "variables": "Variáveis",
+    "variablesError": "Erro nas variáveis: {error}"
+  },
+  "reportTemplateImport": {
+    "fileRequired": "O arquivo é obrigatório",
+    "importFile": "Arquivo de importação",
+    "importFileHint": "Aceita apenas arquivos JSON de modelos de relatório exportados",
+    "overwrite": "Substituir se o nome já existir"
+  },
+  "reportsManager": {
+    "deleteTitle": "Excluir modelo: {name}?",
+    "htmlTemplate": "Modelo HTML",
+    "importReportTemplate": "Importar Modelo de Relatório",
+    "markdownTemplate": "Modelo Markdown",
+    "plainTextTemplate": "Modelo de texto simples",
+    "reportRunHistory": "Histórico de execuções",
+    "scheduleReport": "Agendar relatório",
+    "sharedTemplates": "Modelos compartilhados",
+    "templateDependencies": "Dependências do modelo",
+    "title": "Gerenciador de Relatórios"
+  },
+  "required": "*Obrigatório",
+  "runReportDialog": {
+    "downloadTitle": "Baixar relatório de {type}",
+    "noTemplates": "Não há modelos de relatório que dependam de {type}. Você deve selecionar uma dependência do tipo {dependency} no Modelo de Relatório usando a lista de dependências.",
+    "runReport": "Executar relatório",
+    "runTitle": "Executar relatório de {type}",
+    "templateRequired": "O Modelo de Relatório é obrigatório."
+  },
+  "select": "Selecionar",
+  "sharedTemplatesImport": {
+    "downloadUrl": "URL de download",
+    "overwrite": "Substituir se houver conflito de nome"
+  },
+  "variablesSelector": {
+    "baseTemplateBlocks": "Blocos do modelo base",
+    "blockNotFound": "Bloco não encontrado no modelo. Clique no bloco para copiá-lo e cole no modelo",
+    "copied": "Copiado!",
+    "forLoop": "laço for",
+    "missingDependency": "Valor ausente para a dependência: {dep}. Abra a visualização para definir os valores",
+    "noResults": "Consulta de dados: {key} não retornou resultados"
+  }
+}

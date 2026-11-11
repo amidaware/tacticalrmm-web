@@ -7,13 +7,7 @@
 
       <q-card-section class="q-pt-none">
         <div class="text-body2 q-mb-sm">
-          The following
-          {{
-            conflictNames.length === 1
-              ? "file already exists"
-              : "files already exist"
-          }}
-          in this folder:
+          {{ $t("fileBrowser.uploadConflict.intro", conflictNames.length) }}
         </div>
 
         <div class="upload-conflict-names text-body2">
@@ -28,7 +22,11 @@
               </span></span
             >
             <span v-if="preview.remainingCount > 0">
-              , and {{ preview.remainingCount }} more
+              {{
+                $t("fileBrowser.uploadConflict.andMore", {
+                  count: preview.remainingCount,
+                })
+              }}
             </span>
           </template>
           <ul v-else class="upload-conflict-name-list q-mb-none">
@@ -46,13 +44,16 @@
           size="sm"
           color="primary"
           class="q-mt-xs q-ml-none"
-          :label="showAllNames ? 'Show less' : 'Show all'"
+          :label="
+            showAllNames
+              ? $t('fileBrowser.uploadConflict.showLess')
+              : $t('fileBrowser.uploadConflict.showAll')
+          "
           @click="showAllNames = !showAllNames"
         />
 
         <div class="text-body2 q-mt-md text-grey-7">
-          Choose how to handle these conflicts. Other files in this upload will
-          continue normally.
+          {{ $t("fileBrowser.uploadConflict.help") }}
         </div>
       </q-card-section>
 
@@ -62,21 +63,21 @@
         <q-btn
           flat
           no-caps
-          label="Cancel upload"
+          :label="$t('fileBrowser.uploadConflict.cancelUpload')"
           color="primary"
           @click="choose('cancel')"
         />
         <q-btn
           flat
           no-caps
-          label="Skip existing"
+          :label="$t('fileBrowser.uploadConflict.skipExisting')"
           color="primary"
           @click="choose('skip')"
         />
         <q-btn
           unelevated
           no-caps
-          label="Replace existing"
+          :label="$t('fileBrowser.uploadConflict.replaceExisting')"
           color="primary"
           @click="choose('replace')"
         />
@@ -86,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed, ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 
@@ -103,6 +105,7 @@ const props = defineProps<{
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
+const { t } = useI18n();
 const showAllNames = ref(false);
 
 const preview = computed(() =>
@@ -111,7 +114,7 @@ const preview = computed(() =>
 
 const title = computed(() => {
   const count = props.conflictNames.length;
-  return count === 1 ? "1 file already exists" : `${count} files already exist`;
+  return t("fileBrowser.uploadConflict.title", { count }, count);
 });
 
 function choose(action: UploadConflictAction) {

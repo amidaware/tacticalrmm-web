@@ -2,10 +2,12 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card style="width: 50vw; max-width: 50vw">
       <q-bar>
-        Policy Exclusions for {{ policy.name }}
+        {{ $t("automation.exclusions.title", { name: policy.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-form ref="form" @submit.prevent="onSubmit">
@@ -13,7 +15,7 @@
           <tactical-dropdown
             v-model="localPolicy.excluded_clients"
             :options="clientOptions"
-            label="Excluded Clients"
+            :label="$t('automation.exclusions.excludedClients')"
             outlined
             multiple
             mapOptions
@@ -24,7 +26,7 @@
           <tactical-dropdown
             v-model="localPolicy.excluded_sites"
             :options="siteOptions"
-            label="Excluded Sites"
+            :label="$t('automation.exclusions.excludedSites')"
             outlined
             multiple
             mapOptions
@@ -35,7 +37,7 @@
           <tactical-dropdown
             v-model="localPolicy.excluded_agents"
             :options="agentOptions"
-            label="Excluded Agents"
+            :label="$t('automation.exclusions.excludedAgents')"
             outlined
             multiple
             mapOptions
@@ -44,8 +46,14 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
-          <q-btn dense flat label="Save" color="primary" type="submit" />
+          <q-btn dense flat :label="$t('common.cancel')" v-close-popup />
+          <q-btn
+            dense
+            flat
+            :label="$t('common.save')"
+            color="primary"
+            type="submit"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -80,7 +88,7 @@ export default {
         .then(() => {
           this.$q.loading.hide();
           this.onOk();
-          this.notifySuccess("Policy exclusions added");
+          this.notifySuccess(this.$t("automation.exclusions.notify.added"));
         })
         .catch(() => {
           this.$q.loading.hide();
@@ -99,7 +107,7 @@ export default {
           r.data.forEach((client) => {
             this.siteOptions.push({ category: client.name });
             client.sites.forEach((site) =>
-              this.siteOptions.push({ label: site.name, value: site.id })
+              this.siteOptions.push({ label: site.name, value: site.id }),
             );
           });
           this.$q.loading.hide();
@@ -110,7 +118,7 @@ export default {
     },
     getOptions() {
       this.getAgentOptions("id").then(
-        (options) => (this.agentOptions = Object.freeze(options))
+        (options) => (this.agentOptions = Object.freeze(options)),
       );
       this.getClientsandSites();
     },

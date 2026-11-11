@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { t } from "@/i18n";
 import {
   FILE_TRANSFER_DOWNLOAD_BYTES_STORE,
   FILE_TRANSFER_DOWNLOAD_IDB_NAME,
@@ -136,7 +137,7 @@ export async function pickExistingDownloadHandle(): Promise<FileSystemFileHandle
     startIn: "downloads",
   });
   if (!(await requestFileHandlePermission(handle))) {
-    throw new Error("Write access to that file was denied.");
+    throw new Error(t("fileBrowser.transfer.writeAccessDenied"));
   }
   return handle;
 }

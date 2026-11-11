@@ -44,6 +44,9 @@ export default defineComponent({
 import { ref, computed } from "vue";
 import { useStorage } from "@vueuse/core";
 import type { QTableColumn } from "quasar";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -57,7 +60,7 @@ const props = withDefaults(
 
 const columnSelectCol = {
   name: "columnSelect",
-  label: "Column Select",
+  label: t("settings.table.columnSelect"),
   field: "columnSelect",
 };
 

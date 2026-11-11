@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "file": "Arquivo",
+    "view": "Exibir",
+    "agents": "Agentes",
+    "settings": "Configurações",
+    "tools": "Ferramentas",
+    "reporting": "Relatórios",
+    "help": "Ajuda"
+  },
+  "file": {
+    "auditLog": "Log de Auditoria",
+    "debugLog": "Log de Depuração"
+  },
+  "view": {
+    "pendingActions": "Ações Pendentes"
+  },
+  "agents": {
+    "installAgent": "Instalar Agente",
+    "manageDeployments": "Gerenciar Implantações",
+    "updateAgents": "Atualizar Agentes"
+  },
+  "settings": {
+    "clientsManager": "Gerenciador de Clientes",
+    "scriptManager": "Gerenciador de Scripts",
+    "automationManager": "Gerenciador de Automação",
+    "alertsManager": "Gerenciador de Alertas",
+    "permissionsManager": "Gerenciador de Permissões",
+    "userAdministration": "Administração de Usuários",
+    "globalSettings": "Configurações Globais",
+    "codeSigning": "Assinatura de Código"
+  },
+  "tools": {
+    "bulkCommand": "Comando em Massa",
+    "bulkScript": "Script em Massa",
+    "bulkPatchManagement": "Gerenciamento de Patches em Massa",
+    "serverMaintenance": "Manutenção do Servidor",
+    "clearCache": "Limpar Cache",
+    "recoverAllAgents": "Recuperar Todos os Agentes",
+    "bulkRecoverTitle": "Recuperar todos os agentes em massa?",
+    "bulkRecoverMessage": "Isso tentará reinstalar/reparar os agentes Tactical e Mesh em todos os endpoints."
+  },
+  "reporting": {
+    "reportingManager": "Gerenciador de Relatórios",
+    "sponsorshipRequired": "O recurso de relatórios requer um patrocínio Tier 2 ou superior. Consulte a documentação para mais informações."
+  },
+  "help": {
+    "documentation": "Documentação",
+    "githubRepo": "Repositório no GitHub",
+    "bugReport": "Relatar Bug",
+    "featureRequest": "Solicitar Recurso",
+    "joinDiscord": "Entrar no Discord"
+  }
+}

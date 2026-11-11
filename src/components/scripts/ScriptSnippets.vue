@@ -17,10 +17,12 @@
           flat
           push
           icon="refresh"
-        />Script Snippets
+        />{{ $t("scripts.snippets.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-table
@@ -46,7 +48,7 @@
             flat
             no-caps
             icon="add"
-            label="New"
+            :label="$t('scripts.snippets.new')"
             @click="newSnippetModal"
           />
         </template>
@@ -72,7 +74,7 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -83,11 +85,11 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -157,6 +159,7 @@ import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent } from "quasar";
 import { fetchScriptSnippets, removeScriptSnippet } from "@/api/scripts";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // ui imports
 import ScriptSnippetFormModal from "@/components/scripts/ScriptSnippetFormModal.vue";
@@ -165,21 +168,21 @@ import ScriptSnippetFormModal from "@/components/scripts/ScriptSnippetFormModal.
 const columns = [
   {
     name: "shell",
-    label: "Shell",
+    label: t("scripts.scriptManager.columns.shell"),
     field: "shell",
     align: "left",
     sortable: true,
   },
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "desc",
-    label: "Description",
+    label: t("common.description"),
     field: "description",
     align: "left",
     sortable: false,
@@ -209,9 +212,9 @@ export default {
 
     function deleteSnippet(snippet) {
       $q.dialog({
-        title: `Delete script snippet: ${snippet.name}?`,
+        title: t("scripts.snippets.deleteConfirm", { name: snippet.name }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {

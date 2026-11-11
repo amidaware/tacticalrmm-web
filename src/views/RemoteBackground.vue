@@ -10,29 +10,37 @@
       align="left"
       narrow-indicator
     >
-      <q-tab name="terminal" icon="fas fa-terminal" label="Terminal" />
+      <q-tab
+        name="terminal"
+        icon="fas fa-terminal"
+        :label="$t('remoteBg.tabs.terminal')"
+      />
       <q-tab
         name="filebrowser"
         icon="far fa-folder-open"
-        label="File Browser"
+        :label="$t('remoteBg.tabs.fileBrowser')"
       />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="services"
         icon="fas fa-cogs"
-        label="Services"
+        :label="$t('remoteBg.tabs.services')"
       />
-      <q-tab name="processes" icon="fas fa-chart-area" label="Processes" />
+      <q-tab
+        name="processes"
+        icon="fas fa-chart-area"
+        :label="$t('remoteBg.tabs.processes')"
+      />
       <q-tab
         v-if="$route.query.agentPlatform === 'windows'"
         name="eventlog"
         icon="fas fa-clipboard-list"
-        label="Event Log"
+        :label="$t('remoteBg.tabs.eventLog')"
       />
       <q-tab v-if="$route.query.agentPlatform === 'windows'" name="registry">
         <div class="flex items-center text-weight-bold text-subtitle2">
           <q-icon :name="`img:${registryIcon}`" size="25px" />
-          <span class="q-ml-sm font">Registry</span>
+          <span class="q-ml-sm font">{{ $t("remoteBg.tabs.registry") }}</span>
         </div>
       </q-tab>
     </q-tabs>
@@ -130,7 +138,7 @@
         unelevated
         no-caps
         color="primary"
-        label="Retry"
+        :label="$t('remoteBg.fileBrowser.retry')"
         @click="retryFileBrowserDefaults"
       />
     </div>
@@ -142,6 +150,7 @@
 import { ref, computed, watch, onMounted, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router";
 import { useQuasar, useMeta } from "quasar";
+import { useI18n } from "vue-i18n";
 import {
   fetchAgentMeshCentralURLs,
   fetchAgentTerminalDefaults,
@@ -174,6 +183,7 @@ export default {
   setup() {
     // setup quasar
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // vue router
     const { params } = useRoute();
@@ -197,7 +207,7 @@ export default {
       terminal.value = data.terminal;
       file.value = data.file;
       useMeta({
-        title: `${data.hostname} - ${data.client} - ${data.site} | Remote Background`,
+        title: `${data.hostname} - ${data.client} - ${data.site} | ${t("remoteBg.pageTitle")}`,
       });
     }
 
@@ -221,8 +231,7 @@ export default {
 
           $q.notify({
             type: "warning",
-            message:
-              "New terminal mode requires agent version 2.11.0 or higher. Reverting to legacy terminal mode. Please update the agent to use the new terminal.",
+            message: t("remoteBg.terminal.newModeUnsupported"),
             timeout: 6000,
           });
           return;
@@ -235,7 +244,8 @@ export default {
         $q.notify({
           type: "negative",
           message:
-            e?.response?.data?.detail || "Failed to load terminal settings",
+            e?.response?.data?.detail ||
+            t("remoteBg.terminal.loadSettingsFailed"),
         });
       }
     }
@@ -254,8 +264,7 @@ export default {
 
           $q.notify({
             type: "warning",
-            message:
-              "New file browser mode requires agent version 2.12.0 or higher. Reverting to legacy file browser mode. Please update the agent to use the new file browser.",
+            message: t("remoteBg.fileBrowser.newModeUnsupported"),
             timeout: 6000,
           });
           return;
@@ -268,15 +277,14 @@ export default {
         const status = e?.response?.status;
         if (status === 403) {
           fileBrowserMode.value = "denied";
-          fileBrowserError.value =
-            "You do not have permission to use the file browser.";
+          fileBrowserError.value = t("remoteBg.fileBrowser.noPermission");
         } else {
           const detail = e?.response?.data?.detail;
           fileBrowserMode.value = "error";
           fileBrowserError.value =
             typeof detail === "string" && detail.trim()
               ? detail
-              : "Failed to load file browser settings";
+              : t("remoteBg.fileBrowser.loadSettingsFailed");
         }
 
         $q.notify({

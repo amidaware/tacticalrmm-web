@@ -4,38 +4,40 @@
       <q-bar>
         {{
           task
-            ? `Editing Automated Task: ${task.name}`
-            : "Adding Automated Task"
+            ? $t("tasks.form.editTitle", { name: task.name })
+            : $t("tasks.form.addTitle")
         }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section v-if="scriptOptions.length === 0">
-        <p>You need to upload a script first</p>
-        <p>Settings -> Script Manager</p>
+        <p>{{ $t("checks.script.uploadFirst") }}</p>
+        <p>{{ $t("checks.script.scriptManagerPath") }}</p>
       </q-card-section>
       <q-stepper v-else v-model="step" ref="stepper" color="primary" animated>
         <q-step
           :name="1"
-          title="Select Task"
+          :title="$t('tasks.form.steps.selectTask')"
           :done="step > 1"
           :error="!isValidStep1"
         >
           <q-form @submit.prevent ref="taskGeneralForm">
             <q-card-section>
               <q-input
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[(val) => !!val || $t('tasks.form.required')]"
                 filled
                 dense
                 v-model="state.name"
-                label="Descriptive name of task"
+                :label="$t('tasks.form.name')"
                 hide-bottom-space
               />
             </q-card-section>
             <q-card-section v-show="!isAgentTask">
-              Supported Platforms
+              {{ $t("tasks.form.supportedPlatforms") }}
               <q-option-group
                 v-model="state.task_supported_platforms"
                 :options="plat_options"
@@ -46,7 +48,7 @@
             <q-card-section>
               <q-checkbox
                 dense
-                label="Collector Task"
+                :label="$t('tasks.form.collectorTask')"
                 v-model="collector"
                 class="q-pb-sm"
                 @update:model-value="
@@ -56,23 +58,23 @@
               />
               <tactical-dropdown
                 v-if="collector"
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[(val) => !!val || $t('tasks.form.required')]"
                 v-model="state.custom_field"
                 :options="customFieldOptions"
-                label="Custom Field to update"
+                :label="$t('tasks.form.customField')"
                 filled
                 mapOptions
                 :hint="
                   state.collector_all_output
-                    ? 'All script output will be saved to custom field selected'
-                    : 'The last line of script output will be saved to custom field selected'
+                    ? $t('tasks.form.collectorAllOutputHint')
+                    : $t('tasks.form.collectorLastLineHint')
                 "
                 filterable
               />
               <q-checkbox
                 v-if="collector"
                 dense
-                label="Save all output"
+                :label="$t('tasks.form.saveAllOutput')"
                 v-model="state.collector_all_output"
                 class="q-py-sm"
               />
@@ -81,10 +83,10 @@
               <tactical-dropdown
                 v-model="state.alert_severity"
                 :options="severityOptions"
-                label="Alert Severity"
+                :label="$t('checks.form.alertSeverity')"
                 filled
                 mapOptions
-                :rules="[(val) => !!val || '*Required']"
+                :rules="[(val) => !!val || $t('tasks.form.required')]"
               />
             </q-card-section>
           </q-form>
@@ -92,28 +94,30 @@
 
         <q-step
           :name="2"
-          title="Configure Actions"
+          :title="$t('tasks.form.steps.configureActions')"
           :done="step > 2"
           :error="!isValidStep2"
         >
           <div class="scroll" style="max-height: 60vh">
             <q-form @submit.prevent="addAction">
               <div class="row q-pa-sm q-gutter-x-xs items-center">
-                <div class="text-subtitle2 col-12">Action Type:</div>
+                <div class="text-subtitle2 col-12">
+                  {{ $t("tasks.form.actionType") }}
+                </div>
                 <q-option-group
                   class="col-12"
                   inline
                   v-model="actionType"
                   :options="[
-                    { label: 'Script', value: 'script' },
-                    { label: 'Command', value: 'cmd' },
+                    { label: $t('tasks.form.script'), value: 'script' },
+                    { label: $t('tasks.form.command'), value: 'cmd' },
                   ]"
                 />
 
                 <tactical-dropdown
                   v-if="actionType === 'script'"
                   class="col-3"
-                  label="Select script"
+                  :label="$t('checks.script.selectScript')"
                   v-model="script"
                   :options="scriptOptions"
                   filled
@@ -125,7 +129,7 @@
                   v-if="actionType === 'script'"
                   class="col-3"
                   dense
-                  label="Script Arguments (press Enter after typing each argument)"
+                  :label="$t('checks.script.scriptArgs')"
                   filled
                   v-model="defaultArgs"
                   use-input
@@ -158,12 +162,12 @@
                   dense
                   v-model.number="defaultTimeout"
                   type="number"
-                  label="Timeout (seconds)"
+                  :label="$t('tasks.form.timeoutSeconds')"
                 />
 
                 <q-input
                   v-if="actionType === 'cmd'"
-                  label="Command"
+                  :label="$t('tasks.form.command')"
                   v-model="command"
                   dense
                   filled
@@ -176,7 +180,7 @@
                   dense
                   v-model.number="defaultTimeout"
                   type="number"
-                  label="Timeout (seconds)"
+                  :label="$t('tasks.form.timeoutSeconds')"
                 />
                 <q-option-group
                   v-if="actionType === 'cmd'"
@@ -187,7 +191,7 @@
                     { label: 'CMD', value: 'cmd' },
                     { label: 'Powershell', value: 'powershell' },
                     { label: 'Bash', value: '/bin/bash' },
-                    { label: 'Custom', value: 'custom' },
+                    { label: $t('tasks.form.custom'), value: 'custom' },
                   ]"
                 />
                 <q-btn
@@ -197,7 +201,7 @@
                   flat
                   dense
                   icon="add"
-                  label="Add"
+                  :label="$t('common.add')"
                   color="primary"
                 />
               </div>
@@ -206,20 +210,22 @@
               <q-input
                 v-model="custom_shell"
                 outlined
-                label="Custom shell"
+                :label="$t('tasks.form.customShell')"
                 stack-label
                 placeholder="/usr/bin/python3"
               />
             </div>
             <div class="text-subtitle2 q-pa-sm">
-              Actions:
+              {{ $t("tasks.form.actions") }}
               <q-checkbox
                 class="float-right"
-                label="Continue on Errors"
+                :label="$t('tasks.form.continueOnErrors')"
                 v-model="state.continue_on_error"
                 dense
               >
-                <q-tooltip>Continue task if an action fails</q-tooltip>
+                <q-tooltip>{{
+                  $t("tasks.form.continueOnErrorsTooltip")
+                }}</q-tooltip>
               </q-checkbox>
             </div>
             <div class="q-pt-sm" style="height: 150px">
@@ -245,13 +251,25 @@
                         &nbsp; {{ element.name }}
                       </q-item-label>
                       <q-item-label caption>
-                        Arguments: {{ element.script_args }}
+                        {{
+                          $t("tasks.form.argumentsLabel", {
+                            value: element.script_args,
+                          })
+                        }}
                       </q-item-label>
                       <q-item-label caption>
-                        Env Vars: {{ element.env_vars }}
+                        {{
+                          $t("tasks.form.envVarsLabel", {
+                            value: element.env_vars,
+                          })
+                        }}
                       </q-item-label>
                       <q-item-label caption>
-                        Timeout: {{ element.timeout }}
+                        {{
+                          $t("tasks.form.timeoutLabel", {
+                            value: element.timeout,
+                          })
+                        }}
                       </q-item-label>
                     </q-item-section>
                     <q-item-section v-else>
@@ -270,7 +288,11 @@
                         {{ element.command }}
                       </q-item-label>
                       <q-item-label caption>
-                        Timeout: {{ element.timeout }}
+                        {{
+                          $t("tasks.form.timeoutLabel", {
+                            value: element.timeout,
+                          })
+                        }}
                       </q-item-label>
                     </q-item-section>
                     <q-item-section side>
@@ -288,13 +310,17 @@
           </div>
         </q-step>
 
-        <q-step :name="3" title="Choose Schedule" :error="!isValidStep3">
+        <q-step
+          :name="3"
+          :title="$t('tasks.form.steps.chooseSchedule')"
+          :error="!isValidStep3"
+        >
           <div class="scroll" style="height: 60vh; max-height: 60vh">
             <q-form @submit.prevent ref="taskDetailForm">
               <q-card-section>
                 <q-option-group
                   v-model="state.task_type"
-                  label="Task run type"
+                  :label="$t('tasks.form.taskRunType')"
                   :options="taskTypeOptions"
                   dense
                   inline
@@ -318,18 +344,18 @@
                   dense
                   :label="
                     isPosix && state.task_type !== 'runonce'
-                      ? 'Run at'
-                      : 'Start time'
+                      ? $t('tasks.form.runAt')
+                      : $t('tasks.form.startTime')
                   "
                   stack-label
                   filled
                   v-model="state.run_time_date"
                   :hint="
                     isPosix && state.task_type !== 'runonce'
-                      ? 'Agent timezone will be used. On Linux and macOS, the selected date is ignored—only the hour and minute are used.'
-                      : 'Agent timezone will be used'
+                      ? $t('tasks.form.timezoneHintPosix')
+                      : $t('tasks.form.timezoneHint')
                   "
-                  :rules="[(val) => !!val || '*Required']"
+                  :rules="[(val) => !!val || $t('tasks.form.required')]"
                 />
 
                 <!-- expires on input -->
@@ -339,10 +365,10 @@
                   type="datetime-local"
                   dense
                   stack-label
-                  label="Expires on"
+                  :label="$t('tasks.form.expiresOn')"
                   filled
                   v-model="state.expire_date"
-                  hint="Agent timezone will be used"
+                  :hint="$t('tasks.form.timezoneHint')"
                 />
               </q-card-section>
 
@@ -353,13 +379,12 @@
                 "
                 class="row"
               >
-                <span v-if="state.task_type === 'onboarding'"
-                  >This task will run as soon as it's created on the
-                  agent.</span
-                >
-                <span v-else-if="state.task_type === 'runonce'"
-                  >Start Time must be in the future for run once tasks.</span
-                >
+                <span v-if="state.task_type === 'onboarding'">{{
+                  $t("tasks.form.onboardingInfo")
+                }}</span>
+                <span v-else-if="state.task_type === 'runonce'">{{
+                  $t("tasks.form.runOnceInfo")
+                }}</span>
               </q-card-section>
 
               <!-- daily options -->
@@ -370,20 +395,22 @@
                 <!-- daily interval -->
                 <q-input
                   :rules="[
-                    (val) => !!val || '*Required',
+                    (val) => !!val || $t('tasks.form.required'),
                     (val) =>
                       (val > 0 && val < 256) ||
-                      'Daily interval must be greater than 0 and less than 3',
+                      $t('tasks.form.dailyIntervalError'),
                   ]"
                   dense
                   type="number"
-                  label="Run every"
+                  :label="$t('tasks.form.runEvery')"
                   v-model.number="state.daily_interval"
                   filled
                   class="col-6 q-pa-sm"
                 >
                   <template v-slot:append>
-                    <span class="text-subtitle2">days</span>
+                    <span class="text-subtitle2">{{
+                      $t("tasks.form.days")
+                    }}</span>
                   </template>
                 </q-input>
                 <div class="col-6 q-pa-sm"></div>
@@ -395,19 +422,21 @@
                 <q-input
                   v-if="!isPosix"
                   :rules="[
-                    (val) => !!val || '*Required',
+                    (val) => !!val || $t('tasks.form.required'),
                     (val) =>
                       (val > 0 && val < 53) ||
-                      'Weekly interval must be greater than 0 and less than 3',
+                      $t('tasks.form.weeklyIntervalError'),
                   ]"
                   class="col-6 q-pa-sm"
                   dense
-                  label="Run every"
+                  :label="$t('tasks.form.runEvery')"
                   v-model="state.weekly_interval"
                   filled
                 >
                   <template v-slot:append>
-                    <span class="text-subtitle2">weeks</span>
+                    <span class="text-subtitle2">{{
+                      $t("tasks.form.weeks")
+                    }}</span>
                   </template>
                 </q-input>
 
@@ -415,9 +444,11 @@
 
                 <div class="col-12 q-pa-sm">
                   <!-- day of week input -->
-                  Run on Days:
+                  {{ $t("tasks.form.runOnDaysColon") }}
                   <q-option-group
-                    :rules="[(val) => val.length > 0 || '*Required']"
+                    :rules="[
+                      (val) => val.length > 0 || $t('tasks.form.required'),
+                    ]"
                     inline
                     dense
                     :options="dayOfWeekOptions"
@@ -435,21 +466,23 @@
                   v-model="monthlyType"
                   inline
                   :options="[
-                    { label: 'On Days', value: 'days' },
-                    { label: 'On Weeks', value: 'weeks' },
+                    { label: $t('tasks.form.onDays'), value: 'days' },
+                    { label: $t('tasks.form.onWeeks'), value: 'weeks' },
                   ]"
                 />
 
                 <!-- month select input -->
                 <q-select
-                  :rules="[(val) => val.length > 0 || '*Required']"
+                  :rules="[
+                    (val) => val.length > 0 || $t('tasks.form.required'),
+                  ]"
                   class="col-4 q-pa-sm"
                   filled
                   dense
                   options-dense
                   v-model="state.monthly_months_of_year"
                   :options="monthOptions"
-                  label="Run on Months"
+                  :label="$t('tasks.form.runOnMonths')"
                   multiple
                   emit-value
                   map-options
@@ -457,7 +490,9 @@
                   <template v-slot:before-options>
                     <q-item>
                       <q-item-section>
-                        <q-item-label>All months</q-item-label>
+                        <q-item-label>{{
+                          $t("tasks.form.allMonths")
+                        }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
                         <q-checkbox
@@ -493,14 +528,16 @@
                 <!-- days of month select input -->
                 <q-select
                   v-if="monthlyType === 'days'"
-                  :rules="[(val) => val.length > 0 || '*Required']"
+                  :rules="[
+                    (val) => val.length > 0 || $t('tasks.form.required'),
+                  ]"
                   class="col-4 q-pa-sm"
                   filled
                   dense
                   options-dense
                   v-model="state.monthly_days_of_month"
                   :options="dayOfMonthOptions"
-                  label="Run on Days"
+                  :label="$t('tasks.form.runOnDays')"
                   multiple
                   emit-value
                   map-options
@@ -508,7 +545,9 @@
                   <template v-slot:before-options>
                     <q-item>
                       <q-item-section>
-                        <q-item-label>All days</q-item-label>
+                        <q-item-label>{{
+                          $t("tasks.form.allDays")
+                        }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
                         <q-checkbox
@@ -546,14 +585,16 @@
                 <!-- week of month select input -->
                 <q-select
                   v-if="monthlyType === 'weeks'"
-                  :rules="[(val) => val.length > 0 || '*Required']"
+                  :rules="[
+                    (val) => val.length > 0 || $t('tasks.form.required'),
+                  ]"
                   class="col-4 q-pa-sm"
                   filled
                   dense
                   options-dense
                   v-model="state.monthly_weeks_of_month"
                   :options="weekOptions"
-                  label="Run on weeks"
+                  :label="$t('tasks.form.runOnWeeks')"
                   multiple
                   emit-value
                   map-options
@@ -579,14 +620,16 @@
                 <!-- day of week select input -->
                 <q-select
                   v-if="monthlyType === 'weeks'"
-                  :rules="[(val) => val.length > 0 || '*Required']"
+                  :rules="[
+                    (val) => val.length > 0 || $t('tasks.form.required'),
+                  ]"
                   class="col-4 q-pa-sm"
                   filled
                   dense
                   options-dense
                   v-model="state.run_time_bit_weekdays"
                   :options="dayOfWeekOptions"
-                  label="Run on days"
+                  :label="$t('tasks.form.runOnDays')"
                   multiple
                   emit-value
                   map-options
@@ -594,7 +637,9 @@
                   <template v-slot:before-options>
                     <q-item>
                       <q-item-section>
-                        <q-item-label>All days</q-item-label>
+                        <q-item-label>{{
+                          $t("tasks.form.allDays")
+                        }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
                         <q-checkbox
@@ -637,22 +682,22 @@
                 class="row"
               >
                 <div v-if="!isPosix" class="col-12 text-h6">
-                  Advanced Settings (Windows only)
+                  {{ $t("tasks.form.advancedSettings") }}
                 </div>
                 <q-input
                   v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
-                  label="Repeat task every"
+                  :label="$t('tasks.form.repeatEvery')"
                   filled
                   v-model="state.task_repetition_interval"
-                  placeholder="e.g. 30m (30 minutes) or 1h (1 hour)"
+                  :placeholder="$t('tasks.form.repeatEveryPlaceholder')"
                   lazy-rules
                   :rules="[
                     (val) =>
                       !val ||
                       validateTimePeriod(val) ||
-                      'Valid values are 1-3 digits followed by (D|d|H|h|M|m|S|s)',
+                      $t('tasks.form.timePeriodError'),
                   ]"
                 />
 
@@ -661,22 +706,21 @@
                   :disable="!state.task_repetition_interval"
                   class="col-6 q-pa-sm"
                   dense
-                  label="Task repeat duration"
+                  :label="$t('tasks.form.repeatDuration')"
                   filled
                   v-model="state.task_repetition_duration"
-                  placeholder="e.g. 6h (6 hours) or 1d (1 day)"
+                  :placeholder="$t('tasks.form.repeatDurationPlaceholder')"
                   lazy-rules
                   :rules="[
                     (val) =>
                       validateTimePeriod(val) ||
-                      'Valid values are 1-3 digits followed by (D|d|H|h|M|m|S|s)',
+                      $t('tasks.form.timePeriodError'),
                     (val) => (state.task_repetition_interval ? !!val : true), // field is required if repetition interval is set
                     (val) =>
                       convertPeriodToSeconds(val) >=
                         convertPeriodToSeconds(
                           state.task_repetition_interval,
-                        ) ||
-                      'Repetition duration must be greater than repetition interval',
+                        ) || $t('tasks.form.repeatDurationError'),
                   ]"
                 />
 
@@ -686,7 +730,7 @@
                   class="col-6 q-pa-sm"
                   dense
                   v-model="state.stop_task_at_duration_end"
-                  label="Stop all tasks at the end of duration"
+                  :label="$t('tasks.form.stopAtDurationEnd')"
                 />
                 <div class="col-6"></div>
 
@@ -694,16 +738,16 @@
                   v-if="!isPosix"
                   class="col-6 q-pa-sm"
                   dense
-                  label="Random task delay"
+                  :label="$t('tasks.form.randomDelay')"
                   filled
                   v-model="state.random_task_delay"
-                  placeholder="e.g. 2m (2 minutes) or 1h (1 hour)"
+                  :placeholder="$t('tasks.form.randomDelayPlaceholder')"
                   lazy-rules
                   :rules="[
                     (val) =>
                       !val ||
                       validateTimePeriod(val) ||
-                      'Valid values are 1-3 digits followed by (D|d|H|h|M|m|S|s)',
+                      $t('tasks.form.timePeriodError'),
                   ]"
                 />
                 <div class="col-6"></div>
@@ -713,9 +757,11 @@
                   class="col-6 q-pa-sm"
                   dense
                   v-model="state.remove_if_not_scheduled"
-                  label="Delete task if not scheduled for 30 days"
+                  :label="$t('tasks.form.removeIfNotScheduled')"
                 >
-                  <q-tooltip>Must set an expire date</q-tooltip>
+                  <q-tooltip>{{
+                    $t("tasks.form.mustSetExpireDate")
+                  }}</q-tooltip>
                 </q-checkbox>
                 <div class="col-6"></div>
                 <q-checkbox
@@ -724,7 +770,7 @@
                   class="col-6 q-pa-sm"
                   dense
                   v-model="state.run_asap_after_missed"
-                  label="Run task ASAP after a scheduled start is missed"
+                  :label="$t('tasks.form.runAsapAfterMissed')"
                 />
 
                 <div class="col-6"></div>
@@ -732,7 +778,7 @@
                 <tactical-dropdown
                   v-if="!isPosix"
                   class="col-6 q-pa-sm"
-                  label="Task instance policy"
+                  :label="$t('tasks.form.instancePolicy')"
                   :options="taskInstancePolicyOptions"
                   v-model="state.task_instance_policy"
                   filled
@@ -747,11 +793,11 @@
               >
                 <tactical-dropdown
                   class="col-6 q-pa-sm"
-                  :rules="[(val) => !!val || '*Required']"
+                  :rules="[(val) => !!val || $t('tasks.form.required')]"
                   v-model="state.assigned_check"
                   filled
                   :options="checkOptions"
-                  label="Select Check"
+                  :label="$t('tasks.form.selectCheck')"
                   mapOptions
                   filterable
                 />
@@ -761,10 +807,10 @@
         </q-step>
       </q-stepper>
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat :label="$t('common.cancel')" v-close-popup />
         <q-btn
           v-if="step > 1"
-          label="Back"
+          :label="$t('common.back')"
           @click="$refs.stepper.previous()"
           color="primary"
           flat
@@ -778,12 +824,12 @@
             )
           "
           color="primary"
-          label="Next"
+          :label="$t('common.next')"
           flat
         />
         <q-btn
           v-else
-          :label="task ? 'Edit Task' : 'Add Task'"
+          :label="task ? $t('tasks.form.editTask') : $t('tasks.form.addTask')"
           color="primary"
           @click="validateStep($refs.taskDetailForm, $refs.stepper)"
           :loading="loading"
@@ -815,6 +861,7 @@ import { useCustomFieldDropdown } from "@/composables/core";
 import { notifySuccess, notifyError } from "@/utils/notify";
 import { validateTimePeriod } from "@/utils/validation";
 import { envVarsLabel } from "@/constants/constants";
+import { t } from "@/i18n";
 import {
   convertPeriodToSeconds,
   convertToBitArray,
@@ -827,29 +874,29 @@ import TacticalDropdown from "@/components/ui/TacticalDropdown.vue";
 
 // static data
 const severityOptions = [
-  { label: "Informational", value: "info" },
-  { label: "Warning", value: "warning" },
-  { label: "Error", value: "error" },
+  { label: t("checks.severity.info"), value: "info" },
+  { label: t("checks.severity.warning"), value: "warning" },
+  { label: t("checks.severity.error"), value: "error" },
 ];
 
 const taskTypeOptions = [
-  { label: "Daily", value: "daily" },
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
-  { label: "Run Once", value: "runonce" },
-  { label: "On check failure", value: "checkfailure" },
-  { label: "Onboarding", value: "onboarding" },
-  { label: "Manual", value: "manual" },
+  { label: t("tasks.taskTypes.daily"), value: "daily" },
+  { label: t("tasks.taskTypes.weekly"), value: "weekly" },
+  { label: t("tasks.taskTypes.monthly"), value: "monthly" },
+  { label: t("tasks.taskTypes.runonce"), value: "runonce" },
+  { label: t("tasks.taskTypes.checkfailure"), value: "checkfailure" },
+  { label: t("tasks.taskTypes.onboarding"), value: "onboarding" },
+  { label: t("tasks.taskTypes.manual"), value: "manual" },
 ];
 
 const dayOfWeekOptions = [
-  { label: "Monday", value: 0x2 },
-  { label: "Tuesday", value: 0x4 },
-  { label: "Wednesday", value: 0x8 },
-  { label: "Thursday", value: 0x10 },
-  { label: "Friday", value: 0x20 },
-  { label: "Saturday", value: 0x40 },
-  { label: "Sunday", value: 0x1 },
+  { label: t("tasks.weekdays.monday"), value: 0x2 },
+  { label: t("tasks.weekdays.tuesday"), value: 0x4 },
+  { label: t("tasks.weekdays.wednesday"), value: 0x8 },
+  { label: t("tasks.weekdays.thursday"), value: 0x10 },
+  { label: t("tasks.weekdays.friday"), value: 0x20 },
+  { label: t("tasks.weekdays.saturday"), value: 0x40 },
+  { label: t("tasks.weekdays.sunday"), value: 0x1 },
 ];
 
 const dayOfMonthOptions = (() => {
@@ -859,38 +906,38 @@ const dayOfMonthOptions = (() => {
     result.push({ label: `${i}`, value: day });
     day = day << 1;
   }
-  result.push({ label: "Last Day", value: 0x80000000 });
+  result.push({ label: t("tasks.form.lastDay"), value: 0x80000000 });
   return result;
 })();
 
 const monthOptions = [
-  { label: "January", value: 0x1 },
-  { label: "February", value: 0x2 },
-  { label: "March", value: 0x4 },
-  { label: "April", value: 0x8 },
-  { label: "May", value: 0x10 },
-  { label: "June", value: 0x20 },
-  { label: "July", value: 0x40 },
-  { label: "August", value: 0x80 },
-  { label: "September", value: 0x100 },
-  { label: "October", value: 0x200 },
-  { label: "November", value: 0x400 },
-  { label: "December", value: 0x800 },
+  { label: t("tasks.months.january"), value: 0x1 },
+  { label: t("tasks.months.february"), value: 0x2 },
+  { label: t("tasks.months.march"), value: 0x4 },
+  { label: t("tasks.months.april"), value: 0x8 },
+  { label: t("tasks.months.may"), value: 0x10 },
+  { label: t("tasks.months.june"), value: 0x20 },
+  { label: t("tasks.months.july"), value: 0x40 },
+  { label: t("tasks.months.august"), value: 0x80 },
+  { label: t("tasks.months.september"), value: 0x100 },
+  { label: t("tasks.months.october"), value: 0x200 },
+  { label: t("tasks.months.november"), value: 0x400 },
+  { label: t("tasks.months.december"), value: 0x800 },
 ];
 
 const weekOptions = [
-  { label: "First Week", value: 0x1 },
-  { label: "Second Week", value: 0x2 },
-  { label: "Third Week", value: 0x4 },
-  { label: "Fourth Week", value: 0x8 },
-  { label: "Last Week", value: 0x10 },
+  { label: t("tasks.weeks.first"), value: 0x1 },
+  { label: t("tasks.weeks.second"), value: 0x2 },
+  { label: t("tasks.weeks.third"), value: 0x4 },
+  { label: t("tasks.weeks.fourth"), value: 0x8 },
+  { label: t("tasks.weeks.last"), value: 0x10 },
 ];
 
 const taskInstancePolicyOptions = [
-  { label: "Run in Parallel", value: 0 },
-  { label: "Queue Task", value: 1 },
-  { label: "Ignore", value: 2 },
-  { label: "Stop Existing", value: 3 },
+  { label: t("tasks.instancePolicy.parallel"), value: 0 },
+  { label: t("tasks.instancePolicy.queue"), value: 1 },
+  { label: t("tasks.instancePolicy.ignore"), value: 2 },
+  { label: t("tasks.instancePolicy.stopExisting"), value: 3 },
 ];
 
 const plat_options = [
@@ -1030,13 +1077,13 @@ export default defineComponent({
         actionType.value === "script" &&
         (!script.value || !defaultTimeout.value)
       ) {
-        notifyError("Script and timeout must be set");
+        notifyError(t("tasks.form.notify.scriptTimeoutRequired"));
         return;
       } else if (
         actionType.value === "cmd" &&
         (!command.value || !defaultTimeout.value)
       ) {
-        notifyError("A command and timeout must be set");
+        notifyError(t("tasks.form.notify.commandTimeoutRequired"));
         return;
       }
 
@@ -1198,7 +1245,7 @@ export default defineComponent({
 
     function validateStep(form, stepper) {
       if (step.value === 1 && localTask.task_supported_platforms.length === 0) {
-        notifyError("There must be at least one supported platform");
+        notifyError(t("tasks.form.notify.platformRequired"));
         return;
       }
 
@@ -1208,7 +1255,7 @@ export default defineComponent({
           stepper.next();
           return;
         } else {
-          notifyError("There must be at least one action");
+          notifyError(t("tasks.form.notify.actionRequired"));
         }
 
         // steps 1 or 3

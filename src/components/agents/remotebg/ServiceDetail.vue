@@ -2,26 +2,32 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 600px; max-width: 80vw">
       <q-bar>
-        Service Details - {{ service.display_name }}
+        {{
+          $t("remoteBg.services.detailsTitle", { name: service.display_name })
+        }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service name:</div>
+          <div class="col-3">{{ $t("remoteBg.services.serviceName") }}</div>
           <div class="col-9">{{ service.name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Display name:</div>
+          <div class="col-3">{{ $t("remoteBg.services.displayName") }}</div>
           <div class="col-9">{{ service.display_name }}</div>
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Description:</div>
+          <div class="col-3">
+            {{ $t("remoteBg.services.descriptionLabel") }}
+          </div>
           <div class="col-9">
             <q-field outlined :color="$q.dark.isActive ? 'white' : 'black'">{{
               service.description
@@ -30,7 +36,7 @@
         </div>
         <br />
         <div class="row">
-          <div class="col-3">Path:</div>
+          <div class="col-3">{{ $t("remoteBg.services.path") }}</div>
           <div class="col-9">
             <code>{{ service.binpath }}</code>
           </div>
@@ -38,7 +44,7 @@
         <br />
         <br />
         <div class="row">
-          <div class="col-3">Startup type:</div>
+          <div class="col-3">{{ $t("remoteBg.services.startupType") }}</div>
           <div class="col-5">
             <q-select
               dense
@@ -55,16 +61,22 @@
       <q-separator />
       <q-card-section>
         <div class="row">
-          <div class="col-3">Service status:</div>
+          <div class="col-3">{{ $t("remoteBg.services.serviceStatus") }}</div>
           <div class="col-9">{{ service.status }}</div>
         </div>
         <br />
         <div class="row">
           <q-btn-group color="primary" push>
-            <q-btn label="Start" @click="sendServiceAction(service, 'start')" />
-            <q-btn label="Stop" @click="sendServiceAction(service, 'stop')" />
             <q-btn
-              label="Restart"
+              :label="$t('remoteBg.services.start')"
+              @click="sendServiceAction(service, 'start')"
+            />
+            <q-btn
+              :label="$t('remoteBg.services.stop')"
+              @click="sendServiceAction(service, 'stop')"
+            />
+            <q-btn
+              :label="$t('remoteBg.services.restart')"
               @click="sendServiceAction(service, 'restart')"
             />
           </q-btn-group>
@@ -72,13 +84,13 @@
       </q-card-section>
       <q-separator />
       <q-card-actions align="right">
-        <q-btn flat dense label="Cancel" v-close-popup />
+        <q-btn flat dense :label="$t('common.cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           :disable="!startupTypeEdited"
           dense
           flat
-          label="Save"
+          :label="$t('common.save')"
           color="primary"
           @click="editServiceStartup"
         />
@@ -96,23 +108,24 @@ import {
   sendAgentServiceAction,
 } from "@/api/services";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // static data
 const startupOptions = [
   {
-    label: "Automatic (Delayed Start)",
+    label: t("remoteBg.services.startup.autodelay"),
     value: "autodelay",
   },
   {
-    label: "Automatic",
+    label: t("remoteBg.services.startup.automatic"),
     value: "automatic",
   },
   {
-    label: "Manual",
+    label: t("remoteBg.services.startup.manual"),
     value: "manual",
   },
   {
-    label: "Disabled",
+    label: t("common.disabled"),
     value: "disabled",
   },
 ];
@@ -146,7 +159,7 @@ export default {
         const result = await sendAgentServiceAction(
           props.agent_id,
           service.name,
-          { sv_action: action }
+          { sv_action: action },
         );
         notifySuccess(result);
         onDialogOK();
@@ -167,7 +180,7 @@ export default {
         const result = await editAgentServiceStartType(
           props.agent_id,
           props.service.name,
-          data
+          data,
         );
         notifySuccess(result);
         onDialogOK();

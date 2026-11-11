@@ -1,0 +1,67 @@
+{
+  "actionMenu": {
+    "editAgent": "Edit {hostname}",
+    "pendingActions": "Pending Agent Actions",
+    "takeControl": "Take Control",
+    "runUrlAction": "Run URL Action",
+    "sendCommand": "Send Command",
+    "runScript": "Run Script",
+    "runFavoritedScript": "Run Favorited Script",
+    "remoteBackground": "Remote Background",
+    "disableMaintenance": "Disable Maintenance Mode",
+    "enableMaintenance": "Enable Maintenance Mode",
+    "patchManagement": "Patch Management",
+    "runPatchScan": "Run Patch Status Scan",
+    "installPatchesNow": "Install Patches Now",
+    "runChecks": "Run Checks",
+    "wakeUp": "Wake-Up (WoL)",
+    "reboot": "Reboot",
+    "now": "Now",
+    "later": "Later",
+    "shutdown": "Shutdown",
+    "assignPolicy": "Assign Automation Policy",
+    "reporting": "Reporting",
+    "agentRecovery": "Agent Recovery",
+    "removeAgent": "Remove Agent",
+    "rebootConfirm": "Reboot {hostname} now",
+    "vnc": {
+      "title": "VNC Server Port",
+      "message": "Enter the VNC server port:",
+      "launch": "Launch"
+    },
+    "offline": {
+      "title": "Agent offline",
+      "message": "{hostname} cannot be contacted. Would you like to continue with the uninstall? If so, the agent will need to be manually uninstalled from the computer."
+    },
+    "confirm": {
+      "shutdownVerb": "shutdown",
+      "shutdownTitle": "Confirm Shutdown",
+      "deletionVerb": "deletion",
+      "deletionTitle": "Confirm Deletion",
+      "uninstall": "Uninstall"
+    },
+    "notify": {
+      "maintenanceDisabled": "Maintenance mode was disabled on {hostname}",
+      "maintenanceEnabled": "Maintenance mode was enabled on {hostname}",
+      "scanSoon": "Scan will be run shortly on {hostname}",
+      "restarting": "{hostname} will now be restarted",
+      "shuttingDown": "{hostname} will now be shutdown",
+      "somethingWentWrong": "Something went wrong"
+    }
+  },
+  "confirmYes": {
+    "message": "Please type {yes} in the box below to confirm {action} of {hostname}.",
+    "defaultTitle": "Confirm action",
+    "inputLabel": "Type yes to confirm"
+  },
+  "alertsIcon": {
+    "noNewAlerts": "No New Alerts",
+    "snooze": "Snooze alert",
+    "resolve": "Resolve alert",
+    "viewAll": "View All Alerts ({count})",
+    "snoozeTitle": "Snooze Alert",
+    "snoozeMessage": "How many days to snooze alert?",
+    "snoozed": "The alert has been snoozed for {days} days",
+    "resolved": "The alert has been resolved"
+  }
+}

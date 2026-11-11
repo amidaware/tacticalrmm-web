@@ -8,10 +8,12 @@ For details, see: https://license.tacticalrmm.com/ee
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 400px">
       <q-bar>
-        Select Report Dependencies
+        {{ $t("reporting.reportDependencyPrompt.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -19,7 +21,7 @@ For details, see: https://license.tacticalrmm.com/ee
         <tactical-dropdown
           v-if="label === 'client'"
           v-model="dependencies[label]"
-          :label="`${capitalize(label)}`"
+          :label="$t('common.client')"
           :options="clientOptions"
           outlined
           mapOptions
@@ -29,7 +31,7 @@ For details, see: https://license.tacticalrmm.com/ee
         <tactical-dropdown
           v-else-if="label === 'site'"
           v-model="dependencies[label]"
-          :label="`${capitalize(label)}`"
+          :label="$t('common.site')"
           :options="siteOptions"
           outlined
           mapOptions
@@ -39,7 +41,7 @@ For details, see: https://license.tacticalrmm.com/ee
         <tactical-dropdown
           v-else-if="label === 'agent'"
           v-model="dependencies[label]"
-          :label="`${capitalize(label)}`"
+          :label="$t('common.agent')"
           :options="agentOptions"
           outlined
           mapOptions
@@ -56,12 +58,12 @@ For details, see: https://license.tacticalrmm.com/ee
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn v-close-popup dense flat label="Cancel" />
+        <q-btn v-close-popup dense flat :label="$t('common.cancel')" />
         <q-btn
           :loading="loading"
           dense
           flat
-          label="Submit"
+          :label="$t('common.submit')"
           color="primary"
           @click="submit"
         />
@@ -73,6 +75,7 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { useI18n } from "vue-i18n";
 import { notifyError } from "@/utils/notify";
 import { capitalize } from "@/utils/format";
 import { useAgentDropdown } from "@/composables/agents";
@@ -90,6 +93,8 @@ const props = defineProps<{
   dependsOn: string[];
   values?: ReportDependencies;
 }>();
+
+const { t } = useI18n();
 
 // quasar dialog setup
 const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
@@ -121,7 +126,7 @@ function validate() {
 
 function submit() {
   if (validate()) onDialogOK(dependencies);
-  else notifyError("All fields must have a value");
+  else notifyError(t("reporting.reportDependencyPrompt.allFieldsRequired"));
 }
 
 onBeforeMount(() => {

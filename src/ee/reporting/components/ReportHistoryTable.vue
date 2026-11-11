@@ -15,10 +15,12 @@ For details, see: https://license.tacticalrmm.com/ee
           push
           icon="refresh"
           @click="getReportHistory"
-        />Report History
+        />{{ $t("reporting.reportHistoryTable.title") }}
         <q-space />
         <q-btn v-close-popup dense flat icon="close">
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
 
@@ -49,7 +51,7 @@ For details, see: https://license.tacticalrmm.com/ee
           <q-input
             v-model="search"
             style="width: 300px"
-            label="Search"
+            :label="$t('common.search')"
             dense
             outlined
             clearable
@@ -78,7 +80,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-file-pdf-box" />
                   </q-item-section>
-                  <q-item-section>Open PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.actions.openPdfReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -103,15 +107,11 @@ For details, see: https://license.tacticalrmm.com/ee
                       "
                     />
                   </q-item-section>
-                  <q-item-section
-                    >Open
-                    {{
-                      props.row.report_template_type !== "plaintext"
-                        ? "HTML"
-                        : "Text"
-                    }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    props.row.report_template_type !== "plaintext"
+                      ? $t("reporting.actions.openHtmlReport")
+                      : $t("reporting.actions.openTextReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -131,7 +131,9 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-download" />
                   </q-item-section>
-                  <q-item-section>Download PDF Report</q-item-section>
+                  <q-item-section>{{
+                    $t("reporting.actions.downloadPdfReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -151,15 +153,11 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="mdi-download" />
                   </q-item-section>
-                  <q-item-section
-                    >Download
-                    {{
-                      props.row.report_template_type !== "plaintext"
-                        ? "HTML"
-                        : "Text"
-                    }}
-                    Report</q-item-section
-                  >
+                  <q-item-section>{{
+                    props.row.report_template_type !== "plaintext"
+                      ? $t("reporting.actions.downloadHtmlReport")
+                      : $t("reporting.actions.downloadTextReport")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -172,12 +170,12 @@ For details, see: https://license.tacticalrmm.com/ee
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator />
                 <q-item v-close-popup clickable>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -208,14 +206,17 @@ For details, see: https://license.tacticalrmm.com/ee
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useQuasar, useDialogPluginComponent, type QTableColumn } from "quasar";
+import { useI18n } from "vue-i18n";
 import { formatDate, capitalize } from "@/utils/format";
 import { useSharedReportHistory } from "../api/reporting";
 import type { ReportHistory } from "../types/reporting";
 
+const { t } = useI18n();
+
 const columns: QTableColumn[] = [
   {
     name: "report_template_name",
-    label: "Template",
+    label: t("reporting.reportHistoryTable.template"),
     field: "report_template_name",
     align: "left",
     sortable: true,
@@ -229,7 +230,7 @@ const columns: QTableColumn[] = [
   },
   {
     name: "report_template_type",
-    label: "Template Type",
+    label: t("reporting.reportHistoryTable.templateType"),
     field: "report_template_type",
     align: "left",
     sortable: true,
@@ -237,7 +238,7 @@ const columns: QTableColumn[] = [
   },
   {
     name: "date_created",
-    label: "Date Created",
+    label: t("reporting.reportHistoryTable.dateCreated"),
     field: "date_created",
     align: "left",
     sortable: true,
@@ -265,11 +266,13 @@ const search = ref("");
 // Confirm and delete
 function deleteHistory(entry: ReportHistory) {
   $q.dialog({
-    title: `Delete History for ${entry.report_template_name}?`,
-    message: "This will remove the history entry permanently.",
+    title: t("reporting.reportHistoryTable.deleteTitle", {
+      name: entry.report_template_name,
+    }),
+    message: t("reporting.reportHistoryTable.deleteMessage"),
     color: "primary",
     cancel: true,
-    ok: { label: "Delete", color: "negative" },
+    ok: { label: t("common.delete"), color: "negative" },
   }).onOk(() => {
     deleteReportHistory(entry.id);
   });

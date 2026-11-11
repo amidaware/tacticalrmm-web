@@ -1,6 +1,7 @@
 import { date } from "quasar";
 import { validateTimePeriod } from "@/utils/validation";
 import trmmLogo from "@/assets/trmm_256.png";
+import { t } from "@/i18n";
 
 import type { Script } from "@/types/scripts";
 import type { Agent } from "@/types/agents";
@@ -96,9 +97,10 @@ function _formatOptions<T extends { [key: string]: any }>(
 export function formatScriptOptions(data: Script[]): Option[] {
   const categoryMap = new Map<string, Script[]>();
   let hasUnassigned = false;
+  const unassigned = t("utils.unassigned");
 
   data.forEach((script) => {
-    const category = script.category || "Unassigned";
+    const category = script.category || unassigned;
     if (!script.category) hasUnassigned = true;
 
     if (!categoryMap.has(category)) {
@@ -110,9 +112,9 @@ export function formatScriptOptions(data: Script[]): Option[] {
   const categories = Array.from(categoryMap.keys());
   if (hasUnassigned) {
     // Ensure "Unassigned" is the last category
-    const index = categories.indexOf("Unassigned");
+    const index = categories.indexOf(unassigned);
     categories.splice(index, 1);
-    categories.push("Unassigned");
+    categories.push(unassigned);
   }
 
   categories.sort();
@@ -194,11 +196,17 @@ export function formatCustomFieldOptions(
   } else {
     // Predefined categories for organizing the custom fields
     const categories = ["Client", "Site", "Agent"];
+    const categoryLabels: Record<string, string> = {
+      Client: t("common.client"),
+      Site: t("common.site"),
+      Agent: t("common.agent"),
+    };
     const options: Option[] = [];
 
     categories.forEach((cat) => {
+      const catLabel = categoryLabels[cat];
       // Add a category header as an option
-      options.push({ category: cat, label: cat, value: cat });
+      options.push({ category: catLabel, label: catLabel, value: cat });
 
       // Filter and map the custom fields that match the current category
       const matchingFields = data
@@ -206,7 +214,7 @@ export function formatCustomFieldOptions(
         .map((custom_field) => ({
           label: custom_field.name,
           value: custom_field.id,
-          cat: cat,
+          cat: catLabel,
         }));
 
       // Sort the filtered custom fields by their labels and add them to the options
@@ -308,17 +316,17 @@ export function getTimeLapse(unixtime: number) {
   const msPerYear = msPerDay * 365;
   const elapsed = current - previous;
   if (elapsed < msPerMinute) {
-    return Math.round(elapsed / 1000) + " seconds ago";
+    return t("utils.timeAgo.seconds", { n: Math.round(elapsed / 1000) });
   } else if (elapsed < msPerHour) {
-    return Math.round(elapsed / msPerMinute) + " minutes ago";
+    return t("utils.timeAgo.minutes", { n: Math.round(elapsed / msPerMinute) });
   } else if (elapsed < msPerDay) {
-    return Math.round(elapsed / msPerHour) + " hours ago";
+    return t("utils.timeAgo.hours", { n: Math.round(elapsed / msPerHour) });
   } else if (elapsed < msPerMonth) {
-    return Math.round(elapsed / msPerDay) + " days ago";
+    return t("utils.timeAgo.days", { n: Math.round(elapsed / msPerDay) });
   } else if (elapsed < msPerYear) {
-    return Math.round(elapsed / msPerMonth) + " months ago";
+    return t("utils.timeAgo.months", { n: Math.round(elapsed / msPerMonth) });
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return t("utils.timeAgo.years", { n: Math.round(elapsed / msPerYear) });
   }
 }
 
@@ -341,7 +349,7 @@ export function getNextAgentUpdateTime() {
   }
   const a = date.formatDate(ret, "MMM D, YYYY");
   const b = date.formatDate(ret, "h:mm A");
-  return `${a} at ${b}`;
+  return t("utils.dateAtTime", { date: a, time: b });
 }
 
 // converts a date with timezone to local for html native datetime fields -> YYYY-MM-DD HH:mm:ss

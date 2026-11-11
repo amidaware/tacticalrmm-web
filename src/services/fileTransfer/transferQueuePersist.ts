@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import {
   FILE_TRANSFER_LOCAL_PAUSED_LS_KEY,
   FILE_TRANSFER_UI_META_IDB_STORE,
@@ -151,16 +152,23 @@ export function formatResumeWindowCaption(expiresAt?: string): string | null {
   const end = Date.parse(expiresAt);
   if (!Number.isFinite(end)) return null;
   const ms = end - Date.now();
-  if (ms <= 0) return "Resume window expired";
+  if (ms <= 0) return t("fileBrowser.transfer.resumeWindowExpired");
   const mins = Math.max(1, Math.round(ms / 60_000));
   if (mins >= 60) {
     const hours = Math.floor(mins / 60);
     const rem = mins % 60;
     return rem
-      ? `Resume available for ${hours}h ${rem}m`
-      : `Resume available for ${hours}h`;
+      ? t("fileBrowser.transfer.resumeAvailableHoursMinutes", {
+          hours,
+          minutes: rem,
+        })
+      : t("fileBrowser.transfer.resumeAvailableHours", { hours });
   }
-  return `Resume available for ${mins} minute${mins === 1 ? "" : "s"}`;
+  return t(
+    "fileBrowser.transfer.resumeAvailableMinutes",
+    { count: mins },
+    mins,
+  );
 }
 
 export function matchesUploadFileIdentity(
@@ -438,16 +446,16 @@ function downloadRecoveryErrorMessage(
   recoveryHint: TransferRecoveryHint,
 ): string | undefined {
   if (recoveryHint === "non_resumable") {
-    return "This download cannot be resumed here. Cancel to free the session.";
+    return t("fileBrowser.transfer.recovery.nonResumable");
   }
   if (recoveryHint === "needs_destination") {
-    return "Select the existing download file to resume.";
+    return t("fileBrowser.transfer.recovery.needsDestination");
   }
   if (recoveryHint === "needs_permission") {
-    return "Click Resume and allow file access to continue.";
+    return t("fileBrowser.transfer.recovery.needsPermission");
   }
   if (recoveryHint === "archive_preparing") {
-    return "Archive was still preparing. Resume to continue.";
+    return t("fileBrowser.transfer.recovery.archivePreparing");
   }
   return undefined;
 }

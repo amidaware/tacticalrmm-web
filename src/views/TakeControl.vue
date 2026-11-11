@@ -2,22 +2,22 @@
   <div>
     <q-bar>
       <span class="text-caption">
-        TRMM Agent Status:
-        <q-badge :color="statusColor" :label="status" />
+        {{ $t("takeControl.agentStatus") }}
+        <q-badge :color="statusColor" :label="statusLabel" />
       </span>
       <q-space />
       <q-btn
         class="q-mr-md"
         color="primary"
         size="sm"
-        label="Restart Connection"
+        :label="$t('takeControl.restartConnection')"
         icon="refresh"
         @click="restartMeshService"
       />
       <q-btn
         :color="dash_negative_color"
         size="sm"
-        label="Recover Connection"
+        :label="$t('takeControl.recoverConnection')"
         icon="fas fa-first-aid"
         @click="repairMeshCentral"
       />
@@ -41,6 +41,7 @@ import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import { useMeta, useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 import { fetchAgentMeshCentralURLs, sendAgentRecoverMesh } from "@/api/agents";
 import { fetchDashboardInfo } from "@/api/core";
 import { sendAgentServiceAction } from "@/api/services";
@@ -59,6 +60,7 @@ export default {
     // quasar setup
     const $q = useQuasar();
     const store = useStore();
+    const { t } = useI18n();
     const dash_positive_color = computed(() => store.state.dash_positive_color);
     const dash_negative_color = computed(() => store.state.dash_negative_color);
     const dash_warning_color = computed(() => store.state.dash_warning_color);
@@ -81,6 +83,19 @@ export default {
       }
     });
 
+    const statusLabel = computed(() => {
+      switch (status.value) {
+        case "online":
+          return t("common.online");
+        case "offline":
+          return t("common.offline");
+        case "overdue":
+          return t("common.overdue");
+        default:
+          return status.value;
+      }
+    });
+
     // TODO refactor this so we're not calling the api twice
     const dashInfo = () => {
       store.dispatch("getDashInfo", false);
@@ -93,7 +108,9 @@ export default {
         control.value = data.control;
         status.value = data.status;
         useMeta({
-          title: `${data.hostname} - ${data.client} - ${data.site} | Take Control`,
+          title: `${data.hostname} - ${data.client} - ${data.site} | ${t(
+            "takeControl.title",
+          )}`,
         });
       } catch (e) {
         console.error(e);
@@ -109,7 +126,7 @@ export default {
 
     async function repairMeshCentral() {
       control.value = "";
-      $q.loading.show({ message: "Attempting to repair Mesh Agent" });
+      $q.loading.show({ message: t("takeControl.repairing") });
       try {
         const data = await sendAgentRecoverMesh(params.agent_id);
         await getMeshURLs();
@@ -123,7 +140,7 @@ export default {
     }
 
     async function restartMeshService() {
-      $q.loading.show({ message: "Restarting Mesh Agent" });
+      $q.loading.show({ message: t("takeControl.restarting") });
       const data = {
         sv_action: "restart",
       };
@@ -131,7 +148,7 @@ export default {
       try {
         await sendAgentServiceAction(params.agent_id, "mesh agent", data);
         setTimeout(() => {
-          notifySuccess("Mesh agent service was restarted");
+          notifySuccess(t("takeControl.restarted"));
         }, 500);
       } catch (e) {
         console.error(e);
@@ -145,6 +162,7 @@ export default {
       control,
       status,
       statusColor,
+      statusLabel,
       dash_negative_color,
 
       // methods

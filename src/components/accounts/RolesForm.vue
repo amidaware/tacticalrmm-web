@@ -2,265 +2,282 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="min-width: 75vw; max-heigth: 75vh" class="q-dialog-plugin">
       <q-bar>
-        {{ localRole ? "Editing Role" : "Adding Role" }}
+        {{ localRole ? $t("admin.roles.editing") : $t("admin.roles.adding") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
       <q-form ref="form" @submit="onSubmit">
         <q-card-section class="row">
           <q-input
-            label="Role Name"
+            :label="$t('admin.roles.roleName')"
             class="col-6"
             dense
             outlined
             v-model="localRole.name"
-            :rules="[(val) => !!val || '*Required']"
+            :rules="[(val) => !!val || $t('admin.required')]"
           />
         </q-card-section>
         <q-card-section class="scroll" style="height: 70vh">
           <!-- Permissions -->
-          <div class="text-subtitle2">Super User</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.superUser") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
-              <q-checkbox v-model="localRole.is_superuser" label="Super User" />
+              <q-checkbox
+                v-model="localRole.is_superuser"
+                :label="$t('admin.roles.perms.superUser')"
+              />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Reporting</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.reporting") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_view_reports"
-                label="Reporting Viewer"
+                :label="$t('admin.roles.perms.reportingViewer')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_reports"
-                label="Reporting Manager"
+                :label="$t('admin.roles.perms.reportingManager')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Accounts</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.accounts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_accounts"
-                label="List User Accounts"
+                :label="$t('admin.roles.perms.listAccounts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_accounts"
-                label="Manage User Accounts"
+                :label="$t('admin.roles.perms.manageAccounts')"
               />
               <q-checkbox
                 v-model="localRole.can_list_roles"
-                label="List Roles"
+                :label="$t('admin.roles.perms.listRoles')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_roles"
-                label="Manage Roles"
+                :label="$t('admin.roles.perms.manageRoles')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Agents</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.agents") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_agents"
-                label="List Agents"
+                :label="$t('admin.roles.perms.listAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_list_agent_history"
-                label="List Agent History"
+                :label="$t('admin.roles.perms.listAgentHistory')"
               />
               <q-checkbox
                 v-model="localRole.can_use_mesh"
-                label="Use MeshCentral"
+                :label="$t('admin.roles.perms.useMesh')"
               />
               <q-checkbox
                 v-model="localRole.can_uninstall_agents"
-                label="Uninstall Agents"
+                :label="$t('admin.roles.perms.uninstallAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_update_agents"
-                label="Update Agents"
+                :label="$t('admin.roles.perms.updateAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_agent"
-                label="Edit Agents"
+                :label="$t('admin.roles.perms.editAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_procs"
-                label="Manage Processes"
+                :label="$t('admin.roles.perms.manageProcs')"
               />
               <q-checkbox
                 v-model="localRole.can_view_eventlogs"
-                label="View Event Logs"
+                :label="$t('admin.roles.perms.viewEventLogs')"
               />
               <q-checkbox
                 v-model="localRole.can_send_cmd"
-                label="Send Command"
+                :label="$t('admin.roles.perms.sendCmd')"
               />
               <q-checkbox
                 v-model="localRole.can_use_terminal"
-                label="Use Terminal"
+                :label="$t('admin.roles.perms.useTerminal')"
               />
               <q-checkbox
                 v-model="localRole.can_reboot_agents"
-                label="Shutdown / Reboot Agents"
+                :label="$t('admin.roles.perms.rebootAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_send_wol"
-                label="Wake-Up (WoL) Agents"
+                :label="$t('admin.roles.perms.sendWol')"
               />
               <q-checkbox
                 v-model="localRole.can_install_agents"
-                label="Install Agents"
+                :label="$t('admin.roles.perms.installAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_run_scripts"
-                label="Run Script"
+                :label="$t('admin.roles.perms.runScripts')"
               />
               <q-checkbox
                 v-model="localRole.can_run_bulk"
-                label="Bulk Actions"
+                :label="$t('admin.roles.perms.runBulk')"
               />
               <q-checkbox
                 v-model="localRole.can_recover_agents"
-                label="Recover Agents"
+                :label="$t('admin.roles.perms.recoverAgents')"
               />
               <q-checkbox
                 v-model="localRole.can_use_registry"
-                label="Use Registry"
+                :label="$t('admin.roles.perms.useRegistry')"
               />
               <q-checkbox
                 v-model="localRole.can_use_file_browser"
-                label="Use File Browser"
+                :label="$t('admin.roles.perms.useFileBrowser')"
               />
             </div>
           </q-card-section>
-          <div class="text-subtitle2">Core</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.core") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_notes"
-                label="List Notes"
+                :label="$t('admin.roles.perms.listNotes')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_notes"
-                label="Manage Notes"
+                :label="$t('admin.roles.perms.manageNotes')"
               />
               <q-checkbox
                 v-model="localRole.can_view_core_settings"
-                label="View Global Settings"
+                :label="$t('admin.roles.perms.viewCoreSettings')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_core_settings"
-                label="Edit Global Settings"
+                :label="$t('admin.roles.perms.editCoreSettings')"
               />
               <q-checkbox
                 v-model="localRole.can_view_global_keystore"
-                label="View Global Key Store"
+                :label="$t('admin.roles.perms.viewKeyStore')"
               />
               <q-checkbox
                 v-model="localRole.can_edit_global_keystore"
-                label="Edit Global Key Store"
+                :label="$t('admin.roles.perms.editKeyStore')"
               />
               <q-checkbox
                 v-model="localRole.can_do_server_maint"
-                label="Do Server Maintenance"
+                :label="$t('admin.roles.perms.serverMaint')"
               />
               <q-checkbox
                 v-model="localRole.can_code_sign"
-                label="Manage Code Signing"
+                :label="$t('admin.roles.perms.codeSign')"
               />
               <q-checkbox
                 v-model="localRole.can_list_api_keys"
-                label="List API Keys"
+                :label="$t('admin.roles.perms.listApiKeys')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_api_keys"
-                label="Manage API Keys"
+                :label="$t('admin.roles.perms.manageApiKeys')"
               />
               <q-checkbox
                 v-model="localRole.can_run_urlactions"
-                label="Run URL Actions"
+                :label="$t('admin.roles.perms.runUrlActions')"
               />
               <q-checkbox
                 v-model="localRole.can_view_customfields"
-                label="View Custom Fields"
+                :label="$t('admin.roles.perms.viewCustomFields')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_customfields"
-                label="Edit Custom Fields"
+                :label="$t('admin.roles.perms.manageCustomFields')"
               />
               <q-checkbox
                 v-model="localRole.can_view_schedules"
-                label="List Schedules"
+                :label="$t('admin.roles.perms.listSchedules')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_schedules"
-                label="Manage Schedules"
+                :label="$t('admin.roles.perms.manageSchedules')"
               />
               <q-checkbox
                 v-if="!hosted"
                 v-model="localRole.can_use_webterm"
-                label="Use TRMM Server Web Terminal"
+                :label="$t('admin.roles.perms.useWebterm')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Checks</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.checks") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_checks"
-                label="List Checks"
+                :label="$t('admin.roles.perms.listChecks')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_checks"
-                label="Manage Checks"
+                :label="$t('admin.roles.perms.manageChecks')"
               />
               <q-checkbox
                 v-model="localRole.can_run_checks"
-                label="Run Checks"
+                :label="$t('admin.roles.perms.runChecks')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Clients</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.clients") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_clients"
-                label="List Clients"
+                :label="$t('admin.roles.perms.listClients')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_clients"
-                label="Manage Clients"
+                :label="$t('admin.roles.perms.manageClients')"
               />
               <q-checkbox
                 v-model="localRole.can_list_sites"
-                label="List Sites"
+                :label="$t('admin.roles.perms.listSites')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_sites"
-                label="Manage Sites"
+                :label="$t('admin.roles.perms.manageSites')"
               />
               <q-checkbox
                 v-model="localRole.can_list_deployments"
-                label="List Deployments"
+                :label="$t('admin.roles.perms.listDeployments')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_deployments"
-                label="Manage Deployments"
+                :label="$t('admin.roles.perms.manageDeployments')"
               />
             </div>
           </q-card-section>
@@ -268,10 +285,10 @@
           <q-card-section class="row">
             <tactical-dropdown
               class="col-6"
-              label="Allowed Clients"
+              :label="$t('admin.roles.allowedClients')"
               :options="clientOptions"
               v-model="localRole.can_view_clients"
-              hint="Empty means all clients are allowed"
+              :hint="$t('admin.roles.allowedClientsHint')"
               outlined
               mapOptions
               multiple
@@ -281,10 +298,10 @@
           <q-card-section class="row">
             <tactical-dropdown
               class="col-6"
-              label="Allowed Sites"
+              :label="$t('admin.roles.allowedSites')"
               :options="siteOptions"
               v-model="localRole.can_view_sites"
-              hint="Empty means all sites are allowed"
+              :hint="$t('admin.roles.allowedSitesHint')"
               outlined
               mapOptions
               multiple
@@ -292,150 +309,166 @@
             />
           </q-card-section>
 
-          <div class="text-subtitle2">Automation Policies</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.automationPolicies") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_automation_policies"
-                label="List Automation Policies"
+                :label="$t('admin.roles.perms.listPolicies')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_automation_policies"
-                label="Manage Automation Policies"
+                :label="$t('admin.roles.perms.managePolicies')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Tasks</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.tasks") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_autotasks"
-                label="List Tasks"
+                :label="$t('admin.roles.perms.listTasks')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_autotasks"
-                label="Manage Tasks"
+                :label="$t('admin.roles.perms.manageTasks')"
               />
               <q-checkbox
                 v-model="localRole.can_run_autotasks"
-                label="Run Tasks"
+                :label="$t('admin.roles.perms.runTasks')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Logs</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.logs") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_view_auditlogs"
-                label="View Audit Logs"
+                :label="$t('admin.roles.perms.viewAuditLogs')"
               />
               <q-checkbox
                 v-model="localRole.can_view_debuglogs"
-                label="View Debug Logs"
+                :label="$t('admin.roles.perms.viewDebugLogs')"
               />
               <q-checkbox
                 v-model="localRole.can_list_pendingactions"
-                label="List Pending Actions"
+                :label="$t('admin.roles.perms.listPendingActions')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_pendingactions"
-                label="Manage Pending Actions"
+                :label="$t('admin.roles.perms.managePendingActions')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Scripts</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.scripts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_scripts"
-                label="List Scripts"
+                :label="$t('admin.roles.perms.listScripts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_scripts"
-                label="Manage Scripts"
+                :label="$t('admin.roles.perms.manageScripts')"
               />
               <q-checkbox
                 v-if="!hosted"
                 v-model="localRole.can_run_server_scripts"
-                label="Run Scripts on TRMM Server"
+                :label="$t('admin.roles.perms.runServerScripts')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Alerts</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.alerts") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_alerts"
-                label="List Alerts"
+                :label="$t('admin.roles.perms.listAlerts')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_alerts"
-                label="Manage Alerts"
+                :label="$t('admin.roles.perms.manageAlerts')"
               />
               <q-checkbox
                 v-model="localRole.can_list_alerttemplates"
-                label="List Alert Templates"
+                :label="$t('admin.roles.perms.listAlertTemplates')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_alerttemplates"
-                label="Manage Alert Templates"
+                :label="$t('admin.roles.perms.manageAlertTemplates')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Windows Services</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.windowsServices") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_manage_winsvcs"
-                label="Manage Windows Services"
+                :label="$t('admin.roles.perms.manageWinSvcs')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Software</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.software") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_list_software"
-                label="List Software"
+                :label="$t('admin.roles.perms.listSoftware')"
               />
               <q-checkbox
                 v-model="localRole.can_manage_software"
-                label="Manage Software"
+                :label="$t('admin.roles.perms.manageSoftware')"
               />
             </div>
           </q-card-section>
 
-          <div class="text-subtitle2">Windows Updates</div>
+          <div class="text-subtitle2">
+            {{ $t("admin.roles.sections.windowsUpdates") }}
+          </div>
           <q-separator />
           <q-card-section class="row">
             <div class="q-gutter-sm">
               <q-checkbox
                 v-model="localRole.can_manage_winupdates"
-                label="Manage Windows Updates"
+                :label="$t('admin.roles.perms.manageWinUpdates')"
               />
             </div>
           </q-card-section>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn dense flat label="Cancel" v-close-popup />
+          <q-btn dense flat :label="$t('common.cancel')" v-close-popup />
           <q-btn
             :loading="loading"
             dense
             flat
-            label="Save"
+            :label="$t('common.save')"
             color="primary"
             type="submit"
           />

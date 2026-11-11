@@ -1,10 +1,12 @@
 <template>
   <q-card>
     <q-bar>
-      Update Agents
+      {{ $t("agentModals.updateAgents.title") }}
       <q-space />
       <q-btn dense flat icon="close" v-close-popup>
-        <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+        <q-tooltip class="bg-white text-primary">{{
+          $t("common.close")
+        }}</q-tooltip>
       </q-btn>
     </q-bar>
 
@@ -14,13 +16,11 @@
       <template v-slot:avatar>
         <q-icon name="info" />
       </template>
-      If agent auto update is enabled in Global Settings, agents will
-      automatically self update at 35 min past the hour, every hour. Use this
-      tool to manually trigger an agent update cycle.
+      {{ $t("agentModals.updateAgents.banner") }}
     </q-banner>
 
     <q-card-section>
-      Select Version
+      {{ $t("agentModals.updateAgents.selectVersion") }}
       <q-select
         square
         disable
@@ -33,7 +33,7 @@
     </q-card-section>
 
     <q-card-section v-show="version !== null">
-      Select Agent
+      {{ $t("agentModals.updateAgents.selectAgent") }}
       <br />
       <q-separator />
 
@@ -43,7 +43,7 @@
         outlined
         clearable
         debounce="100"
-        placeholder="Search"
+        :placeholder="$t('common.search')"
         class="q-my-sm"
       >
         <template v-slot:prepend>
@@ -53,13 +53,13 @@
 
       <q-checkbox
         v-model="selectAll"
-        label="Select All"
+        :label="$t('agentModals.updateAgents.selectAll')"
         @update:model-value="selectAllAction"
       />
 
       <q-btn
         v-show="group.length !== 0"
-        label="Update"
+        :label="$t('common.update')"
         color="primary"
         @click="update"
         class="q-ml-xl"
@@ -122,7 +122,7 @@ export default {
       const data = { agent_ids: this.group };
       this.$axios.post("/agents/update/", data).then(() => {
         this.$emit("close");
-        this.notifySuccess("Agents will now be updated");
+        this.notifySuccess(this.$t("agentModals.updateAgents.updating"));
       });
     },
   },

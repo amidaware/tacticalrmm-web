@@ -2,31 +2,33 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="dialog-plugin" style="min-width: 30vw">
       <q-bar>
-        Schedule reboot on {{ agent.hostname }}
+        {{ $t("agentModals.rebootLater.title", { hostname: agent.hostname }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section>
         <q-input
           type="datetime-local"
           dense
-          label="Reboot time"
+          :label="$t('agentModals.rebootLater.rebootTime')"
           stack-label
           filled
           v-model="state.datetime"
-          hint="Uses the agent's local time zone"
+          :hint="$t('agentModals.rebootLater.hint')"
         />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn dense flat push label="Cancel" v-close-popup />
+        <q-btn dense flat push :label="$t('common.cancel')" v-close-popup />
         <q-btn
           :loading="loading"
           dense
           flat
           push
-          label="Schedule Reboot"
+          :label="$t('agentModals.rebootLater.scheduleReboot')"
           color="primary"
           @click="scheduleReboot"
         />
@@ -41,6 +43,7 @@ import { ref } from "vue";
 import { useQuasar, useDialogPluginComponent, date } from "quasar";
 import { scheduleAgentReboot } from "@/api/agents";
 import { formatDateInputField } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "RebootLater",
@@ -52,6 +55,7 @@ export default {
     // setup quasar dialog plugin
     const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent();
     const $q = useQuasar();
+    const { t } = useI18n();
 
     // setup reboot later logic
     const state = ref({
@@ -68,9 +72,12 @@ export default {
           state.value,
         );
         $q.dialog({
-          title: "Reboot pending",
+          title: t("agentModals.rebootLater.pendingTitle"),
           style: "width: 40vw",
-          message: `A reboot has been scheduled for ${ret.time} on ${props.agent.hostname}. It can be cancelled from the Pending Actions menu until the scheduled time.`,
+          message: t("agentModals.rebootLater.pendingMessage", {
+            time: ret.time,
+            hostname: props.agent.hostname,
+          }),
         }).onDismiss(onDialogOK);
       } catch (e) {
         console.error(e);

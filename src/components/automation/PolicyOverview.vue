@@ -9,10 +9,12 @@
           flat
           push
           icon="refresh"
-        />Policy Overview
+        />{{ $t("automation.overview.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-splitter v-model="splitterModel" style="height: 600px">
@@ -40,8 +42,16 @@
             narrow-indicator
             no-caps
           >
-            <q-tab name="checks" icon="fas fa-check-double" label="Checks" />
-            <q-tab name="tasks" icon="fas fa-tasks" label="Tasks" />
+            <q-tab
+              name="checks"
+              icon="fas fa-check-double"
+              :label="$t('automation.tabs.checks')"
+            />
+            <q-tab
+              name="tasks"
+              icon="fas fa-tasks"
+              :label="$t('automation.tabs.tasks')"
+            />
           </q-tabs>
           <q-tab-panels
             v-model="selectedTab"
@@ -139,14 +149,13 @@ export default {
 
         // Add any server policies assigned to client
         if (!!client.server_policy) {
-          let disabled = "";
-
           // Indicate if the policy is active or not
-          if (!client.server_policy.active) {
-            disabled = " (disabled)";
-          }
-
-          const label = client.server_policy.name + " (Servers)" + disabled;
+          const label = this.$t(
+            client.server_policy.active
+              ? "automation.overview.serversPolicy"
+              : "automation.overview.serversPolicyDisabled",
+            { name: client.server_policy.name },
+          );
           client_temp["children"].push({
             label: label,
             icon: "policy",
@@ -157,15 +166,13 @@ export default {
 
         // Add any workstation policies assigned to client
         if (!!client.workstation_policy) {
-          let disabled = "";
-
           // Indicate if the policy is active or not
-          if (!client.workstation_policy.active) {
-            disabled = " (disabled)";
-          }
-
-          const label =
-            client.workstation_policy.name + " (Workstations)" + disabled;
+          const label = this.$t(
+            client.workstation_policy.active
+              ? "automation.overview.workstationsPolicy"
+              : "automation.overview.workstationsPolicyDisabled",
+            { name: client.workstation_policy.name },
+          );
           client_temp["children"].push({
             label: label,
             icon: "policy",
@@ -190,12 +197,12 @@ export default {
             site_temp["children"] = [];
 
             // Indicate if the policy is active or not
-            let disabled = "";
-            if (!site.server_policy.active) {
-              disabled = " (disabled)";
-            }
-
-            const label = site.server_policy.name + " (Servers)" + disabled;
+            const label = this.$t(
+              site.server_policy.active
+                ? "automation.overview.serversPolicy"
+                : "automation.overview.serversPolicyDisabled",
+              { name: site.server_policy.name },
+            );
             site_temp["children"].push({
               label: label,
               icon: "policy",
@@ -209,13 +216,12 @@ export default {
             site_temp["children"] = [];
 
             // Indicate if the policy is active or not
-            let disabled = "";
-            if (!site.workstation_policy.active) {
-              disabled = " (disabled)";
-            }
-
-            const label =
-              site.workstation_policy.name + " (Workstations)" + disabled;
+            const label = this.$t(
+              site.workstation_policy.active
+                ? "automation.overview.workstationsPolicy"
+                : "automation.overview.workstationsPolicyDisabled",
+              { name: site.workstation_policy.name },
+            );
             site_temp["children"].push({
               label: label,
               icon: "policy",

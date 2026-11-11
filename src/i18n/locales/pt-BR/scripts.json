@@ -1,0 +1,104 @@
+{
+  "validation": {
+    "required": "*Obrigatório",
+    "minTimeout": "O mínimo é 5"
+  },
+  "shared": {
+    "generateScript": "Gerar Script",
+    "shellType": "Tipo de Shell",
+    "category": "Categoria",
+    "supportedPlatforms": "Plataformas suportadas (todas se vazio)",
+    "askChatGPT": "Pergunte ao ChatGPT o que você precisa!",
+    "codeThat": "código {lang} que "
+  },
+  "scriptForm": {
+    "shebangWarning": "Scripts Shell/Python no Linux/Mac precisam de um shebang no início do script, ex.: {bash} ou {python}",
+    "shebangWarningHint": "Adicione um para remover este aviso. Ignore se for Windows.",
+    "scriptArgs": "Argumentos do script (pressione Enter após digitar cada argumento)",
+    "timeoutSeconds": "Tempo limite (segundos)",
+    "syntax": "Sintaxe",
+    "runAsUser": "Executar como usuário (somente Windows)",
+    "runAsUserTooltip": "Definir este valor no script sempre substituirá qualquer opção 'Executar como usuário' na interface e forçará este script a ser executado no contexto do usuário logado. Se nenhum usuário estiver logado, o script será executado como SYSTEM.",
+    "agentToTest": "Agente para executar o script de teste",
+    "testScript": "Testar Script",
+    "testOnServer": "Testar no servidor do Tactical",
+    "testOnServerTitle": "Executa no servidor Linux local do Tactical RMM.",
+    "testOnServerDesc": "Somente interpretadores ou frameworks disponíveis serão usados.",
+    "example": "Exemplo:",
+    "testOnServerExample": "Scripts PowerShell exigem que o PowerShell esteja instalado no sistema.",
+    "viewing": "Visualizando {name}",
+    "copying": "Copiando {name}",
+    "editing": "Editando {name}",
+    "adding": "Adicionando novo script",
+    "copyName": "(Cópia) {name}",
+    "shebangRequired": "É necessário um shebang no início do script para especificar o caminho do interpretador. Certifique-se de que seu script comece com uma linha shebang.",
+    "unsavedChanges": "Você tem alterações não salvas. Tem certeza de que deseja fechar?"
+  },
+  "scriptManager": {
+    "title": "Gerenciador de Scripts",
+    "new": "Novo",
+    "newScript": "Novo Script",
+    "uploadScript": "Enviar Script",
+    "scriptSnippets": "Trechos de Script",
+    "folderView": "Visualização em pastas",
+    "tableView": "Visualização em tabela",
+    "hideCommunityScripts": "Ocultar scripts da comunidade",
+    "showCommunityScripts": "Mostrar scripts da comunidade",
+    "hideHiddenScripts": "Ocultar scripts ocultos",
+    "showHiddenScripts": "Mostrar scripts ocultos",
+    "noScriptsFound": "Nenhum script encontrado",
+    "viewCode": "Ver código",
+    "clone": "Clonar",
+    "removeFavorite": "Remover dos favoritos",
+    "addFavorite": "Adicionar aos favoritos",
+    "downloadScript": "Baixar Script",
+    "showScript": "Mostrar Script",
+    "hideScript": "Ocultar Script",
+    "unassigned": "Sem categoria",
+    "columns": {
+      "favorites": "Favoritos",
+      "shell": "Shell",
+      "platforms": "Plataformas",
+      "defaultArgs": "Argumentos padrão",
+      "category": "Categoria",
+      "defaultTimeout": "Tempo limite padrão (segundos)"
+    },
+    "notify": {
+      "favorited": "Script adicionado aos favoritos!",
+      "unfavorited": "Script removido dos favoritos!",
+      "hidden": "Script ocultado!",
+      "unhidden": "Script reexibido!"
+    },
+    "deleteConfirm": "Excluir o script: {name}?"
+  },
+  "copyClip": {
+    "copyToClipboard": "Copiar para a área de transferência"
+  },
+  "snippetForm": {
+    "editing": "Editando {name}",
+    "adding": "Adicionando novo Trecho de Script"
+  },
+  "snippets": {
+    "title": "Trechos de Script",
+    "new": "Novo",
+    "deleteConfirm": "Excluir o trecho de script: {name}?"
+  },
+  "upload": {
+    "title": "Adicionar Script",
+    "categoryHint": "Pressione Enter ou Tab ao adicionar um novo valor",
+    "scriptUpload": "Enviar script",
+    "scriptArgs": "Argumentos do script",
+    "scriptArgsPlaceholder": "(pressione Enter após digitar cada argumento)",
+    "envVars": "Variáveis de ambiente",
+    "envVarsPlaceholder": "(pressione Enter após digitar cada par chave=valor)",
+    "defaultTimeout": "Tempo limite padrão"
+  },
+  "testScript": {
+    "title": "Teste de Script",
+    "runTime": "Tempo de execução:",
+    "seconds": "{n} segundos",
+    "returnCode": "Código de retorno:",
+    "stdout": "Saída padrão",
+    "stderr": "Erro padrão"
+  }
+}

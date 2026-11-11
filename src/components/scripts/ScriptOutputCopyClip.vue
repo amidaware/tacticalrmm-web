@@ -3,7 +3,7 @@
     <div class="col-auto">{{ label }}</div>
     <div class="col-auto">
       <q-btn dense flat size="md" icon="content_copy" @click="copyText">
-        <q-tooltip>Copy to Clipboard</q-tooltip>
+        <q-tooltip>{{ $t("scripts.copyClip.copyToClipboard") }}</q-tooltip>
       </q-btn>
     </div>
   </div>

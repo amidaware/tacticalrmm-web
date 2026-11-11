@@ -5,7 +5,7 @@
   >
     <div class="row items-center justify-between q-mb-xs">
       <div class="text-subtitle2 text-weight-medium download-queue-title">
-        Download queue
+        {{ $t("fileBrowser.queue.downloadQueue") }}
       </div>
       <div class="row items-center q-gutter-xs">
         <q-btn
@@ -13,7 +13,7 @@
           flat
           no-caps
           size="sm"
-          label="Clear finished"
+          :label="$t('fileBrowser.queue.clearFinished')"
           :disable="!canClearFinished"
           @click="emit('clear-finished')"
         >
@@ -24,7 +24,7 @@
           flat
           no-caps
           size="sm"
-          label="Hide all"
+          :label="$t('fileBrowser.queue.hideAll')"
           :disable="!canHideAll"
           @click="emit('hide-all')"
         >
@@ -36,7 +36,7 @@
           no-caps
           size="sm"
           color="negative"
-          label="Pause all"
+          :label="$t('fileBrowser.queue.pauseAll')"
           :disable="!canPauseAll"
           @click="emit('pause-all')"
         >
@@ -132,6 +132,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 import { useQuasar } from "quasar";
 
@@ -156,6 +157,7 @@ import {
   transferQueueStatusLabelWithSlotWait,
 } from "@/utils/filebrowser";
 
+const { t } = useI18n();
 const $q = useQuasar();
 
 const props = defineProps<{
@@ -176,7 +178,7 @@ const emit = defineEmits<{
 
 function pausedCaption(item: DownloadQueueItem): string | null {
   if (item.ownedByOtherTab) {
-    return "Open in another tab";
+    return t("fileBrowser.queue.openInAnotherTab");
   }
   const parts: string[] = [];
   if (item.errorMessage) parts.push(item.errorMessage);

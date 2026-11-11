@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import { Screen, Dark, LoadingBar } from "quasar";
 import axios from "axios";
 import { formatDate } from "@/utils/format";
+import { syncUserLocale } from "@/i18n";
 
 export default function () {
   const Store = new createStore({
@@ -257,6 +258,8 @@ export default function () {
 
         if (data?.date_format !== "") commit("setDateFormat", data.date_format);
         else commit("setDateFormat", data.default_date_format);
+
+        syncUserLocale(data.language);
       },
       loadTree({ commit, state }) {
         setTimeout(() => {

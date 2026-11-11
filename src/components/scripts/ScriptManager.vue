@@ -18,21 +18,31 @@
           flat
           push
           icon="refresh"
-        />Script Manager
+        />{{ $t("scripts.scriptManager.title") }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <div class="row q-pt-xs q-pl-xs">
-        <q-btn-dropdown icon="add" label="New" no-caps dense flat>
+        <q-btn-dropdown
+          icon="add"
+          :label="$t('scripts.scriptManager.new')"
+          no-caps
+          dense
+          flat
+        >
           <q-list dense>
             <q-item clickable v-close-popup @click="newScriptModal">
               <q-item-section side>
                 <q-icon size="xs" name="add" />
               </q-item-section>
               <q-item-section>
-                <q-item-label>New Script</q-item-label>
+                <q-item-label>{{
+                  $t("scripts.scriptManager.newScript")
+                }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup @click="uploadScriptModal">
@@ -40,7 +50,9 @@
                 <q-icon size="xs" name="cloud_upload" />
               </q-item-section>
               <q-item-section>
-                <q-item-label>Upload Script</q-item-label>
+                <q-item-label>{{
+                  $t("scripts.scriptManager.uploadScript")
+                }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -50,7 +62,7 @@
           dense
           flat
           class="q-ml-sm"
-          label="Script Snippets"
+          :label="$t('scripts.scriptManager.scriptSnippets')"
           icon="mdi-script"
           @click="ScriptSnippetModal"
         />
@@ -59,7 +71,11 @@
           flat
           no-caps
           class="q-ml-sm"
-          :label="tableView ? 'Folder View' : 'Table View'"
+          :label="
+            tableView
+              ? $t('scripts.scriptManager.folderView')
+              : $t('scripts.scriptManager.tableView')
+          "
           :icon="tableView ? 'folder' : 'list'"
           @click="tableView = !tableView"
         />
@@ -70,8 +86,8 @@
           class="q-ml-sm"
           :label="
             showCommunityScripts
-              ? 'Hide Community Scripts'
-              : 'Show Community Scripts'
+              ? $t('scripts.scriptManager.hideCommunityScripts')
+              : $t('scripts.scriptManager.showCommunityScripts')
           "
           :icon="showCommunityScripts ? 'visibility_off' : 'visibility'"
           @click="setShowCommunityScripts(!showCommunityScripts)"
@@ -83,7 +99,9 @@
           no-caps
           class="q-ml-sm"
           :label="
-            showHiddenScripts ? 'Hide Hidden Scripts' : 'Show Hidden Scripts'
+            showHiddenScripts
+              ? $t('scripts.scriptManager.hideHiddenScripts')
+              : $t('scripts.scriptManager.showHiddenScripts')
           "
           :icon="showHiddenScripts ? 'visibility_off' : 'visibility'"
           @click="showHiddenScripts = !showHiddenScripts"
@@ -93,7 +111,7 @@
         <q-input
           v-model="search"
           style="width: 300px"
-          label="Search"
+          :label="$t('common.search')"
           dense
           outlined
           clearable
@@ -120,8 +138,8 @@
           no-connectors
           node-key="id"
           v-model:expanded="expanded"
-          no-results-label="No Scripts Found"
-          no-nodes-label="No Scripts Found"
+          :no-results-label="$t('scripts.scriptManager.noScriptsFound')"
+          :no-nodes-label="$t('scripts.scriptManager.noScriptsFound')"
         >
           <template v-slot:header-script="props">
             <div
@@ -217,7 +235,9 @@
                   <q-item-section side>
                     <q-icon name="remove_red_eye" />
                   </q-item-section>
-                  <q-item-section>View Code</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.viewCode")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -228,7 +248,9 @@
                   <q-item-section side>
                     <q-icon name="content_copy" />
                   </q-item-section>
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.clone")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -240,7 +262,7 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -252,7 +274,7 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -267,8 +289,8 @@
                   </q-item-section>
                   <q-item-section>{{
                     props.node.favorite
-                      ? "Remove as Favorite"
-                      : "Add as Favorite"
+                      ? $t("scripts.scriptManager.removeFavorite")
+                      : $t("scripts.scriptManager.addFavorite")
                   }}</q-item-section>
                 </q-item>
 
@@ -280,7 +302,9 @@
                   <q-item-section side>
                     <q-icon name="cloud_download" />
                   </q-item-section>
-                  <q-item-section>Download Script</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.downloadScript")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -294,14 +318,16 @@
                     />
                   </q-item-section>
                   <q-item-section>{{
-                    props.node.hidden ? "Show Script" : "Hide Script"
+                    props.node.hidden
+                      ? $t("scripts.scriptManager.showScript")
+                      : $t("scripts.scriptManager.hideScript")
                   }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -334,7 +360,9 @@
           <q-th :props="props" auto-width> Shell </q-th>
         </template>
 
-        <template v-slot:no-data> No Scripts Found </template>
+        <template v-slot:no-data>
+          {{ $t("scripts.scriptManager.noScriptsFound") }}
+        </template>
         <template v-slot:body="props">
           <!-- Table View -->
           <q-tr
@@ -357,7 +385,9 @@
                   <q-item-section side>
                     <q-icon name="remove_red_eye" />
                   </q-item-section>
-                  <q-item-section>View Code</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.viewCode")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -368,7 +398,9 @@
                   <q-item-section side>
                     <q-icon name="content_copy" />
                   </q-item-section>
-                  <q-item-section>Clone</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.clone")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -380,7 +412,7 @@
                   <q-item-section side>
                     <q-icon name="edit" />
                   </q-item-section>
-                  <q-item-section>Edit</q-item-section>
+                  <q-item-section>{{ $t("common.edit") }}</q-item-section>
                 </q-item>
 
                 <q-item
@@ -392,7 +424,7 @@
                   <q-item-section side>
                     <q-icon name="delete" />
                   </q-item-section>
-                  <q-item-section>Delete</q-item-section>
+                  <q-item-section>{{ $t("common.delete") }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
@@ -407,8 +439,8 @@
                   </q-item-section>
                   <q-item-section>{{
                     props.row.favorite
-                      ? "Remove as Favorite"
-                      : "Add as Favorite"
+                      ? $t("scripts.scriptManager.removeFavorite")
+                      : $t("scripts.scriptManager.addFavorite")
                   }}</q-item-section>
                 </q-item>
 
@@ -420,7 +452,9 @@
                   <q-item-section side>
                     <q-icon name="cloud_download" />
                   </q-item-section>
-                  <q-item-section>Download Script</q-item-section>
+                  <q-item-section>{{
+                    $t("scripts.scriptManager.downloadScript")
+                  }}</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -432,14 +466,16 @@
                     />
                   </q-item-section>
                   <q-item-section>{{
-                    props.row.hidden ? "Show Script" : "Hide Script"
+                    props.row.hidden
+                      ? $t("scripts.scriptManager.showScript")
+                      : $t("scripts.scriptManager.hideScript")
                   }}</q-item-section>
                 </q-item>
 
                 <q-separator></q-separator>
 
                 <q-item clickable v-close-popup>
-                  <q-item-section>Close</q-item-section>
+                  <q-item-section>{{ $t("common.close") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -510,7 +546,7 @@
                   !props.row.supported_platforms ||
                   props.row.supported_platforms.length === 0
                 "
-                >All</q-badge
+                >{{ $t("common.all") }}</q-badge
               >
               <q-badge
                 v-else
@@ -589,6 +625,7 @@ import {
 } from "@/api/scripts";
 import { capitalize, truncateText } from "@/utils/format";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // ui imports
 import ScriptUploadModal from "@/components/scripts/ScriptUploadModal.vue";
@@ -602,56 +639,56 @@ import trmmLogo from "@/assets/trmm_256.png";
 const columns = [
   {
     name: "favorite",
-    label: "Favorites",
+    label: t("scripts.scriptManager.columns.favorites"),
     field: "favorite",
     align: "left",
     sortable: true,
   },
   {
     name: "shell",
-    label: "Shell",
+    label: t("scripts.scriptManager.columns.shell"),
     field: "shell",
     align: "left",
     sortable: true,
   },
   {
     name: "supported_platforms",
-    label: "Platforms",
+    label: t("scripts.scriptManager.columns.platforms"),
     field: "supported_platforms",
     align: "left",
     sortable: true,
   },
   {
     name: "name",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     align: "left",
     sortable: true,
   },
   {
     name: "args",
-    label: "Default Args",
+    label: t("scripts.scriptManager.columns.defaultArgs"),
     field: "args",
     align: "left",
     sortable: true,
   },
   {
     name: "category",
-    label: "Category",
+    label: t("scripts.scriptManager.columns.category"),
     field: "category",
     align: "left",
     sortable: true,
   },
   {
     name: "desc",
-    label: "Description",
+    label: t("common.description"),
     field: "description",
     align: "left",
     sortable: false,
   },
   {
     name: "default_timeout",
-    label: "Default Timeout (seconds)",
+    label: t("scripts.scriptManager.columns.defaultTimeout"),
     field: "default_timeout",
     align: "left",
     sortable: true,
@@ -692,8 +729,8 @@ export default {
     async function favoriteScript(script) {
       loading.value = true;
       const notifyText = !script.favorite
-        ? "Script was favorited!"
-        : "Script was removed as a favorite!";
+        ? t("scripts.scriptManager.notify.favorited")
+        : t("scripts.scriptManager.notify.unfavorited");
       try {
         await editScript({
           id: script.id,
@@ -709,8 +746,8 @@ export default {
     async function hideScript(script) {
       loading.value = true;
       const notifyText = !script.hidden
-        ? "Script was hidden!"
-        : "Script was unhidden!";
+        ? t("scripts.scriptManager.notify.hidden")
+        : t("scripts.scriptManager.notify.unhidden");
       try {
         await editScript({
           id: script.id,
@@ -725,9 +762,9 @@ export default {
 
     function deleteScript(script) {
       $q.dialog({
-        title: `Delete script: ${script.name}?`,
+        title: t("scripts.scriptManager.deleteConfirm", { name: script.name }),
         cancel: true,
-        ok: { label: "Delete", color: "negative" },
+        ok: { label: t("common.delete"), color: "negative" },
       }).onOk(async () => {
         loading.value = true;
         try {
@@ -819,7 +856,10 @@ export default {
           let temp = {
             icon: "folder",
             iconColor: "yellow-9",
-            label: category,
+            label:
+              category === "Unassigned"
+                ? t("scripts.scriptManager.unassigned")
+                : category,
             selectable: false,
             id: category,
             children: [],

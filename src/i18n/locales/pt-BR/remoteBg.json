@@ -1,0 +1,144 @@
+{
+  "pageTitle": "Segundo Plano Remoto",
+  "windowsOnly": "No momento, suportado apenas para agentes Windows",
+  "tabs": {
+    "terminal": "Terminal",
+    "fileBrowser": "Navegador de Arquivos",
+    "services": "Serviços",
+    "processes": "Processos",
+    "eventLog": "Log de Eventos",
+    "registry": "Registro"
+  },
+  "eventLog": {
+    "totalRecords": "Total de registros do log {logType}: {count}",
+    "application": "Aplicativo",
+    "system": "Sistema",
+    "security": "Segurança",
+    "showLastDays": "Mostrar últimos {days} dias",
+    "columns": {
+      "source": "Origem",
+      "eventId": "ID do Evento",
+      "time": "Data/Hora",
+      "message": "Mensagem (clique para ver completa)"
+    }
+  },
+  "processes": {
+    "stopLiveRefresh": "Parar Atualização ao Vivo",
+    "resumeLiveRefresh": "Retomar Atualização ao Vivo",
+    "cpuUsage": "Uso de CPU:",
+    "ramUsage": "Uso de RAM:",
+    "refreshInterval": "Intervalo de atualização (segundos)",
+    "endProcess": "Finalizar Processo",
+    "columns": {
+      "memory": "Memória"
+    }
+  },
+  "services": {
+    "detailsTitle": "Detalhes do Serviço - {name}",
+    "serviceName": "Nome do serviço:",
+    "displayName": "Nome de exibição:",
+    "descriptionLabel": "Descrição:",
+    "path": "Caminho:",
+    "startupType": "Tipo de inicialização:",
+    "serviceStatus": "Status do serviço:",
+    "start": "Iniciar",
+    "stop": "Parar",
+    "restart": "Reiniciar",
+    "serviceDetails": "Detalhes do Serviço",
+    "delayed": "{startType} (Atrasado)",
+    "startup": {
+      "autodelay": "Automático (Início Atrasado)",
+      "automatic": "Automático",
+      "manual": "Manual"
+    },
+    "columns": {
+      "displayName": "Nome de Exibição",
+      "startup": "Inicialização",
+      "logOnAs": "Fazer Logon Como"
+    }
+  },
+  "registry": {
+    "loadMore": "Carregar Mais",
+    "new": "Novo",
+    "rename": "Renomear",
+    "modify": "Modificar",
+    "noValues": "Nenhum valor encontrado",
+    "confirmKeyDeleteTitle": "Confirmar Exclusão da Chave",
+    "confirmKeyDeleteMessage": "Tem certeza de que deseja excluir permanentemente esta chave e todas as suas subchaves?",
+    "confirmValueDeleteTitle": "Confirmar Exclusão do Valor",
+    "confirmValueDeleteMessage": "Excluir certos valores do registro pode causar instabilidade no sistema. Tem certeza de que deseja excluir permanentemente este valor?",
+    "selectionRequiredTitle": "Seleção Necessária",
+    "selectionRequiredMessage": "Selecione um hive ou uma chave antes de criar uma nova chave.",
+    "binaryDenied": "Acesso negado para modificar valores REG_BINARY.",
+    "columns": {
+      "name": "Nome",
+      "type": "Tipo",
+      "data": "Dados"
+    },
+    "newTypes": {
+      "KEY": "Chave",
+      "REG_SZ": "Valor da Cadeia de Caracteres",
+      "REG_DWORD": "Valor DWORD (32 bits)",
+      "REG_QWORD": "Valor QWORD (64 bits)",
+      "REG_MULTI_SZ": "Valor de Cadeia de Caracteres Múltipla",
+      "REG_EXPAND_SZ": "Valor da Cadeia de Caracteres Expansível"
+    },
+    "valueModal": {
+      "editTitle": "Editar {type}",
+      "createTitle": "Criar {type}",
+      "types": {
+        "dword": "Valor DWORD (32 bits)",
+        "qword": "Valor QWORD (64 bits)",
+        "multiString": "Cadeia de Caracteres Múltipla",
+        "string": "Cadeia de Caracteres"
+      },
+      "valueName": "Nome do valor:",
+      "nameRequired": "O nome é obrigatório",
+      "valueData": "Dados do valor:",
+      "base": "Base",
+      "hexadecimal": "Hexadecimal",
+      "decimal": "Decimal",
+      "negative": "O valor não pode ser negativo.",
+      "dwordMax": "O valor DWORD (32 bits) não pode exceder 4.294.967.295.",
+      "qwordMax": "O valor QWORD (64 bits) não pode exceder 9.007.199.254.740.991."
+    }
+  },
+  "terminal": {
+    "newModeUnsupported": "O novo modo de terminal requer o agente na versão 2.11.0 ou superior. Revertendo para o modo de terminal legado. Atualize o agente para usar o novo terminal.",
+    "loadSettingsFailed": "Falha ao carregar as configurações do terminal",
+    "shell": "Shell:",
+    "editPath": "Editar Caminho",
+    "copyOutput": "Copiar saída do terminal",
+    "runAs": "Executar como:",
+    "runAsSystem": "Sistema",
+    "shortcuts": {
+      "title": "Atalhos do terminal",
+      "copySelected": "Copiar texto selecionado",
+      "paste": "Colar",
+      "interrupt": "Interromper comando",
+      "previousCommand": "Comando anterior",
+      "nextCommand": "Próximo comando",
+      "moveByWord": "Mover por palavra"
+    },
+    "customShellTitle": "Informe o Caminho do Shell Personalizado",
+    "shellPath": "Caminho do Shell",
+    "start": "Iniciar",
+    "customShell": "Shell Personalizado",
+    "customLoading": "Personalizado (carregando shell...)",
+    "customInvalid": "Personalizado (caminho do shell não existe)",
+    "customPath": "Personalizado ({path})",
+    "startFailed": "Falha ao iniciar o terminal",
+    "runAsUnavailable": "Executar como usuário não estava disponível.",
+    "sessionEnded": "Sessão Encerrada",
+    "outputCopied": "Saída do terminal copiada para a área de transferência.",
+    "copyFailed": "Falha ao copiar a saída do terminal."
+  },
+  "fileBrowser": {
+    "folderEmpty": "A pasta está vazia",
+    "size": "Tamanho",
+    "retry": "Tentar novamente",
+    "newModeUnsupported": "O novo modo do navegador de arquivos requer o agente na versão 2.12.0 ou superior. Revertendo para o navegador de arquivos legado. Atualize o agente para usar o novo navegador de arquivos.",
+    "noPermission": "Você não tem permissão para usar o navegador de arquivos.",
+    "loadSettingsFailed": "Falha ao carregar as configurações do navegador de arquivos"
+  }
+}

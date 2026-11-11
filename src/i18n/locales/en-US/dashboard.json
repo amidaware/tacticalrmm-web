@@ -1,0 +1,71 @@
+{
+  "allClients": "All Clients",
+  "noClients": "No Clients",
+  "tree": {
+    "id": "ID: {id}",
+    "agentCount": "Agent Count: {count}",
+    "addSite": "Add Site",
+    "enableMaintenance": "Enable Maintenance Mode",
+    "disableMaintenance": "Disable Maintenance Mode",
+    "installAgent": "Install Agent",
+    "assignPolicy": "Assign Automation Policy",
+    "assignAlertTemplate": "Assign Alert Template",
+    "runUrlAction": "Run URL Action",
+    "runChecks": "Run Checks",
+    "reporting": "Reporting"
+  },
+  "tabs": {
+    "servers": "Servers",
+    "workstations": "Workstations",
+    "mixed": "Mixed"
+  },
+  "filter": {
+    "title": "Filter Agent Table",
+    "checksFailing": "Checks Failing",
+    "patchesPending": "Patches Pending",
+    "actionsPending": "Actions Pending",
+    "rebootNeeded": "Reboot Needed",
+    "availability": "Availability",
+    "showAll": "Show All Agents",
+    "showOnline": "Show Online Only",
+    "showOffline": "Show Offline Only",
+    "showOverdue": "Show Overdue Only",
+    "showOffline30Days": "Show Offline for over 30 days",
+    "clear": "Clear"
+  },
+  "columns": {
+    "lastResponse": "Last Response",
+    "bootTime": "Boot Time"
+  },
+  "notify": {
+    "deleteClient": "Delete client: {name}.",
+    "deleteSite": "Delete site: {name}.",
+    "noUrlActions": "No URL Actions configured. Go to Settings > Global Settings > URL Actions"
+  },
+  "initialSetup": {
+    "gettingStarted": "Getting Started",
+    "title": "Initial Setup",
+    "addClient": "Add Client:",
+    "addSite": "Add Site:",
+    "required": "*Required",
+    "defaultTimezone": "Default timezone for agents:",
+    "companyName": "Company name:",
+    "companyNameHelp": "Adding your company name here will append it to the user's full name that appears when doing a remote control session, for example: 'John Doe - Amidaware Inc.'",
+    "finish": "Finish"
+  },
+  "sessionExpired": {
+    "message": "Your session has expired",
+    "login": "Login"
+  },
+  "totpSetup": {
+    "title": "Setup 2-Factor",
+    "scanInstructions": "Scan the QR Code with your authenticator app and then click Finish to be redirected back to the signin page. If you navigate away from this page you 2FA signin will need to be reset!",
+    "qrCodeAlt": "QR Code",
+    "manualCode": "You can also use the below code to configure the authenticator manually.",
+    "finish": "Finish"
+  },
+  "notFound": {
+    "message": "Sorry, nothing here...",
+    "goBack": "Go back"
+  }
+}

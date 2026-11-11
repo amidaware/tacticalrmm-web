@@ -2,10 +2,12 @@
   <q-dialog ref="dialog" @hide="onHide">
     <q-card style="width: 60vw">
       <q-bar>
-        {{ policy.name }} Relations
+        {{ $t("automation.relations.title", { name: policy.name }) }}
         <q-space />
         <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          <q-tooltip class="bg-white text-primary">{{
+            $t("common.close")
+          }}</q-tooltip>
         </q-btn>
       </q-bar>
       <q-card-section
@@ -15,12 +17,14 @@
         "
       >
         <div v-if="related.default_server_policy" class="text-body">
-          <q-icon name="error_outline" color="info" size="1.5em" />This policy
-          is set as the Default Server Policy.
+          <q-icon name="error_outline" color="info" size="1.5em" />{{
+            $t("automation.relations.defaultServer")
+          }}
         </div>
         <div v-if="related.default_workstation_policy" class="text-body">
-          <q-icon name="error_outline" color="info" size="1.5em" />This policy
-          is set as the Default Workstation Policy.
+          <q-icon name="error_outline" color="info" size="1.5em" />{{
+            $t("automation.relations.defaultWorkstation")
+          }}
         </div>
       </q-card-section>
       <q-card-section>
@@ -35,9 +39,9 @@
           narrow-indicator
           no-caps
         >
-          <q-tab name="clients" label="Clients" />
-          <q-tab name="sites" label="Sites" />
-          <q-tab name="agents" label="Agents" />
+          <q-tab name="clients" :label="$t('common.clients')" />
+          <q-tab name="sites" :label="$t('common.sites')" />
+          <q-tab name="agents" :label="$t('common.agents')" />
         </q-tabs>
 
         <q-separator />
@@ -54,7 +58,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Servers</i>
+                      <i>{{ $t("automation.relations.appliedToServers") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -67,7 +71,9 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Workstations</i>
+                      <i>{{
+                        $t("automation.relations.appliedToWorkstations")
+                      }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -86,7 +92,7 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Servers</i>
+                      <i>{{ $t("automation.relations.appliedToServers") }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -100,7 +106,9 @@
                   </q-item-section>
                   <q-item-section side>
                     <q-item-label>
-                      <i>Applied to Workstations</i>
+                      <i>{{
+                        $t("automation.relations.appliedToWorkstations")
+                      }}</i>
                     </q-item-label>
                   </q-item-section>
                 </q-item>

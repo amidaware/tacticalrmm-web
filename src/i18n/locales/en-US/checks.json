@@ -1,0 +1,137 @@
+{
+  "types": {
+    "diskspace": "Disk Space Check",
+    "ping": "Ping Check",
+    "cpuload": "CPU Load Check",
+    "memory": "Memory Check",
+    "winsvc": "Windows Service Check",
+    "script": "Script Check",
+    "eventlog": "Event Log Check"
+  },
+  "severity": {
+    "info": "Informational",
+    "warning": "Warning",
+    "error": "Error"
+  },
+  "form": {
+    "required": "*Required",
+    "minThreshold": "Minimum threshold is 0",
+    "maxThreshold": "Maximum threshold is 99",
+    "warningThreshold": "Warning Threshold (%)",
+    "errorThreshold": "Error Threshold (%)",
+    "failsBeforeAlert": "Number of consecutive failures before alert",
+    "runInterval": "Run this check every (seconds)",
+    "runIntervalHint": "Setting this value to anything other than 0 will override the 'Run checks every' setting on the agent",
+    "alertSeverity": "Alert Severity",
+    "descriptiveName": "Descriptive Name"
+  },
+  "cpuLoad": {
+    "addTitle": "Add CPU Check",
+    "editTitle": "Edit CPU Check"
+  },
+  "memory": {
+    "addTitle": "Add Memory Check",
+    "editTitle": "Edit Memory Check"
+  },
+  "diskSpace": {
+    "addTitle": "Add Disk Check",
+    "editTitle": "Edit Disk Check",
+    "disk": "Disk",
+    "warningThreshold": "Warning Threshold Remaining (%)",
+    "errorThreshold": "Error Threshold Remaining (%)"
+  },
+  "ping": {
+    "addTitle": "Add Ping Check",
+    "editTitle": "Edit Ping Check",
+    "hostnameOrIp": "Hostname or IP"
+  },
+  "eventLog": {
+    "addTitle": "Add Event Log Check",
+    "editTitle": "Edit Event Log Check",
+    "logToQuery": "Event log to query",
+    "failWhen": "Fail When",
+    "logContains": "Log contains",
+    "logNotContains": "Log does not contain",
+    "eventId": "Event ID (Use * to match every event ID)",
+    "invalidEventId": "Invalid Event ID",
+    "eventSource": "Event source",
+    "messageContains": "Message contains string",
+    "searchLastDays": "How many previous days to search (Enter 0 for the entire log)",
+    "min0": "Min 0",
+    "max9999": "Max 9999",
+    "eventType": "Event Type:",
+    "types": {
+      "info": "Information",
+      "warning": "Warning",
+      "error": "Error",
+      "auditSuccess": "Success Audit",
+      "auditFailure": "Failure Audit"
+    },
+    "eventsBeforeAlert": "Number of events found before alert"
+  },
+  "eventLogOutput": {
+    "noData": "No event logs",
+    "notRunYet": "Check has not run yet",
+    "columns": {
+      "source": "Source",
+      "eventId": "Event ID",
+      "time": "Time",
+      "message": "Message"
+    }
+  },
+  "winSvc": {
+    "addTitle": "Add Service Check",
+    "editTitle": "Edit Service Check",
+    "chooseDefaults": "Choose from defaults",
+    "enterManually": "Enter manually",
+    "service": "Service",
+    "serviceName": "Service Name",
+    "displayName": "Display Name",
+    "passIfStartPending": "PASS if service is in 'Start Pending' mode",
+    "passIfNotExist": "PASS if service doesn't exist",
+    "restartIfStopped": "Restart service if it's stopped"
+  },
+  "script": {
+    "addTitle": "Add Script Check",
+    "editTitle": "Edit Script Check",
+    "uploadFirst": "You need to upload a script first",
+    "scriptManagerPath": "Settings -> Script Manager",
+    "selectScript": "Select script",
+    "scriptArgs": "Script Arguments (press Enter after typing each argument)",
+    "infoReturnCodes": "Informational return codes (press Enter after typing each code)",
+    "warningReturnCodes": "Warning return codes (press Enter after typing each code)",
+    "successReturnCodes": "Success return codes (press Enter after typing each code)",
+    "timeout": "Script Timeout (seconds)"
+  },
+  "scriptOutput": {
+    "title": "Script Output",
+    "lastRun": "Last Run:",
+    "runTime": "Run Time:",
+    "seconds": "{seconds} seconds",
+    "returnCode": "Return Code:",
+    "stdout": "Standard Output",
+    "stderr": "Standard Error"
+  },
+  "graph": {
+    "title": "{name} history",
+    "noData": "No Data",
+    "last24Hours": "Last 24 Hours",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "everything": "Everything",
+    "series": {
+      "cpuLoad": "CPU Load",
+      "memory": "Memory Usage",
+      "diskSpace": "Disk Space Remaining",
+      "script": "Script Results"
+    },
+    "errorThreshold": "Error Threshold",
+    "warningThreshold": "Warning Threshold",
+    "tooltip": {
+      "returnCode": "Return Code: {value}",
+      "stdout": "Std Out: {value}",
+      "stderr": "Err Out: {value}",
+      "executionTime": "Execution Time: {value}"
+    }
+  }
+}

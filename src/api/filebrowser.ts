@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { t } from "@/i18n";
 import { TransferNotReadyError } from "@/services/fileTransfer/sessionLimit";
 
 import {
@@ -197,7 +198,11 @@ export function parseContentRangeHeader(header: string | undefined): {
 } {
   const match = (header ?? "").match(/bytes (\d+)-(\d+)\/(\d+)/);
   if (!match) {
-    throw new Error(`Invalid Content-Range header: ${header ?? "(missing)"}`);
+    throw new Error(
+      t("fileBrowser.utils.api.invalidContentRangeHeader", {
+        header: header ?? t("fileBrowser.utils.api.missingHeader"),
+      }),
+    );
   }
   return {
     start: parseInt(match[1], 10),
@@ -212,17 +217,26 @@ export function assertDownloadChunkRange(
 ): void {
   if (range.start !== expected.start) {
     throw new Error(
-      `Download chunk offset mismatch: expected ${expected.start}, received ${range.start}.`,
+      t("fileBrowser.utils.api.chunkOffsetMismatch", {
+        expected: expected.start,
+        received: range.start,
+      }),
     );
   }
   if (range.total !== expected.totalSize) {
     throw new Error(
-      `Download chunk total mismatch: expected ${expected.totalSize}, received ${range.total}.`,
+      t("fileBrowser.utils.api.chunkTotalMismatch", {
+        expected: expected.totalSize,
+        received: range.total,
+      }),
     );
   }
   if (range.end < range.start) {
     throw new Error(
-      `Invalid Content-Range: end ${range.end} is before start ${range.start}.`,
+      t("fileBrowser.utils.api.contentRangeEndBeforeStart", {
+        end: range.end,
+        start: range.start,
+      }),
     );
   }
 }
@@ -245,7 +259,7 @@ export async function getAgentFileDownloadChunk(
   );
   if (response.status === 204) {
     throw new TransferNotReadyError(
-      "Timed out waiting for agent to push chunk",
+      t("fileBrowser.utils.api.agentPushTimeout"),
     );
   }
   const contentRange =

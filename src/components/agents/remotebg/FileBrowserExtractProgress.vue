@@ -6,14 +6,16 @@
     :class="{ 'extract-progress-section--dark': $q.dark.isActive }"
   >
     <div class="row items-center justify-between q-mb-xs">
-      <div class="text-subtitle2 text-weight-medium">Extract</div>
+      <div class="text-subtitle2 text-weight-medium">
+        {{ $t("fileBrowser.extractProgress.title") }}
+      </div>
       <q-btn
         dense
         flat
         no-caps
         size="sm"
         color="negative"
-        label="Cancel"
+        :label="$t('common.cancel')"
         :loading="job.cancelling"
         @click="emit('cancel', job.sessionId)"
       >
@@ -41,11 +43,13 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { useQuasar } from "quasar";
 
 import { TRANSFER_TOOLTIP_CANCEL_EXTRACT } from "@/constants/fileTransfer";
 import type { ExtractJob } from "@/types/filebrowser";
 
+const { t } = useI18n();
 const $q = useQuasar();
 
 defineProps<{
@@ -62,9 +66,12 @@ function percent(job: ExtractJob): number {
 }
 
 function statusLabel(job: ExtractJob): string {
-  if (job.cancelling) return "Cancelling…";
-  if (job.filesTotal === 0) return "Starting…";
-  return `${job.filesDone.toLocaleString()} of ${job.filesTotal.toLocaleString()} files`;
+  if (job.cancelling) return t("fileBrowser.extractProgress.cancelling");
+  if (job.filesTotal === 0) return t("fileBrowser.extractProgress.starting");
+  return t("fileBrowser.extractProgress.filesProgress", {
+    done: job.filesDone.toLocaleString(),
+    total: job.filesTotal.toLocaleString(),
+  });
 }
 </script>
 

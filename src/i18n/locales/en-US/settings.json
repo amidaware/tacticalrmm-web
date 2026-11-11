@@ -1,0 +1,314 @@
+{
+  "core": {
+    "title": "Global Settings",
+    "tabs": {
+      "general": "General",
+      "emailAlerts": "Email Alerts",
+      "smsAlerts": "SMS Alerts",
+      "customFields": "Custom Fields",
+      "keyStore": "Key Store",
+      "urlActions": "URL Actions",
+      "webhooks": "Web Hooks",
+      "retention": "Retention",
+      "apiKeys": "API Keys",
+      "sso": "Single Sign-On (SSO)",
+      "schedules": "Schedules"
+    },
+    "zeroDisables": "Setting this value to 0 disables this feature",
+    "recipients": "Recipients",
+    "noRecipients": "No recipients",
+    "usernameLabel": "Username:",
+    "passwordLabel": "Password:",
+    "general": {
+      "agentAutoUpdate": "Enable agent automatic self update",
+      "agentAutoUpdateTooltip": "Runs at 35mins past every hour",
+      "serverScripts": "Enable server side scripts",
+      "serverScriptsTooltip": "Allow running scripts on TRMM server for alert failure/resolve actions",
+      "webTerminal": "Enable web terminal",
+      "webTerminalTooltip": "Enable the web terminal",
+      "defaultTimezone": "Default agent timezone:",
+      "defaultDateFormat": "Default date format:",
+      "dateFormatTooltip": "Click to see formatting options",
+      "defaultServerPolicy": "Default server policy:",
+      "defaultWorkstationPolicy": "Default workstation policy:",
+      "defaultAlertTemplate": "Default alert template:",
+      "receiveNotificationsOn": "Receive notifications on:",
+      "infoAlerts": "Informational Alerts",
+      "warningAlerts": "Warning Alerts",
+      "agentDebugLevel": "Agent Debug Level:",
+      "clearFaultsDays": "Clear faults on agents that haven't checked in after (days):",
+      "minimumZero": "Minimum is 0",
+      "terminalExperience": "Terminal Experience",
+      "useNewTerminal": "Use new terminal",
+      "useLegacyTerminal": "Use legacy terminal",
+      "windowsDefaultTerminal": "Windows Default Terminal",
+      "linuxDefaultTerminal": "Linux Default Terminal",
+      "macosDefaultTerminal": "macOS Default Terminal",
+      "custom": "Custom",
+      "customShellPath": "Enter custom shell path",
+      "customShellPathExample": "Enter custom shell path (e.g. {example})",
+      "resetPatchPolicy": "Reset Patch Policy on Agents:",
+      "fileBrowserExperience": "File Browser Experience",
+      "useNewFileBrowser": "Use new file browser",
+      "useLegacyFileBrowser": "Use legacy file browser"
+    },
+    "logLevels": {
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error",
+      "critical": "Critical"
+    },
+    "email": {
+      "routing": "Email Alert Routing",
+      "addEmails": "Add emails",
+      "addEmail": "Add email",
+      "smtpSettings": "SMTP Settings",
+      "fromEmail": "From email:",
+      "invalidEmail": "Invalid email",
+      "fromName": "From name:",
+      "host": "Host:",
+      "port": "Port:",
+      "invalidPort": "Invalid Port",
+      "requiresAuth": "My Server Requires Authentication",
+      "saveAndTest": "Save and Test Email",
+      "sendingTest": "Sending test email..."
+    },
+    "sms": {
+      "routing": "SMS Alert Routing",
+      "addNumbers": "Add numbers",
+      "addNumber": "Add number",
+      "twilioSettings": "Twilio Settings",
+      "twilioNumber": "Twilio Number:",
+      "twilioAccountSid": "Twilio Account SID:",
+      "twilioAuthToken": "Twilio Auth Token:",
+      "saveAndTest": "Save and Test SMS",
+      "sendingTest": "Sending test SMS...",
+      "e164Help": "Use E.164 format: must have the <b>+</b> symbol and <span class='text-red'>country code</span>, followed by the <span class='text-green'>phone number</span> e.g. <b>+<span class='text-red'>1</span><span class='text-green'>2131231234</span></b>"
+    },
+    "mesh": {
+      "title": "MeshCentral Settings",
+      "usernameLowercase": "Username must be all lowercase",
+      "site": "Mesh Site:",
+      "token": "Mesh Token:",
+      "deviceGroup": "Mesh Device Group Name:",
+      "syncPerms": "Sync Mesh Perms with TRMM:",
+      "syncPermsTooltip": "It is recommended to keep this option enabled; otherwise, all TRMM users will have full permissions in MeshCentral regardless of their permissions in TRMM.",
+      "companyName": "Company Name:",
+      "companyNameTooltip": "Adding your company name here will append it to the user's full name that appears when doing a remote control session, for example: 'John Doe - Amidaware Inc.'",
+      "syncConfirm": "This operation may take several minutes to complete in the background and can be very CPU/disk intensive, depending on your hardware and number of agents. Please allow time for the sync to fully complete."
+    },
+    "retention": {
+      "checkHistory": "Check History (days):",
+      "resolvedAlerts": "Resolved Alerts (days):",
+      "agentHistory": "Agent History (days):",
+      "debugLogs": "Debug Logs (days):",
+      "auditLogs": "Audit Logs (days):",
+      "reportHistory": "Report History (days):"
+    },
+    "notify": {
+      "edited": "Settings were edited!"
+    }
+  },
+  "codeSign": {
+    "title": "Code Signing",
+    "signAll": "Code sign all agents",
+    "signAllTooltip": "Force all existing agents to be updated to the code-signed version",
+    "token": "Token:",
+    "tokenRequired": "Token is required",
+    "deleted": "Token was deleted!",
+    "deleteConfirm": "Delete token?"
+  },
+  "customFields": {
+    "title": "Custom Fields",
+    "add": "Add custom field",
+    "noData": "No Custom Fields",
+    "columns": {
+      "type": "Field Type",
+      "hideInUi": "Hide in UI",
+      "hideInSummary": "Hide in Summary Tab",
+      "defaultValue": "Default Value",
+      "required": "Required"
+    },
+    "deleteConfirm": "Delete custom field {name}?",
+    "deleted": "Custom Field {name} was deleted!",
+    "form": {
+      "target": "Target",
+      "inputOptions": "Input Options (press Enter after typing each option)",
+      "defaultValues": "Default Value(s)",
+      "hideInDashboard": "Hide in Dashboard",
+      "types": {
+        "text": "Text",
+        "number": "Number",
+        "single": "Dropdown Single",
+        "multiple": "Dropdown Multiple",
+        "datetime": "DateTime",
+        "checkbox": "Checkbox"
+      },
+      "editTitle": "Edit Custom Field",
+      "addTitle": "Add Custom Field",
+      "defaultRequired": "Default Value needs to be set for required fields",
+      "edited": "Custom field edited!",
+      "added": "Custom field added!"
+    }
+  },
+  "required": "*Required",
+  "keyStore": {
+    "value": "Value",
+    "editTitle": "Edit Global Key",
+    "addTitle": "Add Global Key",
+    "edited": "Key was edited!",
+    "added": "Key was added!",
+    "title": "Global Key Store",
+    "showValues": "Show values",
+    "hideValues": "Hide values",
+    "addKey": "Add key",
+    "noData": "No Keys added yet",
+    "deleteConfirm": "Delete key: {name}?",
+    "deleted": "key: {name} was deleted!"
+  },
+  "resetPatchPolicy": {
+    "title": "Reset Agent Patch Policy",
+    "description": "Reset the patch policies for agents in a specific client or site. You can also leave the client and site blank to reset the patch policy for all agents. (This might take a while)",
+    "clearAll": "Clear Policies for ALL Agents",
+    "clear": "Clear Policies"
+  },
+  "urlActions": {
+    "test": {
+      "title": "Testing {name}",
+      "body": "Body",
+      "response": "Response"
+    },
+    "editUrlAction": "Edit URL Action",
+    "editWebhook": "Edit Web Hook",
+    "addUrlAction": "Add URL Action",
+    "addWebhook": "Add Web Hook",
+    "pattern": "URL Pattern",
+    "method": "Method",
+    "requestBody": "Request Body",
+    "requestHeaders": "Request Headers",
+    "testButton": "Test",
+    "edited": "Url Action was edited!",
+    "title": "URL Actions",
+    "webhooksTitle": "Web Hooks for Alert Failure/Resolved Actions",
+    "noUrlActions": "No URL Actions added yet",
+    "noWebhooks": "No Web Hooks added yet",
+    "deleteConfirm": "Delete URL Action: {name}?",
+    "deleted": "URL Action: {name} was deleted!"
+  },
+  "serverMaintenance": {
+    "title": "Server Maintenance",
+    "auditLog": "Audit Log",
+    "auditLogTooltip": "Removes agent check results",
+    "pendingActions": "Pending Actions",
+    "pendingActionsTooltip": "Removes completed pending actions",
+    "alerts": "Alerts",
+    "alertsTooltip": "Removes all alerts",
+    "reloadNats": "Reload Nats Configuration",
+    "removeOrphanedTasks": "Remove Orphaned Tasks",
+    "pruneDb": "Prune DB Tables"
+  },
+  "schedules": {
+    "added": "Schedule was added successfully.",
+    "modified": "Schedule was modified successfully.",
+    "deleted": "Schedule successfully deleted.",
+    "title": "Schedules",
+    "add": "Add Schedule",
+    "monthsShort": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "weekdaysShort": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "types": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "columns": {
+      "scheduleType": "Schedule Type",
+      "runTime": "Run Time",
+      "weekdays": "Weekdays",
+      "months": "Months",
+      "daysOfMonth": "Days of Month",
+      "weeksOfMonth": "Weeks of Month"
+    },
+    "everyWeekday": "Every Weekday",
+    "everyMonth": "Every Month",
+    "everyDay": "Every Day",
+    "everyWeek": "Every week",
+    "lastDayShort": "Last",
+    "weekOrdinals": {
+      "first": "1st",
+      "second": "2nd",
+      "third": "3rd",
+      "fourth": "4th",
+      "last": "Last"
+    },
+    "deleteConfirm": "Are you sure you want to delete schedule: {name}?",
+    "form": {
+      "editTitle": "Edit Schedule",
+      "addTitle": "Add Schedule",
+      "runType": "Task run type",
+      "hourMinute": "Hour:Minute",
+      "runOnDaysLabel": "Run on Days:",
+      "onDays": "On Days",
+      "onWeeks": "On Weeks",
+      "runOnMonths": "Run on Months",
+      "allMonths": "All months",
+      "runOnDays": "Run on Days",
+      "allDays": "All days",
+      "runOnWeeks": "Run on weeks",
+      "lastDay": "Last Day",
+      "weekdays": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "months": {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
+      },
+      "weeks": {
+        "first": "First Week",
+        "second": "Second Week",
+        "third": "Third Week",
+        "fourth": "Fourth Week",
+        "last": "Last Week"
+      }
+    }
+  },
+  "table": {
+    "columnSelect": "Column Select"
+  }
+}

@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!selectedAgent" class="q-pa-sm">No agent selected</div>
+  <div v-if="!selectedAgent" class="q-pa-sm">
+    {{ $t("agentTabs.noAgentSelected") }}
+  </div>
   <div v-else-if="agentPlatform.toLowerCase() !== 'windows'" class="q-pa-sm">
-    Only supported for Windows agents at this time
+    {{ $t("agentTabs.windowsOnly") }}
   </div>
   <div v-else>
     <q-table
@@ -37,7 +39,7 @@
         />
         <q-btn
           icon="add"
-          label="Install Software"
+          :label="$t('agentTabs.software.install')"
           no-caps
           dense
           flat
@@ -50,7 +52,7 @@
         <q-input
           v-model="filter"
           outlined
-          label="Search"
+          :label="$t('common.search')"
           dense
           clearable
           class="q-pr-sm"
@@ -66,7 +68,7 @@
         <td>
           <q-btn
             v-if="props.row.uninstall"
-            label="Uninstall"
+            :label="$t('agentTabs.software.uninstall')"
             color="primary"
             dense
             size="sm"
@@ -94,27 +96,28 @@ import InstallSoftware from "@/components/software/InstallSoftware.vue";
 import UninstallSoftware from "@/components/software/UninstallSoftware.vue";
 import ExportTableBtn from "@/components/ui/ExportTableBtn.vue";
 import { notifySuccess } from "@/utils/notify";
+import { t } from "@/i18n";
 
 // static data
 const columns = [
   {
     name: "name",
     align: "left",
-    label: "Name",
+    label: t("common.name"),
     field: "name",
     sortable: true,
   },
   {
     name: "publisher",
     align: "left",
-    label: "Publisher",
+    label: t("agentTabs.software.columns.publisher"),
     field: "publisher",
     sortable: true,
   },
   {
     name: "install_date",
     align: "left",
-    label: "Installed On",
+    label: t("agentTabs.software.columns.installedOn"),
     field: "install_date",
     sortable: false,
     format: (val) => {
@@ -124,14 +127,14 @@ const columns = [
   {
     name: "size",
     align: "left",
-    label: "Size",
+    label: t("agentTabs.software.columns.size"),
     field: "size",
     sortable: false,
   },
   {
     name: "version",
     align: "left",
-    label: "Version",
+    label: t("agentTabs.software.columns.version"),
     field: "version",
     sortable: false,
   },
