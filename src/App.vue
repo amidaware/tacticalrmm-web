@@ -13,7 +13,7 @@ body
   overflow-y: hidden
 
 a
-  color: #1976D2
+  color: var(--q-primary)
 
 .tbl-sticky
   thead tr th

@@ -1,13 +1,14 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page class="flex bg-image flex-center">
+      <q-page class="flex bg-image flex-center" :style="pageStyle">
         <q-card
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
             <div class="text-center q-pt-lg">
-              <div class="col text-h4 ellipsis">Tactical RMM</div>
+              <img v-if="logoUrl" :src="logoUrl" alt="" class="login-logo" />
+              <div class="col text-h4 ellipsis">{{ productName }}</div>
             </div>
           </q-card-section>
           <q-card-section>
@@ -114,7 +115,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
+import { storeToRefs } from "pinia";
+import { useBrandingStore } from "@/core/branding/store";
 import { type QForm, useQuasar } from "quasar";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
@@ -130,6 +133,21 @@ $q.dark.set(true);
 
 // setup auth store
 const auth = useAuthStore();
+
+// branding
+const branding = useBrandingStore();
+const { productName } = storeToRefs(branding);
+const logoUrl = computed(() => branding.imageUrl("logo"));
+const pageStyle = computed(() => {
+  const url = branding.imageUrl("login_background");
+  return url
+    ? {
+        backgroundImage: `url("${url}")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }
+    : {};
+});
 
 // setup router
 const router = useRouter();
@@ -188,6 +206,12 @@ onMounted(async () => {
 </script>
 
 <style>
+.login-logo {
+  max-height: 96px;
+  max-width: 80%;
+  margin-bottom: 16px;
+}
+
 .bg-image {
   background-image: linear-gradient(
     90deg,
