@@ -35,31 +35,12 @@
         <q-card-section>
           <div class="q-gutter-sm">
             <q-radio
+              v-for="opt in agentPlatOptions"
+              :key="opt.value"
               v-model="agentOS"
-              val="windows"
-              label="Windows"
-              @update:model-value="
-                installMethod = 'manual';
-                goarch = GOARCH_AMD64;
-              "
-            />
-            <q-radio
-              v-model="agentOS"
-              val="linux"
-              label="Linux"
-              @update:model-value="
-                installMethod = 'bash';
-                goarch = GOARCH_AMD64;
-              "
-            />
-            <q-radio
-              v-model="agentOS"
-              val="darwin"
-              label="macOS"
-              @update:model-value="
-                installMethod = 'mac';
-                goarch = GOARCH_AMD64;
-              "
+              :val="opt.value"
+              :label="opt.label"
+              @update:model-value="onAgentOSChange"
             />
           </div>
         </q-card-section>
@@ -91,7 +72,7 @@
             />
           </div>
         </q-card-section>
-        <q-card-section v-show="agentOS === 'windows'">
+        <q-card-section v-show="agentOS === AGENT_PLAT_WINDOWS">
           <div class="q-gutter-sm">
             <q-checkbox v-model="rdp" dense label="Enable RDP" />
             <q-checkbox v-model="ping" dense label="Enable Ping">
@@ -114,37 +95,39 @@
               v-model="goarch"
               :val="GOARCH_AMD64"
               label="64 bit"
-              v-show="agentOS === 'windows' || agentOS === 'linux'"
+              v-show="
+                agentOS === AGENT_PLAT_WINDOWS || agentOS === AGENT_PLAT_LINUX
+              "
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_AMD64"
               label="Intel 64 bit"
-              v-show="agentOS === 'darwin'"
+              v-show="agentOS === AGENT_PLAT_DARWIN"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_i386"
               label="32 bit"
-              v-show="agentOS !== 'darwin'"
+              v-show="agentOS !== AGENT_PLAT_DARWIN"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
               label="ARM 64 bit"
-              v-show="agentOS === 'linux'"
+              v-show="agentOS === AGENT_PLAT_LINUX"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM64"
               label="Apple Silicon (M-Series)"
-              v-show="agentOS === 'darwin'"
+              v-show="agentOS === AGENT_PLAT_DARWIN"
             />
             <q-radio
               v-model="goarch"
               :val="GOARCH_ARM32"
               label="ARM 32 bit"
-              v-show="agentOS === 'linux'"
+              v-show="agentOS === AGENT_PLAT_LINUX"
             />
           </div>
         </q-card-section>
@@ -154,19 +137,19 @@
             <q-radio
               v-model="installMethod"
               val="manual"
-              v-show="agentOS === 'windows'"
+              v-show="agentOS === AGENT_PLAT_WINDOWS"
               label="Standard EXE"
             />
             <q-radio
               v-model="installMethod"
               val="powershell"
-              v-show="agentOS === 'windows'"
+              v-show="agentOS === AGENT_PLAT_WINDOWS"
               label="Powershell"
             />
             <q-radio
               v-model="installMethod"
               val="exe"
-              v-show="agentOS === 'windows'"
+              v-show="agentOS === AGENT_PLAT_WINDOWS"
               label="Generated EXE"
             />
           </div>
@@ -191,7 +174,17 @@ import {
   GOARCH_i386,
   GOARCH_ARM64,
   GOARCH_ARM32,
+  AGENT_PLAT_WINDOWS,
+  AGENT_PLAT_LINUX,
+  AGENT_PLAT_DARWIN,
+  agentPlatOptions,
 } from "@/constants/constants";
+
+const AGENT_OS_INSTALL_METHOD = {
+  [AGENT_PLAT_WINDOWS]: "manual",
+  [AGENT_PLAT_LINUX]: "bash",
+  [AGENT_PLAT_DARWIN]: "mac",
+};
 
 export default {
   name: "InstallAgent",
@@ -206,6 +199,10 @@ export default {
       GOARCH_i386: GOARCH_i386,
       GOARCH_ARM64: GOARCH_ARM64,
       GOARCH_ARM32: GOARCH_ARM32,
+      AGENT_PLAT_WINDOWS: AGENT_PLAT_WINDOWS,
+      AGENT_PLAT_LINUX: AGENT_PLAT_LINUX,
+      AGENT_PLAT_DARWIN: AGENT_PLAT_DARWIN,
+      agentPlatOptions: agentPlatOptions,
       client_options: [],
       client: null,
       site: null,
@@ -218,10 +215,14 @@ export default {
       info: {},
       installMethod: "manual",
       goarch: GOARCH_AMD64,
-      agentOS: "windows",
+      agentOS: AGENT_PLAT_WINDOWS,
     };
   },
   methods: {
+    onAgentOSChange(val) {
+      this.installMethod = AGENT_OS_INSTALL_METHOD[val];
+      this.goarch = GOARCH_AMD64;
+    },
     getClients() {
       this.$q.loading.show();
       this.$axios

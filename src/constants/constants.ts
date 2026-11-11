@@ -5,6 +5,16 @@ export const GOARCH_i386 = "386";
 export const GOARCH_ARM64 = "arm64";
 export const GOARCH_ARM32 = "arm";
 
+export const AGENT_PLAT_WINDOWS = "windows";
+export const AGENT_PLAT_LINUX = "linux";
+export const AGENT_PLAT_DARWIN = "darwin";
+
+export const agentPlatOptions = [
+  { label: "Windows", value: AGENT_PLAT_WINDOWS },
+  { label: "Linux", value: AGENT_PLAT_LINUX },
+  { label: "macOS", value: AGENT_PLAT_DARWIN },
+];
+
 export const runAsUserToolTip =
   "Run in the context of the logged in user. If no user is logged in, the script will run as SYSTEM";
 
